@@ -46,7 +46,7 @@ module.exports = function (grunt) {
                     "javascripts/common/jquery.no-conflict.js",
                     "libs/mootools/mootools-core-1.4.5-full-nocompat-yc.js",
                     "libs/mootools/mootools-more-1.4.0.1.js",
-                    "libs/bootstrap/js/bootstrap.js",
+                    "libs/bootstrap/js/bootstrap.min.js",
                     "libs/fastclick.js",
 
                     // Global
