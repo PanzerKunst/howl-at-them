@@ -1,0 +1,225 @@
+@font-face {
+  font-family: 'Oxygen';
+  src: url("fonts/oxygen/Oxygen.otf");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'Oxygen-Bold';
+  src: url("fonts/oxygen/Oxygen-Bold.otf");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'Open-Sans';
+  src: url("fonts/open-sans/OpenSans-Regular.ttf");
+  font-weight: normal;
+  font-style: normal; }
+
+#content {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 640px;
+  padding-left: 15px;
+  padding-right: 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.lt-ie9 #content {
+  width: 900px;
+  padding-left: 30px;
+  padding-right: 30px; }
+
+img {
+  max-width: 100%; }
+
+html {
+  overflow-y: scroll; }
+
+body {
+  background-color: #faf8f5;
+  background: url("images/bg-content.png") repeat;
+  font-family: "Open-Sans", sans-serif; }
+  @media screen and (min-width: 49em) {
+    body {
+      font-size: 16px; } }
+
+h1,
+h2 {
+  text-align: center;
+  text-rendering: optimizelegibility;
+  font-smoothing: antialiased; }
+
+h1 {
+  padding: 10px 0 20px 0;
+  margin: 0;
+  font-family: "Oxygen-Bold", sans-serif;
+  font-size: 30px; }
+  @media screen and (min-width: 49em) {
+    h1 {
+      font-size: 36px;
+      padding: 40px 0; } }
+
+h2 {
+  margin: 0 -15px 10px -15px;
+  font-family: "Oxygen", sans-serif;
+  font-size: 18px; }
+  @media screen and (min-width: 49em) {
+    h2 {
+      font-size: 24px; } }
+
+p,
+ul {
+  margin-bottom: 20px; }
+
+p,
+li {
+  line-height: 1.75em; }
+
+p {
+  text-align: justify; }
+
+li {
+  margin-bottom: 10px; }
+
+a,
+a:visited {
+  text-decoration: none;
+  color: #6900ff;
+  cursor: pointer; }
+
+a:hover,
+a:focus {
+  color: #6900ff; }
+
+a,
+span {
+  display: inline-block; }
+
+.mdnz-polyfill {
+  display: none; }
+
+.list-header {
+  margin-bottom: 10px; }
+
+form {
+  font-size: 14px; }
+  form .form-group,
+  form fieldset {
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20em; }
+    @media screen and (min-width: 49em) {
+      form .form-group,
+      form fieldset {
+        width: 29em; } }
+  form .form-group:after {
+    content: "";
+    display: table;
+    clear: both; }
+  form .form-group > input,
+  form .form-group > select,
+  form .form-group > textarea {
+    display: block;
+    float: left; }
+  form .form-group > label {
+    display: block;
+    width: 20em; }
+    form .form-group > label.mdnz-polyfill {
+      display: none;
+      width: 20em; }
+    @media screen and (min-width: 49em) {
+      form .form-group > label {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 9em;
+        float: left;
+        margin-top: 0.35em;
+        padding-right: 0.4em; } }
+  form .form-group > input,
+  form .form-group > select,
+  form .form-group > textarea {
+    clear: both;
+    width: 20em; }
+    @media screen and (min-width: 49em) {
+      form .form-group > input,
+      form .form-group > select,
+      form .form-group > textarea {
+        clear: none; } }
+  form .form-group > ul {
+    display: block;
+    float: left; }
+    form .form-group > ul:after {
+      content: "";
+      display: table;
+      clear: both; }
+    form .form-group > ul > li {
+      display: block;
+      float: left; }
+  form .field-error {
+    display: none;
+    clear: both;
+    font-style: italic;
+    font-size: 13px;
+    color: #b94a48;
+    margin-bottom: 0; }
+    @media screen and (min-width: 49em) {
+      form .field-error {
+        margin-left: 9.69231em; }
+        form .field-error.without-label {
+          margin-left: 0; } }
+  form [type=submit].hidden {
+    /* For it to go below the anchor, keeping the latter centered */
+    display: block;
+    /* All those properties hide the submit button but keeps submit on enter working */
+    border: none;
+    height: 0;
+    width: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; }
+
+.check-or-radio {
+  display: table-row; }
+  .check-or-radio > div {
+    display: table-cell;
+    vertical-align: middle; }
+    .check-or-radio > div > input {
+      margin-bottom: 4px;
+      margin-right: 0.5em; }
+    .check-or-radio > div > label {
+      margin-top: 5px; }
+
+.submit-wrapper {
+  padding-top: 20px; }
+  .submit-wrapper > [type=submit] {
+    display: block;
+    margin: auto; }
+
+.btn-primary {
+  background-color: #6900ff;
+  border-color: #6900ff; }
+  .btn-primary.active, .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+    background-color: #5400cc;
+    border-color: #5400cc; }
+
+a.btn-primary {
+  color: white; }
+
+textarea.form-control {
+  resize: vertical;
+  height: 8em; }
+
+.form-control:focus {
+  border-color: #6900ff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(105, 0, 255, 0.3); }
+
+#index #content #auth-failed {
+  display: none;
+  text-align: center; }
+
+#my-account #content .alert {
+  display: none; }

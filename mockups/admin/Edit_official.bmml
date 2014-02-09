@@ -1,0 +1,125 @@
+<mockup version="1.0" skin="sketch" measuredW="1024" measuredH="771" mockupW="1024" mockupH="771">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="1024" h="771" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Howl%20at%20Them%20-%20Edit%20an%20official%0Ahttp%3A//howlatthem.com/admin/officials/762</text>
+      </controlProperties>
+    </control>
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::Title" x="374" y="142" w="276" h="-1" measuredW="245" measuredH="50" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Edit%20an%20official</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::Button" x="454" y="439" w="116" h="27" measuredW="105" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save%20changes</text>
+      </controlProperties>
+    </control>
+    <control controlID="70" controlTypeID="com.balsamiq.mockups::Label" x="383" y="215" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>First%20name%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="71" controlTypeID="com.balsamiq.mockups::TextInput" x="491" y="210" w="150" h="-1" measuredW="39" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Mike</text>
+      </controlProperties>
+    </control>
+    <control controlID="72" controlTypeID="com.balsamiq.mockups::Label" x="383" y="242" w="-1" h="-1" measuredW="76" measuredH="21" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Last%20name%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="73" controlTypeID="com.balsamiq.mockups::TextInput" x="491" y="237" w="150" h="-1" measuredW="60" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Hubbard</text>
+      </controlProperties>
+    </control>
+    <control controlID="74" controlTypeID="com.balsamiq.mockups::Label" x="383" y="268" w="-1" h="-1" measuredW="42" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Title%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="76" controlTypeID="com.balsamiq.mockups::Label" x="383" y="344" w="-1" h="-1" measuredW="54" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>District%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="77" controlTypeID="com.balsamiq.mockups::TextInput" x="491" y="339" w="150" h="-1" measuredW="30" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>79</text>
+      </controlProperties>
+    </control>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="383" y="317" w="-1" h="-1" measuredW="48" measuredH="21" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>State%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::Label" x="383" y="294" w="-1" h="-1" measuredW="45" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Party%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::ComboBox" x="491" y="316" w="150" h="-1" measuredW="80" measuredH="23" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Alabama</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Label" x="383" y="370" w="-1" h="-1" measuredW="88" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Phone%20number</text>
+      </controlProperties>
+    </control>
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::TextInput" x="491" y="365" w="150" h="-1" measuredW="93" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>0768884798</text>
+      </controlProperties>
+    </control>
+    <control controlID="84" controlTypeID="com.balsamiq.mockups::Label" x="383" y="396" w="-1" h="-1" measuredW="97" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ideology%20ranking</text>
+      </controlProperties>
+    </control>
+    <control controlID="85" controlTypeID="com.balsamiq.mockups::TextInput" x="491" y="391" w="150" h="-1" measuredW="54" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>-0.435</text>
+      </controlProperties>
+    </control>
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::ComboBox" x="491" y="290" w="150" h="-1" measuredW="92" measuredH="23" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Republican</text>
+      </controlProperties>
+    </control>
+    <control controlID="87" controlTypeID="com.balsamiq.mockups::ComboBox" x="491" y="264" w="150" h="-1" measuredW="122" measuredH="23" zOrder="18" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Representative</text>
+      </controlProperties>
+    </control>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="71" w="1024" h="49" measuredW="320" measuredH="240" zOrder="19" locked="false" isInGroup="-1"/>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Image" x="0" y="71" w="128" h="49" measuredW="77" measuredH="79" zOrder="20" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Howl%20at%20Them%20image</text>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::Button" x="646" y="73" w="113" h="45" measuredW="110" measuredH="27" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Search%20officials</text>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Button" x="752" y="73" w="92" h="45" measuredW="88" measuredH="27" zOrder="22" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>My%20account</text>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::Button" x="838" y="73" w="112" h="45" measuredW="110" measuredH="27" zOrder="23" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Admin%20%20%20%20%20%20%20%20%20%20%20V</text>
+      </controlProperties>
+    </control>
+    <control controlID="93" controlTypeID="com.balsamiq.mockups::Button" x="944" y="73" w="74" h="45" measuredW="63" measuredH="27" zOrder="24" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Logout</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Pages
+GET     /                           controllers.Application.index
+GET     /join                       controllers.Application.join
+GET     /home                       controllers.Application.home
+GET     /logout                     controllers.Application.logout
+GET     /my-account                 controllers.Application.myAccount
+
+GET     /admin/officials/new        controllers.Application.newOfficial
+
+# API
+POST    /api/db/admin               controllers.api.DbAdminApi.createTables
+DELETE  /api/db/admin               controllers.api.DbAdminApi.dropTables
+
+POST    /api/accounts               controllers.api.AccountApi.create
+PUT     /api/accounts               controllers.api.AccountApi.update
+GET     /api/accounts/first         controllers.api.AccountApi.getFirst
+
+POST    /api/authenticate           controllers.api.AuthApi.authenticate
+
+POST    /api/officials              controllers.api.OfficialApi.create

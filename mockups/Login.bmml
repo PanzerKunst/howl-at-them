@@ -1,0 +1,60 @@
+<mockup version="1.0" skin="sketch" measuredW="1024" measuredH="771" mockupW="1024" mockupH="771">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="1024" h="771" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Howl%20at%20Them%20-%20Login%0Ahttp%3A//howlatthem.com/login</text>
+      </controlProperties>
+    </control>
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::Title" x="442" y="162" w="141" h="-1" measuredW="98" measuredH="50" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Login</text>
+      </controlProperties>
+    </control>
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::Label" x="367" y="256" w="-1" h="-1" measuredW="100" measuredH="21" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>E-mail%20address%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::TextInput" x="471" y="250" w="150" h="-1" measuredW="79" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="41" controlTypeID="com.balsamiq.mockups::Label" x="367" y="283" w="-1" h="-1" measuredW="69" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Password%20*</text>
+      </controlProperties>
+    </control>
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::TextInput" x="471" y="277" w="150" h="-1" measuredW="79" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::Button" x="484" y="334" w="57" h="27" measuredW="58" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Log%20in</text>
+      </controlProperties>
+    </control>
+    <control controlID="78" controlTypeID="com.balsamiq.mockups::Label" x="445" y="400" w="-1" h="-1" measuredW="98" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>No%20account%20yet%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="79" controlTypeID="com.balsamiq.mockups::Link" x="551" y="400" w="-1" h="-1" measuredW="30" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Join</text>
+      </controlProperties>
+    </control>
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="71" w="1024" h="49" measuredW="320" measuredH="240" zOrder="9" locked="false" isInGroup="-1"/>
+    <control controlID="81" controlTypeID="com.balsamiq.mockups::Button" x="964" y="73" w="54" h="45" measuredW="48" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Join</text>
+      </controlProperties>
+    </control>
+    <control controlID="82" controlTypeID="com.balsamiq.mockups::Image" x="0" y="71" w="128" h="49" measuredW="77" measuredH="79" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Howl%20at%20Them%20image</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
