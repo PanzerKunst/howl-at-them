@@ -96,5 +96,11 @@
       </controlProperties>
     </control>
     <control controlID="87" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="71" w="1024" h="49" measuredW="320" measuredH="240" zOrder="17" locked="false" isInGroup="-1"/>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="707" w="1024" h="37" measuredW="320" measuredH="240" zOrder="20" locked="false" isInGroup="-1"/>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::LinkBar" x="313" y="716" w="-1" h="-1" measuredW="399" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>The%20plan%2C%20Petition%2C%20Recruit%2C%20Flyer%2C%20Volunteer%2C%20Contribute</text>
+      </controlProperties>
+    </control>
   </controls>
 </mockup>

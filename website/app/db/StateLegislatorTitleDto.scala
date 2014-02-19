@@ -4,21 +4,21 @@ import play.api.db.DB
 import play.api.Logger
 import anorm._
 import play.api.Play.current
-import models.TitleOfAnOfficial
+import models.StateLegislatorTitle
 
-object TitleOfAnOfficialDto {
-  def getAll: List[TitleOfAnOfficial] = {
+object StateLegislatorTitleDto {
+  def getAll: List[StateLegislatorTitle] = {
     DB.withConnection {
       implicit c =>
 
         val query = """
           select id, name
-          from title_of_an_official;"""
+          from state_legislator_titles;"""
 
-        Logger.info("TitleOfAnOfficialDto.getAll():" + query)
+        Logger.info("StateLegislatorTitleDto.getAll():" + query)
 
         SQL(query)().map(row =>
-          new TitleOfAnOfficial(
+          new StateLegislatorTitle(
             row[Long]("id"),
             row[String]("name")
           )

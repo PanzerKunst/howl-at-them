@@ -1,4 +1,4 @@
-.btn-primary {
+/* TODO .btn-primary {
   background-color: $actionColor;
   border-color: $actionColor;
 
@@ -9,7 +9,7 @@
     background-color: darken($actionColor, 10%);
     border-color: darken($actionColor, 10%);
   }
-}
+} */
 
 a.btn-primary {
   color: white;
@@ -20,9 +20,9 @@ textarea.form-control {
   height: 8em;
 }
 
-.form-control {
+/* TODO .form-control {
   &:focus {
     border-color: $actionColor;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px transparentize($actionColor, 0.7);
   }
-}
+} */

@@ -79,7 +79,7 @@ CBR.Controllers.Join = new Class({
                 data: CBR.JsonUtil.stringifyModel(account),
                 onSuccess: function (responseText, responseXML) {
                     this._clearFormValuesInLocalStorage();
-                    location.replace("/?from=join&email=" + account.getEmailAddress());
+                    location.replace("/?action=joined&email=" + account.getEmailAddress());
                 }.bind(this),
                 onFailure: function (xhr) {
                     alert("AJAX fail :(");

@@ -1702,7 +1702,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         this.options.password = password;
     }
 });
-;CBR.Models.Official = new Class({
+;CBR.Models.StateLegislator = new Class({
     Extends: CBR.Models.JsonSerializable,
 
     options: {  // Defaults
@@ -1783,6 +1783,16 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         this.$authFailed = jQuery("#auth-failed");
         this.$form = jQuery("form");
         this.$submitBtn = jQuery("[type=submit]");
+
+        if (this._getAction()) {
+            this.$form.show();
+        } else {
+            this.$form.hide();
+        }
+    },
+
+    _getAction: function () {
+        return this.options.action;
     },
 
     _initValidation:function () {
@@ -1795,7 +1805,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     },
 
     _initEvents:function () {
-        jQuery("#log-in-link").click(jQuery.proxy(this._toggleLoginForm, this));
+        jQuery("#login-link").click(jQuery.proxy(this._toggleLoginForm, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -1925,7 +1935,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
                 data: CBR.JsonUtil.stringifyModel(account),
                 onSuccess: function (responseText, responseXML) {
                     this._clearFormValuesInLocalStorage();
-                    location.replace("/?from=join&email=" + account.getEmailAddress());
+                    location.replace("/?action=joined&email=" + account.getEmailAddress());
                 }.bind(this),
                 onFailure: function (xhr) {
                     alert("AJAX fail :(");
@@ -2120,7 +2130,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         }
     }
 });
-;CBR.Controllers.NewOfficial = new Class({
+;CBR.Controllers.NewStateLegislator = new Class({
     Extends:CBR.Controllers.BaseController,
 
     initialize:function (options) {
@@ -2144,7 +2154,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
 
         this.$firstNameField = jQuery("#first-name");
         this.$lastNameField = jQuery("#last-name");
-        this.$titleOfOfficialSelect = jQuery("#title-of-official");
+        this.$stateLegislatorTitleSelect = jQuery("#state-legislator-title");
         this.$politicalPartySelect = jQuery("#political-party");
         this.$usStateSelect = jQuery("#us-state");
         this.$districtField = jQuery("#district");
@@ -2173,7 +2183,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         if (Modernizr.localstorage) {
             this.$firstNameField.keyup(jQuery.proxy(this.localStoreInput, this));
             this.$lastNameField.keyup(jQuery.proxy(this.localStoreInput, this));
-            this.$titleOfOfficialSelect.change(jQuery.proxy(this.localStoreInput, this));
+            this.$stateLegislatorTitleSelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$politicalPartySelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$usStateSelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$districtField.keyup(jQuery.proxy(this.localStoreInput, this));
@@ -2190,10 +2200,10 @@ CBR.JsonUtil.stringifyModel = function (obj) {
             this.$saveSuccessfulAlert.slideUpCustom();
             this.$submitBtn.button('loading');
 
-            var official = new CBR.Models.Official({
+            var official = new CBR.Models.StateLegislator({
                 firstName: this.$firstNameField.val(),
                 lastName: this.$lastNameField.val(),
-                titleId: this.$titleOfOfficialSelect.val(),
+                titleId: this.$stateLegislatorTitleSelect.val(),
                 politicalPartyId: this.$politicalPartySelect.val(),
                 usStateId: this.$usStateSelect.val(),
                 district: this.$districtField.val(),
@@ -2208,7 +2218,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
                 data: CBR.JsonUtil.stringifyModel(official),
                 onSuccess: function (responseText, responseXML) {
                     this._clearFormValuesInLocalStorage();
-                    location.replace("/admin/officials/new?from=new-official");
+                    location.replace("/admin/state-legislators/new?action=added");
                 }.bind(this),
                 onFailure: function (xhr) {
                     alert("AJAX fail :(");
@@ -2221,7 +2231,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         if (Modernizr.localstorage) {
             this.initInputFromLocalStorage(this.$firstNameField);
             this.initInputFromLocalStorage(this.$lastNameField);
-            this.initInputFromLocalStorage(this.$titleOfOfficialSelect);
+            this.initInputFromLocalStorage(this.$stateLegislatorTitleSelect);
             this.initInputFromLocalStorage(this.$politicalPartySelect);
             this.initInputFromLocalStorage(this.$usStateSelect);
             this.initInputFromLocalStorage(this.$districtField);
@@ -2234,7 +2244,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         if (Modernizr.localstorage) {
             this.removeLocalStorageValueForInput(this.$firstNameField);
             this.removeLocalStorageValueForInput(this.$lastNameField);
-            this.removeLocalStorageValueForInput(this.$titleOfOfficialSelect);
+            this.removeLocalStorageValueForInput(this.$stateLegislatorTitleSelect);
             this.removeLocalStorageValueForInput(this.$politicalPartySelect);
             this.removeLocalStorageValueForInput(this.$usStateSelect);
             this.removeLocalStorageValueForInput(this.$districtField);

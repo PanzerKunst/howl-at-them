@@ -38,8 +38,8 @@ html {
   overflow-y: scroll; }
 
 body {
-  background-color: #faf8f5;
-  background: url("images/bg-content.png") repeat;
+  /* TODO background-color: $bgColor;
+  background: url('images/bg-content.png') repeat; */
   font-family: "Open-Sans", sans-serif; }
   @media screen and (min-width: 49em) {
     body {
@@ -70,7 +70,9 @@ h2 {
       font-size: 24px; } }
 
 p,
-ul {
+ul,
+ol,
+form {
   margin-bottom: 20px; }
 
 p,
@@ -86,13 +88,12 @@ li {
 a,
 a:visited {
   text-decoration: none;
-  color: #6900ff;
   cursor: pointer; }
 
-a:hover,
+/* TODO a:hover,
 a:focus {
-  color: #6900ff; }
-
+  color: $actionColor;
+} */
 a,
 span {
   display: inline-block; }
@@ -102,6 +103,9 @@ span {
 
 .list-header {
   margin-bottom: 10px; }
+
+.centered-contents {
+  text-align: center; }
 
 form {
   font-size: 14px; }
@@ -199,13 +203,18 @@ form {
     display: block;
     margin: auto; }
 
-.btn-primary {
-  background-color: #6900ff;
-  border-color: #6900ff; }
-  .btn-primary.active, .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
-    background-color: #5400cc;
-    border-color: #5400cc; }
+/* TODO .btn-primary {
+  background-color: $actionColor;
+  border-color: $actionColor;
 
+  &.active,
+  &:active,
+  &:focus,
+  &:hover {
+    background-color: darken($actionColor, 10%);
+    border-color: darken($actionColor, 10%);
+  }
+} */
 a.btn-primary {
   color: white; }
 
@@ -213,10 +222,12 @@ textarea.form-control {
   resize: vertical;
   height: 8em; }
 
-.form-control:focus {
-  border-color: #6900ff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(105, 0, 255, 0.3); }
-
+/* TODO .form-control {
+  &:focus {
+    border-color: $actionColor;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px transparentize($actionColor, 0.7);
+  }
+} */
 #index #content #auth-failed {
   display: none;
   text-align: center; }

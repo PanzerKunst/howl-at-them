@@ -13,7 +13,7 @@ object UsStateDto {
 
         val query = """
           select id, name, abbr
-          from us_state;"""
+          from us_states;"""
 
         Logger.info("UsStateDto.getAll():" + query)
 
@@ -33,7 +33,7 @@ object UsStateDto {
 
         val query = """
           select id, name, abbr
-          from us_state
+          from us_states
           where id = '""" + id + """';"""
 
         Logger.info("UsStateDto.getOfId():" + query)

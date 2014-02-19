@@ -1,4 +1,4 @@
-@(from: Option[String], emailAddress: Option[String])
+@(action: Option[String], emailAddress: Option[String])
 @main("Howl at Them", "index") {
 <!--
     Header
@@ -12,18 +12,16 @@
 
 <a href="/join" class="btn btn-primary">Join</a>
 
-<span>or</span><a id="log-in-link">Log in</a>
+<span>or</span><a id="login-link">Login</a>
 
-@if(from.isDefined) {
 <form role="form">
+    @if(action.isDefined && action.get == "joined") {
     <div class="alert alert-success alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         Thanks for joining the Wolf Pack!<br />
         Please log in:
     </div>
-} else {
-<form role="form" style="display: none">
-}
+    }
     <p id="auth-failed">Wrong credentials :( Please try again!</p>
 
     <div class="form-group">
@@ -57,6 +55,9 @@
     window.addEvent("domready", function () {
         new CBR.Controllers.Index({
             el: "#content"
+            @if(action.isDefined) {
+                , action: "@action.get"
+            }
         }).run();
     });
 </script>

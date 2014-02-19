@@ -4,8 +4,8 @@ html {
 }
 
 body {
-  background-color: $bgColor;
-  background: url('images/bg-content.png') repeat;
+  /* TODO background-color: $bgColor;
+  background: url('images/bg-content.png') repeat; */
 
   font-family: "Open-Sans", sans-serif;
 
@@ -48,7 +48,9 @@ h2 {
 }
 
 p,
-ul {
+ul,
+ol,
+form {
   margin-bottom: $line-height-computed;
 }
 
@@ -68,14 +70,14 @@ li {
 a,
 a:visited {
   text-decoration: none;
-  color: $actionColor;
+  // TODO color: $actionColor;
   cursor: pointer;  // To have the pointer on anchors which don't have any href
 }
 
-a:hover,
+/* TODO a:hover,
 a:focus {
   color: $actionColor;
-}
+} */
 
 a,
 span {
@@ -88,4 +90,8 @@ span {
 
 .list-header {
   margin-bottom: $line-height-computed / 2;
+}
+
+.centered-contents {
+  text-align: center;
 }

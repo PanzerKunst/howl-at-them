@@ -1,4 +1,4 @@
-CBR.Controllers.NewOfficial = new Class({
+CBR.Controllers.NewStateLegislator = new Class({
     Extends:CBR.Controllers.BaseController,
 
     initialize:function (options) {
@@ -22,7 +22,7 @@ CBR.Controllers.NewOfficial = new Class({
 
         this.$firstNameField = jQuery("#first-name");
         this.$lastNameField = jQuery("#last-name");
-        this.$titleOfOfficialSelect = jQuery("#title-of-official");
+        this.$stateLegislatorTitleSelect = jQuery("#state-legislator-title");
         this.$politicalPartySelect = jQuery("#political-party");
         this.$usStateSelect = jQuery("#us-state");
         this.$districtField = jQuery("#district");
@@ -51,7 +51,7 @@ CBR.Controllers.NewOfficial = new Class({
         if (Modernizr.localstorage) {
             this.$firstNameField.keyup(jQuery.proxy(this.localStoreInput, this));
             this.$lastNameField.keyup(jQuery.proxy(this.localStoreInput, this));
-            this.$titleOfOfficialSelect.change(jQuery.proxy(this.localStoreInput, this));
+            this.$stateLegislatorTitleSelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$politicalPartySelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$usStateSelect.change(jQuery.proxy(this.localStoreInput, this));
             this.$districtField.keyup(jQuery.proxy(this.localStoreInput, this));
@@ -68,10 +68,10 @@ CBR.Controllers.NewOfficial = new Class({
             this.$saveSuccessfulAlert.slideUpCustom();
             this.$submitBtn.button('loading');
 
-            var official = new CBR.Models.Official({
+            var official = new CBR.Models.StateLegislator({
                 firstName: this.$firstNameField.val(),
                 lastName: this.$lastNameField.val(),
-                titleId: this.$titleOfOfficialSelect.val(),
+                titleId: this.$stateLegislatorTitleSelect.val(),
                 politicalPartyId: this.$politicalPartySelect.val(),
                 usStateId: this.$usStateSelect.val(),
                 district: this.$districtField.val(),
@@ -86,7 +86,7 @@ CBR.Controllers.NewOfficial = new Class({
                 data: CBR.JsonUtil.stringifyModel(official),
                 onSuccess: function (responseText, responseXML) {
                     this._clearFormValuesInLocalStorage();
-                    location.replace("/admin/officials/new?from=new-official");
+                    location.replace("/admin/state-legislators/new?action=added");
                 }.bind(this),
                 onFailure: function (xhr) {
                     alert("AJAX fail :(");
@@ -99,7 +99,7 @@ CBR.Controllers.NewOfficial = new Class({
         if (Modernizr.localstorage) {
             this.initInputFromLocalStorage(this.$firstNameField);
             this.initInputFromLocalStorage(this.$lastNameField);
-            this.initInputFromLocalStorage(this.$titleOfOfficialSelect);
+            this.initInputFromLocalStorage(this.$stateLegislatorTitleSelect);
             this.initInputFromLocalStorage(this.$politicalPartySelect);
             this.initInputFromLocalStorage(this.$usStateSelect);
             this.initInputFromLocalStorage(this.$districtField);
@@ -112,7 +112,7 @@ CBR.Controllers.NewOfficial = new Class({
         if (Modernizr.localstorage) {
             this.removeLocalStorageValueForInput(this.$firstNameField);
             this.removeLocalStorageValueForInput(this.$lastNameField);
-            this.removeLocalStorageValueForInput(this.$titleOfOfficialSelect);
+            this.removeLocalStorageValueForInput(this.$stateLegislatorTitleSelect);
             this.removeLocalStorageValueForInput(this.$politicalPartySelect);
             this.removeLocalStorageValueForInput(this.$usStateSelect);
             this.removeLocalStorageValueForInput(this.$districtField);

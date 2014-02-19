@@ -14,7 +14,7 @@ object AccountDto {
       implicit c =>
 
         val query = """
-                       insert into account(first_name, last_name, email_address, password, us_state_id, creation_timestamp)
+                       insert into accounts(first_name, last_name, email_address, password, us_state_id, creation_timestamp)
         values('""" + DbUtil.backslashQuotes(account.firstName) + """', '""" +
           DbUtil.backslashQuotes(account.lastName) + """', '""" +
           DbUtil.backslashQuotes(account.emailAddress) + """',
@@ -33,7 +33,7 @@ object AccountDto {
       implicit c =>
 
         var query = """
-                       update account set
+                       update accounts set
         first_name = '""" + DbUtil.backslashQuotes(account.firstName) + """',
         last_name = '""" + DbUtil.backslashQuotes(account.lastName) + """',
         """
@@ -57,7 +57,7 @@ object AccountDto {
 
         val query = """
           select first_name, last_name, email_address, password, us_state_id, creation_timestamp
-          from account
+          from accounts
           where id = """ + id + """;"""
 
         Logger.info("AccountDto.getOfId():" + query)
@@ -86,7 +86,7 @@ object AccountDto {
 
         val query = """
           select id, first_name, last_name, password, us_state_id, creation_timestamp
-          from account
+          from accounts
           where email_address = '""" + DbUtil.backslashQuotes(emailAddress) + """';"""
 
         Logger.info("AccountDto.getOfEmail():" + query)
@@ -115,7 +115,7 @@ object AccountDto {
 
         val query = """
           select id, first_name, last_name, us_state_id, creation_timestamp
-          from account
+          from accounts
           where email_address = '""" + DbUtil.backslashQuotes(emailAddress) + """'
           and password = crypt('""" + DbUtil.backslashQuotes(password) + """', password);"""
 

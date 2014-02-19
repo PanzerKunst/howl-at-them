@@ -17,6 +17,16 @@ CBR.Controllers.Index = new Class({
         this.$authFailed = jQuery("#auth-failed");
         this.$form = jQuery("form");
         this.$submitBtn = jQuery("[type=submit]");
+
+        if (this._getAction()) {
+            this.$form.show();
+        } else {
+            this.$form.hide();
+        }
+    },
+
+    _getAction: function () {
+        return this.options.action;
     },
 
     _initValidation:function () {
@@ -29,7 +39,7 @@ CBR.Controllers.Index = new Class({
     },
 
     _initEvents:function () {
-        jQuery("#log-in-link").click(jQuery.proxy(this._toggleLoginForm, this));
+        jQuery("#login-link").click(jQuery.proxy(this._toggleLoginForm, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },

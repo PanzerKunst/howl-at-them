@@ -13,7 +13,7 @@ object PoliticalPartyDto {
 
         val query = """
           select id, name
-          from political_party;"""
+          from political_parties;"""
 
         Logger.info("PoliticalPartyDto.getAll():" + query)
 

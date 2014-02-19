@@ -43,7 +43,7 @@ module.exports = function (grunt) {
                     // Libs
                     "libs/h5bp/modernizr-custom.js",
                     "libs/jquery-2.1.0.min.js",
-                    "javascripts/common/jquery.no-conflict.js",
+                    "javascripts/common/jquery.noConflict.js",
                     "libs/mootools/mootools-core-1.4.5-full-nocompat-yc.js",
                     "libs/mootools/mootools-more-1.4.0.1.js",
                     "libs/bootstrap/js/bootstrap.min.js",
@@ -54,22 +54,22 @@ module.exports = function (grunt) {
 
                     // Common
                     "javascripts/common/jquery.plugin.animations.js",
-                    "javascripts/common/json-util.js",
+                    "javascripts/common/jsonUtil.js",
 
                     // Services
                     "javascripts/services/validator.js",
 
                     // Models
-                    "javascripts/models/json-serializable.js",
+                    "javascripts/models/jsonSerializable.js",
                     "javascripts/models/account.js",
-                    "javascripts/models/official.js",
+                    "javascripts/models/stateLegislator.js",
 
                     // Controllers
-                    "javascripts/controllers/base-controller.js",
+                    "javascripts/controllers/baseController.js",
                     "javascripts/controllers/index.js",
                     "javascripts/controllers/join.js",
-                    "javascripts/controllers/my-account.js",
-                    "javascripts/controllers/admin/new-official.js"
+                    "javascripts/controllers/myAccount.js",
+                    "javascripts/controllers/admin/newStateLegislator.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
             }

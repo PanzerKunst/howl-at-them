@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import db.{PoliticalPartyDto, TitleOfAnOfficialDto, AccountDto, UsStateDto}
+import db.{PoliticalPartyDto, StateLegislatorTitleDto, AccountDto, UsStateDto}
 import models.Account
 import models.frontend.FrontendAccount
 
@@ -13,8 +13,8 @@ object Application extends Controller {
       loggedInUser(session) match {
         case Some(loggedInAccount) => Redirect(routes.Application.home)
         case None =>
-          val from = if (request.queryString.contains("from"))
-            Some(request.queryString.get("from").get.head)
+          val action = if (request.queryString.contains("action"))
+            Some(request.queryString.get("action").get.head)
           else
             None
 
@@ -24,7 +24,7 @@ object Application extends Controller {
             None
           }
 
-          Ok(views.html.index(from, emailAddress))
+          Ok(views.html.index(action, emailAddress))
       }
   }
 
@@ -61,18 +61,18 @@ object Application extends Controller {
       }
   }
 
-  def newOfficial = Action {
+  def newStateLegislator = Action {
     implicit request =>
 
       loggedInUser(session) match {
         case None => Redirect(routes.Application.index)
         case Some(loggedInAccount) =>
-          val from = if (request.queryString.contains("from"))
-            Some(request.queryString.get("from").get.head)
+          val from = if (request.queryString.contains("action"))
+            Some(request.queryString.get("action").get.head)
           else
             None
 
-          Ok(views.html.newOfficial(TitleOfAnOfficialDto.getAll, PoliticalPartyDto.getAll, UsStateDto.getAll, from))
+          Ok(views.html.newStateLegislator(StateLegislatorTitleDto.getAll, PoliticalPartyDto.getAll, UsStateDto.getAll, from))
       }
   }
 
