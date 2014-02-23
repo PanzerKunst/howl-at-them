@@ -4,11 +4,54 @@ import play.api.mvc._
 import db.{PoliticalPartyDto, StateLegislatorTitleDto, AccountDto, UsStateDto}
 import models.Account
 import models.frontend.FrontendAccount
+import play.api.libs.ws.WS
+import play.api.libs.json.{JsValue, JsObject, Json}
+import play.Play
 
 object Application extends Controller {
 
   def index = Action {
     implicit request =>
+
+      implicit val context = scala.concurrent.ExecutionContext.Implicits.global
+
+      // Google Civic Information
+      /* TODO WS.url("https://www.googleapis.com/civicinfo/us_v1/voterinfo/2000/lookup")
+        .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
+        .withHeaders("Content-Type" -> "application/json")
+        .withHeaders("X-JavaScript-User-Agent" -> "Google APIs Explorer")
+        .post(Json.obj(
+          "address" -> "410 Market St, Chapel Hill, NC"
+        ))
+        .map {
+        response =>
+          val contests = (response.json \ "contests").as[List[JsObject]]
+          for (contest <- contests) {
+            val district = (contest \ "district").as[JsValue]
+            val districtScope = (district \ "scope").as[String]
+            if (districtScope == "stateLower" || districtScope == "stateUpper") {
+              val districtName = (district \ "name").as[String]
+            }
+          }
+      }
+
+      // VoteSmart
+      WS.url("http://api.votesmart.org/Officials.getByState")
+        .withQueryString("key" -> Play.application().configuration().getString("votesmart.apikey"))
+        .withQueryString("o" -> "JSON")
+        .withQueryString("stateId" -> "NC")
+        .get()
+        .map {
+        response =>
+          val contests = (response.json \ "contests").as[List[JsObject]]
+          for (contest <- contests) {
+            val district = (contest \ "district").as[JsValue]
+            val districtScope = (district \ "scope").as[String]
+            if (districtScope == "stateLower" || districtScope == "stateUpper") {
+              val districtName = (district \ "name").as[String]
+            }
+          }
+      } */
 
       loggedInUser(session) match {
         case Some(loggedInAccount) => Redirect(routes.Application.home)

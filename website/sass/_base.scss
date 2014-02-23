@@ -8,80 +8,83 @@ body {
   background: url('images/bg-content.png') repeat; */
 
   font-family: "Open-Sans", sans-serif;
+}
 
-  @include desktop {
-    font-size: $fontSizeBodyDesktop;
+#content {
+  h1,
+  h2 {
+    text-align: center;
+    text-rendering: optimizelegibility;
+    font-smoothing: antialiased;
   }
-}
 
-h1,
-h2 {
-  text-align: center;
-  text-rendering: optimizelegibility;
-  font-smoothing: antialiased;
-}
+  h1 {
+    padding: $line-height-computed/2 0 $line-height-computed 0;
+    margin: 0;
 
-h1 {
-  padding: $line-height-computed/2 0 $line-height-computed 0;
-  margin: 0;
+    font-family: "Oxygen-Bold", sans-serif;
+    font-size: $font-size-h2;
 
-  font-family: "Oxygen-Bold", sans-serif;
-  font-size: $font-size-h2;
-
-  @include desktop {
-    font-size: $font-size-h1;
-
-    padding: $line-height-computed*2 0;
+    @include desktop {
+      font-size: $font-size-h1;
+      padding: $line-height-computed*2 0;
+    }
   }
-}
 
-h2 {
-  // Negative left and right margins to use the whole page width
-  margin: 0 (-$pageSidePadding) ($line-height-computed/2) (-$pageSidePadding);
+  h2 {
+    // Negative left and right margins to use the whole page width
+    margin: 0 (-$pageSidePadding) ($line-height-computed/2) (-$pageSidePadding);
 
-  font-family: "Oxygen", sans-serif;
-  font-size: $font-size-h4;
+    font-family: "Oxygen", sans-serif;
+    font-size: $font-size-h4;
 
-  @include desktop {
-    font-size: $font-size-h3;
+    @include desktop {
+      font-size: $font-size-h3;
+    }
   }
-}
 
-p,
-ul,
-ol,
-form {
-  margin-bottom: $line-height-computed;
-}
+  p,
+  ul,
+  ol,
+  form {
+    margin-bottom: $line-height-computed;
+  }
 
-p,
-li {
-  line-height: 1.75em;
-}
+  p,
+  span,
+  li,
+  a {
+    line-height: 1.75em;
 
-p {
-  text-align: justify;
-}
+    @include desktop {
+      font-size: $fontSizeBodyDesktop;
+    }
+  }
 
-li {
-  margin-bottom: $line-height-computed / 2;
-}
+  p {
+    text-align: justify;
+  }
 
-a,
-a:visited {
-  text-decoration: none;
-  // TODO color: $actionColor;
-  cursor: pointer;  // To have the pointer on anchors which don't have any href
-}
+  li {
+    margin-bottom: $line-height-computed / 2;
+  }
 
-/* TODO a:hover,
-a:focus {
-  color: $actionColor;
-} */
+  a,
+  a:visited {
+    text-decoration: none;
+    // TODO color: $actionColor;
+    cursor: pointer;  // To have the pointer on anchors which don't have any href
+  }
 
-a,
-span {
-  display: inline-block;  // For "width" declaration to work
+  /* TODO a:hover,
+  a:focus {
+    color: $actionColor;
+  } */
+
+  a,
+  span {
+    display: inline-block;  // For "width" declaration to work
+  }
 }
 
 .mdnz-polyfill {

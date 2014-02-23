@@ -15,7 +15,7 @@
         <text>Previous%20Vote%20for%20Convention%3A</text>
       </controlProperties>
     </control>
-    <control controlID="34" controlTypeID="com.balsamiq.mockups::Label" x="240" y="220" w="-1" h="-1" measuredW="51" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::Label" x="240" y="220" w="-1" h="-1" measuredW="50" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Contact</text>
       </controlProperties>
@@ -137,27 +137,28 @@
         <text>%3F</text>
       </controlProperties>
     </control>
-    <control controlID="93" controlTypeID="com.balsamiq.mockups::Button" x="586" y="73" w="140" h="45" measuredW="116" measuredH="27" zOrder="29" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>State%20legislators</text>
-      </controlProperties>
-    </control>
-    <control controlID="94" controlTypeID="com.balsamiq.mockups::Button" x="717" y="73" w="76" h="45" measuredW="57" measuredH="27" zOrder="30" locked="false" isInGroup="-1">
+    <control controlID="99" controlTypeID="com.balsamiq.mockups::Button" x="605" y="75" w="76" h="45" measuredW="57" measuredH="27" zOrder="29" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Script</text>
       </controlProperties>
     </control>
-    <control controlID="95" controlTypeID="com.balsamiq.mockups::Button" x="785" y="73" w="80" h="45" measuredW="68" measuredH="27" zOrder="31" locked="false" isInGroup="-1">
+    <control controlID="100" controlTypeID="com.balsamiq.mockups::Button" x="673" y="75" w="80" h="45" measuredW="68" measuredH="27" zOrder="30" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Toolbox</text>
       </controlProperties>
     </control>
-    <control controlID="96" controlTypeID="com.balsamiq.mockups::Button" x="858" y="73" w="92" h="45" measuredW="88" measuredH="27" zOrder="32" locked="false" isInGroup="-1">
+    <control controlID="101" controlTypeID="com.balsamiq.mockups::Button" x="746" y="75" w="92" h="45" measuredW="88" measuredH="27" zOrder="31" locked="false" isInGroup="-1">
       <controlProperties>
+        <color>16777215</color>
         <text>My%20account</text>
       </controlProperties>
     </control>
-    <control controlID="97" controlTypeID="com.balsamiq.mockups::Button" x="944" y="73" w="74" h="45" measuredW="63" measuredH="27" zOrder="33" locked="false" isInGroup="-1">
+    <control controlID="102" controlTypeID="com.balsamiq.mockups::Button" x="831" y="75" w="121" h="45" measuredW="110" measuredH="27" zOrder="32" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Admin%20%20%20%20%20%20%20%20%20%20%20V</text>
+      </controlProperties>
+    </control>
+    <control controlID="103" controlTypeID="com.balsamiq.mockups::Button" x="946" y="75" w="74" h="45" measuredW="63" measuredH="27" zOrder="33" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Logout</text>
       </controlProperties>
