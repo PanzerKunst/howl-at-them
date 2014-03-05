@@ -1,4 +1,4 @@
 package models.frontend
 
-case class SignInData(emailAddress: String,
+case class SignInData(username: String,
                       password: String)
