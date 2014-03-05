@@ -1,0 +1,37 @@
+#search-legislators {
+  #content {
+    max-width: 960px;
+
+    form {
+      @include clearfix;
+
+      > div {
+        float: left;
+      }
+
+      .field-error {
+        margin-left: 0;
+      }
+
+      $fieldWidth: 16em;
+
+      .form-group {
+        width: $fieldWidth;
+        clear: none;
+        margin-right: $line-height-computed;
+
+        > label {
+          display: block;
+          width: $fieldWidth;
+        }
+
+        > input,
+        > select,
+        > textarea {
+          clear: both;
+          width: $fieldWidth;
+        }
+      }
+    }
+  }
+}

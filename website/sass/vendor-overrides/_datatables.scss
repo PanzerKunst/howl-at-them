@@ -1,0 +1,22 @@
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate {
+  display: none;
+}
+
+table.dataTable {
+  thead th {
+    // Bootstrap defaults for .table-condensed
+    border-bottom: 2px solid #DDDDDD;;
+    padding: 5px;
+  }
+
+  tr.odd td.sorting_1 {
+    background-color: #F9F9F9;
+  }
+
+  tr.even td.sorting_1 {
+    background-color: #FFF;
+  }
+}

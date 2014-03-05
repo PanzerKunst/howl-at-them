@@ -166,6 +166,8 @@ CBR.Services.Validator = new Class({
     },
 
     _isLongEnough: function(value, minLength) {
+        if (value === null || value === undefined || value === "")
+            return true;
         return value.length >= minLength;
     },
 

@@ -4,9 +4,6 @@ import models.Account
 import services.JsonUtil
 import play.api.mvc.{Action, Controller}
 import db.AccountDto
-import models.frontend.FrontendAccount
-import controllers.Application
-import play.api.Logger
 
 object AccountApi extends Controller {
   def create = Action(parse.json) {
@@ -19,6 +16,7 @@ object AccountApi extends Controller {
       }
   }
 
+  /* TODO: remove
   def update = Action(parse.json) {
     implicit request =>
 
@@ -52,5 +50,5 @@ object AccountApi extends Controller {
       } else {
         NoContent
       }
-  }
+  } */
 }

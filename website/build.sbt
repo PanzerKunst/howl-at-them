@@ -7,7 +7,7 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.3.0"
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "[2.3,)"
 )     
 
 play.Project.playScalaSettings

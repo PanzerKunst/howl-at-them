@@ -3,14 +3,15 @@ package controllers.api
 import db.DbAdmin
 import play.api.mvc.{Action, Controller}
 import play.Play
+import services.VoteSmartCandidateService
 
 object DbAdminApi extends Controller {
-  def createTables = Action {
+  def reCreateNonVoteSmartTables = Action {
     implicit request =>
 
       if (request.queryString.contains("key") &&
         request.queryString.get("key").get.head == Play.application().configuration().getString("application.secret")) {
-        DbAdmin.createTables()
+        DbAdmin.reCreateNonVoteSmartTables()
         DbAdmin.initData()
         Created
       }
@@ -18,15 +19,13 @@ object DbAdminApi extends Controller {
         Forbidden
   }
 
-  def dropTables = Action {
+  def updateVoteSmartData() = Action {
     implicit request =>
 
-      if (request.queryString.contains("key") &&
-        request.queryString.get("key").get.head == Play.application().configuration().getString("application.secret")) {
-        DbAdmin.dropTables()
-        Ok
-      }
-      else
-        Forbidden
+      DbAdmin.reCreateTempVoteSmartTables()
+      VoteSmartCandidateService.fetchCandidates()
+      DbAdmin.replaceVoteSmartTables()
+
+      Ok
   }
 }

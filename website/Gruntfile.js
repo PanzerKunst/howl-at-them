@@ -48,6 +48,7 @@ module.exports = function (grunt) {
                     "libs/mootools/mootools-more-1.4.0.1.js",
                     "libs/bootstrap/js/bootstrap.min.js",
                     "libs/fastclick.js",
+                    "libs/datatables/jquery.dataTables.min.js",
 
                     // Global
                     "javascripts/global.js",
@@ -66,10 +67,8 @@ module.exports = function (grunt) {
 
                     // Controllers
                     "javascripts/controllers/baseController.js",
-                    "javascripts/controllers/index.js",
-                    "javascripts/controllers/join.js",
-                    "javascripts/controllers/myAccount.js",
-                    "javascripts/controllers/admin/newStateLegislator.js"
+                    "javascripts/controllers/searchLegislators.js",
+                    "javascripts/controllers/admin.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
             }

@@ -1,0 +1,85 @@
+<mockup version="1.0" skin="sketch" measuredW="1024" measuredH="771" mockupW="1024" mockupH="771">
+  <controls>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::Button" x="462" y="454" w="101" h="27" measuredW="96" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Update%20data</text>
+      </controlProperties>
+    </control>
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="0" w="1024" h="771" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Admin%0Ahttp%3A//howlatthem.com/admin</text>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="707" w="1024" h="37" measuredW="320" measuredH="240" zOrder="2" locked="false" isInGroup="-1"/>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::LinkBar" x="313" y="716" w="-1" h="-1" measuredW="396" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>The%20plan%2C%20Petition%2C%20Recruit%2C%20Flyer%2C%20Volunteer%2C%20Contribute</text>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::Title" x="135" y="161" w="754" h="-1" measuredW="217" measuredH="50" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Admin%20panel</text>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="71" w="1024" h="49" measuredW="320" measuredH="240" zOrder="5" locked="false" isInGroup="-1"/>
+    <control controlID="93" controlTypeID="com.balsamiq.mockups::Image" x="0" y="71" w="128" h="49" measuredW="77" measuredH="79" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Howl%20at%20Them%20image</text>
+      </controlProperties>
+    </control>
+    <control controlID="109" controlTypeID="com.balsamiq.mockups::Image" x="0" y="707" w="77" h="37" measuredW="77" measuredH="79" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wolf-PAC</text>
+      </controlProperties>
+    </control>
+    <control controlID="116" controlTypeID="com.balsamiq.mockups::Button" x="455" y="75" w="114" h="45" measuredW="101" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>State%20reports</text>
+      </controlProperties>
+    </control>
+    <control controlID="117" controlTypeID="com.balsamiq.mockups::Button" x="562" y="75" w="127" h="45" measuredW="129" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Find%20your%20legislator</text>
+      </controlProperties>
+    </control>
+    <control controlID="118" controlTypeID="com.balsamiq.mockups::Button" x="682" y="75" w="127" h="45" measuredW="125" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16777215</color>
+        <text>Search%20legislators</text>
+      </controlProperties>
+    </control>
+    <control controlID="119" controlTypeID="com.balsamiq.mockups::Button" x="803" y="75" w="76" h="45" measuredW="57" measuredH="27" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Script</text>
+      </controlProperties>
+    </control>
+    <control controlID="120" controlTypeID="com.balsamiq.mockups::Button" x="871" y="75" w="80" h="45" measuredW="68" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Toolbox</text>
+      </controlProperties>
+    </control>
+    <control controlID="121" controlTypeID="com.balsamiq.mockups::Button" x="944" y="75" w="76" h="45" measuredW="67" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Log%20out</text>
+      </controlProperties>
+    </control>
+    <control controlID="122" controlTypeID="com.balsamiq.mockups::Label" x="260" y="232" w="504" h="45" measuredW="623" measuredH="24" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>Except%20for%20the%20legislator%20reports%2C%20Howl%20At%20Them%20gets%20its%20data%20using%20the%20Vote%20Smart%20API.</text>
+      </controlProperties>
+    </control>
+    <control controlID="123" controlTypeID="com.balsamiq.mockups::Label" x="260" y="290" w="504" h="80" measuredW="1461" measuredH="24" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>If%20you%20notice%20that%20Howl%20At%20Them%20displays%20outdated%20information%2C%20you%20can%20fetch%20the%20latest%20data%20from%20Vote%20Smart.%20The%20current%20data%20will%20be%20replaced%20by%20the%20new%20one%20only%20if%20the%20whole%20process%20completes%20successfully.</text>
+      </controlProperties>
+    </control>
+    <control controlID="124" controlTypeID="com.balsamiq.mockups::Label" x="260" y="385" w="504" h="55" measuredW="619" measuredH="24" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>You%20will%20be%20able%20to%20follow%20the%20advancement%20of%20this%20data%20update.%20It%20will%20take%20a%20few%20minutes.</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

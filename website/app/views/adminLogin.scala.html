@@ -1,0 +1,38 @@
+@main("Admin login", "admin-login") {
+<!--
+    Header
+-->
+} {
+<!--
+    Content
+-->
+<h1>Please log in<br /> to access admin features</h1>
+
+<form role="form">
+    <p id="auth-failed">Wrong credentials :( Please try again!</p>
+
+    <div class="form-group">
+        <label for="username" class="mdnz-polyfill placeholder">Username</label><!--
+     --><input type="text" id="username" placeholder="Username" class="form-control" />
+
+        <p class="field-error" data-check="empty"></p>
+    </div>
+
+    <div class="form-group">
+        <label for="password" class="mdnz-polyfill placeholder">Password</label><!--
+     --><input type="password" id="password" placeholder="Password" class="form-control" />
+
+        <p class="field-error" data-check="empty"></p>
+    </div>
+
+    <div class="submit-wrapper">
+        <button type="submit" class="btn btn-primary" data-loading-text="Logging in...">Log in</button>
+    </div>
+</form>
+
+} {
+<!--
+    Javascript
+-->
+
+}

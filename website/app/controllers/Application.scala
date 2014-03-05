@@ -1,122 +1,87 @@
 package controllers
 
 import play.api.mvc._
-import db.{PoliticalPartyDto, StateLegislatorTitleDto, AccountDto, UsStateDto}
+import db.{StateLegislatorDto, AccountDto, UsStateDto}
 import models.Account
-import models.frontend.FrontendAccount
-import play.api.libs.ws.WS
-import play.api.libs.json.{JsValue, JsObject, Json}
-import play.Play
+import play.api.Logger
 
 object Application extends Controller {
 
   def index = Action {
     implicit request =>
 
-      implicit val context = scala.concurrent.ExecutionContext.Implicits.global
+    /* TODO implicit val context = scala.concurrent.ExecutionContext.Implicits.global
 
-      // Google Civic Information
-      /* TODO WS.url("https://www.googleapis.com/civicinfo/us_v1/voterinfo/2000/lookup")
-        .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
-        .withHeaders("Content-Type" -> "application/json")
-        .withHeaders("X-JavaScript-User-Agent" -> "Google APIs Explorer")
-        .post(Json.obj(
-          "address" -> "410 Market St, Chapel Hill, NC"
-        ))
-        .map {
-        response =>
-          val contests = (response.json \ "contests").as[List[JsObject]]
-          for (contest <- contests) {
-            val district = (contest \ "district").as[JsValue]
-            val districtScope = (district \ "scope").as[String]
-            if (districtScope == "stateLower" || districtScope == "stateUpper") {
-              val districtName = (district \ "name").as[String]
-            }
-          }
-      }
+   // Google Civic Information
+   WS.url("https://www.googleapis.com/civicinfo/us_v1/voterinfo/2000/lookup")
+     .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
+     .withHeaders("Content-Type" -> "application/json")
+     .withHeaders("X-JavaScript-User-Agent" -> "Google APIs Explorer")
+     .post(Json.obj(
+       "address" -> "410 Market St, Chapel Hill, NC"
+     ))
+     .map {
+     response =>
+       val contests = (response.json \ "contests").as[List[JsObject]]
+       for (contest <- contests) {
+         val district = (contest \ "district").as[JsValue]
+         val districtScope = (district \ "scope").as[String]
+         if (districtScope == "stateLower" || districtScope == "stateUpper") {
+           val districtName = (district \ "name").as[String]
+         }
+       }
+   } */
 
-      // VoteSmart
-      WS.url("http://api.votesmart.org/Officials.getByState")
-        .withQueryString("key" -> Play.application().configuration().getString("votesmart.apikey"))
-        .withQueryString("o" -> "JSON")
-        .withQueryString("stateId" -> "NC")
-        .get()
-        .map {
-        response =>
-          val contests = (response.json \ "contests").as[List[JsObject]]
-          for (contest <- contests) {
-            val district = (contest \ "district").as[JsValue]
-            val districtScope = (district \ "scope").as[String]
-            if (districtScope == "stateLower" || districtScope == "stateUpper") {
-              val districtName = (district \ "name").as[String]
-            }
-          }
-      } */
-
-      loggedInUser(session) match {
-        case Some(loggedInAccount) => Redirect(routes.Application.home)
-        case None =>
-          val action = if (request.queryString.contains("action"))
-            Some(request.queryString.get("action").get.head)
-          else
-            None
-
-          val emailAddress = if (request.queryString.contains("email")) {
-            Some(request.queryString.get("email").get.head)
-          } else {
-            None
-          }
-
-          Ok(views.html.index(action, emailAddress))
-      }
+      Ok(views.html.index(UsStateDto.getAll))
   }
 
-  def logout = Action {
+  def logOut = Action {
     implicit request =>
 
       Redirect(routes.Application.index).withNewSession
   }
 
-  def join = Action {
+  def searchLegislators = Action {
     implicit request =>
 
-      loggedInUser(session) match {
-        case Some(loggedInAccount) => Redirect(routes.Application.home)
-        case None => Ok(views.html.join(UsStateDto.getAll))
+      val selectedUsStateId = if (request.queryString.contains("selectedUsStateId"))
+        Some(request.queryString.get("selectedUsStateId").get.head)
+      else
+        None
+
+      val stateLegislators = selectedUsStateId match {
+        case Some(usStateId) => StateLegislatorDto.getMatching(None, None, Some(usStateId))
+        case None => List()
+      }
+
+      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session), selectedUsStateId, stateLegislators))
+  }
+
+  def stateLegislator(id: Int) = Action {
+    implicit request =>
+
+      StateLegislatorDto.getOfId(id) match {
+        case Some(stateLegislator) => Ok(views.html.stateLegislator(stateLegislator, loggedInUser(session)))
+        case None => NotFound
       }
   }
 
-  def home = Action {
+  def adminLogin = Action {
     implicit request =>
 
       loggedInUser(session) match {
-        case None => Redirect(routes.Application.index)
-        case Some(loggedInAccount) => Ok(views.html.home())
+        case Some(loggedInAccount) => Redirect(routes.Application.admin)
+        case None => Ok(views.html.adminLogin())
       }
   }
 
-  def myAccount = Action {
+  def admin = Action {
     implicit request =>
 
-      loggedInUser(session) match {
-        case None => Redirect(routes.Application.index)
-        case Some(loggedInAccount) => Ok(views.html.myAccount(new FrontendAccount(loggedInAccount), UsStateDto.getAll))
-      }
-  }
-
-  def newStateLegislator = Action {
-    implicit request =>
-
-      loggedInUser(session) match {
-        case None => Redirect(routes.Application.index)
-        case Some(loggedInAccount) =>
-          val from = if (request.queryString.contains("action"))
-            Some(request.queryString.get("action").get.head)
-          else
-            None
-
-          Ok(views.html.newStateLegislator(StateLegislatorTitleDto.getAll, PoliticalPartyDto.getAll, UsStateDto.getAll, from))
-      }
+      /* TODO loggedInUser(session) match {
+        case Some(loggedInAccount) => Redirect(routes.Application.adminLogin)
+        case None => */Ok(views.html.admin())/*
+      }*/
   }
 
   def loggedInUser(session: Session): Option[Account] = {

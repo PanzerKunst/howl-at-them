@@ -1,0 +1,30 @@
+@main("Admin panel", "admin") {
+<!--
+    Header
+-->
+} {
+<!--
+    Content
+-->
+<h1>Admin panel</h1>
+
+<p>Except for the legislator reports, Howl At Them gets its data using the Vote Smart API.</p>
+<p>If you notice that Howl At Them displays outdated information, you can fetch the latest data from Vote Smart. The
+    current data will be replaced by the new one only if the whole process completes successfully.</p>
+<p>You will be able to follow the advancement of this data update. It will take a few minutes.</p>
+
+<button id="update-data" type="button" class="btn btn-primary">Update data</button>
+
+} {
+<!--
+    Javascript
+-->
+<script type="text/javascript">
+    window.addEvent("domready", function () {
+        new CBR.Controllers.Admin({
+            el: "#content"
+        }).run();
+    });
+</script>
+
+}

@@ -6,22 +6,18 @@
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Pages
-GET     /                               controllers.Application.index
-GET     /join                           controllers.Application.join
-GET     /home                           controllers.Application.home
-GET     /logout                         controllers.Application.logout
-GET     /my-account                     controllers.Application.myAccount
-
-GET     /admin/state-legislators/new    controllers.Application.newStateLegislator
+GET     /                                       controllers.Application.index
+GET     /search-legislators                     controllers.Application.searchLegislators
+GET     /state-legislators/:id                  controllers.Application.stateLegislator(id: Int)
+GET     /admin-login                            controllers.Application.adminLogin
+GET     /admin                                  controllers.Application.admin
 
 # API
-POST    /api/db/admin                   controllers.api.DbAdminApi.createTables
-DELETE  /api/db/admin                   controllers.api.DbAdminApi.dropTables
+POST    /api/db/re-create-non-vote-smart-tables controllers.api.DbAdminApi.reCreateNonVoteSmartTables
+POST    /api/db/update-vote-smart-data          controllers.api.DbAdminApi.updateVoteSmartData
 
-POST    /api/accounts                   controllers.api.AccountApi.create
-PUT     /api/accounts                   controllers.api.AccountApi.update
-GET     /api/accounts/first             controllers.api.AccountApi.getFirst
+GET     /api/state-legislators                  controllers.api.StateLegislatorApi.search
 
-POST    /api/authenticate               controllers.api.AuthApi.authenticate
+POST    /api/accounts                           controllers.api.AccountApi.create
 
-POST    /api/state-legislators          controllers.api.StateLegislatorApi.create
+POST    /api/authenticate                       controllers.api.AuthApi.authenticate

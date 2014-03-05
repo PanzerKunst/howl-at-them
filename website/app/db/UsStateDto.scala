@@ -12,28 +12,27 @@ object UsStateDto {
       implicit c =>
 
         val query = """
-          select id, name, abbr
-          from us_states;"""
+          select id, name
+          from us_state;"""
 
         Logger.info("UsStateDto.getAll():" + query)
 
         SQL(query)().map(row =>
           new UsState(
-            row[Long]("id"),
-            row[String]("name"),
-            row[String]("abbr")
+            row[String]("id"),
+            row[String]("name")
           )
         ).toList
     }
   }
 
-  def getOfId(id: Long): UsState = {
+  def getOfId(id: String): UsState = {
     DB.withConnection {
       implicit c =>
 
         val query = """
-          select id, name, abbr
-          from us_states
+          select name
+          from us_state
           where id = '""" + id + """';"""
 
         Logger.info("UsStateDto.getOfId():" + query)
@@ -41,9 +40,8 @@ object UsStateDto {
         val firstRow = SQL(query).apply().head
 
         new UsState(
-          firstRow[Long]("id"),
-          firstRow[String]("name"),
-          firstRow[String]("abbr")
+          id,
+          firstRow[String]("name")
         )
     }
   }

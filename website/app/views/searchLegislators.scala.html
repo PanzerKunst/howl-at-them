@@ -1,0 +1,59 @@
+@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String], stateLegislators: List[StateLegislator])
+@main("Search legislators", "search-legislators") {
+<!--
+    Header
+-->
+} {
+<!--
+    Content
+-->
+<h1>Search legislators</h1>
+
+<form role="form">
+    <div class="form-group">
+        <label for="last-name">Last name</label><!--
+     --><input type="text" id="last-name" class="form-control" data-min-length="2" />
+
+        <p class="field-error" data-check="long-enough">Two characters minimun</p>
+    </div>
+
+    <div class="form-group">
+        <label for="first-name">First name</label><!--
+     --><input type="text" id="first-name" class="form-control" data-min-length="2" />
+
+        <p class="field-error" data-check="long-enough">Two characters minimun</p>
+    </div>
+
+    <div class="form-group">
+        <label for="us-state">State</label><!--
+     --><select id="us-state" class="form-control">
+            <option value=""></option>
+            @for(usState <- usStates) {
+            <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
+            }
+        </select>
+    </div>
+
+    <div class="submit-wrapper">
+        <button type="submit" class="btn btn-primary" data-loading-text="Searching...">Search</button>
+    </div>
+
+    <a id="advanced-link">Advanced</a>
+</form>
+
+<div id="table-wrapper"></div>
+
+} {
+<!--
+    Javascript
+-->
+<script type="text/javascript">
+    window.addEvent("domready", function () {
+        new CBR.Controllers.SearchLegislators({
+            el: "#content",
+            selectedUsStateId: @Html(services.JsonUtil.serialize(selectedUsStateId))
+        }).run();
+    });
+</script>
+
+}

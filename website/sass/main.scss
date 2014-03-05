@@ -1,6 +1,7 @@
 // Libs
 @import "../libs/bourbon/bourbon";
 @import "../libs/bootstrap/css/scss/variables";
+@import "../libs/datatables/css/jquery.dataTables";
 
 // Global
 @import "fonts";
@@ -8,12 +9,13 @@
 @import "mixins";
 @import "responsive";
 @import "base";
-@import "form";
+@import "forms";
+@import "tables";
 
 // Vendor overrides
 @import "vendor-overrides/bootstrap";
+@import "vendor-overrides/datatables";
 
 // Pages
 @import "pages/index";
-@import "pages/myAccount";
-@import "pages/newStateLegislator";
+@import "pages/searchLegislators";
