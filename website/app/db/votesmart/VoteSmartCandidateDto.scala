@@ -14,51 +14,51 @@ object VoteSmartCandidateDto {
 
         var nickNameForQuery = "NULL"
         if (voteSmartCandidate.nickName.isDefined && voteSmartCandidate.nickName.get != "")
-          nickNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.nickName.get) + "'"
+          nickNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.nickName.get) + "'"
 
         var middleNameForQuery = "NULL"
         if (voteSmartCandidate.middleName.isDefined && voteSmartCandidate.middleName.get != "")
-          middleNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.middleName.get) + "'"
+          middleNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.middleName.get) + "'"
 
         var preferredNameForQuery = "NULL"
         if (voteSmartCandidate.preferredName.isDefined && voteSmartCandidate.preferredName.get != "")
-          preferredNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.preferredName.get) + "'"
+          preferredNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.preferredName.get) + "'"
 
         var suffixForQuery = "NULL"
         if (voteSmartCandidate.suffix.isDefined && voteSmartCandidate.suffix.get != "")
-          suffixForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.suffix.get) + "'"
+          suffixForQuery = "'" + DbUtil.safetize(voteSmartCandidate.suffix.get) + "'"
 
         var ballotNameForQuery = "NULL"
         if (voteSmartCandidate.ballotName.isDefined && voteSmartCandidate.ballotName.get != "")
-          ballotNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.ballotName.get) + "'"
+          ballotNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.ballotName.get) + "'"
 
         var electionPartiesForQuery = "NULL"
         if (voteSmartCandidate.electionParties.isDefined && voteSmartCandidate.electionParties.get != "")
-          electionPartiesForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.electionParties.get) + "'"
+          electionPartiesForQuery = "'" + DbUtil.safetize(voteSmartCandidate.electionParties.get) + "'"
 
         var electionDistrictNameForQuery = "NULL"
         if (voteSmartCandidate.electionDistrictName.isDefined && voteSmartCandidate.electionDistrictName.get != "")
-          electionDistrictNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.electionDistrictName.get) + "'"
+          electionDistrictNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.electionDistrictName.get) + "'"
 
         var electionOfficeForQuery = "NULL"
         if (voteSmartCandidate.electionOffice.isDefined && voteSmartCandidate.electionOffice.get != "")
-          electionOfficeForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.electionOffice.get) + "'"
+          electionOfficeForQuery = "'" + DbUtil.safetize(voteSmartCandidate.electionOffice.get) + "'"
 
         var electionStateIdForQuery = "NULL"
         if (voteSmartCandidate.electionStateId.isDefined && voteSmartCandidate.electionStateId.get != "")
-          electionStateIdForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.electionStateId.get) + "'"
+          electionStateIdForQuery = "'" + DbUtil.safetize(voteSmartCandidate.electionStateId.get) + "'"
 
         var electionOfficeTypeIdForQuery = "NULL"
         if (voteSmartCandidate.electionOfficeTypeId.isDefined && voteSmartCandidate.electionOfficeTypeId.get != "")
-          electionOfficeTypeIdForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.electionOfficeTypeId.get) + "'"
+          electionOfficeTypeIdForQuery = "'" + DbUtil.safetize(voteSmartCandidate.electionOfficeTypeId.get) + "'"
 
         var officePartiesForQuery = "NULL"
         if (voteSmartCandidate.officeParties.isDefined && voteSmartCandidate.officeParties.get != "")
-          officePartiesForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.officeParties.get) + "'"
+          officePartiesForQuery = "'" + DbUtil.safetize(voteSmartCandidate.officeParties.get) + "'"
 
         var officeDistrictNameForQuery = "NULL"
         if (voteSmartCandidate.officeDistrictName.isDefined && voteSmartCandidate.officeDistrictName.get != "")
-          officeDistrictNameForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidate.officeDistrictName.get) + "'"
+          officeDistrictNameForQuery = "'" + DbUtil.safetize(voteSmartCandidate.officeDistrictName.get) + "'"
 
         val query = """
                    insert into temp_vote_smart_candidate(candidate_id,
@@ -86,13 +86,13 @@ object VoteSmartCandidateDto {
                                                       office_name,
                                                       office_type_id)
           values(""" + voteSmartCandidate.candidateId + """, '""" +
-          DbUtil.backslashQuotes(voteSmartCandidate.firstName) + """', """ +
+          DbUtil.safetize(voteSmartCandidate.firstName) + """', """ +
           nickNameForQuery + """, """ +
           middleNameForQuery + """, """ +
           preferredNameForQuery + """, '""" +
-          DbUtil.backslashQuotes(voteSmartCandidate.lastName) + """', """ +
+          DbUtil.safetize(voteSmartCandidate.lastName) + """', """ +
           suffixForQuery + """, '""" +
-          DbUtil.backslashQuotes(voteSmartCandidate.title) + """', """ +
+          DbUtil.safetize(voteSmartCandidate.title) + """', """ +
           ballotNameForQuery + """, """ +
           electionPartiesForQuery + """, """ +
           voteSmartCandidate.electionDistrictId.getOrElse("NULL") + """, """ +

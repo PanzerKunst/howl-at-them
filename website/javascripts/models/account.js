@@ -4,8 +4,8 @@ CBR.Models.Account = new Class({
     options: {  // Defaults
     },
 
-    getEmailAddress: function() {
-        return this.options.emailAddress;
+    getUsername: function() {
+        return this.options.username;
     },
 
     setPassword: function(password) {

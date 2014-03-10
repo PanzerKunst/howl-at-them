@@ -25,20 +25,19 @@ body {
     font-family: "Oxygen-Bold", sans-serif;
     font-size: $font-size-h2;
 
-    @include desktop {
+    @include large-screen {
       font-size: $font-size-h1;
       padding: $line-height-computed*2 0;
     }
   }
 
   h2 {
-    // Negative left and right margins to use the whole page width
-    margin: 0 (-$pageSidePadding) ($line-height-computed/2) (-$pageSidePadding);
+    margin-bottom: $line-height-computed / 2;
 
     font-family: "Oxygen", sans-serif;
     font-size: $font-size-h4;
 
-    @include desktop {
+    @include large-screen {
       font-size: $font-size-h3;
     }
   }
@@ -53,12 +52,9 @@ body {
   p,
   span,
   li,
-  a {
+  a,
+  label {
     line-height: 1.75em;
-
-    @include desktop {
-      font-size: $fontSizeBodyDesktop;
-    }
   }
 
   p {
@@ -85,6 +81,24 @@ body {
   span {
     display: inline-block;  // For "width" declaration to work
   }
+
+  .support-level {
+    &.UNKNOWN {
+      color: $gray-light;
+    }
+
+    &.SUPPORTIVE {
+      color: $brand-success;
+    }
+
+    &.NEEDS_CONVINCING {
+      color: $brand-warning;
+    }
+
+    &.NOT_SUPPORTIVE {
+      color: $brand-danger;
+    }
+  }
 }
 
 .mdnz-polyfill {
@@ -97,4 +111,16 @@ body {
 
 .centered-contents {
   text-align: center;
+}
+
+.alert {
+  text-align: center;
+}
+
+.data-loading {
+  background-image: url("images/loading.gif");
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto;
 }

@@ -1,4 +1,4 @@
-@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String], stateLegislators: List[StateLegislator])
+@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String])
 @main("Search legislators", "search-legislators") {
 <!--
     Header
@@ -10,35 +10,39 @@
 <h1>Search legislators</h1>
 
 <form role="form">
-    <div class="form-group">
-        <label for="last-name">Last name</label><!--
-     --><input type="text" id="last-name" class="form-control" data-min-length="2" />
+    <div>
+        <div class="form-group">
+            <label for="last-name">Last name</label><!--
+         --><input type="text" id="last-name" class="form-control" data-min-length="2" />
 
-        <p class="field-error" data-check="long-enough">Two characters minimun</p>
+            <p class="field-error" data-check="min-length">Two characters minimun</p>
+        </div>
+
+        <div class="form-group">
+            <label for="first-name">First name</label><!--
+         --><input type="text" id="first-name" class="form-control" data-min-length="2" />
+
+            <p class="field-error" data-check="min-length">Two characters minimun</p>
+        </div>
+
+        <div class="form-group">
+            <label for="us-state">State</label><!--
+         --><select id="us-state" class="form-control">
+                <option value=""></option>
+                @for(usState <- usStates) {
+                <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
+                }
+            </select>
+        </div>
+
+        <div class="submit-wrapper">
+            <button type="submit" class="btn btn-primary" data-loading-text="Searching...">Search</button>
+        </div>
+
+        <a id="advanced-toggle">Advanced</a>
     </div>
 
-    <div class="form-group">
-        <label for="first-name">First name</label><!--
-     --><input type="text" id="first-name" class="form-control" data-min-length="2" />
-
-        <p class="field-error" data-check="long-enough">Two characters minimun</p>
-    </div>
-
-    <div class="form-group">
-        <label for="us-state">State</label><!--
-     --><select id="us-state" class="form-control">
-            <option value=""></option>
-            @for(usState <- usStates) {
-            <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
-            }
-        </select>
-    </div>
-
-    <div class="submit-wrapper">
-        <button type="submit" class="btn btn-primary" data-loading-text="Searching...">Search</button>
-    </div>
-
-    <a id="advanced-link">Advanced</a>
+    <p class="other-input-error">You must input at least one filter to perform a search... sorry!</p>
 </form>
 
 <div id="table-wrapper"></div>

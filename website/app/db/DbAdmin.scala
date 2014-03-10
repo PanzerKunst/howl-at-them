@@ -8,9 +8,11 @@ import play.api.Logger
 object DbAdmin {
   def reCreateNonVoteSmartTables() {
     dropTableAccount()
+    dropTableReport()
     dropTableUsState()
 
     createTableUsState()
+    createTableReport()
     createTableAccount()
   }
 
@@ -27,7 +29,6 @@ object DbAdmin {
     dropVoteSmartTables()
 
     renameTable("temp_vote_smart_candidate", "vote_smart_candidate")
-    renameTable("temp_vote_smart_candidate_bio", "vote_smart_candidate_bio")
     renameTable("temp_vote_smart_candidate_office", "vote_smart_candidate_office")
     renameTable("temp_vote_smart_candidate_committee", "vote_smart_candidate_committee")
     renameTable("temp_vote_smart_leadership_position", "vote_smart_leadership_position")
@@ -38,7 +39,6 @@ object DbAdmin {
 
   private def createVoteSmartTables(isTemp: Boolean = false) {
     createTableVoteSmartCandidate(isTemp)
-    createTableVoteSmartCandidateBio(isTemp)
     createTableVoteSmartCandidateOffice(isTemp)
     createTableVoteSmartCandidateCommittee(isTemp)
     createTableVoteSmartLeadershipPosition(isTemp)
@@ -56,7 +56,6 @@ object DbAdmin {
     dropTableVoteSmartLeadershipPosition()
     dropTableVoteSmartCandidateCommittee()
     dropTableVoteSmartCandidateOffice()
-    dropTableVoteSmartCandidateBio()
     dropTableVoteSmartCandidate()
   }
 
@@ -67,7 +66,6 @@ object DbAdmin {
     dropTableVoteSmartLeadershipPosition(isTemp)
     dropTableVoteSmartCandidateCommittee(isTemp)
     dropTableVoteSmartCandidateOffice(isTemp)
-    dropTableVoteSmartCandidateBio(isTemp)
     dropTableVoteSmartCandidate(isTemp)
   }
 
@@ -83,6 +81,49 @@ object DbAdmin {
           );"""
 
         Logger.info("DbAdmin.createTableUsState():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def createTableReport() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          create table report (
+            id bigserial primary key,
+            candidate_id integer not null/* Can't have that reference because we want to be able to drop the table references vote_smart_candidate(candidate_id) */,
+            author_name varchar(64) not null,
+            contact varchar(32) not null,
+            is_money_in_politics_a_problem boolean,
+            is_supporting_amendment_to_fix_it boolean,
+            is_opposing_citizens_united boolean,
+            has_previously_voted_for_convention boolean,
+            support_level varchar(32),
+            notes varchar(512) not null,
+            creation_timestamp bigint not null
+          );"""
+
+        Logger.info("DbAdmin.createTableReport():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def createTableAccount() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          CREATE TABLE account (
+            id bigserial primary key,
+            username VARCHAR(64) NOT NULL,
+            password VARCHAR(1024) NOT NULL,
+            UNIQUE (username)
+          );"""
+
+        Logger.info("DbAdmin.createTableAccount():" + query)
 
         SQL(query).executeUpdate()
     }
@@ -123,39 +164,6 @@ object DbAdmin {
           );"""
 
         Logger.info("DbAdmin.createTableVoteSmartCandidate():" + query)
-
-        SQL(query).executeUpdate()
-    }
-  }
-
-  private def createTableVoteSmartCandidateBio(isTemp: Boolean = false) {
-    DB.withConnection {
-      implicit c =>
-
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
-        val query = """
-          create table """ + tableNamePrefix + """vote_smart_candidate_bio (
-            candidate_id integer primary key references """ + tableNamePrefix + """vote_smart_candidate(candidate_id)/* Next columns are not used,
-            photo varchar(128),
-            birth_date date not null,
-            birth_place varchar(128) not null,
-            gender varchar(8) not null,
-            home_city varchar(128),
-            home_state char(2),
-            religion varchar(32),
-            special_msg varchar(32),
-            office_name varchar(32) not null,
-            office_type varchar(32) not null,
-            office_status varchar(16) not null,
-            office_first_elect date,
-            office_last_elect date,
-            office_next_elect smallint *//* year *//*,
-            office_term_start date,
-            office_term_end date*/
-            );"""
-
-        Logger.info("DbAdmin.createTableVoteSmartCandidateBio():" + query)
 
         SQL(query).executeUpdate()
     }
@@ -254,24 +262,6 @@ object DbAdmin {
     }
   }
 
-  private def createTableAccount() {
-    DB.withConnection {
-      implicit c =>
-
-        val query = """
-          CREATE TABLE account (
-            id bigserial primary key,
-            username VARCHAR(64) NOT NULL,
-            password VARCHAR(1024) NOT NULL,
-            UNIQUE (username)
-          );"""
-
-        Logger.info("DbAdmin.createTableAccount():" + query)
-
-        SQL(query).executeUpdate()
-    }
-  }
-
   private def createViewStateLegislator() {
     DB.withConnection {
       implicit c =>
@@ -290,12 +280,10 @@ object DbAdmin {
             o.city,
             o.zip,
             o.phone1 as phone_number,
-            cb.photo as photo_url,
             cc.committee_id,
             cc.committee_name
             from vote_smart_candidate c
             left join vote_smart_candidate_office o on o.candidate_id = c.candidate_id
-            left join vote_smart_candidate_bio cb on cb.candidate_id = c.candidate_id
             left join vote_smart_candidate_committee cc on cc.candidate_id = c.candidate_id;"""
 
         Logger.info("DbAdmin.createViewStateLegislator():" + query)
@@ -314,6 +302,26 @@ object DbAdmin {
     }
   }
 
+  private def dropTableReport() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = "drop table if exists report;"
+        Logger.info("DbAdmin.dropTableReport(): " + query)
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def dropTableAccount() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = "drop table if exists account;"
+        Logger.info("DbAdmin.dropTableAccount(): " + query)
+        SQL(query).executeUpdate()
+    }
+  }
+
   private def dropTableVoteSmartCandidate(isTemp: Boolean = false) {
     DB.withConnection {
       implicit c =>
@@ -322,18 +330,6 @@ object DbAdmin {
         
         val query = "drop table if exists " + tableNamePrefix + "vote_smart_candidate;"
         Logger.info("DbAdmin.dropTableVoteSmartCandidate(): " + query)
-        SQL(query).executeUpdate()
-    }
-  }
-
-  private def dropTableVoteSmartCandidateBio(isTemp: Boolean = false) {
-    DB.withConnection {
-      implicit c =>
-
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
-        val query = "drop table if exists " + tableNamePrefix + "vote_smart_candidate_bio;"
-        Logger.info("DbAdmin.dropTableVoteSmartCandidateBio(): " + query)
         SQL(query).executeUpdate()
     }
   }
@@ -392,16 +388,6 @@ object DbAdmin {
 
         val query = "drop view if exists state_legislator;"
         Logger.info("DbAdmin.dropViewStateLegislator(): " + query)
-        SQL(query).executeUpdate()
-    }
-  }
-
-  private def dropTableAccount() {
-    DB.withConnection {
-      implicit c =>
-
-        val query = "drop table if exists account;"
-        Logger.info("DbAdmin.dropTableAccount(): " + query)
         SQL(query).executeUpdate()
     }
   }

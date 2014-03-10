@@ -1,112 +1,53 @@
 #content {
   form {
-
-    font-size: $font-size-base;
-
-    .form-group,
-    fieldset {
-      clear: both;
-
-      margin-left: auto;
-      margin-right: auto;
-
-      width: $fieldWidth;
-
-      @include desktop {
-        width: $fieldWidthDesktop;
-      }
-    }
-
     .form-group {
-      @include clearfix;
+      width: $field-width;
 
+      @include medium-screen {
+        float: left;
+      }
+
+      &:nth-child(2n-1) {
+        @include medium-screen {
+          margin-right: $odd-form-groups-margin-right;
+        }
+      }
+
+      > label,
       > input,
       > select,
       > textarea {
         display: block;
-        float: left;
+        width: 100%;
       }
 
       > label {
-        display: block;
-
-        // Since the label is on top of the field, it can be the same width
-        width: $fieldWidth;
+        margin-bottom: 0;
 
         &.mdnz-polyfill {
           display: none;
-
-          width: $inputWidth;
-        }
-
-        @include desktop {
-          @include box-sizing(border-box);
-
-          width: $labelWidth;
-
-          float: left;
-
-          margin-top: 0.35em;
-          padding-right: 0.4em;
-        }
-      }
-
-      > input,
-      > select,
-      > textarea {
-        clear: both;
-        width: $inputWidth;
-
-        @include desktop {
-          clear: none;
-        }
-      }
-
-      > ul {
-        @include clearfix;
-
-        display: block;
-        float: left;
-
-        > li {
-          display: block;
-          float: left;
         }
       }
     }
+
+    $font-size-input-error: ($font-size-base + $font-size-small) / 2;
 
     .field-error {
       display: none;
-      clear: both;
-
-      $fontSize: 13px;
 
       font-style: italic;
-      font-size: $fontSize;
+      font-size: $font-size-input-error;
       color: $state-danger-text;
 
       margin-bottom: 0;
-
-      @include desktop {
-        margin-left: $labelWidth * $font-size-base / $fontSize;
-
-        &.without-label {
-          margin-left: 0;
-        }
-      }
     }
 
-    [type=submit].hidden {
-      /* For it to go below the anchor, keeping the latter centered */
-      display: block;
+    .other-input-error {
+      display: none;
 
-      /* All those properties hide the submit button but keeps submit on enter working */
-      border: none;
-      height: 0;
-      width: 0;
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
+      font-style: italic;
+      font-size: $font-size-input-error;
+      color: $state-danger-text;
     }
   }
 
@@ -119,15 +60,14 @@
       vertical-align: middle;
 
       > input {
-        $bootstrapCheckboxTopMargin: 4px;
-        margin-bottom: $bootstrapCheckboxTopMargin;
-
         margin-right: 0.5em;
       }
 
       > label {
-        $bootstrapLabelBottomMargin: 5px;
-        margin-top: $bootstrapLabelBottomMargin;
+        // To align vertically with the radio/checkbox
+        margin: 0;
+
+        font-weight: normal;
       }
     }
   }

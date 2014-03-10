@@ -14,8 +14,8 @@ object AccountDto {
 
         val query = """
                        insert into account(username, password)
-        values('""" + DbUtil.backslashQuotes(account.username) + """',
-          crypt('""" + DbUtil.backslashQuotes(account.password.get) + """', gen_salt('md5')));"""
+        values('""" + DbUtil.safetize(account.username) + """',
+          crypt('""" + DbUtil.safetize(account.password.get) + """', gen_salt('md5')));"""
 
         Logger.info("AccountDto.create():" + query)
 
@@ -55,8 +55,8 @@ object AccountDto {
         val query = """
           select id
           from account
-          where username = '""" + DbUtil.backslashQuotes(username) + """'
-          and password = crypt('""" + DbUtil.backslashQuotes(password) + """', password);"""
+          where username = '""" + DbUtil.safetize(username) + """'
+          and password = crypt('""" + DbUtil.safetize(password) + """', password);"""
 
         /* Not logged to avoid logging clear password
         Logger.info("AccountDto.getOfSignInInfo():" + query) */

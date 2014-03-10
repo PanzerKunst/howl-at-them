@@ -1,3 +1,4 @@
+@(isServiceRunning: Boolean)
 @main("Admin panel", "admin") {
 <!--
     Header
@@ -8,12 +9,20 @@
 -->
 <h1>Admin panel</h1>
 
-<p>Except for the legislator reports, Howl At Them gets its data using the Vote Smart API.</p>
+<p>Except for the legislator reports, Howl At Them gets its data using the <a href="http://votesmart.org/share/api" target="_blank">Vote Smart API</a>.</p>
+
 <p>If you notice that Howl At Them displays outdated information, you can fetch the latest data from Vote Smart. The
     current data will be replaced by the new one only if the whole process completes successfully.</p>
-<p>You will be able to follow the advancement of this data update. It will take a few minutes.</p>
 
-<button id="update-data" type="button" class="btn btn-primary">Update data</button>
+<p>You will be able to follow the advancement of this data update. It will take several minutes.</p>
+
+@if(isServiceRunning) {
+<indication>Already running!!!</indication>
+} else {
+<div class="centered-contents">
+    <button id="update-data" type="button" class="btn btn-primary">Update data</button>
+</div>
+}
 
 } {
 <!--

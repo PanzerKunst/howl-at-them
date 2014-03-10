@@ -10,7 +10,7 @@ CBR.Controllers.SearchLegislators = new Class({
         this._initValidation();
         this._initEvents();
 
-        if (this._getSelectedUsStateId()) {
+        if (!this._areAllFiltersEmpty()) {
             this._doSubmit(null);
         }
     },
@@ -19,12 +19,17 @@ CBR.Controllers.SearchLegislators = new Class({
         this.parent();
 
         this.$form = jQuery("form");
+        this.$firstName = jQuery("#first-name");
+        this.$lastName = jQuery("#last-name");
+        this.$usStateSelect = jQuery("#us-state");
+        this.$otherInputError = jQuery(".other-input-error");
         this.$submitBtn = jQuery("[type=submit]");
+
         this.$tableWrapper = jQuery("#table-wrapper");
     },
 
-    _getSelectedUsStateId: function () {
-        return this.options.selectedUsStateId;
+    _areAllFiltersEmpty: function() {
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val();
     },
 
     _initValidation: function () {
@@ -37,7 +42,7 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _initEvents: function () {
-        jQuery("#advanced-link").click(jQuery.proxy(this._toggleAdvancedSearch, this));
+        jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -54,12 +59,17 @@ CBR.Controllers.SearchLegislators = new Class({
         if (e)
             e.preventDefault();
 
-        if (this.validator.isValid()) {
+        if (this._areAllFiltersEmpty()) {
+            this.$otherInputError.slideDownCustom();
+        }
+        else if (this.validator.isValid()) {
+            this.$otherInputError.slideUpCustom();
             this.$submitBtn.button('loading');
+            this.$tableWrapper.html('<div class="data-loading"></div>');
 
-            var inputFirstName = jQuery("#first-name").val().toLowerCase();
-            var inputLastName = jQuery("#last-name").val().toLowerCase();
-            var selectedUsStateId = jQuery("#us-state").val();
+            var inputFirstName = this.$firstName.val().toLowerCase();
+            var inputLastName = this.$lastName.val().toLowerCase();
+            var selectedUsStateId = this.$usStateSelect.val();
 
             var stateLegislatorSearch = {
                 firstName: inputFirstName ? inputFirstName : null,
@@ -89,9 +99,13 @@ CBR.Controllers.SearchLegislators = new Class({
         location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
     },
 
-    _storeMatchingStateLegislators: function (stateLegislators) {
-        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
-            return new CBR.Models.StateLegislator(stateLegislator);
+    _storeMatchingStateLegislators: function (stateLegislatorsWithLatestReportWithNbReports) {
+        this.matchingStateLegislators = stateLegislatorsWithLatestReportWithNbReports.map(function (stateLegislatorWithLatestReportWithNbReports) {
+            return new CBR.Models.StateLegislatorWithLatestReportWithNbReports({
+                stateLegislator: new CBR.Models.StateLegislator(stateLegislatorWithLatestReportWithNbReports.stateLegislator),
+                latestReport: stateLegislatorWithLatestReportWithNbReports.latestReport ? new CBR.Models.Report(stateLegislatorWithLatestReportWithNbReports.latestReport) : null,
+                nbReports: stateLegislatorWithLatestReportWithNbReports.nbReports
+            });
         });
     },
 
@@ -104,34 +118,135 @@ CBR.Controllers.SearchLegislators = new Class({
             "aaData": this.matchingStateLegislators,
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 var $row = jQuery(nRow);
-                $row.attr("data-id", aData.getId());
+                $row.attr("data-id", aData.getStateLegislator().getId());
                 $row.addClass("clickable");
             },
             "aoColumns": [
                 {
                     "mData": function (source, type, val) {
-                        return source.getTitleAbbr();
+                        return source.getStateLegislator().getTitleAbbr();
                     },
                     "sTitle": "Title"
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getLastName() + " " + source.getFirstName();
+                        var stateLegislator = source.getStateLegislator();
+                        return stateLegislator.getLastName() + " " + stateLegislator.getFirstName();
                     },
-                    "sTitle": "Name"
+                    "sTitle": "Name",
+                    "sWidth": "20%"
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getPoliticalPartiesAbbr();
+                        return source.getStateLegislator().getPoliticalPartiesAbbr();
                     },
                     "sTitle": "P",
                     "bSortable": false
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getUsStateId() + " " + source.getDistrict();
+                        var stateLegislator = source.getStateLegislator();
+                        return stateLegislator.getUsState().id + " " + stateLegislator.getDistrict();
                     },
                     "sTitle": "District"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+                        return latestReport ?
+                            '<span class="support-level ' + latestReport.getSupportLevel() + '">' + latestReport.getReadableSupportLevel() + '</span>(' + source.getNbReports() + ")" :
+                            null;
+                    },
+                    "sTitle": "Support (nb reports)",
+                    "bSortable": false
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
+                            if (isMoneyInPoliticsAProblem === true) {
+                                return "Y";
+                            } else if (isMoneyInPoliticsAProblem === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Money in<br />politics is<br />a problem</span>',
+                    "sWidth": "7.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
+                            if (isSupportingAmendmentToFixIt === true) {
+                                return "Y";
+                            } else if (isSupportingAmendmentToFixIt === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Supports<br />amendment<br />to fix it</span>',
+                    "sWidth": "8.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
+                            if (isOpposingCitizensUnited === true) {
+                                return "Y";
+                            } else if (isOpposingCitizensUnited === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Opposes<br />Citizens<br />United</span>',
+                    "sWidth": "6.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
+                            if (hasPreviouslyVotedForConvention === true) {
+                                return "Y";
+                            } else if (hasPreviouslyVotedForConvention === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Previous<br />vote for<br />convention</span>'
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+                        return latestReport ?
+                            latestReport.getReadableContact() :
+                            null;
+                    },
+                    "sTitle": "Last contact"
                 }
             ],
             "oLanguage": {

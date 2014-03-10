@@ -1,15 +1,19 @@
-$bgColor: rgb(250, 248, 245);
+$bg-color: rgb(250, 248, 245);
 
-$actionColor: rgb(105, 0, 255);
+$action-color: rgb(105, 0, 255);
 
-$labelWidth: 9em;
-$inputWidth: 20em;
+$page-side-padding: 1em;
 
-$pageSidePadding: 15px;
+$field-width: 20em;
+$odd-form-groups-margin-right: 2em;
 
-$fontSizeBodyDesktop: 16px;
+$medium-screen-min-width: $page-side-padding + $field-width + $odd-form-groups-margin-right + $field-width + $page-side-padding; // 44em
+$large-screen-min-width: 55em; // 55em @ 14px = 768px
 
-$fieldWidth: $inputWidth;
-$fieldWidthDesktop: $labelWidth + $inputWidth;
+$strange-em-difference-for-medium-screen-mq-breakpoint: 4.5em;
+$strange-em-difference-for-large-screen-mq-breakpoint: 5.5em;
 
-$spriteUrl: 'images/sprite';
+$medium-screen-mq-breakpoint: $medium-screen-min-width - $strange-em-difference-for-medium-screen-mq-breakpoint;  //$page-side-padding + $field-width + $odd-form-groups-margin-right + $field-width + $page-side-padding
+$large-screen-mq-breakpoint: $large-screen-min-width - $strange-em-difference-for-large-screen-mq-breakpoint;
+
+$sprite-url: 'images/sprite';

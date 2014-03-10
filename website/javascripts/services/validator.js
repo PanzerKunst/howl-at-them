@@ -4,7 +4,8 @@ CBR.Services.Validator = new Class({
     checkUsername: "username",
     checkDateInFuture: "in-future",
     checkDateInMaxTwoWeeks: "in-max-2-weeks",
-    checkLongEnough: "long-enough",
+    checkMinLength: "min-length",
+    checkMaxLength: "max-length",
     checkInteger: "integer",
     checkDecimal: "decimal",
 
@@ -73,8 +74,12 @@ CBR.Services.Validator = new Class({
         return this._get$error($field, this.checkDateInMaxTwoWeeks);
     },
 
-    _get$longEnough: function ($field) {
-        return this._get$error($field, this.checkLongEnough);
+    _get$minLength: function ($field) {
+        return this._get$error($field, this.checkMinLength);
+    },
+
+    _get$maxLength: function ($field) {
+        return this._get$error($field, this.checkMaxLength);
     },
 
     _get$integer: function ($field) {
@@ -109,8 +114,12 @@ CBR.Services.Validator = new Class({
         return this._get$inMaxTwoWeeks($field).length === 1;
     },
 
-    _isToCheckIfLongEnough: function ($field) {
-        return this._get$longEnough($field).length === 1;
+    _isToCheckIfMinLength: function ($field) {
+        return this._get$minLength($field).length === 1;
+    },
+
+    _isToCheckIfMaxLength: function ($field) {
+        return this._get$maxLength($field).length === 1;
     },
 
     _isToCheckIfInteger: function ($field) {
@@ -165,10 +174,16 @@ CBR.Services.Validator = new Class({
         return nbDaysDifference >= 0;
     },
 
-    _isLongEnough: function(value, minLength) {
+    _isMinLength: function(value, minLength) {
         if (value === null || value === undefined || value === "")
             return true;
         return value.length >= minLength;
+    },
+
+    _isMaxLength: function(value, maxLength) {
+        if (value === null || value === undefined || value === "")
+            return true;
+        return value.length <= maxLength;
     },
 
     _isInteger: function(value) {
@@ -246,14 +261,24 @@ CBR.Services.Validator = new Class({
             this._slideUpErrorMessage(this._get$inMaxTwoWeeks($field));
         }
 
-        // Long enough?
-        if (this._isToCheckIfLongEnough($field)) {
-            if (!this._isLongEnough($field.val(), $field.data("min-length"))) {
+        // Min length?
+        if (this._isToCheckIfMinLength($field)) {
+            if (!this._isMinLength($field.val(), $field.data("min-length"))) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$longEnough($field));
+                this._slideDownErrorMessage(this._get$minLength($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$longEnough($field));
+            this._slideUpErrorMessage(this._get$minLength($field));
+        }
+
+        // Max length?
+        if (this._isToCheckIfMaxLength($field)) {
+            if (!this._isMaxLength($field.val(), $field.attr("maxlength"))) {
+                this.flagInvalid($field);
+                this._slideDownErrorMessage(this._get$maxLength($field));
+                return false;
+            }
+            this._slideUpErrorMessage(this._get$maxLength($field));
         }
 
         // Integer number?

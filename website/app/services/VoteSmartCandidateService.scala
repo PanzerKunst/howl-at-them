@@ -4,9 +4,9 @@ import db.UsStateDto
 import play.api.libs.ws.WS
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
-import models.votesmart.{VoteSmartCandidateBio, VoteSmartCandidateOffice, VoteSmartCandidateCommittee, VoteSmartCandidate}
+import models.votesmart.{VoteSmartCandidateOffice, VoteSmartCandidateCommittee, VoteSmartCandidate}
 import models.UsState
-import db.votesmart.{VoteSmartCandidateBioDto, VoteSmartCandidateOfficeDto, VoteSmartCandidateCommitteeDto, VoteSmartCandidateDto}
+import db.votesmart.{VoteSmartCandidateOfficeDto, VoteSmartCandidateCommitteeDto, VoteSmartCandidateDto}
 import play.Play
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -19,33 +19,37 @@ object VoteSmartCandidateService {
   var isCandidateOfficesWebServiceCallRunning = false
 
   def fetchCandidates() {
-    for (usState <- UsStateDto.getAll) {
-      isCandidatesWebServiceCallRunning = true
+    if (!VoteSmartService.isRunning) {
+      VoteSmartService.isRunning = true
 
-      Logger.info("Calling candidates WS for " + usState.id)
+      for (usState <- UsStateDto.getAll) {
+        isCandidatesWebServiceCallRunning = true
 
-      WS.url("http://api.votesmart.org/Officials.getStatewide")
-        .withQueryString("key" -> voteSmartApiKey)
-        .withQueryString("o" -> "JSON")
-        .withQueryString("stateId" -> usState.id)
-        .get()
-        .map {
-        response =>
-          try {
-            processJsonFromVoteSmartOfficialsInUsState(response.json, usState)
-          }
-          catch {
-            case e: Exception =>
-              Logger.error(e.getStackTraceString)
-              System.exit(1)
-          }
-      }
+        Logger.info("Calling candidates WS for " + usState.id)
 
-      while (isCandidatesWebServiceCallRunning) {
-        //Pause for 100 ms
-        Thread.sleep(100)
+        WS.url("http://api.votesmart.org/Officials.getStatewide")
+          .withQueryString("key" -> voteSmartApiKey)
+          .withQueryString("o" -> "JSON")
+          .withQueryString("stateId" -> usState.id)
+          .get()
+          .map {
+          response =>
+            try {
+              processJsonFromVoteSmartOfficialsInUsState(response.json, usState)
+            }
+            catch {
+              case e: Exception => Logger.error(e.getStackTraceString)
+            }
+        }
+
+        while (isCandidatesWebServiceCallRunning) {
+          //Pause for 100 ms
+          Thread.sleep(100)
+        }
       }
     }
+
+    VoteSmartService.isRunning = false
   }
 
   private def processJsonFromVoteSmartOfficialsInUsState(json: JsValue, usState: UsState) {
@@ -189,9 +193,7 @@ object VoteSmartCandidateService {
           processJsonFromVoteSmartCandidateBio(response.json, candidateId)
         }
         catch {
-          case e: Exception =>
-            Logger.error(e.getStackTraceString)
-            System.exit(1)
+          case e: Exception => Logger.error(e.getStackTraceString)
         }
     }
   }
@@ -210,9 +212,7 @@ object VoteSmartCandidateService {
           processJsonFromVoteSmartCandidateOffices(response.json, candidateId)
         }
         catch {
-          case e: Exception =>
-            Logger.error(e.getStackTraceString)
-            System.exit(1)
+          case e: Exception => Logger.error(e.getStackTraceString)
         }
     }
   }

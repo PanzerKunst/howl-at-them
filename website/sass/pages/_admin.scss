@@ -1,0 +1,11 @@
+#admin {
+  #content {
+    max-width: 45em;
+
+    p {
+      @include large-screen {
+        font-size: 16px;
+      }
+    }
+  }
+}

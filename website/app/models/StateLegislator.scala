@@ -8,14 +8,14 @@ class StateLegislator(_id: Int,
                       _lastName: String,
                       _title: String,
                       _politicalParties: List[String] = List(),
-                      _usStateId: String,
+                      _usState: UsState,
                       _district: String) {
   var id: Int = _id
   var firstName: String = _firstName
   var lastName: String = _lastName
   var title: String = _title
   var politicalParties: List[String] = _politicalParties
-  var usStateId: String = _usStateId
+  var usState: UsState = _usState
   var district: String = _district
 
   def getTitleAbbr: String = {
@@ -31,7 +31,7 @@ class StateLegislator(_id: Int,
     this.politicalParties.mkString(", ")
   }
 
-  def getPoliticalPartiesForTableCell: String = {
+  def getPoliticalPartiesAbbr: String = {
     this.politicalParties.head.toLowerCase match {
       case "democratic" =>
         "<abbr title=\"" + this.politicalParties.mkString(", ") + "\">D</abbr>"
@@ -41,6 +41,10 @@ class StateLegislator(_id: Int,
         val abbr = this.politicalParties.map(politicalParty => politicalParty.substring(0, 1)).mkString("")
         "<abbr title=\"" + this.politicalParties.mkString(", ") + "\">" + abbr + "</abbr>"
     }
+  }
+
+  def getPhotoUrl: String = {
+    "http://static.votesmart.org/canphoto/" + this.id + ".jpg"
   }
 }
 
@@ -53,7 +57,7 @@ object StateLegislator {
         "lastName" -> stateLegislator.lastName,
         "title" -> stateLegislator.title,
         "politicalParties" -> stateLegislator.politicalParties,
-        "usStateId" -> stateLegislator.usStateId,
+        "usState" -> stateLegislator.usState,
         "district" -> stateLegislator.district
       )
     }

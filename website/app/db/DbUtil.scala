@@ -5,7 +5,7 @@ object DbUtil {
     filters match {
       case Some(filtrs) => {
         filtrs.map {
-          case (k, v) => """%s like '%s'""".format(k, backslashQuotes(v))
+          case (k, v) => """%s like '%s'""".format(k, safetize(v))
         }
           .mkString("\nwhere ", "\nand ", "")
       }
@@ -13,16 +13,16 @@ object DbUtil {
     }
   }
 
-  def backslashQuotes(string: String): String = {
-    string.replaceAll("\"", "\\\\\"")
-      .replaceAll("'", "''")
+  def safetize(string: String): String = {
+    string.replaceAll("'", "''")
+      .replaceAll("\n", "\\\\n")
   }
 
   def parseToList[T](string: String): List[T] = {
     val arrayOfString = string.split(',')
 
-    val listOfCorrectType = for (item <- arrayOfString) yield item.asInstanceOf[T]
-
-    listOfCorrectType.toList
+    arrayOfString.map {
+      item => item.asInstanceOf[T]
+    }.toList
   }
 }

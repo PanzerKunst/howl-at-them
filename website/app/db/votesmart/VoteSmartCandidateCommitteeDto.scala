@@ -16,7 +16,7 @@ object VoteSmartCandidateCommitteeDto {
                    insert into temp_vote_smart_candidate_committee(candidate_id, committee_id, committee_name)
           values(""" + voteSmartCandidateCommittee.candidateId + """, """ +
           voteSmartCandidateCommittee.committeeId + """, '""" +
-          DbUtil.backslashQuotes(voteSmartCandidateCommittee.committeeName) + """');"""
+          DbUtil.safetize(voteSmartCandidateCommittee.committeeName) + """');"""
 
         Logger.debug("VoteSmartCandidateCommitteeDto.create():" + query)
 

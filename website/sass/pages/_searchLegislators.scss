@@ -1,37 +1,50 @@
 #search-legislators {
   #content {
-    max-width: 960px;
+    $search-legislator-page-width: 68.5em;  // ~960px
+
+    max-width: $search-legislator-page-width;
+    min-width: $search-legislator-page-width;
 
     form {
-      @include clearfix;
-
       > div {
-        float: left;
+        @include clearfix;
       }
+    }
 
-      .field-error {
-        margin-left: 0;
-      }
+    $field-width-search-legislators: 16em;
 
-      $fieldWidth: 16em;
+    .form-group {
+      width: $field-width-search-legislators;
+      margin-right: $odd-form-groups-margin-right;
 
-      .form-group {
-        width: $fieldWidth;
-        clear: none;
-        margin-right: $line-height-computed;
+      // To have the inputs on one line even on small screens
+      float: left;
+    }
 
-        > label {
-          display: block;
-          width: $fieldWidth;
-        }
+    .submit-wrapper {
+      float: left;
+      padding-top: 29px;
+    }
 
-        > input,
-        > select,
-        > textarea {
-          clear: both;
-          width: $fieldWidth;
-        }
-      }
+    #advanced-toggle {
+      float: right;
+      padding-top: 34px;
+    }
+
+    .other-input-error {
+      text-align: center;
+    }
+
+    th {
+      vertical-align: middle;
+    }
+
+    .question-column-header {
+      font-size: 10px;
+    }
+
+    .support-level {
+      width: 9em;
     }
   }
 }

@@ -242,9 +242,9 @@ table.dataTable thead td:active {
 #content {
   width: 100%;
   margin: 0 auto;
-  max-width: 640px;
-  padding-left: 15px;
-  padding-right: 15px;
+  max-width: 55em;
+  padding-left: 1em;
+  padding-right: 1em;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
@@ -280,15 +280,15 @@ body {
     margin: 0;
     font-family: "Oxygen-Bold", sans-serif;
     font-size: 30px; }
-    @media screen and (min-width: 49em) {
+    @media screen and (min-width: 49.5em) {
       #content h1 {
         font-size: 36px;
         padding: 40px 0; } }
   #content h2 {
-    margin: 0 -15px 10px -15px;
+    margin-bottom: 10px;
     font-family: "Oxygen", sans-serif;
     font-size: 18px; }
-    @media screen and (min-width: 49em) {
+    @media screen and (min-width: 49.5em) {
       #content h2 {
         font-size: 24px; } }
   #content p,
@@ -299,14 +299,9 @@ body {
   #content p,
   #content span,
   #content li,
-  #content a {
+  #content a,
+  #content label {
     line-height: 1.75em; }
-    @media screen and (min-width: 49em) {
-      #content p,
-      #content span,
-      #content li,
-      #content a {
-        font-size: 16px; } }
   #content p {
     text-align: justify; }
   #content li {
@@ -318,6 +313,14 @@ body {
   #content a,
   #content span {
     display: inline-block; }
+  #content .support-level.UNKNOWN {
+    color: #999999; }
+  #content .support-level.SUPPORTIVE {
+    color: #5cb85c; }
+  #content .support-level.NEEDS_CONVINCING {
+    color: #f0ad4e; }
+  #content .support-level.NOT_SUPPORTIVE {
+    color: #d9534f; }
 
 .mdnz-polyfill {
   display: none; }
@@ -328,94 +331,54 @@ body {
 .centered-contents {
   text-align: center; }
 
-#content form {
-  font-size: 14px; }
-  #content form .form-group,
-  #content form fieldset {
-    clear: both;
-    margin-left: auto;
-    margin-right: auto;
-    width: 20em; }
-    @media screen and (min-width: 49em) {
-      #content form .form-group,
-      #content form fieldset {
-        width: 29em; } }
-  #content form .form-group:after {
-    content: "";
-    display: table;
-    clear: both; }
+.alert {
+  text-align: center; }
+
+.data-loading {
+  background-image: url("images/loading.gif");
+  width: 48px;
+  height: 48px;
+  margin: 0 auto; }
+
+#content form .form-group {
+  width: 20em; }
+  @media screen and (min-width: 39.5em) {
+    #content form .form-group {
+      float: left; } }
+  @media screen and (min-width: 39.5em) {
+    #content form .form-group:nth-child(2n-1) {
+      margin-right: 2em; } }
+  #content form .form-group > label,
   #content form .form-group > input,
   #content form .form-group > select,
   #content form .form-group > textarea {
     display: block;
-    float: left; }
+    width: 100%; }
   #content form .form-group > label {
-    display: block;
-    width: 20em; }
-    #content form .form-group > label.mdnz-polyfill {
-      display: none;
-      width: 20em; }
-    @media screen and (min-width: 49em) {
-      #content form .form-group > label {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        width: 9em;
-        float: left;
-        margin-top: 0.35em;
-        padding-right: 0.4em; } }
-  #content form .form-group > input,
-  #content form .form-group > select,
-  #content form .form-group > textarea {
-    clear: both;
-    width: 20em; }
-    @media screen and (min-width: 49em) {
-      #content form .form-group > input,
-      #content form .form-group > select,
-      #content form .form-group > textarea {
-        clear: none; } }
-  #content form .form-group > ul {
-    display: block;
-    float: left; }
-    #content form .form-group > ul:after {
-      content: "";
-      display: table;
-      clear: both; }
-    #content form .form-group > ul > li {
-      display: block;
-      float: left; }
-  #content form .field-error {
-    display: none;
-    clear: both;
-    font-style: italic;
-    font-size: 13px;
-    color: #a94442;
     margin-bottom: 0; }
-    @media screen and (min-width: 49em) {
-      #content form .field-error {
-        margin-left: 9.69231em; }
-        #content form .field-error.without-label {
-          margin-left: 0; } }
-  #content form [type=submit].hidden {
-    /* For it to go below the anchor, keeping the latter centered */
-    display: block;
-    /* All those properties hide the submit button but keeps submit on enter working */
-    border: none;
-    height: 0;
-    width: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden; }
+    #content form .form-group > label.mdnz-polyfill {
+      display: none; }
+#content form .field-error {
+  display: none;
+  font-style: italic;
+  font-size: 13px;
+  color: #a94442;
+  margin-bottom: 0; }
+#content form .other-input-error {
+  display: none;
+  font-style: italic;
+  font-size: 13px;
+  color: #a94442; }
 #content .check-or-radio {
   display: table-row; }
   #content .check-or-radio > div {
     display: table-cell;
     vertical-align: middle; }
     #content .check-or-radio > div > input {
-      margin-bottom: 4px;
       margin-right: 0.5em; }
     #content .check-or-radio > div > label {
-      margin-top: 5px; }
+      margin: 0;
+      font-weight: normal; }
 #content .submit-wrapper {
   padding-top: 20px; }
   #content .submit-wrapper > [type=submit] {
@@ -424,6 +387,9 @@ body {
 
 tr.clickable {
   cursor: pointer; }
+
+html {
+  font-size: 14px; }
 
 /* TODO .btn-primary {
   background-color: $actionColor;
@@ -458,7 +424,8 @@ textarea.form-control {
 
 table.dataTable thead th {
   border-bottom: 2px solid #DDDDDD;
-  padding: 5px; }
+  padding: 5px;
+  font-weight: normal; }
 table.dataTable tr.odd td.sorting_1 {
   background-color: #F9F9F9; }
 table.dataTable tr.even td.sorting_1 {
@@ -468,25 +435,136 @@ table.dataTable tr.even td.sorting_1 {
   display: none;
   text-align: center; }
 
+#admin #content {
+  max-width: 45em; }
+  @media screen and (min-width: 49.5em) {
+    #admin #content p {
+      font-size: 16px; } }
+
 #search-legislators #content {
-  max-width: 960px; }
-  #search-legislators #content form:after {
+  max-width: 68.5em;
+  min-width: 68.5em; }
+  #search-legislators #content form > div:after {
     content: "";
     display: table;
     clear: both; }
-  #search-legislators #content form > div {
-    float: left; }
-  #search-legislators #content form .field-error {
-    margin-left: 0; }
-  #search-legislators #content form .form-group {
+  #search-legislators #content .form-group {
     width: 16em;
-    clear: none;
-    margin-right: 20px; }
-    #search-legislators #content form .form-group > label {
-      display: block;
-      width: 16em; }
-    #search-legislators #content form .form-group > input,
-    #search-legislators #content form .form-group > select,
-    #search-legislators #content form .form-group > textarea {
-      clear: both;
-      width: 16em; }
+    margin-right: 2em;
+    float: left; }
+  #search-legislators #content .submit-wrapper {
+    float: left;
+    padding-top: 29px; }
+  #search-legislators #content #advanced-toggle {
+    float: right;
+    padding-top: 34px; }
+  #search-legislators #content .other-input-error {
+    text-align: center; }
+  #search-legislators #content th {
+    vertical-align: middle; }
+  #search-legislators #content .question-column-header {
+    font-size: 10px; }
+  #search-legislators #content .support-level {
+    width: 9em; }
+
+#state-legislator #content #legislator-data,
+#state-legislator #content #committees {
+  width: 20em;
+  margin: 0 auto 20px auto; }
+  @media screen and (min-width: 39.5em) {
+    #state-legislator #content #legislator-data,
+    #state-legislator #content #committees {
+      width: 42em; } }
+#state-legislator #content #legislator-data > div:first-child > p {
+  text-align: center; }
+@media screen and (min-width: 49.5em) {
+  #state-legislator #content #legislator-data {
+    width: 100%; }
+    #state-legislator #content #legislator-data:after {
+      content: "";
+      display: table;
+      clear: both; }
+    #state-legislator #content #legislator-data > div {
+      float: left;
+      padding-right: 1em;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
+      #state-legislator #content #legislator-data > div:first-child {
+        width: 30%; }
+      #state-legislator #content #legislator-data > div:nth-child(2) {
+        width: 40%; }
+      #state-legislator #content #legislator-data > div:last-child {
+        width: 30%;
+        padding-right: 0; } }
+#state-legislator #content #committees {
+  text-align: center; }
+  #state-legislator #content #committees > ul {
+    display: none;
+    margin-bottom: 0;
+    padding-left: 1em;
+    width: 100%;
+    text-align: left; }
+  #state-legislator #content #committees li {
+    font-size: 14px; }
+@media screen and (min-width: 49.5em) {
+  #state-legislator #content .office-address span {
+    font-size: 14px; } }
+#state-legislator #content .office-address p {
+  text-align: left; }
+  @media screen and (min-width: 49.5em) {
+    #state-legislator #content .office-address p {
+      font-size: 12px; } }
+#state-legislator #content #phone-numbers > article,
+#state-legislator #content #phone-numbers > .form-group {
+  width: 13em;
+  margin: 0 auto; }
+#state-legislator #content #phone-numbers label {
+  margin-right: 1em; }
+  #state-legislator #content #phone-numbers label[for="other-phone-number"] {
+    margin-right: 0.7em; }
+#state-legislator #content #phone-numbers span {
+  font-size: 14px; }
+#state-legislator #content #support-level-and-priority-target > .support-level {
+  font-weight: bold;
+  margin: 5px 0 0 1em; }
+#state-legislator #content #support-level-and-priority-target > .check-or-radio {
+  float: right;
+  margin-right: 1em; }
+#state-legislator #content #other-phone-number {
+  display: inline-block;
+  width: 9em; }
+#state-legislator #content table th,
+#state-legislator #content table td {
+  text-align: center; }
+#state-legislator #content table th {
+  font-weight: normal;
+  font-size: 10px; }
+#state-legislator #content .form-groups {
+  width: 20em;
+  margin: auto; }
+  @media screen and (min-width: 39.5em) {
+    #state-legislator #content .form-groups {
+      width: 42em; } }
+#state-legislator #content .form-group:after {
+  content: "";
+  display: table;
+  clear: both; }
+#state-legislator #content .form-group > .check-or-radio {
+  float: left;
+  margin-right: 2em; }
+#state-legislator #content #previous-reports span,
+#state-legislator #content #previous-reports a,
+#state-legislator #content #previous-reports p {
+  font-size: 14px; }
+#state-legislator #content #previous-reports .existing-report-date,
+#state-legislator #content #previous-reports .existing-report-support-level,
+#state-legislator #content #previous-reports .support-level {
+  width: 11em; }
+#state-legislator #content #previous-reports .existing-report-contact {
+  width: 10em; }
+#state-legislator #content .edit-existing-report,
+#state-legislator #content .delete-existing-report {
+  float: right; }
+#state-legislator #content .edit-existing-report {
+  margin-right: 1em; }

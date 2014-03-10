@@ -1485,17 +1485,18 @@ if (typeof String.prototype.startsWith !== 'function') {
     };
 }
 
-CBR.desktopBreakPoint = "49em";
+CBR.mediumScreenBreakPoint = "39.5em";
+CBR.largeScreenBreakPoint = "49.5em";
 ;(function ($) {
     $.fn.slideDownCustom = function () {
-        if (Modernizr.mq("screen and (min-width: " + CBR.desktopBreakPoint + ")"))
+        if (Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")"))
             return this.slideDown();
 
         return this.show();
     };
 
     $.fn.slideUpCustom = function () {
-        if (Modernizr.mq("screen and (min-width: " + CBR.desktopBreakPoint + ")"))
+        if (Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")"))
             return this.slideUp();
 
         return this.hide();
@@ -1521,7 +1522,8 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     checkUsername: "username",
     checkDateInFuture: "in-future",
     checkDateInMaxTwoWeeks: "in-max-2-weeks",
-    checkLongEnough: "long-enough",
+    checkMinLength: "min-length",
+    checkMaxLength: "max-length",
     checkInteger: "integer",
     checkDecimal: "decimal",
 
@@ -1590,8 +1592,12 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         return this._get$error($field, this.checkDateInMaxTwoWeeks);
     },
 
-    _get$longEnough: function ($field) {
-        return this._get$error($field, this.checkLongEnough);
+    _get$minLength: function ($field) {
+        return this._get$error($field, this.checkMinLength);
+    },
+
+    _get$maxLength: function ($field) {
+        return this._get$error($field, this.checkMaxLength);
     },
 
     _get$integer: function ($field) {
@@ -1626,8 +1632,12 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         return this._get$inMaxTwoWeeks($field).length === 1;
     },
 
-    _isToCheckIfLongEnough: function ($field) {
-        return this._get$longEnough($field).length === 1;
+    _isToCheckIfMinLength: function ($field) {
+        return this._get$minLength($field).length === 1;
+    },
+
+    _isToCheckIfMaxLength: function ($field) {
+        return this._get$maxLength($field).length === 1;
     },
 
     _isToCheckIfInteger: function ($field) {
@@ -1682,10 +1692,16 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         return nbDaysDifference >= 0;
     },
 
-    _isLongEnough: function(value, minLength) {
+    _isMinLength: function(value, minLength) {
         if (value === null || value === undefined || value === "")
             return true;
         return value.length >= minLength;
+    },
+
+    _isMaxLength: function(value, maxLength) {
+        if (value === null || value === undefined || value === "")
+            return true;
+        return value.length <= maxLength;
     },
 
     _isInteger: function(value) {
@@ -1763,14 +1779,24 @@ CBR.JsonUtil.stringifyModel = function (obj) {
             this._slideUpErrorMessage(this._get$inMaxTwoWeeks($field));
         }
 
-        // Long enough?
-        if (this._isToCheckIfLongEnough($field)) {
-            if (!this._isLongEnough($field.val(), $field.data("min-length"))) {
+        // Min length?
+        if (this._isToCheckIfMinLength($field)) {
+            if (!this._isMinLength($field.val(), $field.data("min-length"))) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$longEnough($field));
+                this._slideDownErrorMessage(this._get$minLength($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$longEnough($field));
+            this._slideUpErrorMessage(this._get$minLength($field));
+        }
+
+        // Max length?
+        if (this._isToCheckIfMaxLength($field)) {
+            if (!this._isMaxLength($field.val(), $field.attr("maxlength"))) {
+                this.flagInvalid($field);
+                this._slideDownErrorMessage(this._get$maxLength($field));
+                return false;
+            }
+            this._slideUpErrorMessage(this._get$maxLength($field));
         }
 
         // Integer number?
@@ -1848,14 +1874,90 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     options: {  // Defaults
     },
 
-    getEmailAddress: function() {
-        return this.options.emailAddress;
+    getUsername: function() {
+        return this.options.username;
     },
 
     setPassword: function(password) {
         this.options.password = password;
     }
 });
+;CBR.Models.Report = new Class({
+    Extends: CBR.Models.JsonSerializable,
+
+    options: {  // Defaults
+    },
+
+    getId: function() {
+        return this.options.id;
+    },
+
+    getCandidateId: function() {
+        return this.options.candidateId;
+    },
+
+    getAuthorName: function() {
+        return this.options.authorName;
+    },
+
+    getContact: function() {
+        return this.options.contact;
+    },
+
+    isMoneyInPoliticsAProblem: function() {
+        return this.options.isMoneyInPoliticsAProblem;
+    },
+
+    isSupportingAmendmentToFixIt: function() {
+        return this.options.isSupportingAmendmentToFixIt;
+    },
+
+    isOpposingCitizensUnited: function() {
+        return this.options.isOpposingCitizensUnited;
+    },
+
+    hasPreviouslyVotedForConvention: function() {
+        return this.options.hasPreviouslyVotedForConvention;
+    },
+
+    getSupportLevel: function() {
+        return this.options.supportLevel;
+    },
+
+    getNotes: function() {
+        return this.options.notes;
+    },
+
+    getReadableSupportLevel: function() {
+        var supportLevel = this.getSupportLevel();
+        return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : null;
+    },
+
+    getReadableContact: function() {
+        return CBR.Models.Report.contact[this.getContact()];
+    }
+});
+
+CBR.Models.Report.radioAnswer = {
+    unknown: null,
+    yes: "true",
+    no: "false"
+};
+
+CBR.Models.Report.supportLevel = {
+    SUPPORTIVE: "Supportive",
+    NEEDS_CONVINCING: "Needs convincing",
+    NOT_SUPPORTIVE: "Not supportive"
+};
+
+CBR.Models.Report.contact = {
+    MET_LEGISLATOR: "Met legislator",
+    TALKED_TO_LEGISLATOR: "Talked to legislator",
+    CONTACT_WITH_STAFF: "Contact with staff",
+    WAITING_FOR_CALLBACK: "Waiting for callback",
+    LEFT_VOICEMAIL: "Left voicemail",
+    NONE: "None"
+};
 ;CBR.Models.StateLegislator = new Class({
     Extends: CBR.Models.JsonSerializable,
 
@@ -1882,8 +1984,8 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         return this.options.politicalParties;
     },
 
-    getUsStateId: function() {
-        return this.options.usStateId;
+    getUsState: function() {
+        return this.options.usState;
     },
 
     getDistrict: function() {
@@ -1921,6 +2023,24 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         }
     }
 });
+;CBR.Models.StateLegislatorWithLatestReportWithNbReports = new Class({
+    Extends: CBR.Models.JsonSerializable,
+
+    options: {  // Defaults
+    },
+
+    getStateLegislator: function() {
+        return this.options.stateLegislator;
+    },
+
+    getLatestReport: function() {
+        return this.options.latestReport;
+    },
+
+    getNbReports: function() {
+        return this.options.nbReports;
+    }
+});
 ;CBR.Controllers.BaseController = new Class({
     initialize: function (options) {
         this.options = options;
@@ -1947,24 +2067,42 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         this._applyModernizrRules();
     },
 
-    isDesktopBrowser: function() {
-        return Modernizr.mq("screen and (min-width: " + CBR.desktopBreakPoint + ")");
+    isBrowserMediumScreen: function() {
+        return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
     },
 
-    initInputFromLocalStorage: function($input) {
-        var valueInLocalStorage = localStorage.getItem($input[0].id);
+    isBrowserLargeScreen: function() {
+        return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
+    },
+
+    /* TODO: remove
+    initInputFromLocalStorage: function($input, pageId) {
+        var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId));
+        var valueInLocalStorage = pageDataInLocalStorage[$input[0].id];
         if (valueInLocalStorage) {
             $input.val(valueInLocalStorage);
         }
+    }, */
+
+    saveInLocalStorage: function(key, value) {
+        if (Modernizr.localstorage) {
+            var pageId = jQuery("body").attr("id");
+
+            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+            pageDataInLocalStorage[key] = value;
+
+            localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+        }
     },
 
-    localStoreInput:function (e) {
-        var input = e.currentTarget;
-        localStorage.setItem(input.id, jQuery(input).val());
-    },
+    getFromLocalStorage: function(key) {
+        if (Modernizr.localstorage) {
+            var pageId = jQuery("body").attr("id");
 
-    removeLocalStorageValueForInput: function($input) {
-        localStorage.removeItem($input[0].id);
+            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+
+            return pageDataInLocalStorage[key];
+        }
     },
 
     _applyModernizrRules: function () {
@@ -1977,151 +2115,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
         noContent: 204,
         unauthorized: 401
     }
-});;CBR.Controllers.SearchLegislators = new Class({
-    Extends: CBR.Controllers.BaseController,
-
-    initialize: function (options) {
-        this.parent(options);
-    },
-
-    run: function () {
-        this.initElements();
-        this._initValidation();
-        this._initEvents();
-
-        if (this._getSelectedUsStateId()) {
-            this._doSubmit(null);
-        }
-    },
-
-    initElements: function () {
-        this.parent();
-
-        this.$form = jQuery("form");
-        this.$submitBtn = jQuery("[type=submit]");
-        this.$tableWrapper = jQuery("#table-wrapper");
-    },
-
-    _getSelectedUsStateId: function () {
-        return this.options.selectedUsStateId;
-    },
-
-    _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "first-name",
-                "last-name"
-            ]
-        });
-    },
-
-    _initEvents: function () {
-        jQuery("#advanced-link").click(jQuery.proxy(this._toggleAdvancedSearch, this));
-
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
-    },
-
-    _toggleAdvancedSearch: function (e) {
-        /* TODO if (this.$form.is(":visible")) {
-            this.$form.slideUpCustom();
-        } else {
-            this.$form.slideDownCustom();
-        } */
-    },
-
-    _doSubmit: function (e) {
-        if (e)
-            e.preventDefault();
-
-        if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
-
-            var inputFirstName = jQuery("#first-name").val().toLowerCase();
-            var inputLastName = jQuery("#last-name").val().toLowerCase();
-            var selectedUsStateId = jQuery("#us-state").val();
-
-            var stateLegislatorSearch = {
-                firstName: inputFirstName ? inputFirstName : null,
-                lastName: inputLastName ? inputLastName : null,
-                usStateId: selectedUsStateId ? selectedUsStateId : null
-            };
-
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/state-legislators",
-                data: stateLegislatorSearch,
-                onSuccess: function (responseText, responseXML) {
-                    this.$submitBtn.button('reset');
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this._createResultsTable();
-                }.bind(this),
-                onFailure: function (xhr) {
-                    this.$submitBtn.button('reset');
-                    alert("AJAX fail :(");
-                }.bind(this)
-            }).get();
-        }
-    },
-
-    _navigateToStateLegislatorPage: function(e) {
-        location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
-    },
-
-    _storeMatchingStateLegislators: function (stateLegislators) {
-        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
-            return new CBR.Models.StateLegislator(stateLegislator);
-        });
-    },
-
-    _createResultsTable: function () {
-        this.$tableWrapper.empty();
-        this.$tableWrapper.append('<table class="table table-striped table-bordered table-condensed"></table>');
-
-        this.$tableWrapper.children("table").dataTable({
-            "iDisplayLength": 9999,
-            "aaData": this.matchingStateLegislators,
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var $row = jQuery(nRow);
-                $row.attr("data-id", aData.getId());
-                $row.addClass("clickable");
-            },
-            "aoColumns": [
-                {
-                    "mData": function (source, type, val) {
-                        return source.getTitleAbbr();
-                    },
-                    "sTitle": "Title"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return source.getLastName() + " " + source.getFirstName();
-                    },
-                    "sTitle": "Name"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return source.getPoliticalPartiesAbbr();
-                    },
-                    "sTitle": "P",
-                    "bSortable": false
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return source.getUsStateId() + " " + source.getDistrict();
-                    },
-                    "sTitle": "District"
-                }
-            ],
-            "oLanguage": {
-                "sEmptyTable": "No matching state legislator"
-            }
-        });
-
-        jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
-    }
-});
-;CBR.Controllers.Admin = new Class({
+});;CBR.Controllers.Admin = new Class({
     Extends: CBR.Controllers.BaseController,
 
     initialize: function (options) {
@@ -2159,5 +2153,426 @@ CBR.JsonUtil.stringifyModel = function (obj) {
                 alert("AJAX fail :(");
             }.bind(this)
         }).post();
+    }
+});
+;CBR.Controllers.SearchLegislators = new Class({
+    Extends: CBR.Controllers.BaseController,
+
+    initialize: function (options) {
+        this.parent(options);
+    },
+
+    run: function () {
+        this.initElements();
+        this._initValidation();
+        this._initEvents();
+
+        if (!this._areAllFiltersEmpty()) {
+            this._doSubmit(null);
+        }
+    },
+
+    initElements: function () {
+        this.parent();
+
+        this.$form = jQuery("form");
+        this.$firstName = jQuery("#first-name");
+        this.$lastName = jQuery("#last-name");
+        this.$usStateSelect = jQuery("#us-state");
+        this.$otherInputError = jQuery(".other-input-error");
+        this.$submitBtn = jQuery("[type=submit]");
+
+        this.$tableWrapper = jQuery("#table-wrapper");
+    },
+
+    _areAllFiltersEmpty: function() {
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val();
+    },
+
+    _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "first-name",
+                "last-name"
+            ]
+        });
+    },
+
+    _initEvents: function () {
+        jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+    },
+
+    _toggleAdvancedSearch: function (e) {
+        /* TODO if (this.$form.is(":visible")) {
+            this.$form.slideUpCustom();
+        } else {
+            this.$form.slideDownCustom();
+        } */
+    },
+
+    _doSubmit: function (e) {
+        if (e)
+            e.preventDefault();
+
+        if (this._areAllFiltersEmpty()) {
+            this.$otherInputError.slideDownCustom();
+        }
+        else if (this.validator.isValid()) {
+            this.$otherInputError.slideUpCustom();
+            this.$submitBtn.button('loading');
+            this.$tableWrapper.html('<div class="data-loading"></div>');
+
+            var inputFirstName = this.$firstName.val().toLowerCase();
+            var inputLastName = this.$lastName.val().toLowerCase();
+            var selectedUsStateId = this.$usStateSelect.val();
+
+            var stateLegislatorSearch = {
+                firstName: inputFirstName ? inputFirstName : null,
+                lastName: inputLastName ? inputLastName : null,
+                usStateId: selectedUsStateId ? selectedUsStateId : null
+            };
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/state-legislators",
+                data: stateLegislatorSearch,
+                onSuccess: function (responseText, responseXML) {
+                    this.$submitBtn.button('reset');
+                    this._storeMatchingStateLegislators(JSON.parse(responseText));
+                    this._createResultsTable();
+                }.bind(this),
+                onFailure: function (xhr) {
+                    this.$submitBtn.button('reset');
+                    alert("AJAX fail :(");
+                }.bind(this)
+            }).get();
+        }
+    },
+
+    _navigateToStateLegislatorPage: function(e) {
+        location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
+    },
+
+    _storeMatchingStateLegislators: function (stateLegislatorsWithLatestReportWithNbReports) {
+        this.matchingStateLegislators = stateLegislatorsWithLatestReportWithNbReports.map(function (stateLegislatorWithLatestReportWithNbReports) {
+            return new CBR.Models.StateLegislatorWithLatestReportWithNbReports({
+                stateLegislator: new CBR.Models.StateLegislator(stateLegislatorWithLatestReportWithNbReports.stateLegislator),
+                latestReport: stateLegislatorWithLatestReportWithNbReports.latestReport ? new CBR.Models.Report(stateLegislatorWithLatestReportWithNbReports.latestReport) : null,
+                nbReports: stateLegislatorWithLatestReportWithNbReports.nbReports
+            });
+        });
+    },
+
+    _createResultsTable: function () {
+        this.$tableWrapper.empty();
+        this.$tableWrapper.append('<table class="table table-striped table-bordered table-condensed"></table>');
+
+        this.$tableWrapper.children("table").dataTable({
+            "iDisplayLength": 9999,
+            "aaData": this.matchingStateLegislators,
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var $row = jQuery(nRow);
+                $row.attr("data-id", aData.getStateLegislator().getId());
+                $row.addClass("clickable");
+            },
+            "aoColumns": [
+                {
+                    "mData": function (source, type, val) {
+                        return source.getStateLegislator().getTitleAbbr();
+                    },
+                    "sTitle": "Title"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var stateLegislator = source.getStateLegislator();
+                        return stateLegislator.getLastName() + " " + stateLegislator.getFirstName();
+                    },
+                    "sTitle": "Name",
+                    "sWidth": "20%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        return source.getStateLegislator().getPoliticalPartiesAbbr();
+                    },
+                    "sTitle": "P",
+                    "bSortable": false
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var stateLegislator = source.getStateLegislator();
+                        return stateLegislator.getUsState().id + " " + stateLegislator.getDistrict();
+                    },
+                    "sTitle": "District"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+                        return latestReport ?
+                            '<span class="support-level ' + latestReport.getSupportLevel() + '">' + latestReport.getReadableSupportLevel() + '</span>(' + source.getNbReports() + ")" :
+                            null;
+                    },
+                    "sTitle": "Support (nb reports)",
+                    "bSortable": false
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
+                            if (isMoneyInPoliticsAProblem === true) {
+                                return "Y";
+                            } else if (isMoneyInPoliticsAProblem === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Money in<br />politics is<br />a problem</span>',
+                    "sWidth": "7.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
+                            if (isSupportingAmendmentToFixIt === true) {
+                                return "Y";
+                            } else if (isSupportingAmendmentToFixIt === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Supports<br />amendment<br />to fix it</span>',
+                    "sWidth": "8.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
+                            if (isOpposingCitizensUnited === true) {
+                                return "Y";
+                            } else if (isOpposingCitizensUnited === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Opposes<br />Citizens<br />United</span>',
+                    "sWidth": "6.5%"
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+
+                        if (latestReport) {
+                            var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
+                            if (hasPreviouslyVotedForConvention === true) {
+                                return "Y";
+                            } else if (hasPreviouslyVotedForConvention === false) {
+                                return "N";
+                            } else {
+                                return "?";
+                            }
+                        } else {
+                            return null;
+                        }
+                    },
+                    "sTitle": '<span class="question-column-header">Previous<br />vote for<br />convention</span>'
+                },
+                {
+                    "mData": function (source, type, val) {
+                        var latestReport = source.getLatestReport();
+                        return latestReport ?
+                            latestReport.getReadableContact() :
+                            null;
+                    },
+                    "sTitle": "Last contact"
+                }
+            ],
+            "oLanguage": {
+                "sEmptyTable": "No matching state legislator"
+            }
+        });
+
+        jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
+    }
+});
+;CBR.Controllers.StateLegislator = new Class({
+    Extends: CBR.Controllers.BaseController,
+
+    initialize: function (options) {
+        this.parent(options);
+    },
+
+    run: function () {
+        this.initElements();
+        this._initValidation();
+        this._initEvents();
+    },
+
+    initElements: function () {
+        this.parent();
+
+        this.$committeesList = jQuery("#committees > ul");
+
+        this.$authorName = jQuery("#author-name");
+
+        this.$mppRadios = jQuery("[name='MPP']");
+        this.$yesMppRadio = this.$mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+        this.$noMppRadio = this.$mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+        this.$safiRadios = jQuery("[name='SAFI']");
+        this.$yesSafiRadio = this.$safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+        this.$noSafiRadio = this.$safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+        this.$ocuRadios = jQuery("[name='OCU']");
+        this.$yesOcuRadio = this.$ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+        this.$noOcuRadio = this.$ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+        this.$pvcRadios = jQuery("[name='PVC']");
+        this.$yesPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+        this.$noPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+        this.$form = jQuery("form");
+        this.$submitBtn = jQuery("[type=submit]");
+
+        this._initForm();
+    },
+
+    _getStateLegislator: function () {
+        return this.options.stateLegislator;
+    },
+
+    _getLatestReport: function () {
+        return this.options.latestReport;
+    },
+
+    _getAction: function () {
+        return this.options.action;
+    },
+
+    _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "author-name",
+                "notes"
+            ]
+        });
+    },
+
+    _initEvents: function () {
+        jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
+        jQuery("#new-report-toggle").click(jQuery.proxy(this._toggleNewReport, this));
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+    },
+
+    _initForm: function() {
+        this.$authorName.val(this.getFromLocalStorage(this.$authorName.attr("id")));
+
+        if (this._getAction() === "savedReport") {
+            this.$form.hide();
+        }
+    },
+
+    _toggleCommittees: function (e) {
+        if (this.$committeesList.is(":visible")) {
+            this.$committeesList.slideUpCustom();
+        } else {
+            this.$committeesList.slideDownCustom();
+        }
+    },
+
+    _toggleNewReport: function (e) {
+        if (this.$form.is(":visible")) {
+            this.$form.slideUpCustom();
+        } else {
+            this.$form.slideDownCustom();
+        }
+    },
+
+    _doSubmit: function (e) {
+        if (e)
+            e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.$submitBtn.button('loading');
+
+            var authorName = this.$authorName.val();
+            var selectedSupportLevel = jQuery("#support-level").val();
+
+            var isMoneyInPoliticsAProblem = null;
+            if (this.$yesMppRadio.prop("checked")) {
+                isMoneyInPoliticsAProblem = true;
+            } else if (this.$noMppRadio.prop("checked")) {
+                isMoneyInPoliticsAProblem = false;
+            }
+
+            var isSupportingAmendmentToFixIt = null;
+            if (this.$yesSafiRadio.prop("checked")) {
+                isSupportingAmendmentToFixIt = true;
+            } else if (this.$noSafiRadio.prop("checked")) {
+                isSupportingAmendmentToFixIt = false;
+            }
+
+            var isOpposingCitizensUnited = null;
+            if (this.$yesOcuRadio.prop("checked")) {
+                isOpposingCitizensUnited = true;
+            } else if (this.$noOcuRadio.prop("checked")) {
+                isOpposingCitizensUnited = false;
+            }
+
+            var hasPreviouslyVotedForConvention = null;
+            if (this.$yesPvcRadio.prop("checked")) {
+                hasPreviouslyVotedForConvention = true;
+            } else if (this.$noPvcRadio.prop("checked")) {
+                hasPreviouslyVotedForConvention = false;
+            }
+
+            var report = {
+                candidateId: this._getStateLegislator().id,
+                authorName: authorName,
+                contact: jQuery("#contact").val(),
+                isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
+                isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
+                isOpposingCitizensUnited: isOpposingCitizensUnited,
+                hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
+                supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
+                notes: jQuery("#notes").val()
+            };
+
+            this.saveInLocalStorage(this.$authorName.attr("id"), authorName);
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/reports",
+                data: CBR.JsonUtil.stringifyModel(report),
+                onSuccess: function (responseText, responseXML) {
+                    location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=savedReport");
+                }.bind(this),
+                onFailure: function (xhr) {
+                    this.$submitBtn.button('reset');
+                    alert("AJAX fail :(");
+                }.bind(this)
+            }).post();
+        }
     }
 });

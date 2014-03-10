@@ -24,8 +24,8 @@ CBR.Models.StateLegislator = new Class({
         return this.options.politicalParties;
     },
 
-    getUsStateId: function() {
-        return this.options.usStateId;
+    getUsState: function() {
+        return this.options.usState;
     },
 
     getDistrict: function() {

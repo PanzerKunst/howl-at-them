@@ -11,7 +11,7 @@ object AuthApi extends Controller {
 
       val signInData = JsonUtil.deserialize[(SignInData)](request.body.toString())
 
-      AccountDto.getOfSignInInfo(signInData.emailAddress, signInData.password) match {
+      AccountDto.getOfSignInInfo(signInData.username, signInData.password) match {
         case Some(account) =>
           Ok.withSession(
             session + ("accountId" -> account.id.get.toString)

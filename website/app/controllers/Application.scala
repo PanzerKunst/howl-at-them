@@ -1,8 +1,9 @@
 package controllers
 
 import play.api.mvc._
-import db.{StateLegislatorDto, AccountDto, UsStateDto}
-import models.Account
+import db.{ReportDto, StateLegislatorDto, AccountDto, UsStateDto}
+import models.{ContactWithLegislator, Account}
+import services.VoteSmartService
 import play.api.Logger
 
 object Application extends Controller {
@@ -49,19 +50,21 @@ object Application extends Controller {
       else
         None
 
-      val stateLegislators = selectedUsStateId match {
-        case Some(usStateId) => StateLegislatorDto.getMatching(None, None, Some(usStateId))
-        case None => List()
-      }
-
-      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session), selectedUsStateId, stateLegislators))
+      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session), selectedUsStateId))
   }
 
   def stateLegislator(id: Int) = Action {
     implicit request =>
 
+      val action = if (request.queryString.contains("action"))
+        Some(request.queryString.get("action").get.head)
+      else
+        None
+
+      val existingReports = ReportDto.getOfCandidate(id)
+
       StateLegislatorDto.getOfId(id) match {
-        case Some(stateLegislator) => Ok(views.html.stateLegislator(stateLegislator, loggedInUser(session)))
+        case Some(stateLegislator) => Ok(views.html.stateLegislator(stateLegislator, existingReports.headOption, existingReports, action, loggedInUser(session)))
         case None => NotFound
       }
   }
@@ -80,7 +83,9 @@ object Application extends Controller {
 
       /* TODO loggedInUser(session) match {
         case Some(loggedInAccount) => Redirect(routes.Application.adminLogin)
-        case None => */Ok(views.html.admin())/*
+        case None => */
+
+      Ok(views.html.admin(VoteSmartService.isRunning))/*
       }*/
   }
 

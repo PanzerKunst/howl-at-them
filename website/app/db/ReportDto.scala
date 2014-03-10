@@ -1,0 +1,68 @@
+package db
+
+import anorm._
+import play.api.Logger
+import models.Report
+import play.api.db.DB
+import play.api.Play.current
+import java.util.Date
+
+object ReportDto {
+  def create(report: Report): Option[Long] = {
+    DB.withConnection {
+      implicit c =>
+
+        var supportLevelForQuery = "NULL"
+        if (report.supportLevel.isDefined && report.supportLevel.get != "")
+          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
+
+        val query = """
+               insert into report(candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
+          is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes, creation_timestamp)
+          values(""" + report.candidateId + """, '""" +
+          DbUtil.safetize(report.authorName) + """', '""" +
+          DbUtil.safetize(report.contact) + """', """ +
+          report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """, """ +
+          report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """, """ +
+          report.isOpposingCitizensUnited.getOrElse("NULL") + """, """ +
+          report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """, """ +
+          supportLevelForQuery + """, '""" +
+          DbUtil.safetize(report.notes) + """', """ +
+          new Date().getTime + """);"""
+
+        Logger.info("ReportDto.create():" + query)
+
+        SQL(query).executeInsert()
+    }
+  }
+
+  def getOfCandidate(candidateId: Int): List[Report] = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
+            is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes,
+            creation_timestamp
+          from report
+          where candidate_id = """ + candidateId + """
+          order by creation_timestamp desc;"""
+
+        Logger.info("ReportDto.getOfCandidate():" + query)
+
+        SQL(query)().map(row =>
+          new Report(row[Option[Long]]("id"),
+            candidateId,
+            row[String]("author_name"),
+            row[String]("contact"),
+            row[Option[Boolean]]("is_money_in_politics_a_problem"),
+            row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
+            row[Option[Boolean]]("is_opposing_citizens_united"),
+            row[Option[Boolean]]("has_previously_voted_for_convention"),
+            row[Option[String]]("support_level"),
+            row[String]("notes"),
+            row[Option[Long]]("creation_timestamp"))
+        ).toList
+    }
+  }
+}

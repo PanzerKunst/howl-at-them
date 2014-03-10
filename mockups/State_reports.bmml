@@ -276,5 +276,29 @@
         <text>Log%20out</text>
       </controlProperties>
     </control>
+    <control controlID="190" controlTypeID="com.balsamiq.mockups::Label" x="237" y="339" w="-1" h="-1" measuredW="51" measuredH="21" zOrder="54" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>0</color>
+        <text>Y%20Y%20Y%20%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="191" controlTypeID="com.balsamiq.mockups::Label" x="239" y="439" w="-1" h="-1" measuredW="50" measuredH="21" zOrder="55" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>0</color>
+        <text>Y%20Y%20N%20%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="192" controlTypeID="com.balsamiq.mockups::Label" x="273" y="519" w="-1" h="-1" measuredW="50" measuredH="21" zOrder="56" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>0</color>
+        <text>Y%20N%20N%20%3F</text>
+      </controlProperties>
+    </control>
+    <control controlID="193" controlTypeID="com.balsamiq.mockups::Label" x="275" y="663" w="-1" h="-1" measuredW="51" measuredH="21" zOrder="57" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>0</color>
+        <text>%3F%20%3F%20Y%20N</text>
+      </controlProperties>
+    </control>
   </controls>
 </mockup>

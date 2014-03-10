@@ -63,12 +63,15 @@ module.exports = function (grunt) {
                     // Models
                     "javascripts/models/jsonSerializable.js",
                     "javascripts/models/account.js",
+                    "javascripts/models/report.js",
                     "javascripts/models/stateLegislator.js",
+                    "javascripts/models/stateLegislatorWithLatestReportWithNbReports.js",
 
                     // Controllers
                     "javascripts/controllers/baseController.js",
+                    "javascripts/controllers/admin.js",
                     "javascripts/controllers/searchLegislators.js",
-                    "javascripts/controllers/admin.js"
+                    "javascripts/controllers/stateLegislator.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
             }

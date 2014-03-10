@@ -21,4 +21,5 @@ if (typeof String.prototype.startsWith !== 'function') {
     };
 }
 
-CBR.desktopBreakPoint = "49em";
+CBR.mediumScreenBreakPoint = "39.5em";
+CBR.largeScreenBreakPoint = "49.5em";

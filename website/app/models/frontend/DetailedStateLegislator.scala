@@ -1,46 +1,33 @@
 package models.frontend
 
 import play.api.libs.json.{Json, JsValue, Writes}
-import models.StateLegislator
-import models.votesmart.{VoteSmartCandidateOffice, VoteSmartCandidateCommittee}
+import models.{StateLegislator, UsState, CandidateCommittee, CandidateOffice}
 
 class DetailedStateLegislator(_id: Int,
                               _firstName: String,
                               _lastName: String,
                               _title: String,
                               _politicalParties: List[String] = List(),
-                              _usStateId: String,
+                              _usState: UsState,
                               _district: String,
 
+                              _offices: List[CandidateOffice] = List(),
+                              _committees: List[CandidateCommittee] = List(),
                               _leadershipTitle: Option[String] = None,
-                              _committees: List[VoteSmartCandidateCommittee] = List(),
-                              _offices: List[VoteSmartCandidateOffice] = List(),
-                              _photoUrl: Option[String] = None,
 
-                              _moneyInPoliticsIsAProblem: Option[Boolean] = None,
-                              _supportsAmendmentToFixIt: Option[Boolean] = None,
-                              _opposesCitizensUnited: Option[Boolean] = None,
-                              _previousVoteForConvention: Option[Boolean] = None,
-                              _supportLevel: Option[String] = None,
-                              _isAPriorityTarget: Boolean)
+                              _isAPriorityTarget: Boolean = false)
   extends StateLegislator(_id,
     _firstName,
     _lastName,
     _title,
     _politicalParties,
-    _usStateId,
+    _usState,
     _district) {
 
+  var offices: List[CandidateOffice] = _offices
+  var committees: List[CandidateCommittee] = _committees
   var leadershipTitle: Option[String] = _leadershipTitle
-  var committees: List[VoteSmartCandidateCommittee] = _committees
-  var offices: List[VoteSmartCandidateOffice] = _offices
-  var photoUrl: Option[String] = _photoUrl
 
-  var moneyInPoliticsIsAProblem: Option[Boolean] = _moneyInPoliticsIsAProblem
-  var supportsAmendmentToFixIt: Option[Boolean] = _supportsAmendmentToFixIt
-  var opposesCitizensUnited: Option[Boolean] = _opposesCitizensUnited
-  var previousVoteForConvention: Option[Boolean] = _previousVoteForConvention
-  var supportLevel: Option[String] = _supportLevel
   var isAPriorityTarget: Boolean = _isAPriorityTarget
 }
 
@@ -53,19 +40,13 @@ object DetailedStateLegislator {
         "lastName" -> detailedStateLegislator.lastName,
         "title" -> detailedStateLegislator.title,
         "politicalParties" -> detailedStateLegislator.politicalParties,
-        "usStateId" -> detailedStateLegislator.usStateId,
+        "usState" -> detailedStateLegislator.usState,
         "district" -> detailedStateLegislator.district,
 
-        "leadershipTitle" -> detailedStateLegislator.leadershipTitle,
-        "committees" -> detailedStateLegislator.committees,
         "offices" -> detailedStateLegislator.offices,
-        "photoUrl" -> detailedStateLegislator.photoUrl,
+        "committees" -> detailedStateLegislator.committees,
+        "leadershipTitle" -> detailedStateLegislator.leadershipTitle,
 
-        "moneyInPoliticsIsAProblem" -> detailedStateLegislator.moneyInPoliticsIsAProblem,
-        "supportsAmendmentToFixIt" -> detailedStateLegislator.supportsAmendmentToFixIt,
-        "opposesCitizensUnited" -> detailedStateLegislator.opposesCitizensUnited,
-        "previousVoteForConvention" -> detailedStateLegislator.previousVoteForConvention,
-        "supportLevel" -> detailedStateLegislator.supportLevel,
         "isAPriorityTarget" -> detailedStateLegislator.isAPriorityTarget
       )
     }

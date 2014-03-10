@@ -14,23 +14,23 @@ object VoteSmartCandidateOfficeDto {
 
         var streetForQuery = "NULL"
         if (voteSmartCandidateOffice.street.isDefined && voteSmartCandidateOffice.street.get != "")
-          streetForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidateOffice.street.get) + "'"
+          streetForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.street.get) + "'"
 
         var cityForQuery = "NULL"
         if (voteSmartCandidateOffice.city.isDefined && voteSmartCandidateOffice.city.get != "")
-          cityForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidateOffice.city.get) + "'"
+          cityForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.city.get) + "'"
 
         var stateForQuery = "NULL"
         if (voteSmartCandidateOffice.state.isDefined && voteSmartCandidateOffice.state.get != "")
-          stateForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidateOffice.state.get) + "'"
+          stateForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.state.get) + "'"
 
         var zipForQuery = "NULL"
         if (voteSmartCandidateOffice.zip.isDefined && voteSmartCandidateOffice.zip.get != "")
-          zipForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidateOffice.zip.get) + "'"
+          zipForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.zip.get) + "'"
 
         var phone1ForQuery = "NULL"
         if (voteSmartCandidateOffice.phone1.isDefined && voteSmartCandidateOffice.phone1.get != "")
-          phone1ForQuery = "'" + DbUtil.backslashQuotes(voteSmartCandidateOffice.phone1.get) + "'"
+          phone1ForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.phone1.get) + "'"
 
         val query = """
                    insert into temp_vote_smart_candidate_office(candidate_id,
@@ -42,7 +42,7 @@ object VoteSmartCandidateOfficeDto {
                    zip,
                    phone1)
           values(""" + voteSmartCandidateOffice.candidateId + """, '""" +
-          DbUtil.backslashQuotes(voteSmartCandidateOffice.officeType) + """', """ +
+          DbUtil.safetize(voteSmartCandidateOffice.officeType) + """', """ +
           voteSmartCandidateOffice.officeTypeId + """, """ +
           streetForQuery + """, """ +
           cityForQuery + """, """ +

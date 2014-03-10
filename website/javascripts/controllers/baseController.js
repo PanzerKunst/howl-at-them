@@ -24,24 +24,33 @@ CBR.Controllers.BaseController = new Class({
         this._applyModernizrRules();
     },
 
-    isDesktopBrowser: function() {
-        return Modernizr.mq("screen and (min-width: " + CBR.desktopBreakPoint + ")");
+    isBrowserMediumScreen: function() {
+        return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
     },
 
-    initInputFromLocalStorage: function($input) {
-        var valueInLocalStorage = localStorage.getItem($input[0].id);
-        if (valueInLocalStorage) {
-            $input.val(valueInLocalStorage);
+    isBrowserLargeScreen: function() {
+        return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
+    },
+
+    saveInLocalStorage: function(key, value) {
+        if (Modernizr.localstorage) {
+            var pageId = jQuery("body").attr("id");
+
+            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+            pageDataInLocalStorage[key] = value;
+
+            localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
         }
     },
 
-    localStoreInput:function (e) {
-        var input = e.currentTarget;
-        localStorage.setItem(input.id, jQuery(input).val());
-    },
+    getFromLocalStorage: function(key) {
+        if (Modernizr.localstorage) {
+            var pageId = jQuery("body").attr("id");
 
-    removeLocalStorageValueForInput: function($input) {
-        localStorage.removeItem($input[0].id);
+            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+
+            return pageDataInLocalStorage[key];
+        }
     },
 
     _applyModernizrRules: function () {

@@ -1,0 +1,179 @@
+#state-legislator {
+  #content {
+    #legislator-data,
+    #committees {
+      width: $field-width;
+
+      margin: 0 auto $line-height-computed auto;
+
+      @include medium-screen {
+        width: $medium-screen-min-width - 2*$page-side-padding;
+      }
+    }
+
+    #legislator-data {
+      > div:first-child {
+        > p {
+          text-align: center; // To override the default value of "justify"
+        }
+      }
+
+      @include large-screen {
+        width: 100%;
+
+        @include clearfix;
+
+        > div {
+          float: left;
+          padding-right: 1em;
+
+          @include box-sizing(border-box);
+
+          &:first-child {
+            width: 30%;
+          }
+
+          &:nth-child(2) {
+            width: 40%;
+          }
+
+          &:last-child {
+            width: 30%;
+            padding-right: 0;
+          }
+        }
+      }
+    }
+
+    #committees {
+      text-align: center;
+
+      > ul {
+        display: none;
+
+        // To avoid glitch when sliding down
+        margin-bottom: 0;
+
+        padding-left: 1em;
+
+        width: 100%;
+        text-align: left;
+      }
+
+      li {
+        font-size: $font-size-base;
+        // TODO list-style-type: none;
+      }
+    }
+
+    .office-address {
+      span {
+        @include large-screen {
+          font-size: $font-size-base;
+        }
+      }
+
+      p {
+        text-align: left; // Default is justify
+
+        @include large-screen {
+          font-size: $font-size-small;
+        }
+      }
+    }
+
+    #phone-numbers {
+      > article,
+      > .form-group {
+        width: 13em;
+        margin: 0 auto;
+      }
+
+      label {
+        margin-right: 1em;
+
+        &[for="other-phone-number"] {
+          margin-right: 0.7em;
+        }
+      }
+
+      span {
+        font-size: $font-size-base;
+      }
+    }
+
+    #support-level-and-priority-target {
+      > .support-level {
+        font-weight: bold;
+        margin: 5px 0 0 1em;
+      }
+
+      > .check-or-radio {
+        float: right;
+        margin-right: 1em;
+      }
+    }
+
+    #other-phone-number {
+      display: inline-block;
+      width: 9em;
+    }
+
+    table {
+      th,
+      td {
+        text-align: center;
+      }
+
+      th {
+        font-weight: normal;
+        font-size: 10px;
+      }
+    }
+
+    .form-groups {
+      width: $field-width;
+      margin: auto;
+
+      @include medium-screen {
+        width: $field-width + $odd-form-groups-margin-right + $field-width;
+      }
+    }
+
+    .form-group {
+      @include clearfix;
+
+      > .check-or-radio {
+        float: left;
+        margin-right: 2em;
+      }
+    }
+
+    #previous-reports {
+      span,
+      a,
+      p {
+        font-size: $font-size-base;
+      }
+
+      .existing-report-date,
+      .existing-report-support-level,
+      .support-level {
+        width: 11em;
+      }
+
+      .existing-report-contact {
+        width: 10em;
+      }
+    }
+
+    .edit-existing-report,
+    .delete-existing-report {
+      float: right;
+    }
+
+    .edit-existing-report {
+      margin-right: 1em;
+    }
+  }
+}
