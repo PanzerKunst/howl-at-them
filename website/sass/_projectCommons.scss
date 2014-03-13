@@ -1,0 +1,103 @@
+.support-level {
+  &.UNKNOWN {
+    color: $gray-light;
+  }
+
+  &.SUPPORTIVE {
+    color: $brand-success;
+  }
+
+  &.NEEDS_CONVINCING {
+    color: $brand-warning;
+  }
+
+  &.NOT_SUPPORTIVE {
+    color: $brand-danger;
+  }
+}
+
+#content {
+  th {
+    font-weight: normal;
+
+    > .yes-no-answer {
+      text-align: center;
+      width: 100%;
+      font-size: 10px;
+    }
+  }
+
+  td {
+    > .yes-no-answer {
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  // Wouldn't override declaration was outside #content
+  &.report-listing {
+    .form-group {
+      // We want the margin even on small rez
+      margin-right: $odd-form-groups-margin-right;
+
+      // To have the inputs on one line even on small screens
+      float: left;
+    }
+
+    .submit-wrapper {
+      float: left;
+      padding-top: 24px;
+    }
+
+    .support-level {
+      width: 9em;
+    }
+  }
+
+  // Wouldn't override declaration was outside #content
+  .reports {
+    > article {
+      border: 1px solid $table-border-color;
+      border-bottom: none;
+
+      padding: $table-condensed-cell-padding;
+
+      &:nth-child(even) {
+        background-color: $table-bg-accent;
+      }
+
+      &:last-child {
+        border-bottom: 1px solid $table-border-color;
+      }
+    }
+
+    span,
+    a,
+    p {
+      font-size: $font-size-base;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    .existing-report-date,
+    .existing-report-support-level,
+    .support-level {
+      width: 11em;
+    }
+
+    .existing-report-contact {
+      width: 10em;
+    }
+  }
+}
+
+.edit-existing-report,
+.delete-existing-report {
+  float: right;
+}
+
+.edit-existing-report {
+  margin-right: 1em;
+}

@@ -17,12 +17,13 @@ object UsStateDto {
 
         Logger.info("UsStateDto.getAll():" + query)
 
-        SQL(query)().map(row =>
-          new UsState(
-            row[String]("id"),
-            row[String]("name")
-          )
-        ).toList
+        SQL(query)().map {
+          row =>
+            new UsState(
+              row[String]("id"),
+              row[String]("name")
+            )
+        }.toList
     }
   }
 

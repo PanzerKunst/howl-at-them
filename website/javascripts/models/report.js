@@ -37,7 +37,7 @@ CBR.Models.Report = new Class({
     },
 
     getSupportLevel: function() {
-        return this.options.supportLevel;
+        return this.options.supportLevel ? this.options.supportLevel : "UNKNOWN";
     },
 
     getNotes: function() {
@@ -45,8 +45,8 @@ CBR.Models.Report = new Class({
     },
 
     getReadableSupportLevel: function() {
-        var supportLevel = this.getSupportLevel();
-        return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : null;
+        var supportLevel = this.options.supportLevel;
+        return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : CBR.Models.Report.supportLevel.UNKNOWN;
     },
 
     getReadableContact: function() {
@@ -63,7 +63,8 @@ CBR.Models.Report.radioAnswer = {
 CBR.Models.Report.supportLevel = {
     SUPPORTIVE: "Supportive",
     NEEDS_CONVINCING: "Needs convincing",
-    NOT_SUPPORTIVE: "Not supportive"
+    NOT_SUPPORTIVE: "Not supportive",
+    UNKNOWN: "Unknown"
 };
 
 CBR.Models.Report.contact = {

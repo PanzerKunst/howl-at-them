@@ -101,7 +101,7 @@ object DbAdmin {
             is_opposing_citizens_united boolean,
             has_previously_voted_for_convention boolean,
             support_level varchar(32),
-            notes varchar(512) not null,
+            notes varchar(512),
             creation_timestamp bigint not null
           );"""
 
@@ -404,7 +404,7 @@ object DbAdmin {
         SQL("insert into us_state(id, name) values('CO', 'Colorado');").execute()
         SQL("insert into us_state(id, name) values('CT', 'Connecticut');").execute()
         SQL("insert into us_state(id, name) values('DE', 'Delaware');").execute()
-        SQL("insert into us_state(id, name) values('DC', 'District of Columbia');").execute()
+        //SQL("insert into us_state(id, name) values('DC', 'District of Columbia');").execute()
         SQL("insert into us_state(id, name) values('FL', 'Florida');").execute()
         SQL("insert into us_state(id, name) values('GA', 'Georgia');").execute()
         SQL("insert into us_state(id, name) values('HI', 'Hawaii');").execute()

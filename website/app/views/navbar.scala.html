@@ -1,4 +1,20 @@
-@(account: models.Account)
+@(account: Option[Account], pageId: String)
+@if(pageId == "_state-reports" || pageId == "_search-legislators") {
+<nav class="non-responsive-navbar" role="navigation">
+    <a href="/">Howl at Them</a>
+    <ul>
+        <li @if(pageId == "state-reports") { class="active" }><a href="/state-reports">State reports</a></li>
+        <li @if(pageId == "search-legislators") { class="active" }><a href="/state-legislators">Search legislators</a></li>
+        <li><a href="#">Script</a></li>
+        <li><a href="#">Toolbox</a></li>
+        @if(account.isDefined) {
+        <li><a href="/logout">Logout</a></li>
+        } else {
+        <li><a href="/admin-login">Admin</a></li>
+        }
+    </ul>
+</nav>
+} else {
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -9,26 +25,23 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/home">Howl at Them</a>
+            <a class="navbar-brand" href="/">Howl at Them</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbar-links">
             <ul class="nav navbar-nav navbar-right">
+                <li @if(pageId == "state-reports") { class="active" }><a href="/state-reports">State reports</a></li>
+                <li @if(pageId == "search-legislators") { class="active" }><a href="/state-legislators">Search legislators</a></li>
                 <li><a href="#">Script</a></li>
                 <li><a href="#">Toolbox</a></li>
-                <li class="active"><a href="/my-account">My account</a></li>
-                @if(account != null) {
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/admin/users">Manage users</a></li>
-                        <li><a href="/admin/state-legislators/new">Add a legislator</a></li>
-                    </ul>
-                </li>
-                }
+                @if(account.isDefined) {
                 <li><a href="/logout">Logout</a></li>
+                } else {
+                <li><a href="/admin-login">Admin</a></li>
+                }
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+}

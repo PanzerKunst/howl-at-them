@@ -4,18 +4,26 @@
     #committees {
       width: $field-width;
 
-      margin: 0 auto $line-height-computed auto;
-
       @include medium-screen {
         width: $medium-screen-min-width - 2*$page-side-padding;
       }
     }
 
     #legislator-data {
+      margin: 0 auto $line-height-computed auto;
+
       > div:first-child {
         > p {
           text-align: center; // To override the default value of "justify"
+
+          &:nth-child(2) {
+            margin-bottom: 0;
+          }
         }
+      }
+
+      img {
+        margin-bottom: $line-height-computed/2;
       }
 
       @include large-screen {
@@ -25,7 +33,6 @@
 
         > div {
           float: left;
-          padding-right: 1em;
 
           @include box-sizing(border-box);
 
@@ -35,34 +42,66 @@
 
           &:nth-child(2) {
             width: 40%;
+            padding-right: 1em;
           }
 
           &:last-child {
             width: 30%;
-            padding-right: 0;
           }
         }
       }
     }
 
-    #committees {
-      text-align: center;
+    $font-size-phone-numbers: 29px;
 
-      > ul {
-        display: none;
+    #phone-numbers {
+      margin-bottom: $line-height-computed/2;
 
-        // To avoid glitch when sliding down
-        margin-bottom: 0;
-
-        padding-left: 1em;
-
-        width: 100%;
-        text-align: left;
+      > article,
+      > .form-group {
+        // To center
+        width: 20em;
+        margin: 0 auto;
       }
 
-      li {
-        font-size: $font-size-base;
-        // TODO list-style-type: none;
+      label {
+        margin-top: 5px;
+        margin-right: 1em;
+        vertical-align: top;
+
+        width: 4.5em;
+
+        &[for="other-phone-number"] {
+          margin: 6px 0 0 0;
+        }
+      }
+
+      span {
+        font-size: $font-size-phone-numbers;
+        line-height: 1em;
+      }
+    }
+
+    #other-phone-number {
+      display: inline-block;
+
+      font-size: $font-size-phone-numbers;
+      width: 7.4em;
+      height: 41px;
+    }
+
+    #support-level-and-priority-target {
+      > .support-level {
+        display: block;
+        float: left;
+
+        font-weight: bold;
+        margin-left: 1em;
+      }
+
+      > .check-or-radio {
+        float: right;
+        margin-right: 1em;
       }
     }
 
@@ -82,56 +121,39 @@
       }
     }
 
-    #phone-numbers {
-      > article,
-      > .form-group {
-        width: 13em;
-        margin: 0 auto;
+    #committees {
+      text-align: center;
+
+      // To avoid glitch when sliding down
+      margin: 0 auto;
+
+      > ul {
+        display: none;
+
+        // To avoid glitch when sliding down
+        margin-bottom: 0;
+
+        padding-left: 1em;
+
+        width: 100%;
+        text-align: left;
       }
 
-      label {
-        margin-right: 1em;
-
-        &[for="other-phone-number"] {
-          margin-right: 0.7em;
-        }
-      }
-
-      span {
+      li {
         font-size: $font-size-base;
       }
     }
 
-    #support-level-and-priority-target {
-      > .support-level {
-        font-weight: bold;
-        margin: 5px 0 0 1em;
-      }
-
-      > .check-or-radio {
-        float: right;
-        margin-right: 1em;
-      }
-    }
-
-    #other-phone-number {
-      display: inline-block;
-      width: 9em;
-    }
-
-    table {
-      th,
-      td {
-        text-align: center;
-      }
-
-      th {
-        font-weight: normal;
-        font-size: 10px;
+    #new-report {
+      h2 {
+        // To avoid glitch when sliding down committees
+        margin-top: 0;
       }
     }
 
     .form-groups {
+      @include clearfix;
+
       width: $field-width;
       margin: auto;
 
@@ -147,33 +169,6 @@
         float: left;
         margin-right: 2em;
       }
-    }
-
-    #previous-reports {
-      span,
-      a,
-      p {
-        font-size: $font-size-base;
-      }
-
-      .existing-report-date,
-      .existing-report-support-level,
-      .support-level {
-        width: 11em;
-      }
-
-      .existing-report-contact {
-        width: 10em;
-      }
-    }
-
-    .edit-existing-report,
-    .delete-existing-report {
-      float: right;
-    }
-
-    .edit-existing-report {
-      margin-right: 1em;
     }
   }
 }

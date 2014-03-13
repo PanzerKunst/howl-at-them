@@ -16,6 +16,10 @@ object ReportDto {
         if (report.supportLevel.isDefined && report.supportLevel.get != "")
           supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
 
+        var notesForQuery = "NULL"
+        if (report.notes.isDefined && report.notes.get != "")
+          notesForQuery = "'" + DbUtil.safetize(report.notes.get) + "'"
+
         val query = """
                insert into report(candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
           is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes, creation_timestamp)
@@ -26,8 +30,8 @@ object ReportDto {
           report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """, """ +
           report.isOpposingCitizensUnited.getOrElse("NULL") + """, """ +
           report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """, """ +
-          supportLevelForQuery + """, '""" +
-          DbUtil.safetize(report.notes) + """', """ +
+          supportLevelForQuery + """, """ +
+          notesForQuery + """, """ +
           new Date().getTime + """);"""
 
         Logger.info("ReportDto.create():" + query)
@@ -50,19 +54,20 @@ object ReportDto {
 
         Logger.info("ReportDto.getOfCandidate():" + query)
 
-        SQL(query)().map(row =>
-          new Report(row[Option[Long]]("id"),
-            candidateId,
-            row[String]("author_name"),
-            row[String]("contact"),
-            row[Option[Boolean]]("is_money_in_politics_a_problem"),
-            row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
-            row[Option[Boolean]]("is_opposing_citizens_united"),
-            row[Option[Boolean]]("has_previously_voted_for_convention"),
-            row[Option[String]]("support_level"),
-            row[String]("notes"),
-            row[Option[Long]]("creation_timestamp"))
-        ).toList
+        SQL(query)().map {
+          row =>
+            new Report(row[Option[Long]]("id"),
+              candidateId,
+              row[String]("author_name"),
+              row[String]("contact"),
+              row[Option[Boolean]]("is_money_in_politics_a_problem"),
+              row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
+              row[Option[Boolean]]("is_opposing_citizens_united"),
+              row[Option[Boolean]]("has_previously_voted_for_convention"),
+              row[Option[String]]("support_level"),
+              row[Option[String]]("notes"),
+              row[Option[Long]]("creation_timestamp"))
+        }.toList
     }
   }
 }

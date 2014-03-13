@@ -1,7 +1,7 @@
 package models.frontend
 
 import play.api.libs.json.{Json, JsValue, Writes}
-import models.{StateLegislator, UsState, CandidateCommittee, CandidateOffice}
+import models._
 
 class DetailedStateLegislator(_id: Int,
                               _firstName: String,
@@ -15,7 +15,8 @@ class DetailedStateLegislator(_id: Int,
                               _committees: List[CandidateCommittee] = List(),
                               _leadershipTitle: Option[String] = None,
 
-                              _isAPriorityTarget: Boolean = false)
+                              _isAPriorityTarget: Boolean = false,
+                              _reports: List[Report] = List())
   extends StateLegislator(_id,
     _firstName,
     _lastName,
@@ -29,6 +30,7 @@ class DetailedStateLegislator(_id: Int,
   var leadershipTitle: Option[String] = _leadershipTitle
 
   var isAPriorityTarget: Boolean = _isAPriorityTarget
+  var reports: List[Report] = _reports
 }
 
 object DetailedStateLegislator {
@@ -47,7 +49,8 @@ object DetailedStateLegislator {
         "committees" -> detailedStateLegislator.committees,
         "leadershipTitle" -> detailedStateLegislator.leadershipTitle,
 
-        "isAPriorityTarget" -> detailedStateLegislator.isAPriorityTarget
+        "isAPriorityTarget" -> detailedStateLegislator.isAPriorityTarget,
+        "reports" -> detailedStateLegislator.reports
       )
     }
   }

@@ -1,0 +1,84 @@
+#state-reports {
+  header {
+    min-width: $large-screen-min-width;
+  }
+
+  #content {
+    min-width: $large-screen-min-width;
+
+    $label-width-state-reports: 4em;
+    $width-submit-btn-state-reports: 7em;
+
+    form {
+      > div {
+        @include clearfix;
+
+        width: $label-width-state-reports + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-state-reports;
+
+        margin: 0 auto;
+      }
+    }
+
+    .form-group {
+      width: $label-width-state-reports + $field-width-search-pages;
+
+      > label {
+        display: inline-block;
+        width: $label-width-state-reports;
+      }
+    }
+
+    #us-state {
+      display: inline-block;
+      width: $field-width-search-pages;
+    }
+
+    .submit-wrapper {
+      padding-top: 0;
+
+      float: left;
+
+      > button {
+        width: $width-submit-btn-state-reports;
+      }
+    }
+
+    table {
+      margin: $line-height-computed 0 0 0;
+    }
+
+    th {
+      &.title {
+        width: 5%;
+      }
+      &.name {
+        width: 23%;
+      }
+      &.political-parties {
+        width: 3%;
+      }
+      &.district {
+        width: 14%;
+      }
+      &.support-level {
+        width: 19%;
+      }
+      &.mpp {
+        width: 9%;
+        text-align: center;
+      }
+      &.safi {
+        width: 10%;
+        text-align: center;
+      }
+      &.ocu {
+        width: 8%;
+        text-align: center;
+      }
+      &.pvc {
+        width: 9%;
+        text-align: center;
+      }
+    }
+  }
+}

@@ -1,10 +1,9 @@
 package controllers
 
 import play.api.mvc._
-import db.{ReportDto, StateLegislatorDto, AccountDto, UsStateDto}
-import models.{ContactWithLegislator, Account}
+import db.{StateLegislatorDto, AccountDto, UsStateDto}
+import models.Account
 import services.VoteSmartService
-import play.api.Logger
 
 object Application extends Controller {
 
@@ -21,7 +20,7 @@ object Application extends Controller {
      .post(Json.obj(
        "address" -> "410 Market St, Chapel Hill, NC"
      ))
-     .map {
+     map {
      response =>
        val contests = (response.json \ "contests").as[List[JsObject]]
        for (contest <- contests) {
@@ -42,15 +41,25 @@ object Application extends Controller {
       Redirect(routes.Application.index).withNewSession
   }
 
-  def searchLegislators = Action {
+  def stateReports = Action {
     implicit request =>
 
-      val selectedUsStateId = if (request.queryString.contains("selectedUsStateId"))
-        Some(request.queryString.get("selectedUsStateId").get.head)
-      else
-        None
+      if (request.queryString.contains("usStateId")) {
+        val selectedUsStateId = request.queryString.get("usStateId").get.head
+        val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
-      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session), selectedUsStateId))
+        val firstLegislator = detailedLegislatorsForThisState.headOption
+
+        val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
+
+        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList))
+      } else
+        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List()))
+  }
+
+  def searchLegislators = Action {
+    implicit request =>
+      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session)))
   }
 
   def stateLegislator(id: Int) = Action {
@@ -61,10 +70,8 @@ object Application extends Controller {
       else
         None
 
-      val existingReports = ReportDto.getOfCandidate(id)
-
       StateLegislatorDto.getOfId(id) match {
-        case Some(stateLegislator) => Ok(views.html.stateLegislator(stateLegislator, existingReports.headOption, existingReports, action, loggedInUser(session)))
+        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, detailedStateLegislator.reports.headOption, detailedStateLegislator.reports, action, loggedInUser(session)))
         case None => NotFound
       }
   }
@@ -81,11 +88,11 @@ object Application extends Controller {
   def admin = Action {
     implicit request =>
 
-      /* TODO loggedInUser(session) match {
-        case Some(loggedInAccount) => Redirect(routes.Application.adminLogin)
-        case None => */
+    /* TODO loggedInUser(session) match {
+ case Some(loggedInAccount) => Redirect(routes.Application.adminLogin)
+ case None => */
 
-      Ok(views.html.admin(VoteSmartService.isRunning))/*
+      Ok(views.html.admin(VoteSmartService.isRunning)) /*
       }*/
   }
 

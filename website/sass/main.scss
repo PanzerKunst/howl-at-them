@@ -11,6 +11,7 @@
 @import "base";
 @import "forms";
 @import "tables";
+@import "projectCommons";
 
 // Vendor overrides
 @import "vendor-overrides/bootstrap";
@@ -20,4 +21,5 @@
 @import "pages/index";
 @import "pages/admin";
 @import "pages/searchLegislators";
+@import "pages/stateReports";
 @import "pages/stateLegislator";

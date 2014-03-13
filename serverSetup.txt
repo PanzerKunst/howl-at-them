@@ -1,0 +1,78 @@
+#################
+# Hostname config
+#################
+
+Check address in "ifconfig"
+
+$ sudo vi /etc/hosts
+188.40.99.15 hat.reportingfromtheborderland.net #address from “ifconfig”
+
+
+######################
+# Add missing packages
+######################
+
+$ sudo apt-get install postgresql
+
+
+#################
+# Create database
+#################
+
+Change password for "postgres":
+$ sudo -u postgres psql postgres
+# \password postgres
+Ctrl + D
+
+Create the "howlatthem" DB:
+$ sudo -u postgres createdb howlatthem
+
+
+#################################
+# Export and import DB (optional)
+#################################
+
+Export:
+> cd d:\ProgramFiles\PostgreSQL\9.3\bin
+> pg_dump --username=postgres howlatthem > d:\Pro\howl-at-them\dbDump.sql
+
+Import:
+$ sudo -u postgres psql howlatthem < /home/play/howl-at-them/dbDump.sql
+
+
+############
+# Web server
+############
+
+$ sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/hat
+
+$ sudo vi /etc/nginx/sites-available/hat
+server {
+        listen 80;
+        server_name hat.reportingfromtheborderland.net;
+
+        location / {
+                proxy_pass http://localhost:9001;
+                proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+                proxy_redirect off;
+                proxy_buffering off;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+}
+
+$ sudo ln -s /etc/nginx/sites-available/hat /etc/nginx/sites-enabled/hat
+
+$ sudo service nginx restart
+
+
+##################
+# Start web server
+##################
+
+Inside app dir, run:
+$ play
+$ run -Dhttp.port=9001
+
+("run" for auto reload, "start" for better perf)

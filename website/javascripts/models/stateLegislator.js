@@ -32,6 +32,20 @@ CBR.Models.StateLegislator = new Class({
         return this.options.district;
     },
 
+    getReports: function() {
+        return this.options.reports.map(function(report) {
+            new CBR.Models.Report(report);
+        });
+    },
+
+    getReportCount: function() {
+        return this.options.reports.length;
+    },
+
+    getLatestReport: function() {
+        return this.options.reports.length > 0 ? new CBR.Models.Report(this.options.reports[0]) : null;
+    },
+
     getTitleAbbr: function() {
         switch (this.getTitle().toLowerCase()) {
             case "representative":
@@ -39,7 +53,7 @@ CBR.Models.StateLegislator = new Class({
             case "senator":
                 return "<abbr title=\"" + this.getTitle() + "\">Sen.</abbr>";
             case "assembly member":
-                return "<abbr title=\"" + this.getTitle() + "\">AM</abbr>";
+                return "<abbr title=\"" + this.getTitle() + "\">Asm.</abbr>";
             default:
                 return this.getTitle();
         }

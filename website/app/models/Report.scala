@@ -14,7 +14,7 @@ case class Report(_id: Option[Long] = None,
                   _isOpposingCitizensUnited: Option[Boolean] = None,
                   _hasPreviouslyVotedForConvention: Option[Boolean] = None,
                   _supportLevel: Option[String] = None,
-                  _notes: String,
+                  _notes: Option[String],
                   _creationTimestamp: Option[Long] = None) {
 
   @JsonDeserialize(contentAs = classOf[java.lang.Long])
@@ -28,7 +28,7 @@ case class Report(_id: Option[Long] = None,
   val isOpposingCitizensUnited: Option[Boolean] = _isOpposingCitizensUnited
   val hasPreviouslyVotedForConvention: Option[Boolean] = _hasPreviouslyVotedForConvention
   val supportLevel: Option[String] = _supportLevel
-  val notes: String = _notes
+  val notes: Option[String] = _notes
   val creationTimestamp: Option[Long] = _creationTimestamp
 
   def getReadableCreationTimestamp: String = {
@@ -46,18 +46,21 @@ case class Report(_id: Option[Long] = None,
     }
   }
 
-  def getReadableSupportLevel: String = {
+  def getSupportLevelSpan: String = {
     supportLevel match {
-      case Some("SUPPORTIVE") => SupportLevel.SUPPORTIVE.getString
-      case Some("NEEDS_CONVINCING") => SupportLevel.NEEDS_CONVINCING.getString
-      case Some("NOT_SUPPORTIVE") => SupportLevel.NOT_SUPPORTIVE.getString
-      case Some(otherString) => ""
-      case None => ""
+      case Some("SUPPORTIVE") => "<span class=\"support-level " + SupportLevel.SUPPORTIVE + "\">" + SupportLevel.SUPPORTIVE.getString + "</span>"
+      case Some("NEEDS_CONVINCING") => "<span class=\"support-level " + SupportLevel.NEEDS_CONVINCING + "\">" + SupportLevel.NEEDS_CONVINCING.getString + "</span>"
+      case Some("NOT_SUPPORTIVE") => "<span class=\"support-level " + SupportLevel.NOT_SUPPORTIVE + "\">" + SupportLevel.NOT_SUPPORTIVE.getString + "</span>"
+      case Some(otherString) => "<span class=\"support-level UNKNOWN\">Unknown</span>"
+      case None => "<span class=\"support-level UNKNOWN\">Unknown</span>"
     }
   }
 
   def getNotesForWeb: String = {
-    notes.replaceAll("\\\\n", "<br />")
+    notes match {
+      case Some(n0tes) => n0tes.replaceAll("\\\\n", "<br />")
+      case None => ""
+    }
   }
 }
 
@@ -85,5 +88,9 @@ object Report {
       case Some(bool) => if (bool) "Y" else "N"
       case None => "?"
     }
+  }
+
+  def getSpanForYesNoAnswer(answer: Option[Boolean]): String = {
+    "<span class=\"yes-no-answer\">" + getLetterForYesNoAnswer(answer) + "</span>"
   }
 }

@@ -5,7 +5,7 @@ import play.api.db.DB
 import play.api.Logger
 import models._
 import play.api.Play.current
-import frontend.{StateLegislatorWithLatestReportWithNbReports, DetailedStateLegislator}
+import frontend.DetailedStateLegislator
 import scala.Some
 
 object StateLegislatorDto {
@@ -17,53 +17,81 @@ object StateLegislatorDto {
           select first_name, last_name, title, political_parties, us_state_id, district,
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
             committee_id, committee_name,
-            s.name
+            s.name,
+            r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
+            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.notes
           from state_legislator l
-          inner join us_state s on s.id = l.us_state_id
-          where l.id = """ + id + """;"""
+          inner join us_state s
+            on s.id = l.us_state_id
+          left join report r
+            on r.candidate_id = l.id
+          where l.id = """ + id + """
+          order by creation_timestamp desc;"""
 
         Logger.info("StateLegislatorDto.getOfId(" + id + "):" + query)
 
-        val denormalizedStateLegislator = SQL(query)().map { row =>
-          var politicalParties: List[String] = List()
+        val denormalizedStateLegislator = SQL(query)().map {
+          row =>
+            var politicalParties: List[String] = List()
 
-          row[Option[String]]("political_parties") match {
-            case Some(commaSeparatedPoliticalParties) =>
-              val politicalPartiesSplit = commaSeparatedPoliticalParties.split(",")
-              for (untrimmedPoliticalParty <- politicalPartiesSplit) {
-                politicalParties = politicalParties :+ untrimmedPoliticalParty.trim()
-              }
-            case None =>
-          }
+            row[Option[String]]("political_parties") match {
+              case Some(commaSeparatedPoliticalParties) =>
+                val politicalPartiesSplit = commaSeparatedPoliticalParties.split(",")
+                for (untrimmedPoliticalParty <- politicalPartiesSplit) {
+                  politicalParties = politicalParties :+ untrimmedPoliticalParty.trim()
+                }
+              case None =>
+            }
 
-          val detailedStateLegislator = new StateLegislator(id,
-            row[String]("first_name"),
-            row[String]("last_name"),
-            row[String]("title"),
-            politicalParties,
-            UsState(row[String]("us_state_id"), row[String]("name")),
-            row[String]("district"))
+            val stateLegislator = new StateLegislator(id,
+              row[String]("first_name"),
+              row[String]("last_name"),
+              row[String]("title"),
+              politicalParties,
+              UsState(row[String]("us_state_id"), row[String]("name")),
+              row[String]("district"))
 
-          val candidateOffice = new CandidateOffice(id,
-            row[String]("office_type"),
-            row[Option[String]]("office_street"),
-            row[Option[String]]("office_city"),
-            row[Option[String]]("office_us_state_id"),
-            row[Option[String]]("office_zip"),
-            row[Option[String]]("office_phone_number"))
+            val candidateOffice = row[Option[String]]("office_type") match {
+              case Some(officeType) => Some(CandidateOffice(id,
+                officeType,
+                row[Option[String]]("office_street"),
+                row[Option[String]]("office_city"),
+                row[Option[String]]("office_us_state_id"),
+                row[Option[String]]("office_zip"),
+                row[Option[String]]("office_phone_number")))
+              case None => None
+            }
 
-          val candidateCommittee = new CandidateCommittee(id,
-            row[Option[Int]]("committee_id"),
-            row[Option[String]]("committee_name"))
+            val candidateCommittee = CandidateCommittee(id,
+              row[Option[Int]]("committee_id"),
+              row[Option[String]]("committee_name"))
 
-          (detailedStateLegislator, candidateOffice, candidateCommittee)
+            val report = row[Option[Long]]("report_id") match {
+              case Some(reportId) => Some(Report(
+                Some(reportId),
+                id,
+                row[String]("author_name"),
+                row[String]("contact"),
+                row[Option[Boolean]]("is_money_in_politics_a_problem"),
+                row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
+                row[Option[Boolean]]("is_opposing_citizens_united"),
+                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[String]]("support_level"),
+                row[Option[String]]("notes"),
+                row[Option[Long]]("creation_timestamp")
+              ))
+              case None => None
+            }
+
+            (stateLegislator, candidateOffice, candidateCommittee, report)
         }
 
         normalizeStateLegislator(denormalizedStateLegislator)
     }
   }
 
-  def getMatching(firstNameFilter: Option[String], lastNameFilter: Option[String], usStateId: Option[String]): List[StateLegislatorWithLatestReportWithNbReports] = {
+  def getMatching(firstNameFilter: Option[String], lastNameFilter: Option[String], usStateId: Option[String]): List[DetailedStateLegislator] = {
     DB.withConnection {
       implicit c =>
 
@@ -87,116 +115,174 @@ object StateLegislatorDto {
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
-            r.notes,
-            rc.nb_reports
+            r.notes
           from state_legislator l
           inner join us_state s
             on s.id = l.us_state_id
-          left join (select id, candidate_id, author_name, support_level, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it, is_opposing_citizens_united, has_previously_voted_for_convention, contact, creation_timestamp, notes
-            from report r1
-            where creation_timestamp = (
-              select max(creation_timestamp) from report r2
-              where r2.candidate_id = r1.candidate_id
-              group by candidate_id)
-            ) r
+          left join report r
             on r.candidate_id = l.id
-          left join (select count(id) as nb_reports, candidate_id
-            from report
-            group by candidate_id) rc
-            on rc.candidate_id = l.id
           where lower(first_name) like '""" + firstNameFilterForQuery + """'
             and lower(last_name) like '""" + lastNameFilterForQuery + """'
             and us_state_id like '""" + usStateIdFilterForQuery + """'
-          order by last_name;"""
+          order by title, last_name, creation_timestamp desc;"""
 
         Logger.info("StateLegislatorDto.getMatching():" + query)
 
-        SQL(query)().map { row =>
-          var politicalParties: List[String] = List()
+        val denormalizedStateLegislatorsWithReports = SQL(query)().map {
+          row =>
+            var politicalParties: List[String] = List()
 
-          row[Option[String]]("political_parties") match {
-            case Some(commaSeparatedPoliticalParties) =>
-              val politicalPartiesSplit = commaSeparatedPoliticalParties.split(",")
-              for (untrimmedPoliticalParty <- politicalPartiesSplit) {
-                politicalParties = politicalParties :+ untrimmedPoliticalParty.trim()
-              }
-            case None =>
-          }
+            row[Option[String]]("political_parties") match {
+              case Some(commaSeparatedPoliticalParties) =>
+                val politicalPartiesSplit = commaSeparatedPoliticalParties.split(",")
+                for (untrimmedPoliticalParty <- politicalPartiesSplit) {
+                  politicalParties = politicalParties :+ untrimmedPoliticalParty.trim()
+                }
+              case None =>
+            }
 
-          val stateLegislator = new StateLegislator(
-            row[Int]("id"),
-            row[String]("first_name"),
-            row[String]("last_name"),
-            row[String]("title"),
-            politicalParties,
-            UsState(row[String]("us_state_id"), row[String]("name")),
-            row[String]("district")
-          )
+            val candidateId = row[Int]("id")
 
-          val latestReport = row[Option[String]]("author_name") match {
-            case Some(authorName) => Some(
-              Report(
-                row[Option[Long]]("report_id"),
-                row[Int]("id"),
-                authorName,
+            val stateLegislator = new StateLegislator(candidateId,
+              row[String]("first_name"),
+              row[String]("last_name"),
+              row[String]("title"),
+              politicalParties,
+              UsState(row[String]("us_state_id"), row[String]("name")),
+              row[String]("district"))
+
+            val report = row[Option[Long]]("report_id") match {
+              case Some(reportId) => Some(Report(
+                Some(reportId),
+                candidateId,
+                row[String]("author_name"),
                 row[String]("contact"),
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
                 row[Option[Boolean]]("has_previously_voted_for_convention"),
                 row[Option[String]]("support_level"),
-                row[String]("notes"),
+                row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp")
-              )
-            )
-            case None => None
-          }
+              ))
+              case None => None
+            }
 
-          val nbReports = row[Option[Long]]("nb_reports") match {
-            case Some(nb) => nb.toInt
-            case None => 0
-          }
+            (stateLegislator, report)
+        }
 
-          StateLegislatorWithLatestReportWithNbReports(stateLegislator, latestReport, nbReports)
-        }.toList
+        normalizeStateLegislatorsWithReports(denormalizedStateLegislatorsWithReports)
     }
   }
 
-  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, CandidateOffice, CandidateCommittee)]): Option[DetailedStateLegislator] = {
+  def getOfStateId(usStateId: String): List[DetailedStateLegislator] = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
+            s.name,
+            r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
+            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.notes
+          from state_legislator l
+          inner join us_state s
+            on s.id = l.us_state_id
+          left join report r
+            on r.candidate_id = l.id
+          where us_state_id = '""" + DbUtil.safetize(usStateId) + """'
+          order by title, last_name, creation_timestamp desc;"""
+
+        Logger.info("StateLegislatorDto.getOfStateId():" + query)
+
+        val denormalizedStateLegislatorsWithReports = SQL(query)().map {
+          row =>
+            var politicalParties: List[String] = List()
+
+            row[Option[String]]("political_parties") match {
+              case Some(commaSeparatedPoliticalParties) =>
+                val politicalPartiesSplit = commaSeparatedPoliticalParties.split(",")
+                for (untrimmedPoliticalParty <- politicalPartiesSplit) {
+                  politicalParties = politicalParties :+ untrimmedPoliticalParty.trim()
+                }
+              case None =>
+            }
+
+            val candidateId = row[Int]("id")
+
+            val stateLegislator = new StateLegislator(candidateId,
+              row[String]("first_name"),
+              row[String]("last_name"),
+              row[String]("title"),
+              politicalParties,
+              UsState(row[String]("us_state_id"), row[String]("name")),
+              row[String]("district"))
+
+            val report = row[Option[Long]]("report_id") match {
+              case Some(reportId) => Some(Report(
+                Some(reportId),
+                candidateId,
+                row[String]("author_name"),
+                row[String]("contact"),
+                row[Option[Boolean]]("is_money_in_politics_a_problem"),
+                row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
+                row[Option[Boolean]]("is_opposing_citizens_united"),
+                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[String]]("support_level"),
+                row[Option[String]]("notes"),
+                row[Option[Long]]("creation_timestamp")
+              ))
+              case None => None
+            }
+
+            (stateLegislator, report)
+        }
+
+        normalizeStateLegislatorsWithReports(denormalizedStateLegislatorsWithReports)
+    }
+  }
+
+  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], CandidateCommittee, Option[Report])]): Option[DetailedStateLegislator] = {
     if (denormalizedStateLegislator.isEmpty)
       None
     else {
       val stateLegislator = denormalizedStateLegislator.head._1
 
       var candidateOffices: List[CandidateOffice] = List()
-
-      for (row <- denormalizedStateLegislator) {
-        val candidateOffice = row._2
-
-        var isInListAlready = false
-
-        for (candidateOfficeItem <- candidateOffices) {
-          if (candidateOfficeItem.officeType == candidateOffice.officeType) {
-            isInListAlready = true
-          }
-        }
-
-        if (!isInListAlready) {
-          candidateOffices = candidateOffices :+ candidateOffice
-        }
-      }
-
-
       var candidateCommittees: List[CandidateCommittee] = List()
+      var reports: List[Report] = List()
 
       for (row <- denormalizedStateLegislator) {
         val candidateCommittee = row._3
+        val reportOption = row._4
+
+        var isInListAlready = false
+
+
+        // candidateOffice
+
+        row._2 match {
+          case Some(candidateOffice) =>
+            for (candidateOfficeItem <- candidateOffices) {
+              if (!isInListAlready && candidateOfficeItem.officeType == candidateOffice.officeType) {
+                isInListAlready = true
+              }
+            }
+
+            if (!isInListAlready) {
+              candidateOffices = candidateOffices :+ candidateOffice
+            }
+          case None =>
+        }
+
+
+        // candidateCommittee
 
         if (candidateCommittee.committeeId.isDefined) {
-          var isInListAlready = false
+          isInListAlready = false
 
           for (candidateCommitteeItem <- candidateCommittees) {
-            if (candidateCommitteeItem.committeeId.get == candidateCommittee.committeeId.get) {
+            if (!isInListAlready && candidateCommitteeItem.committeeId.get == candidateCommittee.committeeId.get) {
               isInListAlready = true
             }
           }
@@ -204,6 +290,25 @@ object StateLegislatorDto {
           if (!isInListAlready) {
             candidateCommittees = candidateCommittees :+ candidateCommittee
           }
+        }
+
+
+        // reports
+
+        reportOption match {
+          case Some(report) =>
+            isInListAlready = false
+
+            for (reportItem <- reports) {
+              if (!isInListAlready && reportItem.id == report.id) {
+                isInListAlready = true
+              }
+            }
+
+            if (!isInListAlready) {
+              reports = reports :+ report
+            }
+          case None =>
         }
       }
 
@@ -217,8 +322,57 @@ object StateLegislatorDto {
           stateLegislator.district,
 
           candidateOffices,
-          candidateCommittees)
+          candidateCommittees,
+          None,
+          false,
+          reports)
       )
     }
+  }
+
+  private def normalizeStateLegislatorsWithReports(denormalizedStateLegislatorsWithReports: Stream[(StateLegislator, Option[Report])]): List[DetailedStateLegislator] = {
+    var result: List[DetailedStateLegislator] = List()
+
+    for ((stateLegislator, reportOption) <- denormalizedStateLegislatorsWithReports) {
+      reportOption match {
+        case None =>
+          result = result :+ new DetailedStateLegislator(stateLegislator.id,
+            stateLegislator.firstName,
+            stateLegislator.lastName,
+            stateLegislator.title,
+            stateLegislator.politicalParties,
+            stateLegislator.usState,
+            stateLegislator.district)
+
+        case Some(report) =>
+          var isInListAlready = false
+
+          for (detailedStateLegislatorItem <- result) {
+            if (!isInListAlready && detailedStateLegislatorItem.id == report.candidateId) {
+              // If the legislator is already in the results, we update its reports
+              isInListAlready = true
+              detailedStateLegislatorItem.reports = detailedStateLegislatorItem.reports :+ report
+            }
+          }
+
+          // Otherwise, we add the legislator to the results, with this report
+          if (!isInListAlready) {
+            result = result :+ new DetailedStateLegislator(stateLegislator.id,
+              stateLegislator.firstName,
+              stateLegislator.lastName,
+              stateLegislator.title,
+              stateLegislator.politicalParties,
+              stateLegislator.usState,
+              stateLegislator.district,
+              List(),
+              List(),
+              None,
+              false,
+              List(report))
+          }
+      }
+    }
+
+    result
   }
 }

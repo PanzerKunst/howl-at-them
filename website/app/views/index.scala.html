@@ -3,13 +3,15 @@
 <!--
     Header
 -->
+@navbar(None, "index")
+
 } {
 <!--
     Content
 -->
 <ul>
     @for(usState <- usStates) {
-    <li><a href="/state-reports?selectedUsStateId=@usState.id">@usState.name</a></li>
+    <li><a href="/state-reports?usStateId=@usState.id">@usState.name</a></li>
     }
 </ul>
 

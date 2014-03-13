@@ -1,8 +1,10 @@
-@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String])
+@(usStates: List[UsState], account: Option[Account])
 @main("Search legislators", "search-legislators") {
 <!--
     Header
 -->
+@navbar(account, "search-legislators")
+
 } {
 <!--
     Content
@@ -12,15 +14,15 @@
 <form role="form">
     <div>
         <div class="form-group">
-            <label for="last-name">Last name</label><!--
-         --><input type="text" id="last-name" class="form-control" data-min-length="2" />
+            <label for="first-name">First name</label><!--
+         --><input type="text" id="first-name" class="form-control" data-min-length="2" />
 
             <p class="field-error" data-check="min-length">Two characters minimun</p>
         </div>
 
         <div class="form-group">
-            <label for="first-name">First name</label><!--
-         --><input type="text" id="first-name" class="form-control" data-min-length="2" />
+            <label for="last-name">Last name</label><!--
+         --><input type="text" id="last-name" class="form-control" data-min-length="2" />
 
             <p class="field-error" data-check="min-length">Two characters minimun</p>
         </div>
@@ -30,7 +32,7 @@
          --><select id="us-state" class="form-control">
                 <option value=""></option>
                 @for(usState <- usStates) {
-                <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
+                <option value="@usState.id">@usState.name</option>
                 }
             </select>
         </div>
@@ -54,8 +56,7 @@
 <script type="text/javascript">
     window.addEvent("domready", function () {
         new CBR.Controllers.SearchLegislators({
-            el: "#content",
-            selectedUsStateId: @Html(services.JsonUtil.serialize(selectedUsStateId))
+            el: "#content"
         }).run();
     });
 </script>

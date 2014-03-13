@@ -1,7 +1,11 @@
 #search-legislators {
-  #content {
-    $search-legislator-page-width: 68.5em;  // ~960px
+  $search-legislator-page-width: 68.5em;  // ~960px
 
+  header {
+    min-width: $search-legislator-page-width;
+  }
+
+  #content {
     max-width: $search-legislator-page-width;
     min-width: $search-legislator-page-width;
 
@@ -11,40 +15,17 @@
       }
     }
 
-    $field-width-search-legislators: 16em;
-
     .form-group {
-      width: $field-width-search-legislators;
-      margin-right: $odd-form-groups-margin-right;
-
-      // To have the inputs on one line even on small screens
-      float: left;
-    }
-
-    .submit-wrapper {
-      float: left;
-      padding-top: 29px;
+      width: $field-width-search-pages;
     }
 
     #advanced-toggle {
       float: right;
-      padding-top: 34px;
+      padding-top: 29px;
     }
 
     .other-input-error {
       text-align: center;
-    }
-
-    th {
-      vertical-align: middle;
-    }
-
-    .question-column-header {
-      font-size: 10px;
-    }
-
-    .support-level {
-      width: 9em;
     }
   }
 }

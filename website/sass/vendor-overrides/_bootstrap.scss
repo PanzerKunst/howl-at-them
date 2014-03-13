@@ -24,6 +24,24 @@ textarea.form-control {
   height: 8em;
 }
 
+.table {
+  > thead > tr > th {
+    vertical-align: middle;
+  }
+
+  > tbody > tr > td {
+    vertical-align: middle;
+  }
+}
+
+// To avoid the bug of horizontal scrollbar when navbar is in low-rez mode because of margins of "-15px"
+.container-fluid > .navbar-collapse,
+.container-fluid > .navbar-header,
+.container > .navbar-collapse,
+.container > .navbar-header {
+  margin-right: 0;
+}
+
 /* TODO .form-control {
   &:focus {
     border-color: $actionColor;

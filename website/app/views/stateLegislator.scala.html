@@ -3,11 +3,13 @@
 <!--
     Header
 -->
+@navbar(account, "state-legislator")
+
 } {
 <!--
     Content
 -->
-<h1>@Html(stateLegislator.getTitleAbbr) @stateLegislator.firstName @stateLegislator.lastName</h1>
+<h1>@stateLegislator.title @stateLegislator.firstName @stateLegislator.lastName</h1>
 
 @if(action.isDefined && action.get == "savedReport") {
 <div class="alert alert-success alert-dismissable">
@@ -39,8 +41,8 @@
         </section>
 
         <section id="support-level-and-priority-target">
-            @if(latestReport.isDefined && latestReport.get.supportLevel.isDefined) {
-            <span class="support-level @latestReport.get.supportLevel.get">@latestReport.get.getReadableSupportLevel</span>
+            @if(latestReport.isDefined) {
+                @Html(latestReport.get.getSupportLevelSpan)
             } else {
             <span class="support-level UNKNOWN">Unknown</span>
             }
@@ -53,24 +55,24 @@
         <table class="table table-striped table-bordered table-condensed">
             <thead>
                 <tr>
-                    <th>Money in politics is a problem</th>
-                    <th>Supports amendment to fix it</th>
-                    <th>Opposes Citizens United</th>
-                    <th>Previous vote for convention</th>
+                    <th><span class="yes-no-answer">Money in politics is a problem</span></th>
+                    <th><span class="yes-no-answer">Supports amendment to fix it</span></th>
+                    <th><span class="yes-no-answer">Opposes Citizens United</span></th>
+                    <th><span class="yes-no-answer">Previous vote for convention</span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     @if(latestReport.isDefined) {
-                    <td>@Report.getLetterForYesNoAnswer(latestReport.get.isMoneyInPoliticsAProblem)</td>
-                    <td>@Report.getLetterForYesNoAnswer(latestReport.get.isSupportingAmendmentToFixIt)</td>
-                    <td>@Report.getLetterForYesNoAnswer(latestReport.get.isOpposingCitizensUnited)</td>
-                    <td>@Report.getLetterForYesNoAnswer(latestReport.get.hasPreviouslyVotedForConvention)</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isMoneyInPoliticsAProblem))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isSupportingAmendmentToFixIt))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isOpposingCitizensUnited))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.hasPreviouslyVotedForConvention))</td>
                     } else {
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
+                    <td><span class="yes-no-answer">?</span></td>
+                    <td><span class="yes-no-answer">?</span></td>
+                    <td><span class="yes-no-answer">?</span></td>
+                    <td><span class="yes-no-answer">?</span></td>
                     }
                 </tr>
             </tbody>
@@ -79,11 +81,13 @@
 
     <div>
         @for(office <- stateLegislator.offices) {
+        @if(office.street.isDefined) {
         <article class="office-address">
             <label>@office.officeType office</label>
             <p>@office.street<br />
             @office.city, @office.usStateId @office.zip</p>
         </article>
+        }
         }
     </div>
 </section>
@@ -97,9 +101,9 @@
     </ul>
 </section>
 
-<section>
+<section id="new-report">
     <div class="centered-contents">
-        <a id="new-report-toggle">New report</a>
+        <h2><a id="new-report-toggle">New report</a></h2>
     </div>
 
     <form>
@@ -272,10 +276,9 @@
             </div>
 
             <div class="form-group">
-                <label for="notes">Notes <span>*</span></label><!--
+                <label for="notes">Notes</label><!--
              --><textarea id="notes" class="form-control" maxlength="512"></textarea>
 
-                <p class="field-error" data-check="empty"></p>
                 <p class="field-error" data-check="max-length">512 characters maximum</p>
             </div>
         </section>
@@ -286,7 +289,7 @@
     </form>
 </section>
 
-<section id="previous-reports">
+<section class="reports">
 @if(existingReports.isEmpty) {
     <div class="alert alert-info">Nobody has reported on @stateLegislator.firstName @stateLegislator.lastName yet</div>
 } else {
@@ -302,12 +305,7 @@
             <a class="edit-existing-report">Edit</a>
         </div>
         <div>
-            @if(report.supportLevel.isDefined) {
-            <span class="support-level @report.supportLevel.get">@report.getReadableSupportLevel</span>
-            } else {
-            <span class="support-level UNKNOWN">Unknown</span>
-            }
-
+            @Html(report.getSupportLevelSpan)
             <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
             @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
             @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
