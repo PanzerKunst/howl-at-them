@@ -27,7 +27,7 @@ CBR.Controllers.Admin = new Class({
 
         new Request({
             urlEncoded: false,
-            url: "/api/db/update",
+            url: "/api/db/update-vote-smart-data",
             onSuccess: function (responseText, responseXML) {
                 this.$updateDataBtn.button('reset');
             }.bind(this),

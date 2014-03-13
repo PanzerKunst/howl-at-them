@@ -10,10 +10,10 @@ class DetailedStateLegislator(_id: Int,
                               _politicalParties: List[String] = List(),
                               _usState: UsState,
                               _district: String,
+                              _leadershipPosition: Option[String] = None,
 
                               _offices: List[CandidateOffice] = List(),
                               _committees: List[CandidateCommittee] = List(),
-                              _leadershipTitle: Option[String] = None,
 
                               _isAPriorityTarget: Boolean = false,
                               _reports: List[Report] = List())
@@ -23,11 +23,11 @@ class DetailedStateLegislator(_id: Int,
     _title,
     _politicalParties,
     _usState,
-    _district) {
+    _district,
+    _leadershipPosition) {
 
   var offices: List[CandidateOffice] = _offices
   var committees: List[CandidateCommittee] = _committees
-  var leadershipTitle: Option[String] = _leadershipTitle
 
   var isAPriorityTarget: Boolean = _isAPriorityTarget
   var reports: List[Report] = _reports
@@ -44,10 +44,10 @@ object DetailedStateLegislator {
         "politicalParties" -> detailedStateLegislator.politicalParties,
         "usState" -> detailedStateLegislator.usState,
         "district" -> detailedStateLegislator.district,
+        "leadershipPosition" -> detailedStateLegislator.leadershipPosition,
 
         "offices" -> detailedStateLegislator.offices,
         "committees" -> detailedStateLegislator.committees,
-        "leadershipTitle" -> detailedStateLegislator.leadershipTitle,
 
         "isAPriorityTarget" -> detailedStateLegislator.isAPriorityTarget,
         "reports" -> detailedStateLegislator.reports

@@ -2132,7 +2132,7 @@ CBR.Models.Report.contact = {
 
         new Request({
             urlEncoded: false,
-            url: "/api/db/update",
+            url: "/api/db/update-vote-smart-data",
             onSuccess: function (responseText, responseXML) {
                 this.$updateDataBtn.button('reset');
             }.bind(this),

@@ -37,17 +37,12 @@ object DbAdmin {
     createViewStateLegislator()
   }
 
-  private def createVoteSmartTables(isTemp: Boolean = false) {
-    createTableVoteSmartCandidate(isTemp)
-    createTableVoteSmartCandidateOffice(isTemp)
-    createTableVoteSmartCandidateCommittee(isTemp)
-    createTableVoteSmartLeadershipPosition(isTemp)
-    createTableVoteSmartLeadingOfficial(isTemp)
-  }
-
   private def createTempVoteSmartTables() {
-    val isTemp = true
-    createVoteSmartTables(isTemp)
+    createTableVoteSmartCandidate()
+    createTableVoteSmartCandidateOffice()
+    createTableVoteSmartCandidateCommittee()
+    createTableVoteSmartLeadershipPosition()
+    createTableVoteSmartLeadingOfficial()
   }
 
   private def dropVoteSmartTables() {
@@ -129,14 +124,12 @@ object DbAdmin {
     }
   }
 
-  private def createTableVoteSmartCandidate(isTemp: Boolean = false) {
+  private def createTableVoteSmartCandidate() {
     DB.withConnection {
       implicit c =>
 
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
         val query = """
-          create table """ + tableNamePrefix + """vote_smart_candidate (
+          create table temp_vote_smart_candidate (
             candidate_id integer primary key,
             first_name varchar(32) not null,
             nick_name varchar(32),
@@ -169,16 +162,14 @@ object DbAdmin {
     }
   }
 
-  private def createTableVoteSmartCandidateOffice(isTemp: Boolean = false) {
+  private def createTableVoteSmartCandidateOffice() {
     DB.withConnection {
       implicit c =>
 
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
         val query = """
-          create table """ + tableNamePrefix + """vote_smart_candidate_office (
+          create table temp_vote_smart_candidate_office (
             id bigserial primary key,
-            candidate_id integer not null references """ + tableNamePrefix + """vote_smart_candidate(candidate_id),
+            candidate_id integer not null references temp_vote_smart_candidate(candidate_id),
             office_type varchar(32) not null,
             office_type_id integer not null,
             street varchar(256),
@@ -194,16 +185,14 @@ object DbAdmin {
     }
   }
 
-  private def createTableVoteSmartCandidateCommittee(isTemp: Boolean = false) {
+  private def createTableVoteSmartCandidateCommittee() {
     DB.withConnection {
       implicit c =>
 
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
         val query = """
-          create table """ + tableNamePrefix + """vote_smart_candidate_committee (
+          create table temp_vote_smart_candidate_committee (
             id bigserial primary key,
-            candidate_id integer not null references """ + tableNamePrefix + """vote_smart_candidate(candidate_id),
+            candidate_id integer not null references temp_vote_smart_candidate(candidate_id),
             committee_id integer not null,
             committee_name varchar(128) not null
             );"""
@@ -214,14 +203,12 @@ object DbAdmin {
     }
   }
 
-  private def createTableVoteSmartLeadershipPosition(isTemp: Boolean = false) {
+  private def createTableVoteSmartLeadershipPosition() {
     DB.withConnection {
       implicit c =>
 
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
         val query = """
-          create table """ + tableNamePrefix + """vote_smart_leadership_position (
+          create table temp_vote_smart_leadership_position (
             id bigserial primary key,
             leadership_id integer not null,
             position_name varchar(128) not null,
@@ -235,25 +222,16 @@ object DbAdmin {
     }
   }
 
-  private def createTableVoteSmartLeadingOfficial(isTemp: Boolean = false) {
+  private def createTableVoteSmartLeadingOfficial() {
     DB.withConnection {
       implicit c =>
 
-        val tableNamePrefix = if (isTemp) "temp_" else ""
-
         val query = """
-          create table """ + tableNamePrefix + """vote_smart_leading_official (
+          create table temp_vote_smart_leading_official (
             id bigserial primary key,
-            leadership_id integer not null /* Can't have a FK because lp.leadership_id is not a PK references vote_smart_leadership_positions(leadership_id)*/,
-            state_id char(2) not null references us_state(id),
-            candidate_id integer not null references """ + tableNamePrefix + """vote_smart_candidate(candidate_id),
-            first_name varchar(32),
-            middle_name varchar(32),
-            last_name varchar(32),
-            suffix varchar(32),
-            position_name varchar(128) not null,
-            office_id integer not null,
-            candidate_title varchar(32) not null
+            leadership_id integer not null /* Can't have a FK because vote_smart_leadership_position.leadership_id is not a PK */,
+            candidate_id integer not null references temp_vote_smart_candidate(candidate_id),
+            position_name varchar(128) not null
           );"""
 
         Logger.info("DbAdmin.createTableVoteSmartLeadingOfficial():" + query)
@@ -275,16 +253,20 @@ object DbAdmin {
             c.office_parties as political_parties,
             c.office_state_id as us_state_id,
             c.office_district_name as district,
+            lo.position_name as leadership_position,
             o.office_type,
-            o.street,
-            o.city,
-            o.zip,
-            o.phone1 as phone_number,
+            o.street as office_street,
+            o.city as office_city,
+            o.state as office_us_state_id,
+            o.zip as office_zip,
+            o.phone1 as office_phone_number,
             cc.committee_id,
             cc.committee_name
             from vote_smart_candidate c
+            left join vote_smart_leading_official lo on lo.candidate_id = c.candidate_id
             left join vote_smart_candidate_office o on o.candidate_id = c.candidate_id
-            left join vote_smart_candidate_committee cc on cc.candidate_id = c.candidate_id;"""
+            left join vote_smart_candidate_committee cc on cc.candidate_id = c.candidate_id
+            where c.office_type_id = 'L';"""
 
         Logger.info("DbAdmin.createViewStateLegislator():" + query)
 

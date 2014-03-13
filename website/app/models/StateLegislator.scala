@@ -7,7 +7,9 @@ class StateLegislator(_id: Int,
                       _title: String,
                       _politicalParties: List[String] = List(),
                       _usState: UsState,
-                      _district: String) {
+                      _district: String,
+                      _leadershipPosition: Option[String]) {
+
   var id: Int = _id
   var firstName: String = _firstName
   var lastName: String = _lastName
@@ -15,6 +17,7 @@ class StateLegislator(_id: Int,
   var politicalParties: List[String] = _politicalParties
   var usState: UsState = _usState
   var district: String = _district
+  var leadershipPosition: Option[String] = _leadershipPosition
 
   def getTitleAbbr: String = {
     this.title.toLowerCase match {

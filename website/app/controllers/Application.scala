@@ -52,9 +52,23 @@ object Application extends Controller {
 
         val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
 
-        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList))
-      } else
-        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List()))
+        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList)).withSession(
+          session + ("selectedUsStateId" -> selectedUsStateId)
+        )
+      } else {
+        session.get("selectedUsStateId") match {
+          case Some(selectedUsStateId) =>
+            val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
+
+            val firstLegislator = detailedLegislatorsForThisState.headOption
+
+            val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
+
+            Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList))
+
+          case None => Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List()))
+        }
+      }
   }
 
   def searchLegislators = Action {

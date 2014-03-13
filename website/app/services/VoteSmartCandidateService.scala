@@ -11,9 +11,6 @@ import play.Play
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object VoteSmartCandidateService {
-  val officeTypeIdLegislativeDistrict = "L"
-  val voteSmartApiKey = Play.application().configuration().getString("votesmart.apikey")
-
   var isCandidatesWebServiceCallRunning = false
   var isCandidateBioWebServiceCallRunning = false
   var isCandidateOfficesWebServiceCallRunning = false
@@ -28,7 +25,7 @@ object VoteSmartCandidateService {
         Logger.info("Calling candidates WS for " + usState.id)
 
         WS.url("http://api.votesmart.org/Officials.getStatewide")
-          .withQueryString("key" -> voteSmartApiKey)
+          .withQueryString("key" -> VoteSmartService.voteSmartApiKey)
           .withQueryString("o" -> "JSON")
           .withQueryString("stateId" -> usState.id)
           .get()
@@ -47,9 +44,9 @@ object VoteSmartCandidateService {
           Thread.sleep(100)
         }
       }
-    }
 
-    VoteSmartService.isRunning = false
+      VoteSmartService.isRunning = false
+    }
   }
 
   private def processJsonFromVoteSmartOfficialsInUsState(json: JsValue, usState: UsState) {
@@ -60,25 +57,23 @@ object VoteSmartCandidateService {
     for (voteSmartCandidateJson <- voteSmartCandidateJsonList) {
       val officeTypeId = (voteSmartCandidateJson \ "officeTypeId").as[String]
 
-      if (officeTypeId == officeTypeIdLegislativeDistrict) {
-        val candidateId = (voteSmartCandidateJson \ "candidateId").as[String].toInt
+      val candidateId = (voteSmartCandidateJson \ "candidateId").as[String].toInt
 
-        storeVoteSmartOfficial(voteSmartCandidateJson, officeTypeId, candidateId)
+      storeVoteSmartOfficial(voteSmartCandidateJson, officeTypeId, candidateId)
 
-        while (isCandidateBioWebServiceCallRunning) {
-          //Pause for 100 ms
-          Thread.sleep(100)
-        }
-
-        fetchCandidateBio(candidateId)
-
-        while (isCandidateOfficesWebServiceCallRunning) {
-          //Pause for 100 ms
-          Thread.sleep(100)
-        }
-
-        fetchCandidateOffices(candidateId)
+      while (isCandidateBioWebServiceCallRunning) {
+        //Pause for 100 ms
+        Thread.sleep(100)
       }
+
+      fetchCandidateBio(candidateId)
+
+      while (isCandidateOfficesWebServiceCallRunning) {
+        //Pause for 100 ms
+        Thread.sleep(100)
+      }
+
+      fetchCandidateOffices(candidateId)
     }
 
     isCandidatesWebServiceCallRunning = false
@@ -183,7 +178,7 @@ object VoteSmartCandidateService {
     isCandidateBioWebServiceCallRunning = true
 
     WS.url("http://api.votesmart.org/CandidateBio.getBio")
-      .withQueryString("key" -> voteSmartApiKey)
+      .withQueryString("key" -> VoteSmartService.voteSmartApiKey)
       .withQueryString("o" -> "JSON")
       .withQueryString("candidateId" -> candidateId.toString)
       .get()
@@ -202,7 +197,7 @@ object VoteSmartCandidateService {
     isCandidateOfficesWebServiceCallRunning = true
 
     WS.url("http://api.votesmart.org/Address.getOffice")
-      .withQueryString("key" -> voteSmartApiKey)
+      .withQueryString("key" -> VoteSmartService.voteSmartApiKey)
       .withQueryString("o" -> "JSON")
       .withQueryString("candidateId" -> candidateId.toString)
       .get()
@@ -248,11 +243,11 @@ object VoteSmartCandidateService {
   private def processJsonFromVoteSmartCandidateOffices(json: JsValue, candidateId: Int) {
     (json \ "error").asOpt[JsObject] match {
       case None =>
-        val voteSmartOfficeJsValue = (json \ "address" \ "office")
+        val voteSmartOfficesJsValue = (json \ "address" \ "office")
 
-        val voteSmartOfficeJsonList = voteSmartOfficeJsValue.asOpt[List[JsObject]] match {
+        val voteSmartOfficeJsonList = voteSmartOfficesJsValue.asOpt[List[JsObject]] match {
           case Some(jsonList) => jsonList
-          case None => List(voteSmartOfficeJsValue.as[JsObject])
+          case None => List(voteSmartOfficesJsValue.as[JsObject])
         }
 
         Logger.debug("Trying to process address/office\n" + voteSmartOfficeJsonList)

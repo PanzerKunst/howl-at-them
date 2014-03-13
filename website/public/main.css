@@ -574,7 +574,7 @@ table.dataTable tr.even td.sorting_1 {
   margin: 0 auto 20px auto; }
   #state-legislator #content #legislator-data > div:first-child > p {
     text-align: center; }
-    #state-legislator #content #legislator-data > div:first-child > p:nth-child(2) {
+    #state-legislator #content #legislator-data > div:first-child > p:nth-child(2), #state-legislator #content #legislator-data > div:first-child > p:nth-child(3) {
       margin-bottom: 0; }
   #state-legislator #content #legislator-data img {
     margin-bottom: 10px; }

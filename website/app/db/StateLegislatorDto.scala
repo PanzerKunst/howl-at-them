@@ -15,6 +15,7 @@ object StateLegislatorDto {
 
         val query = """
           select first_name, last_name, title, political_parties, us_state_id, district,
+            leadership_position,
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
             committee_id, committee_name,
             s.name,
@@ -50,7 +51,8 @@ object StateLegislatorDto {
               row[String]("title"),
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
-              row[String]("district"))
+              row[String]("district"),
+              row[Option[String]]("leadership_position"))
 
             val candidateOffice = row[Option[String]]("office_type") match {
               case Some(officeType) => Some(CandidateOffice(id,
@@ -112,6 +114,7 @@ object StateLegislatorDto {
 
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
+            leadership_position,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -149,7 +152,8 @@ object StateLegislatorDto {
               row[String]("title"),
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
-              row[String]("district"))
+              row[String]("district"),
+              row[Option[String]]("leadership_position"))
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -181,6 +185,7 @@ object StateLegislatorDto {
 
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
+            leadership_position,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -216,7 +221,8 @@ object StateLegislatorDto {
               row[String]("title"),
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
-              row[String]("district"))
+              row[String]("district"),
+              row[Option[String]]("leadership_position"))
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -320,10 +326,10 @@ object StateLegislatorDto {
           stateLegislator.politicalParties,
           stateLegislator.usState,
           stateLegislator.district,
+          stateLegislator.leadershipPosition,
 
           candidateOffices,
           candidateCommittees,
-          None,
           false,
           reports)
       )
@@ -364,9 +370,10 @@ object StateLegislatorDto {
               stateLegislator.politicalParties,
               stateLegislator.usState,
               stateLegislator.district,
+              stateLegislator.leadershipPosition,
+
               List(),
               List(),
-              None,
               false,
               List(report))
           }

@@ -27,7 +27,15 @@ object StateLegislatorApi extends Controller {
         Forbidden
       } else {
         val matchingLegislators = StateLegislatorDto.getMatching(firstNameFilter, lastNameFilter, usStateId)
-        Ok(Json.toJson(matchingLegislators))
+
+        usStateId match {
+          case Some(id) =>
+            Ok(Json.toJson(matchingLegislators)).withSession(
+              session + ("selectedUsStateId" -> id)
+            )
+          case None =>
+            Ok(Json.toJson(matchingLegislators))
+        }
       }
   }
 }

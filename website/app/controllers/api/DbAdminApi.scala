@@ -3,7 +3,7 @@ package controllers.api
 import db.DbAdmin
 import play.api.mvc.{Action, Controller}
 import play.Play
-import services.VoteSmartCandidateService
+import services.{VoteSmartCandidateService, VoteSmartService, VoteSmartLeadershipService}
 
 object DbAdminApi extends Controller {
   def reCreateNonVoteSmartTables = Action {
@@ -23,7 +23,15 @@ object DbAdminApi extends Controller {
     implicit request =>
 
       DbAdmin.reCreateTempVoteSmartTables()
+
       VoteSmartCandidateService.fetchCandidates()
+      VoteSmartLeadershipService.fetchLeaderships()
+
+      while (VoteSmartService.isRunning) {
+        //Pause for 100 ms
+        Thread.sleep(100)
+      }
+
       DbAdmin.replaceVoteSmartTables()
 
       Ok
