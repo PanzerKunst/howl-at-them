@@ -427,11 +427,11 @@ tr.clickable {
 #content .reports .existing-report-contact {
   width: 10em; }
 
-.edit-existing-report,
-.delete-existing-report {
+.edit-report,
+.delete-report {
   float: right; }
 
-.edit-existing-report {
+.edit-report {
   margin-right: 1em; }
 
 html {
@@ -473,6 +473,10 @@ textarea.form-control {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px transparentize($actionColor, 0.7);
   }
 } */
+@media screen and (min-width: 49.5em) {
+  .modal-body > p {
+    font-size: 16px; } }
+
 .dataTables_length,
 .dataTables_filter,
 .dataTables_info,

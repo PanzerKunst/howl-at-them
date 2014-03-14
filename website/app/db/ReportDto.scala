@@ -40,6 +40,42 @@ object ReportDto {
     }
   }
 
+  def getOfId(id: Long): Option[Report] = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
+            is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes,
+            creation_timestamp, is_deleted
+          from report
+          where id = """ + id + """;"""
+
+        Logger.info("ReportDto.getOfId(" + id + "):" + query)
+
+        SQL(query).apply().headOption match {
+          case Some(row) =>
+            Some(
+              Report(
+                Some(id),
+                row[Int]("candidate_id"),
+                row[String]("author_name"),
+                row[String]("contact"),
+                row[Option[Boolean]]("is_money_in_politics_a_problem"),
+                row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
+                row[Option[Boolean]]("is_opposing_citizens_united"),
+                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[String]]("support_level"),
+                row[Option[String]]("notes"),
+                row[Option[Long]]("creation_timestamp"),
+                row[Boolean]("is_deleted")
+              )
+            )
+          case None => None
+        }
+    }
+  }
+
   def getOfCandidate(candidateId: Int): List[Report] = {
     DB.withConnection {
       implicit c =>
@@ -50,6 +86,7 @@ object ReportDto {
             creation_timestamp
           from report
           where candidate_id = """ + candidateId + """
+            and is_deleted is false
           order by creation_timestamp desc;"""
 
         Logger.info("ReportDto.getOfCandidate():" + query)
@@ -68,6 +105,21 @@ object ReportDto {
               row[Option[String]]("notes"),
               row[Option[Long]]("creation_timestamp"))
         }.toList
+    }
+  }
+
+  def delete(report: Report) {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          update report set
+          is_deleted = true
+          where id = """ + report.id.get + """;"""
+
+        Logger.info("ReportDto.delete():" + query)
+
+        SQL(query).executeUpdate()
     }
   }
 }

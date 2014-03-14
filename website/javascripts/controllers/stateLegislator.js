@@ -66,12 +66,16 @@ CBR.Controllers.StateLegislator = new Class({
         jQuery("#new-report-toggle").click(jQuery.proxy(this._toggleNewReport, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
+
+        jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
     _initForm: function() {
         this.$authorName.val(this.getFromLocalStorage(this.$authorName.attr("id")));
 
-        if (this._getAction() === "savedReport") {
+        var action = this._getAction();
+
+        if (action === "savedReport" || action === "deletedReport") {
             this.$form.hide();
         }
     },
@@ -158,5 +162,40 @@ CBR.Controllers.StateLegislator = new Class({
                 }.bind(this)
             }).post();
         }
+    },
+
+    _showDeleteReportModal: function(e) {
+        var $a = jQuery(e.currentTarget);
+
+        var idOfReportToDelete = $a.closest("article").data("id");
+
+        this.getEl().append(
+            CBR.Templates.deleteReportModal()
+        );
+
+        this.$confirmModalBtn = jQuery("#confirm-modal");
+
+        this.$confirmModalBtn.click(jQuery.proxy(function() {
+            this._doDeleteReport(idOfReportToDelete);
+        }, this));
+
+        jQuery("#delete-report-modal").modal();
+    },
+
+    _doDeleteReport: function(reportId) {
+        this.$confirmModalBtn.button('loading');
+
+        new Request({
+            urlEncoded: false,
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/reports/" + reportId,
+            onSuccess: function (responseText, responseXML) {
+                location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=deletedReport");
+            }.bind(this),
+            onFailure: function (xhr) {
+                this.$confirmModalBtn.button('reset');
+                alert("AJAX fail :(");
+            }.bind(this)
+        }).delete();
     }
 });

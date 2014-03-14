@@ -35,12 +35,12 @@ object AccountDto {
         Logger.info("AccountDto.getOfId():" + query)
 
         SQL(query).apply().headOption match {
-          case Some(sqlRow) =>
+          case Some(row) =>
             Some(
               new Account(
                 Some(id),
-                sqlRow[String]("username"),
-                sqlRow[Option[String]]("password")
+                row[String]("username"),
+                row[Option[String]]("password")
               )
             )
           case None => None
@@ -62,10 +62,10 @@ object AccountDto {
         Logger.info("AccountDto.getOfSignInInfo():" + query) */
 
         SQL(query).apply().headOption match {
-          case Some(sqlRow) =>
+          case Some(row) =>
             Some(
               new Account(
-                Some(sqlRow[Long]("id")),
+                Some(row[Long]("id")),
                 username,
                 Some(password)
               )

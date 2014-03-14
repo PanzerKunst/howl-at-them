@@ -20,6 +20,7 @@ POST    /api/db/update-vote-smart-data          controllers.api.DbAdminApi.updat
 GET     /api/state-legislators                  controllers.api.StateLegislatorApi.search
 
 POST    /api/reports                            controllers.api.ReportApi.create
+DELETE  /api/reports/:id                        controllers.api.ReportApi.delete(id:Long)
 
 POST    /api/accounts                           controllers.api.AccountApi.create
 

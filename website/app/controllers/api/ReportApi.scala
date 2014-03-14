@@ -15,4 +15,16 @@ object ReportApi extends Controller {
         case None => InternalServerError("Creation of a report did not return an ID!")
       }
   }
+
+  def delete(id: Long) = Action {
+    implicit request =>
+
+      ReportDto.getOfId(id) match {
+        case None =>
+          BadRequest("No report found for id '" + id + "'")
+        case Some(report) =>
+          ReportDto.delete(report)
+          Ok
+      }
+  }
 }

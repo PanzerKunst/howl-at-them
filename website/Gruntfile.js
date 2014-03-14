@@ -34,6 +34,20 @@ module.exports = function (grunt) {
             }
         },
 
+        handlebars: {
+            options: {
+                namespace: 'CBR.Templates',
+                processName: function(filePath) {
+                    return filePath.replace(/^javascripts\/templates\//, '').replace(/\.hbs$/, '');
+                }
+            },
+            all: {
+                files: {
+                    "public/templates.js": ["javascripts/templates/**/*.hbs"]
+                }
+            }
+        },
+
         concat: {
             options: {
                 separator:';'
@@ -49,6 +63,7 @@ module.exports = function (grunt) {
                     "libs/bootstrap/js/bootstrap.min.js",
                     "libs/fastclick.js",
                     "libs/datatables/jquery.dataTables.min.js",
+                    "libs/handlebars-v1.3.0.js",
 
                     // Global
                     "javascripts/global.js",
@@ -71,7 +86,10 @@ module.exports = function (grunt) {
                     "javascripts/controllers/admin.js",
                     "javascripts/controllers/searchLegislators.js",
                     "javascripts/controllers/stateLegislator.js",
-                    "javascripts/controllers/stateReports.js"
+                    "javascripts/controllers/stateReports.js",
+
+                    // Templates
+                    "public/templates.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
             }
@@ -126,6 +144,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['buildjs', 'buildcss']);
-    grunt.registerTask('buildjs',  ['jshint', 'concat']);
+    grunt.registerTask('buildjs',  ['jshint', 'handlebars', 'concat']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };

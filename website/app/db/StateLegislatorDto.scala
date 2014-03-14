@@ -27,6 +27,7 @@ object StateLegislatorDto {
             on s.id = l.us_state_id
           left join report r
             on r.candidate_id = l.id
+            and r.is_deleted is false
           where l.id = """ + id + """
           order by creation_timestamp desc;"""
 
@@ -124,6 +125,7 @@ object StateLegislatorDto {
             on s.id = l.us_state_id
           left join report r
             on r.candidate_id = l.id
+            and r.is_deleted is false
           where lower(first_name) like '""" + firstNameFilterForQuery + """'
             and lower(last_name) like '""" + lastNameFilterForQuery + """'
             and us_state_id like '""" + usStateIdFilterForQuery + """'
@@ -195,6 +197,7 @@ object StateLegislatorDto {
             on s.id = l.us_state_id
           left join report r
             on r.candidate_id = l.id
+            and r.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'
           order by title, last_name, creation_timestamp desc;"""
 

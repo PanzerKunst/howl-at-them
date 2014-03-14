@@ -97,7 +97,8 @@ object DbAdmin {
             has_previously_voted_for_convention boolean,
             support_level varchar(32),
             notes varchar(512),
-            creation_timestamp bigint not null
+            creation_timestamp bigint not null,
+            is_deleted boolean not null default false
           );"""
 
         Logger.info("DbAdmin.createTableReport():" + query)

@@ -9,6 +9,7 @@
         "grunt-contrib-concat":         "*",
         "grunt-contrib-sass":           "*",
         "grunt-contrib-cssmin":         "*",
+        "grunt-contrib-handlebars":     "*",
         "grunt-contrib-watch":          "*",
         "matchdep":                     "*"
     }

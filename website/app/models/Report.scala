@@ -15,7 +15,8 @@ case class Report(_id: Option[Long] = None,
                   _hasPreviouslyVotedForConvention: Option[Boolean] = None,
                   _supportLevel: Option[String] = None,
                   _notes: Option[String],
-                  _creationTimestamp: Option[Long] = None) {
+                  _creationTimestamp: Option[Long] = None,
+                  _isDeleted: Boolean = false) {
 
   @JsonDeserialize(contentAs = classOf[java.lang.Long])
   val id: Option[Long] = _id
@@ -30,6 +31,7 @@ case class Report(_id: Option[Long] = None,
   val supportLevel: Option[String] = _supportLevel
   val notes: Option[String] = _notes
   val creationTimestamp: Option[Long] = _creationTimestamp
+  val isDeleted: Boolean = _isDeleted
 
   def getReadableCreationTimestamp: String = {
     new SimpleDateFormat("MM/dd/YYYY h:mm aa").format(new Date(creationTimestamp.get))
@@ -78,7 +80,8 @@ object Report {
         "hasPreviouslyVotedForConvention" -> report.hasPreviouslyVotedForConvention,
         "supportLevel" -> report.supportLevel,
         "notes" -> report.notes,
-        "creationTimestamp" -> report.creationTimestamp
+        "creationTimestamp" -> report.creationTimestamp,
+        "isDeleted" -> report.isDeleted
       )
     }
   }
