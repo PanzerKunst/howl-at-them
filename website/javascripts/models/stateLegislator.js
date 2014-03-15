@@ -34,7 +34,7 @@ CBR.Models.StateLegislator = new Class({
 
     getReports: function() {
         return this.options.reports.map(function(report) {
-            new CBR.Models.Report(report);
+            return new CBR.Models.Report(report);
         });
     },
 

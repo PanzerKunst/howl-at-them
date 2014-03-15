@@ -4741,7 +4741,7 @@ CBR.Models.Report.contact = {
 
     getReports: function() {
         return this.options.reports.map(function(report) {
-            new CBR.Models.Report(report);
+            return new CBR.Models.Report(report);
         });
     },
 
@@ -4810,15 +4810,15 @@ CBR.Models.Report.contact = {
         this._applyModernizrRules();
     },
 
-    isBrowserMediumScreen: function() {
+    isBrowserMediumScreen: function () {
         return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
     },
 
-    isBrowserLargeScreen: function() {
+    isBrowserLargeScreen: function () {
         return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
     },
 
-    saveInLocalStorage: function(key, value) {
+    saveInLocalStorage: function (key, value) {
         if (Modernizr.localstorage) {
             var pageId = jQuery("body").attr("id");
 
@@ -4829,7 +4829,7 @@ CBR.Models.Report.contact = {
         }
     },
 
-    getFromLocalStorage: function(key) {
+    getFromLocalStorage: function (key) {
         if (Modernizr.localstorage) {
             var pageId = jQuery("body").attr("id");
 
@@ -4837,6 +4837,189 @@ CBR.Models.Report.contact = {
 
             return pageDataInLocalStorage[key];
         }
+    },
+
+    showEditReportModal: function (report, successUrl) {
+        if (this.$editReportModal) {
+            this.$editReportModal.remove();
+        }
+
+        var reportNotes = report.getNotes();
+
+        this.getEl().append(
+            CBR.Templates.editReportModal({
+                ContactWithLegislator: CBR.Models.Report.contact,
+                SupportLevel: CBR.Models.Report.supportLevel,
+                report: {
+                    authorName: report.getAuthorName(),
+                    contact: report.getContact(),
+                    isMoneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem(),
+                    isSupportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt(),
+                    isOpposingCitizensUnited: report.isOpposingCitizensUnited(),
+                    hasPreviouslyVotedForConvention: report.hasPreviouslyVotedForConvention(),
+                    supportLevel: report.getSupportLevel(),
+                    notes: reportNotes ? reportNotes.replace("\\n", "&#13;&#10;") : null
+                },
+                isContact: {
+                    metLegislator: report.getContact() === "MET_LEGISLATOR",
+                    talkedToLegislator: report.getContact() === "TALKED_TO_LEGISLATOR",
+                    contactWithStaff: report.getContact() === "CONTACT_WITH_STAFF",
+                    waitingForCallback: report.getContact() === "WAITING_FOR_CALLBACK",
+                    leftVoiceMail: report.getContact() === "LEFT_VOICEMAIL",
+                    none: report.getContact() === "NONE"
+                },
+                isSupportLevel: {
+                    supportive: report.getSupportLevel() === "SUPPORTIVE",
+                    needsConfincing: report.getSupportLevel() === "NEEDS_CONVINCING",
+                    notSupportive: report.getSupportLevel() === "NOT_SUPPORTIVE"
+                },
+                isYesNoAnwerUndefined: {
+                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === null,
+                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
+                    opposingCitizensUnited: report.isOpposingCitizensUnited() === null,
+                    previousVoteForConvention: report.hasPreviouslyVotedForConvention() === null
+                },
+                isFalse: {
+                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === false,
+                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
+                    opposingCitizensUnited: report.isOpposingCitizensUnited() === false,
+                    previousVoteForConvention: report.hasPreviouslyVotedForConvention() === false
+                }
+            })
+        );
+
+        this.$editReportModal = jQuery("#edit-report-modal");
+
+        this.$confirmEditBtn = jQuery("#confirm-edit");
+
+        this.$confirmEditBtn.click(jQuery.proxy(function () {
+            this._doEditReport(report, successUrl);
+        }, this));
+
+        // TODO: remove this._addModalHandlerForScrollbar(this.$editReportModal);
+
+        this.$editReportModal.modal();
+    },
+
+    showDeleteReportModal: function (reportId, successUrl) {
+        if (this.$deleteReportModal) {
+            this.$deleteReportModal.remove();
+        }
+
+        this.getEl().append(
+            CBR.Templates.deleteReportModal()
+        );
+
+        this.$deleteReportModal = jQuery("#delete-report-modal");
+
+        this.$confirmDeleteBtn = jQuery("#confirm-delete");
+
+        this.$confirmDeleteBtn.click(jQuery.proxy(function () {
+            this._doDeleteReport(reportId, successUrl);
+        }, this));
+
+        // TODO: remove this._addModalHandlerForScrollbar(this.$deleteReportModal);
+
+        this.$deleteReportModal.modal();
+    },
+
+    _doEditReport: function (initialReport, successUrl) {
+        if (this.editReportValidator.isValid()) {
+            this.$confirmEditBtn.button('loading');
+
+            var authorName = this.$authorName.val();
+            var selectedSupportLevel = jQuery("#support-level").val();
+
+            var isMoneyInPoliticsAProblem = null;
+            if (this.$yesMppRadio.prop("checked")) {
+                isMoneyInPoliticsAProblem = true;
+            } else if (this.$noMppRadio.prop("checked")) {
+                isMoneyInPoliticsAProblem = false;
+            }
+
+            var isSupportingAmendmentToFixIt = null;
+            if (this.$yesSafiRadio.prop("checked")) {
+                isSupportingAmendmentToFixIt = true;
+            } else if (this.$noSafiRadio.prop("checked")) {
+                isSupportingAmendmentToFixIt = false;
+            }
+
+            var isOpposingCitizensUnited = null;
+            if (this.$yesOcuRadio.prop("checked")) {
+                isOpposingCitizensUnited = true;
+            } else if (this.$noOcuRadio.prop("checked")) {
+                isOpposingCitizensUnited = false;
+            }
+
+            var hasPreviouslyVotedForConvention = null;
+            if (this.$yesPvcRadio.prop("checked")) {
+                hasPreviouslyVotedForConvention = true;
+            } else if (this.$noPvcRadio.prop("checked")) {
+                hasPreviouslyVotedForConvention = false;
+            }
+
+            var updatedReport = {
+                id: initialReport.getId(),
+                candidateId: this._getStateLegislator().getId(),
+                authorName: authorName,
+                contact: jQuery("#contact").val(),
+                isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
+                isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
+                isOpposingCitizensUnited: isOpposingCitizensUnited,
+                hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
+                supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
+                notes: jQuery("#notes").val()
+            };
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+                url: "/api/reports/",
+                data: CBR.JsonUtil.stringifyModel(updatedReport),
+                onSuccess: function (responseText, responseXML) {
+                    location.replace(successUrl);
+                }.bind(this),
+                onFailure: function (xhr) {
+                    this.$confirmEditBtn.button('reset');
+                    alert("AJAX fail :(");
+                }.bind(this)
+            }).put();
+        }
+    },
+
+    _doDeleteReport: function (reportId, successUrl) {
+        this.$confirmDeleteBtn.button('loading');
+
+        new Request({
+            urlEncoded: false,
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/reports/" + reportId,
+            onSuccess: function (responseText, responseXML) {
+                location.replace(successUrl);
+            },
+            onFailure: function (xhr) {
+                this.$confirmDeleteBtn.button('reset');
+                alert("AJAX fail :(");
+            }.bind(this)
+        }).delete();
+    },
+
+    /* TODO: remove _addModalHandlerForScrollbar: function($modal) {
+        var $html = jQuery("html");
+        $html.addClass("with-modal");
+        $modal.on("hide.bs.modal", function (e) {
+            $html.removeClass("with-modal");
+        });
+    }, */
+
+    initEditReportValidation: function() {
+        this.editReportValidator = new CBR.Services.Validator({
+            fieldIds: [
+                "edit-author-name",
+                "edit-notes"
+            ]
+        });
     },
 
     _applyModernizrRules: function () {
@@ -5196,11 +5379,7 @@ CBR.Models.Report.contact = {
     },
 
     _getStateLegislator: function () {
-        return this.options.stateLegislator;
-    },
-
-    _getLatestReport: function () {
-        return this.options.latestReport;
+        return new CBR.Models.StateLegislator(this.options.stateLegislator);
     },
 
     _getAction: function () {
@@ -5214,6 +5393,8 @@ CBR.Models.Report.contact = {
                 "notes"
             ]
         });
+
+        this.initEditReportValidation();
     },
 
     _initEvents: function () {
@@ -5222,10 +5403,11 @@ CBR.Models.Report.contact = {
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
 
+        jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
-    _initForm: function() {
+    _initForm: function () {
         this.$authorName.val(this.getFromLocalStorage(this.$authorName.attr("id")));
 
         var action = this._getAction();
@@ -5290,7 +5472,7 @@ CBR.Models.Report.contact = {
             }
 
             var report = {
-                candidateId: this._getStateLegislator().id,
+                candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
                 contact: jQuery("#contact").val(),
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
@@ -5309,7 +5491,7 @@ CBR.Models.Report.contact = {
                 url: "/api/reports",
                 data: CBR.JsonUtil.stringifyModel(report),
                 onSuccess: function (responseText, responseXML) {
-                    location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=savedReport");
+                    location.replace("/state-legislators/" + this._getStateLegislator().getId() + "?action=savedReport");
                 }.bind(this),
                 onFailure: function (xhr) {
                     this.$submitBtn.button('reset');
@@ -5319,39 +5501,34 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _showDeleteReportModal: function(e) {
+    _showEditReportModal: function(e) {
         var $a = jQuery(e.currentTarget);
+        var report = this._getReportFromId($a.closest("article").data("id"));
+        var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=savedReport";
 
-        var idOfReportToDelete = $a.closest("article").data("id");
-
-        this.getEl().append(
-            CBR.Templates.deleteReportModal()
-        );
-
-        this.$confirmModalBtn = jQuery("#confirm-modal");
-
-        this.$confirmModalBtn.click(jQuery.proxy(function() {
-            this._doDeleteReport(idOfReportToDelete);
-        }, this));
-
-        jQuery("#delete-report-modal").modal();
+        this.showEditReportModal(report, successUrl);
     },
 
-    _doDeleteReport: function(reportId) {
-        this.$confirmModalBtn.button('loading');
+    _showDeleteReportModal: function(e) {
+        var $a = jQuery(e.currentTarget);
+        var report = this._getReportFromId($a.closest("article").data("id"));
+        var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=deletedReport";
 
-        new Request({
-            urlEncoded: false,
-            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/reports/" + reportId,
-            onSuccess: function (responseText, responseXML) {
-                location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=deletedReport");
-            }.bind(this),
-            onFailure: function (xhr) {
-                this.$confirmModalBtn.button('reset');
-                alert("AJAX fail :(");
-            }.bind(this)
-        }).delete();
+        this.showDeleteReportModal(report.getId(), successUrl);
+    },
+
+    _getReportFromId: function (reportId) {
+        var reports = this._getStateLegislator().getReports();
+
+        for (var i = 0; i < reports.length; i++) {
+            var report = reports[i];
+
+            if (report.getId() === reportId) {
+                return report;
+            }
+        }
+
+        return null;
     }
 });
 ;CBR.Controllers.StateReports = new Class({
@@ -5388,6 +5565,7 @@ CBR.Models.Report.contact = {
     _initEvents: function () {
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
         jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
+        jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
     _doSubmit: function (e) {
@@ -5401,6 +5579,14 @@ CBR.Models.Report.contact = {
 
     _navigateToStateLegislatorPage: function (e) {
         location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
+    },
+
+    _showDeleteReportModal: function(e) {
+        var $a = jQuery(e.currentTarget);
+        var reportId = $a.closest("article").data("id");
+        var successUrl = "/state-reports?action=deletedReport";
+
+        this.showDeleteReportModal(reportId, successUrl);
     }
 });
 ;this["CBR"] = this["CBR"] || {};
@@ -5412,5 +5598,124 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<div class=\"modal fade\" id=\"delete-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-sm\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <p>Delete this report?</p>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Deleting report...\" id=\"confirm-modal\">Delete report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+  return "<div class=\"modal fade\" id=\"delete-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-sm\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <p>Delete this report?</p>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Deleting report...\" id=\"confirm-delete\">Delete report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+  });
+
+this["CBR"]["Templates"]["editReportModal"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  
+  return " selected ";
+  }
+
+function program3(depth0,data) {
+  
+  
+  return " checked ";
+  }
+
+function program5(depth0,data) {
+  
+  
+  return "\r\n                                    checked\r\n                                    ";
+  }
+
+function program7(depth0,data) {
+  
+  
+  return "\r\n                                selected\r\n                                ";
+  }
+
+  buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.authorName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"MET_LEGISLATOR\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.MET_LEGISLATOR)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\"TALKED_TO_LEGISLATOR\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.talkedToLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.TALKED_TO_LEGISLATOR)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\"CONTACT_WITH_STAFF\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.contactWithStaff), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.CONTACT_WITH_STAFF)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\"WAITING_FOR_CALLBACK\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.waitingForCallback), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.WAITING_FOR_CALLBACK)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\"LEFT_VOICEMAIL\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.leftVoiceMail), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.LEFT_VOICEMAIL)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\"NONE\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.none), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += ">"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.NONE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Money in politics is a problem</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-MPP\" value=\"?\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsAProblemUndefined), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-MPP\" value=\"true\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isMoneyInPoliticsAProblem), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-MPP\" value=\"false\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsAProblem), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Supports amendment to fix it</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-SAFI\" value=\"?\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.supportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-SAFI\" value=\"true\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isSupportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-SAFI\" value=\"false\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.supportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Opposes Citizens United</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"?\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.opposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"true\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isOpposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/></div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"false\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.opposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/></div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Previous vote for convention</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-PVC\" value=\"?\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.previousVoteForConvention), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-PVC\" value=\"true\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.hasPreviouslyVotedForConvention), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-PVC\" value=\"false\"\r\n                                    ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.previousVoteForConvention), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-support-level\">Support level</label><!--\r\n                         --><select id=\"edit-support-level\" class=\"form-control\">\r\n                                <option value=\"\"></option>\r\n    \r\n                                <option value=\"SUPPORTIVE\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.supportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.SUPPORTIVE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n    \r\n                                <option value=\"NEEDS_CONVINCING\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.needsConfincing), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.NEEDS_CONVINCING)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n    \r\n                                <option value=\"NOT_SUPPORTIVE\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.notSupportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.NOT_SUPPORTIVE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-notes\">Notes</label><!--\r\n                         --><textarea id=\"edit-notes\" class=\"form-control\" maxlength=\"512\">";
+  stack1 = ((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.notes)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</textarea>\r\n\r\n                            <p class=\"field-error\" data-check=\"max-length\">512 characters maximum</p>\r\n                        </div>\r\n                    </section>\r\n                </form>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Saving report...\" id=\"confirm-edit\">Save report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+  return buffer;
   });

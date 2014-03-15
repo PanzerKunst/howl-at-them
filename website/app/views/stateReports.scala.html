@@ -1,4 +1,4 @@
-@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator])
+@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
@@ -9,6 +9,20 @@
 <!--
     Content
 -->
+@if(action.isDefined && action.get == "savedReport") {
+<div id="report-saved" class="alert alert-success alert-dismissable floating">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Report saved
+</div>
+}
+
+@if(action.isDefined && action.get == "deletedReport") {
+<div id="report-deleted" class="alert alert-success alert-dismissable floating">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Report deleted
+</div>
+}
+
 <h1>State reports</h1>
 
 <form role="form">
@@ -88,8 +102,8 @@
             <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
             <span class="existing-report-contact">@report.getReadableContact</span>
             <span class="existing-report-author-name">@report.authorName</span>
-            <a class="delete-existing-report">Delete</a>
-            <a class="edit-existing-report">Edit</a>
+            <a class="delete-report">Delete</a>
+            <a class="edit-report">Edit</a>
         </div>
         <div>
             @Html(report.getSupportLevelSpan)
@@ -161,8 +175,8 @@
             <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
             <span class="existing-report-contact">@report.getReadableContact</span>
             <span class="existing-report-author-name">@report.authorName</span>
-            <a class="delete-existing-report">Delete</a>
-            <a class="edit-existing-report">Edit</a>
+            <a class="delete-report">Delete</a>
+            <a class="edit-report">Edit</a>
         </div>
         <div>
             @Html(report.getSupportLevelSpan)

@@ -43,6 +43,10 @@ object Application extends Controller {
 
   def stateReports = Action {
     implicit request =>
+      val action = if (request.queryString.contains("action"))
+        Some(request.queryString.get("action").get.head)
+      else
+        None
 
       if (request.queryString.contains("usStateId")) {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
@@ -52,7 +56,7 @@ object Application extends Controller {
 
         val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
 
-        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList)).withSession(
+        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action)).withSession(
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
@@ -64,9 +68,9 @@ object Application extends Controller {
 
             val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
 
-            Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList))
+            Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action))
 
-          case None => Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List()))
+          case None => Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List(), action))
         }
       }
   }
@@ -85,7 +89,7 @@ object Application extends Controller {
         None
 
       StateLegislatorDto.getOfId(id) match {
-        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, detailedStateLegislator.reports.headOption, detailedStateLegislator.reports, action, loggedInUser(session)))
+        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, action, loggedInUser(session)))
         case None => NotFound
       }
   }

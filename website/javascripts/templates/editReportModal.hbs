@@ -1,0 +1,167 @@
+<div class="modal fade" id="edit-report-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <section class="form-groups">
+                        <div class="form-group">
+                            <label for="edit-author-name">Your name <span>*</span></label><!--
+                         --><input type="text" id="edit-author-name" class="form-control" maxlength="64" data-min-length="2" value="{{report.authorName}}" />
+
+                            <p class="field-error" data-check="empty"></p>
+                            <p class="field-error" data-check="min-length">Two characters minimun</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-contact">Contact</label><!--
+                         --><select id="edit-contact" class="form-control">
+                                <option value="MET_LEGISLATOR" {{#if isContact.metLegislator}} selected {{/if}}>{{ContactWithLegislator.MET_LEGISLATOR}}</option>
+                                <option value="TALKED_TO_LEGISLATOR" {{#if isContact.talkedToLegislator}} selected {{/if}}>{{ContactWithLegislator.TALKED_TO_LEGISLATOR}}</option>
+                                <option value="CONTACT_WITH_STAFF" {{#if isContact.contactWithStaff}} selected {{/if}}>{{ContactWithLegislator.CONTACT_WITH_STAFF}}</option>
+                                <option value="WAITING_FOR_CALLBACK" {{#if isContact.waitingForCallback}} selected {{/if}}>{{ContactWithLegislator.WAITING_FOR_CALLBACK}}</option>
+                                <option value="LEFT_VOICEMAIL" {{#if isContact.leftVoiceMail}} selected {{/if}}>{{ContactWithLegislator.LEFT_VOICEMAIL}}</option>
+                                <option value="NONE" {{#if isContact.none}} selected {{/if}}>{{ContactWithLegislator.NONE}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Money in politics is a problem</label>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-MPP" value="?" {{#if isYesNoAnwerUndefined.moneyInPoliticsAProblemUndefined}} checked {{/if}} /></div>
+                                <div><label>?</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-MPP" value="true"
+                                    {{#if report.isMoneyInPoliticsAProblem}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>Yes</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-MPP" value="false"
+                                    {{#if isFalse.moneyInPoliticsAProblem}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>No</label></div>
+                            </article>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Supports amendment to fix it</label>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-SAFI" value="?" {{#if isYesNoAnwerUndefined.supportingAmendmentToFixIt}} checked {{/if}} /></div>
+                                <div><label>?</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-SAFI" value="true"
+                                    {{#if report.isSupportingAmendmentToFixIt}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>Yes</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-SAFI" value="false"
+                                    {{#if isFalse.supportingAmendmentToFixIt}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>No</label></div>
+                            </article>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Opposes Citizens United</label>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-OCU" value="?" {{#if isYesNoAnwerUndefined.opposingCitizensUnited}} checked {{/if}} /></div>
+                                <div><label>?</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-OCU" value="true"
+                                    {{#if report.isOpposingCitizensUnited}}
+                                    checked
+                                    {{/if}}/></div>
+                                <div><label>Yes</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-OCU" value="false"
+                                    {{#if isFalse.opposingCitizensUnited}}
+                                    checked
+                                    {{/if}}/></div>
+                                <div><label>No</label></div>
+                            </article>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Previous vote for convention</label>
+                            <article class="check-or-radio">
+                                <div><input type="radio" name="edit-PVC" value="?" {{#if isYesNoAnwerUndefined.previousVoteForConvention}} checked {{/if}} /></div>
+                                <div><label>?</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-PVC" value="true"
+                                    {{#if report.hasPreviouslyVotedForConvention}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>Yes</label></div>
+                            </article>
+                            <article class="check-or-radio">
+                                <div>
+                                    <input type="radio" name="edit-PVC" value="false"
+                                    {{#if isFalse.previousVoteForConvention}}
+                                    checked
+                                    {{/if}}/>
+                                </div>
+                                <div><label>No</label></div>
+                            </article>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-support-level">Support level</label><!--
+                         --><select id="edit-support-level" class="form-control">
+                                <option value=""></option>
+    
+                                <option value="SUPPORTIVE"
+                                {{#if isSupportLevel.supportive}}
+                                selected
+                                {{/if}}
+                                >{{SupportLevel.SUPPORTIVE}}</option>
+    
+                                <option value="NEEDS_CONVINCING"
+                                {{#if isSupportLevel.needsConfincing}}
+                                selected
+                                {{/if}}
+                                >{{SupportLevel.NEEDS_CONVINCING}}</option>
+    
+                                <option value="NOT_SUPPORTIVE"
+                                {{#if isSupportLevel.notSupportive}}
+                                selected
+                                {{/if}}
+                                >{{SupportLevel.NOT_SUPPORTIVE}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-notes">Notes</label><!--
+                         --><textarea id="edit-notes" class="form-control" maxlength="512">{{{report.notes}}}</textarea>
+
+                            <p class="field-error" data-check="max-length">512 characters maximum</p>
+                        </div>
+                    </section>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-loading-text="Saving report..." id="confirm-edit">Save report</button>
+            </div>
+        </div>
+    </div>
+</div>

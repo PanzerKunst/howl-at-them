@@ -171,5 +171,11 @@
         margin-right: 2em;
       }
     }
+
+    .reports {
+      > .alert {
+        text-align: center;
+      }
+    }
   }
 }

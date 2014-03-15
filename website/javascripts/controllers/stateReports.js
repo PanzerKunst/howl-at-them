@@ -32,6 +32,7 @@ CBR.Controllers.StateReports = new Class({
     _initEvents: function () {
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
         jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
+        jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
     _doSubmit: function (e) {
@@ -45,5 +46,13 @@ CBR.Controllers.StateReports = new Class({
 
     _navigateToStateLegislatorPage: function (e) {
         location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
+    },
+
+    _showDeleteReportModal: function(e) {
+        var $a = jQuery(e.currentTarget);
+        var reportId = $a.closest("article").data("id");
+        var successUrl = "/state-reports?action=deletedReport";
+
+        this.showDeleteReportModal(reportId, successUrl);
     }
 });

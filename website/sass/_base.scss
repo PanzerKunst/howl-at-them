@@ -1,6 +1,10 @@
 html {
   // Always display the vertical scrollbar
   overflow-y: scroll;
+
+  /* TODO: remove &.with-modal {
+    overflow-y: visible;
+  } */
 }
 
 body {
@@ -92,10 +96,6 @@ body {
 }
 
 .centered-contents {
-  text-align: center;
-}
-
-.alert {
   text-align: center;
 }
 

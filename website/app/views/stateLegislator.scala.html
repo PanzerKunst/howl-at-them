@@ -1,4 +1,4 @@
-@(stateLegislator: models.frontend.DetailedStateLegislator, latestReport: Option[Report], existingReports: List[Report], action: Option[String], account: Option[Account])
+@(stateLegislator: models.frontend.DetailedStateLegislator, action: Option[String], account: Option[Account])
 @main(stateLegislator.firstName + " " + stateLegislator.lastName, "state-legislator") {
 <!--
     Header
@@ -9,21 +9,21 @@
 <!--
     Content
 -->
-<h1>@stateLegislator.title @stateLegislator.firstName @stateLegislator.lastName</h1>
-
 @if(action.isDefined && action.get == "savedReport") {
-<div class="alert alert-success alert-dismissable">
+<div id="report-saved" class="alert alert-success alert-dismissable floating">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     Report saved
 </div>
 }
 
 @if(action.isDefined && action.get == "deletedReport") {
-<div class="alert alert-success alert-dismissable">
+<div id="report-deleted" class="alert alert-success alert-dismissable floating">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     Report deleted
 </div>
 }
+
+<h1>@stateLegislator.title @stateLegislator.firstName @stateLegislator.lastName</h1>
 
 <section id="legislator-data">
     <div class="centered-contents">
@@ -49,8 +49,8 @@
         </section>
 
         <section id="support-level-and-priority-target">
-            @if(latestReport.isDefined) {
-                @Html(latestReport.get.getSupportLevelSpan)
+            @if(!stateLegislator.reports.isEmpty) {
+                @Html(stateLegislator.reports.head.getSupportLevelSpan)
             } else {
             <span class="support-level UNKNOWN">Unknown</span>
             }
@@ -71,11 +71,11 @@
             </thead>
             <tbody>
                 <tr>
-                    @if(latestReport.isDefined) {
-                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isMoneyInPoliticsAProblem))</td>
-                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isSupportingAmendmentToFixIt))</td>
-                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.isOpposingCitizensUnited))</td>
-                    <td>@Html(Report.getSpanForYesNoAnswer(latestReport.get.hasPreviouslyVotedForConvention))</td>
+                    @if(!stateLegislator.reports.isEmpty) {
+                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isMoneyInPoliticsAProblem))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isSupportingAmendmentToFixIt))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isOpposingCitizensUnited))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.hasPreviouslyVotedForConvention))</td>
                     } else {
                     <td><span class="yes-no-answer">?</span></td>
                     <td><span class="yes-no-answer">?</span></td>
@@ -139,28 +139,28 @@
             <div class="form-group">
                 <label>Money in politics is a problem</label>
                 <article class="check-or-radio">
-                    <div><input type="radio" name="MPP" value="?" @if(!latestReport.isDefined || !latestReport.get.isMoneyInPoliticsAProblem.isDefined) { checked } /></div>
+                    <div><input type="radio" name="MPP" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.isMoneyInPoliticsAProblem.isDefined) { checked } /></div>
                     <div><label>?</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="MPP" value="true"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isMoneyInPoliticsAProblem.isDefined &&
-                            latestReport.get.isMoneyInPoliticsAProblem.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isMoneyInPoliticsAProblem.isDefined &&
+                            stateLegislator.reports.head.isMoneyInPoliticsAProblem.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>Yes</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="MPP" value="false"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isMoneyInPoliticsAProblem.isDefined &&
-                            !latestReport.get.isMoneyInPoliticsAProblem.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isMoneyInPoliticsAProblem.isDefined &&
+                            !stateLegislator.reports.head.isMoneyInPoliticsAProblem.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>No</label></div>
                 </article>
@@ -169,28 +169,28 @@
             <div class="form-group">
                 <label>Supports amendment to fix it</label>
                 <article class="check-or-radio">
-                    <div><input type="radio" name="SAFI" value="?" @if(!latestReport.isDefined || !latestReport.get.isSupportingAmendmentToFixIt.isDefined) { checked } /></div>
+                    <div><input type="radio" name="SAFI" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.isSupportingAmendmentToFixIt.isDefined) { checked } /></div>
                     <div><label>?</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="SAFI" value="true"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isSupportingAmendmentToFixIt.isDefined &&
-                            latestReport.get.isSupportingAmendmentToFixIt.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isSupportingAmendmentToFixIt.isDefined &&
+                            stateLegislator.reports.head.isSupportingAmendmentToFixIt.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>Yes</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="SAFI" value="false"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isSupportingAmendmentToFixIt.isDefined &&
-                            !latestReport.get.isSupportingAmendmentToFixIt.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isSupportingAmendmentToFixIt.isDefined &&
+                            !stateLegislator.reports.head.isSupportingAmendmentToFixIt.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>No</label></div>
                 </article>
@@ -199,25 +199,25 @@
             <div class="form-group">
                 <label>Opposes Citizens United</label>
                 <article class="check-or-radio">
-                    <div><input type="radio" name="OCU" value="?" @if(!latestReport.isDefined || !latestReport.get.isOpposingCitizensUnited.isDefined) { checked } /></div>
+                    <div><input type="radio" name="OCU" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.isOpposingCitizensUnited.isDefined) { checked } /></div>
                     <div><label>?</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div><input type="radio" name="OCU" value="true"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isOpposingCitizensUnited.isDefined &&
-                            latestReport.get.isOpposingCitizensUnited.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isOpposingCitizensUnited.isDefined &&
+                            stateLegislator.reports.head.isOpposingCitizensUnited.get) {
                                 checked
-                        } /></div>
+                        }/></div>
                     <div><label>Yes</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div><input type="radio" name="OCU" value="false"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.isOpposingCitizensUnited.isDefined &&
-                            !latestReport.get.isOpposingCitizensUnited.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.isOpposingCitizensUnited.isDefined &&
+                            !stateLegislator.reports.head.isOpposingCitizensUnited.get) {
                                 checked
-                        } /></div>
+                        }/></div>
                     <div><label>No</label></div>
                 </article>
             </div>
@@ -225,28 +225,28 @@
             <div class="form-group">
                 <label>Previous vote for convention</label>
                 <article class="check-or-radio">
-                    <div><input type="radio" name="PVC" value="?" @if(!latestReport.isDefined || !latestReport.get.hasPreviouslyVotedForConvention.isDefined) { checked } /></div>
+                    <div><input type="radio" name="PVC" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined) { checked } /></div>
                     <div><label>?</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="PVC" value="true"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.hasPreviouslyVotedForConvention.isDefined &&
-                            latestReport.get.hasPreviouslyVotedForConvention.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined &&
+                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>Yes</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
                         <input type="radio" name="PVC" value="false"
-                        @if(latestReport.isDefined &&
-                            latestReport.get.hasPreviouslyVotedForConvention.isDefined &&
-                            !latestReport.get.hasPreviouslyVotedForConvention.get) {
+                        @if(!stateLegislator.reports.isEmpty &&
+                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined &&
+                            !stateLegislator.reports.head.hasPreviouslyVotedForConvention.get) {
                                 checked
-                        } />
+                        }/>
                     </div>
                     <div><label>No</label></div>
                 </article>
@@ -258,25 +258,25 @@
                     <option value=""></option>
 
                     <option value="@SupportLevel.SUPPORTIVE"
-                    @if(latestReport.isDefined &&
-                        latestReport.get.supportLevel.isDefined &&
-                        latestReport.get.supportLevel.get == "SUPPORTIVE") {
+                    @if(!stateLegislator.reports.isEmpty &&
+                        stateLegislator.reports.head.supportLevel.isDefined &&
+                        stateLegislator.reports.head.supportLevel.get == "SUPPORTIVE") {
                             selected
                     }
                     >@SupportLevel.SUPPORTIVE.getString</option><!-- comparing with SupportLevel.SUPPORTIVE doesn't work, strange... -->
 
                     <option value="@SupportLevel.NEEDS_CONVINCING"
-                    @if(latestReport.isDefined &&
-                        latestReport.get.supportLevel.isDefined &&
-                        latestReport.get.supportLevel.get == "NEEDS_CONVINCING") {
+                    @if(!stateLegislator.reports.isEmpty &&
+                        stateLegislator.reports.head.supportLevel.isDefined &&
+                        stateLegislator.reports.head.supportLevel.get == "NEEDS_CONVINCING") {
                             selected
                     }
                     >@SupportLevel.NEEDS_CONVINCING.getString</option>
 
                     <option value="@SupportLevel.NOT_SUPPORTIVE"
-                    @if(latestReport.isDefined &&
-                        latestReport.get.supportLevel.isDefined &&
-                        latestReport.get.supportLevel.get == "NOT_SUPPORTIVE") {
+                    @if(!stateLegislator.reports.isEmpty &&
+                        stateLegislator.reports.head.supportLevel.isDefined &&
+                        stateLegislator.reports.head.supportLevel.get == "NOT_SUPPORTIVE") {
                             selected
                     }
                     >@SupportLevel.NOT_SUPPORTIVE.getString</option>
@@ -298,12 +298,12 @@
 </section>
 
 <section class="reports">
-@if(existingReports.isEmpty) {
+@if(stateLegislator.reports.isEmpty) {
     <div class="alert alert-info">Nobody has reported on @stateLegislator.firstName @stateLegislator.lastName yet</div>
 } else {
     <h2>Previous reports</h2>
 
-    @for(report <- existingReports) {
+    @for(report <- stateLegislator.reports) {
     <article data-id="@report.id">
         <div>
             <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
@@ -333,11 +333,8 @@
     window.addEvent("domready", function () {
         new CBR.Controllers.StateLegislator({
             el: "#content",
-            stateLegislator: @Html(services.JsonUtil.serialize(stateLegislator)),
-            @if(!existingReports.isEmpty) {
-            latestReport: @Html(services.JsonUtil.serialize(existingReports.head)),
-            }
-            action: @Html(services.JsonUtil.serialize(action))
+            stateLegislator: @Html(play.api.libs.json.Json.toJson(stateLegislator).toString),
+            action: @Html(play.api.libs.json.Json.toJson(action).toString)
         }).run();
     });
 </script>

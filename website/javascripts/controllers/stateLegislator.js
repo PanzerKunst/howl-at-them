@@ -41,11 +41,7 @@ CBR.Controllers.StateLegislator = new Class({
     },
 
     _getStateLegislator: function () {
-        return this.options.stateLegislator;
-    },
-
-    _getLatestReport: function () {
-        return this.options.latestReport;
+        return new CBR.Models.StateLegislator(this.options.stateLegislator);
     },
 
     _getAction: function () {
@@ -59,6 +55,8 @@ CBR.Controllers.StateLegislator = new Class({
                 "notes"
             ]
         });
+
+        this.initEditReportValidation();
     },
 
     _initEvents: function () {
@@ -67,10 +65,11 @@ CBR.Controllers.StateLegislator = new Class({
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
 
+        jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
-    _initForm: function() {
+    _initForm: function () {
         this.$authorName.val(this.getFromLocalStorage(this.$authorName.attr("id")));
 
         var action = this._getAction();
@@ -135,7 +134,7 @@ CBR.Controllers.StateLegislator = new Class({
             }
 
             var report = {
-                candidateId: this._getStateLegislator().id,
+                candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
                 contact: jQuery("#contact").val(),
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
@@ -154,7 +153,7 @@ CBR.Controllers.StateLegislator = new Class({
                 url: "/api/reports",
                 data: CBR.JsonUtil.stringifyModel(report),
                 onSuccess: function (responseText, responseXML) {
-                    location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=savedReport");
+                    location.replace("/state-legislators/" + this._getStateLegislator().getId() + "?action=savedReport");
                 }.bind(this),
                 onFailure: function (xhr) {
                     this.$submitBtn.button('reset');
@@ -164,38 +163,33 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _showDeleteReportModal: function(e) {
+    _showEditReportModal: function(e) {
         var $a = jQuery(e.currentTarget);
+        var report = this._getReportFromId($a.closest("article").data("id"));
+        var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=savedReport";
 
-        var idOfReportToDelete = $a.closest("article").data("id");
-
-        this.getEl().append(
-            CBR.Templates.deleteReportModal()
-        );
-
-        this.$confirmModalBtn = jQuery("#confirm-modal");
-
-        this.$confirmModalBtn.click(jQuery.proxy(function() {
-            this._doDeleteReport(idOfReportToDelete);
-        }, this));
-
-        jQuery("#delete-report-modal").modal();
+        this.showEditReportModal(report, successUrl);
     },
 
-    _doDeleteReport: function(reportId) {
-        this.$confirmModalBtn.button('loading');
+    _showDeleteReportModal: function(e) {
+        var $a = jQuery(e.currentTarget);
+        var report = this._getReportFromId($a.closest("article").data("id"));
+        var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=deletedReport";
 
-        new Request({
-            urlEncoded: false,
-            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/reports/" + reportId,
-            onSuccess: function (responseText, responseXML) {
-                location.replace("/state-legislators/" + this._getStateLegislator().id + "?action=deletedReport");
-            }.bind(this),
-            onFailure: function (xhr) {
-                this.$confirmModalBtn.button('reset');
-                alert("AJAX fail :(");
-            }.bind(this)
-        }).delete();
+        this.showDeleteReportModal(report.getId(), successUrl);
+    },
+
+    _getReportFromId: function (reportId) {
+        var reports = this._getStateLegislator().getReports();
+
+        for (var i = 0; i < reports.length; i++) {
+            var report = reports[i];
+
+            if (report.getId() === reportId) {
+                return report;
+            }
+        }
+
+        return null;
     }
 });
