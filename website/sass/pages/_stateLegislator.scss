@@ -152,26 +152,6 @@
       }
     }
 
-    .form-groups {
-      @include clearfix;
-
-      width: $field-width;
-      margin: auto;
-
-      @include medium-screen {
-        width: $field-width + $odd-form-groups-margin-right + $field-width;
-      }
-    }
-
-    .form-group {
-      @include clearfix;
-
-      > .check-or-radio {
-        float: left;
-        margin-right: 2em;
-      }
-    }
-
     .reports {
       > .alert {
         text-align: center;

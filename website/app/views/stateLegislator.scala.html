@@ -1,9 +1,9 @@
-@(stateLegislator: models.frontend.DetailedStateLegislator, action: Option[String], account: Option[Account])
+@(stateLegislator: models.frontend.DetailedStateLegislator, action: Option[String], isAdmin: Boolean)
 @main(stateLegislator.firstName + " " + stateLegislator.lastName, "state-legislator") {
 <!--
     Header
 -->
-@navbar(account, "state-legislator")
+@navbar(isAdmin, "state-legislator")
 
 } {
 <!--
@@ -115,7 +115,7 @@
     </div>
 
     <form>
-        <section class="form-groups">
+        <section class="form-groups report">
             <div class="form-group">
                 <label for="author-name">Your name <span>*</span></label><!--
              --><input type="text" id="author-name" class="form-control" maxlength="64" data-min-length="2" />
@@ -334,7 +334,8 @@
         new CBR.Controllers.StateLegislator({
             el: "#content",
             stateLegislator: @Html(play.api.libs.json.Json.toJson(stateLegislator).toString),
-            action: @Html(play.api.libs.json.Json.toJson(action).toString)
+            action: @Html(play.api.libs.json.Json.toJson(action).toString),
+            isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString)
         }).run();
     });
 </script>

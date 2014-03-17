@@ -1,4 +1,4 @@
-@(account: Option[Account], pageId: String)
+@(isAdmin: Boolean, pageId: String)
 @if(pageId == "_state-reports" || pageId == "_search-legislators") {
 <nav class="non-responsive-navbar" role="navigation">
     <a href="/">Howl at Them</a>
@@ -7,7 +7,7 @@
         <li @if(pageId == "search-legislators") { class="active" }><a href="/state-legislators">Search legislators</a></li>
         <li><a href="#">Script</a></li>
         <li><a href="#">Toolbox</a></li>
-        @if(account.isDefined) {
+        @if(isAdmin) {
         <li><a href="/logout">Logout</a></li>
         } else {
         <li><a href="/admin-login">Admin</a></li>
@@ -35,7 +35,7 @@
                 <li @if(pageId == "search-legislators") { class="active" }><a href="/state-legislators">Search legislators</a></li>
                 <li><a href="#">Script</a></li>
                 <li><a href="#">Toolbox</a></li>
-                @if(account.isDefined) {
+                @if(isAdmin) {
                 <li><a href="/logout">Logout</a></li>
                 } else {
                 <li><a href="/admin-login">Admin</a></li>

@@ -38,6 +38,10 @@ CBR.Controllers.StateLegislator = new Class({
         this.$submitBtn = jQuery("[type=submit]");
 
         this._initForm();
+
+        if (!this.isAdmin()) {
+            this.removeEditAndDeleteLinksForReportsCreatedByOthers();
+        }
     },
 
     _getStateLegislator: function () {
@@ -153,7 +157,8 @@ CBR.Controllers.StateLegislator = new Class({
                 url: "/api/reports",
                 data: CBR.JsonUtil.stringifyModel(report),
                 onSuccess: function (responseText, responseXML) {
-                    location.replace("/state-legislators/" + this._getStateLegislator().getId() + "?action=savedReport");
+                    this._addReportIdToLocalStorage(parseInt(responseText, 10));
+                    location.replace("/state-legislators/" + report.candidateId + "?action=savedReport");
                 }.bind(this),
                 onFailure: function (xhr) {
                     this.$submitBtn.button('reset');
@@ -163,7 +168,15 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _showEditReportModal: function(e) {
+    _addReportIdToLocalStorage: function (reportId) {
+        var idOfCreatedReports = this.getIdOfCreatedReports();
+        idOfCreatedReports.push(reportId);
+
+        var isGlobalScope = true;
+        this.saveInLocalStorage("idOfCreatedReports", JSON.stringify(idOfCreatedReports), isGlobalScope);
+    },
+
+    _showEditReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
         var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=savedReport";
@@ -171,7 +184,7 @@ CBR.Controllers.StateLegislator = new Class({
         this.showEditReportModal(report, successUrl);
     },
 
-    _showDeleteReportModal: function(e) {
+    _showDeleteReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
         var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=deletedReport";

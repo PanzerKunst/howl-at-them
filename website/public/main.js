@@ -4818,25 +4818,37 @@ CBR.Models.Report.contact = {
         return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
     },
 
-    saveInLocalStorage: function (key, value) {
+    saveInLocalStorage: function (key, value, isGlobalScope) {
         if (Modernizr.localstorage) {
-            var pageId = jQuery("body").attr("id");
+            if (isGlobalScope) {
+                localStorage.setItem(key, JSON.stringify(value));
+            } else {
+                var pageId = jQuery("body").attr("id");
 
-            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
-            pageDataInLocalStorage[key] = value;
+                var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+                pageDataInLocalStorage[key] = value;
 
-            localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+                localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+            }
         }
     },
 
-    getFromLocalStorage: function (key) {
+    getFromLocalStorage: function (key, isGlobalScope) {
         if (Modernizr.localstorage) {
+            if (isGlobalScope) {
+                return JSON.parse(localStorage.getItem(key));
+            }
+
             var pageId = jQuery("body").attr("id");
 
             var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
 
             return pageDataInLocalStorage[key];
         }
+    },
+
+    isAdmin: function () {
+        return this.options.isAdmin;
     },
 
     showEditReportModal: function (report, successUrl) {
@@ -4874,15 +4886,15 @@ CBR.Models.Report.contact = {
                     notSupportive: report.getSupportLevel() === "NOT_SUPPORTIVE"
                 },
                 isYesNoAnwerUndefined: {
-                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === null,
-                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
-                    opposingCitizensUnited: report.isOpposingCitizensUnited() === null,
+                    moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === null,
+                    supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
+                    opposesCitizensUnited: report.isOpposingCitizensUnited() === null,
                     previousVoteForConvention: report.hasPreviouslyVotedForConvention() === null
                 },
                 isFalse: {
-                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === false,
-                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
-                    opposingCitizensUnited: report.isOpposingCitizensUnited() === false,
+                    moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === false,
+                    supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
+                    opposesCitizensUnited: report.isOpposingCitizensUnited() === false,
                     previousVoteForConvention: report.hasPreviouslyVotedForConvention() === false
                 }
             })
@@ -4895,8 +4907,6 @@ CBR.Models.Report.contact = {
         this.$confirmEditBtn.click(jQuery.proxy(function () {
             this._doEditReport(report, successUrl);
         }, this));
-
-        // TODO: remove this._addModalHandlerForScrollbar(this.$editReportModal);
 
         this.$editReportModal.modal();
     },
@@ -4918,57 +4928,112 @@ CBR.Models.Report.contact = {
             this._doDeleteReport(reportId, successUrl);
         }, this));
 
-        // TODO: remove this._addModalHandlerForScrollbar(this.$deleteReportModal);
-
         this.$deleteReportModal.modal();
+    },
+
+    initEditReportValidation: function() {
+        this.editReportValidator = new CBR.Services.Validator({
+            fieldIds: [
+                "edit-author-name",
+                "edit-notes"
+            ]
+        });
+    },
+
+    removeEditAndDeleteLinksForReportsCreatedByOthers: function () {
+        var idOfCreatedReports = this.getIdOfCreatedReports();
+
+        jQuery(".reports > article").each(function (index, element) {
+            var $article = jQuery(element);
+
+            var reportId = parseInt($article.data("id"), 10);
+
+            var isCreatedByUser = false;
+
+            for (var i = 0; i < idOfCreatedReports.length; i++) {
+                if (idOfCreatedReports[i] === reportId) {
+                    isCreatedByUser = true;
+                    break;
+                }
+            }
+
+            if (!isCreatedByUser) {
+                $article.find(".edit-report").remove();
+                $article.find(".delete-report").remove();
+            }
+        }.bind(this));
+    },
+
+    getIdOfCreatedReports: function () {
+        var isGlobalScope = true;
+        var asString = this.getFromLocalStorage("idOfCreatedReports", isGlobalScope);
+        return asString ? JSON.parse(asString) : [];
     },
 
     _doEditReport: function (initialReport, successUrl) {
         if (this.editReportValidator.isValid()) {
             this.$confirmEditBtn.button('loading');
 
-            var authorName = this.$authorName.val();
-            var selectedSupportLevel = jQuery("#support-level").val();
+            var $authorName = jQuery("#edit-author-name");
+
+            var $mppRadios = jQuery("[name='edit-MPP']");
+            var $yesMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $safiRadios = jQuery("[name='edit-SAFI']");
+            var $yesSafiRadio = $safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noSafiRadio = $safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $ocuRadios = jQuery("[name='edit-OCU']");
+            var $yesOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $pvcRadios = jQuery("[name='edit-PVC']");
+            var $yesPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var authorName = $authorName.val();
+            var selectedSupportLevel = jQuery("#edit-support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
-            if (this.$yesMppRadio.prop("checked")) {
+            if ($yesMppRadio.prop("checked")) {
                 isMoneyInPoliticsAProblem = true;
-            } else if (this.$noMppRadio.prop("checked")) {
+            } else if ($noMppRadio.prop("checked")) {
                 isMoneyInPoliticsAProblem = false;
             }
 
             var isSupportingAmendmentToFixIt = null;
-            if (this.$yesSafiRadio.prop("checked")) {
+            if ($yesSafiRadio.prop("checked")) {
                 isSupportingAmendmentToFixIt = true;
-            } else if (this.$noSafiRadio.prop("checked")) {
+            } else if ($noSafiRadio.prop("checked")) {
                 isSupportingAmendmentToFixIt = false;
             }
 
             var isOpposingCitizensUnited = null;
-            if (this.$yesOcuRadio.prop("checked")) {
+            if ($yesOcuRadio.prop("checked")) {
                 isOpposingCitizensUnited = true;
-            } else if (this.$noOcuRadio.prop("checked")) {
+            } else if ($noOcuRadio.prop("checked")) {
                 isOpposingCitizensUnited = false;
             }
 
             var hasPreviouslyVotedForConvention = null;
-            if (this.$yesPvcRadio.prop("checked")) {
+            if ($yesPvcRadio.prop("checked")) {
                 hasPreviouslyVotedForConvention = true;
-            } else if (this.$noPvcRadio.prop("checked")) {
+            } else if ($noPvcRadio.prop("checked")) {
                 hasPreviouslyVotedForConvention = false;
             }
 
             var updatedReport = {
                 id: initialReport.getId(),
-                candidateId: this._getStateLegislator().getId(),
+                candidateId: initialReport.getCandidateId(),
                 authorName: authorName,
-                contact: jQuery("#contact").val(),
+                contact: jQuery("#edit-contact").val(),
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#notes").val()
+                notes: jQuery("#edit-notes").val()
             };
 
             new Request({
@@ -4979,7 +5044,7 @@ CBR.Models.Report.contact = {
                 data: CBR.JsonUtil.stringifyModel(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);
-                }.bind(this),
+                },
                 onFailure: function (xhr) {
                     this.$confirmEditBtn.button('reset');
                     alert("AJAX fail :(");
@@ -5003,23 +5068,6 @@ CBR.Models.Report.contact = {
                 alert("AJAX fail :(");
             }.bind(this)
         }).delete();
-    },
-
-    /* TODO: remove _addModalHandlerForScrollbar: function($modal) {
-        var $html = jQuery("html");
-        $html.addClass("with-modal");
-        $modal.on("hide.bs.modal", function (e) {
-            $html.removeClass("with-modal");
-        });
-    }, */
-
-    initEditReportValidation: function() {
-        this.editReportValidator = new CBR.Services.Validator({
-            fieldIds: [
-                "edit-author-name",
-                "edit-notes"
-            ]
-        });
     },
 
     _applyModernizrRules: function () {
@@ -5376,6 +5424,10 @@ CBR.Models.Report.contact = {
         this.$submitBtn = jQuery("[type=submit]");
 
         this._initForm();
+
+        if (!this.isAdmin()) {
+            this.removeEditAndDeleteLinksForReportsCreatedByOthers();
+        }
     },
 
     _getStateLegislator: function () {
@@ -5491,7 +5543,8 @@ CBR.Models.Report.contact = {
                 url: "/api/reports",
                 data: CBR.JsonUtil.stringifyModel(report),
                 onSuccess: function (responseText, responseXML) {
-                    location.replace("/state-legislators/" + this._getStateLegislator().getId() + "?action=savedReport");
+                    this._addReportIdToLocalStorage(parseInt(responseText, 10));
+                    location.replace("/state-legislators/" + report.candidateId + "?action=savedReport");
                 }.bind(this),
                 onFailure: function (xhr) {
                     this.$submitBtn.button('reset');
@@ -5501,7 +5554,15 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _showEditReportModal: function(e) {
+    _addReportIdToLocalStorage: function (reportId) {
+        var idOfCreatedReports = this.getIdOfCreatedReports();
+        idOfCreatedReports.push(reportId);
+
+        var isGlobalScope = true;
+        this.saveInLocalStorage("idOfCreatedReports", JSON.stringify(idOfCreatedReports), isGlobalScope);
+    },
+
+    _showEditReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
         var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=savedReport";
@@ -5509,7 +5570,7 @@ CBR.Models.Report.contact = {
         this.showEditReportModal(report, successUrl);
     },
 
-    _showDeleteReportModal: function(e) {
+    _showDeleteReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
         var successUrl = "/state-legislators/" + report.getCandidateId() + "?action=deletedReport";
@@ -5552,6 +5613,24 @@ CBR.Models.Report.contact = {
         this.$submitBtn = jQuery("[type=submit]");
 
         this.getEl().addClass("report-listing");
+
+        if (!this.isAdmin()) {
+            this.removeEditAndDeleteLinksForReportsCreatedByOthers();
+        }
+    },
+
+    _getStateLegislators: function () {
+        if (!this.options.firstLegislator) {
+            return [];
+        }
+
+        var result = [new CBR.Models.StateLegislator(this.options.firstLegislator)];
+
+        this.options.nextLegislators.forEach(function (item, index) {
+            result.push(new CBR.Models.StateLegislator(item));
+        });
+
+        return result;
     },
 
     _initValidation: function () {
@@ -5560,11 +5639,16 @@ CBR.Models.Report.contact = {
                 "us-state"
             ]
         });
+
+        this.initEditReportValidation();
     },
 
     _initEvents: function () {
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
+
         jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
+
+        jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
     },
 
@@ -5581,12 +5665,38 @@ CBR.Models.Report.contact = {
         location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
     },
 
-    _showDeleteReportModal: function(e) {
+    _showEditReportModal: function (e) {
+        var $a = jQuery(e.currentTarget);
+        var report = this._getReportFromId($a.closest("article").data("id"));
+        var successUrl = "/state-reports?action=savedReport";
+
+        this.showEditReportModal(report, successUrl);
+    },
+
+    _showDeleteReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var reportId = $a.closest("article").data("id");
         var successUrl = "/state-reports?action=deletedReport";
 
         this.showDeleteReportModal(reportId, successUrl);
+    },
+
+    _getReportFromId: function (reportId) {
+        var legislators = this._getStateLegislators();
+
+        for (var i = 0; i < legislators.length; i++) {
+            var reports = legislators[i].getReports();
+
+            for (var j = 0; j < reports.length; j++) {
+                var report = reports[i];
+
+                if (report.getId() === reportId) {
+                    return report;
+                }
+            }
+        }
+
+        return null;
     }
 });
 ;this["CBR"] = this["CBR"] || {};
@@ -5630,7 +5740,7 @@ function program7(depth0,data) {
   return "\r\n                                selected\r\n                                ";
   }
 
-  buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
+  buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups report\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.authorName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"MET_LEGISLATOR\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
@@ -5663,31 +5773,31 @@ function program7(depth0,data) {
   buffer += ">"
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.NONE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Money in politics is a problem</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-MPP\" value=\"?\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsAProblemUndefined), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsIsAProblem), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-MPP\" value=\"true\"\r\n                                    ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isMoneyInPoliticsAProblem), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-MPP\" value=\"false\"\r\n                                    ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsAProblem), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsIsAProblem), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Supports amendment to fix it</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-SAFI\" value=\"?\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.supportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.supportsAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-SAFI\" value=\"true\"\r\n                                    ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isSupportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-SAFI\" value=\"false\"\r\n                                    ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.supportingAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.supportsAmendmentToFixIt), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Opposes Citizens United</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"?\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.opposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.opposesCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></div>\r\n                                <div><label>?</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"true\"\r\n                                    ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.isOpposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/></div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-OCU\" value=\"false\"\r\n                                    ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.opposingCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.opposesCitizensUnited), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "/></div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Previous vote for convention</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-PVC\" value=\"?\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.previousVoteForConvention), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});

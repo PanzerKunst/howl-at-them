@@ -54,9 +54,9 @@ object Application extends Controller {
 
         val firstLegislator = detailedLegislatorsForThisState.headOption
 
-        val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
+        val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
 
-        Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action)).withSession(
+        Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action)).withSession(
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
@@ -66,11 +66,11 @@ object Application extends Controller {
 
             val firstLegislator = detailedLegislatorsForThisState.headOption
 
-            val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length-1) yield detailedLegislatorsForThisState.apply(i)
+            val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
 
-            Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action))
+            Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action))
 
-          case None => Ok(views.html.stateReports(UsStateDto.getAll, loggedInUser(session), None, None, List(), action))
+          case None => Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), None, None, List(), action))
         }
       }
   }
@@ -89,7 +89,7 @@ object Application extends Controller {
         None
 
       StateLegislatorDto.getOfId(id) match {
-        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, action, loggedInUser(session)))
+        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, action, isAdmin(session)))
         case None => NotFound
       }
   }
@@ -106,15 +106,17 @@ object Application extends Controller {
   def admin = Action {
     implicit request =>
 
-    /* TODO loggedInUser(session) match {
- case Some(loggedInAccount) => Redirect(routes.Application.adminLogin)
- case None => */
-
-      Ok(views.html.admin(VoteSmartService.isRunning)) /*
-      }*/
+      loggedInUser(session) match {
+        case Some(loggedInAccount) => Ok(views.html.admin(VoteSmartService.isRunning))
+        case None => Redirect(routes.Application.adminLogin)
+      }
   }
 
-  def loggedInUser(session: Session): Option[Account] = {
+  def isAdmin(session: Session): Boolean = {
+    loggedInUser(session).isDefined
+  }
+
+  private def loggedInUser(session: Session): Option[Account] = {
     session.get("accountId") match {
       case Some(accountId) => AccountDto.getOfId(accountId.toLong)
       case None => None

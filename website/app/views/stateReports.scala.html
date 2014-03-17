@@ -1,9 +1,9 @@
-@(usStates: List[UsState], account: Option[Account], selectedUsStateId: Option[String], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: Option[String], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
 -->
-@navbar(account, "state-reports")
+@navbar(isAdmin, "state-reports")
 
 } {
 <!--
@@ -204,7 +204,15 @@
 <script type="text/javascript">
     window.addEvent("domready", function () {
         new CBR.Controllers.StateReports({
-            el: "#content"
+            el: "#content",
+            isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString),
+            @if(firstLegislator.isDefined) {
+            firstLegislator: @Html(play.api.libs.json.Json.toJson(firstLegislator).toString),
+
+            @if(!nextLegislators.isEmpty) {
+            nextLegislators: @Html(play.api.libs.json.Json.toJson(nextLegislators).toString)
+            }
+            }
         }).run();
     });
 </script>

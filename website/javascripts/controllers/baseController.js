@@ -32,25 +32,37 @@ CBR.Controllers.BaseController = new Class({
         return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
     },
 
-    saveInLocalStorage: function (key, value) {
+    saveInLocalStorage: function (key, value, isGlobalScope) {
         if (Modernizr.localstorage) {
-            var pageId = jQuery("body").attr("id");
+            if (isGlobalScope) {
+                localStorage.setItem(key, JSON.stringify(value));
+            } else {
+                var pageId = jQuery("body").attr("id");
 
-            var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
-            pageDataInLocalStorage[key] = value;
+                var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+                pageDataInLocalStorage[key] = value;
 
-            localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+                localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+            }
         }
     },
 
-    getFromLocalStorage: function (key) {
+    getFromLocalStorage: function (key, isGlobalScope) {
         if (Modernizr.localstorage) {
+            if (isGlobalScope) {
+                return JSON.parse(localStorage.getItem(key));
+            }
+
             var pageId = jQuery("body").attr("id");
 
             var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
 
             return pageDataInLocalStorage[key];
         }
+    },
+
+    isAdmin: function () {
+        return this.options.isAdmin;
     },
 
     showEditReportModal: function (report, successUrl) {
@@ -88,15 +100,15 @@ CBR.Controllers.BaseController = new Class({
                     notSupportive: report.getSupportLevel() === "NOT_SUPPORTIVE"
                 },
                 isYesNoAnwerUndefined: {
-                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === null,
-                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
-                    opposingCitizensUnited: report.isOpposingCitizensUnited() === null,
+                    moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === null,
+                    supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
+                    opposesCitizensUnited: report.isOpposingCitizensUnited() === null,
                     previousVoteForConvention: report.hasPreviouslyVotedForConvention() === null
                 },
                 isFalse: {
-                    moneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem() === false,
-                    supportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
-                    opposingCitizensUnited: report.isOpposingCitizensUnited() === false,
+                    moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === false,
+                    supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
+                    opposesCitizensUnited: report.isOpposingCitizensUnited() === false,
                     previousVoteForConvention: report.hasPreviouslyVotedForConvention() === false
                 }
             })
@@ -109,8 +121,6 @@ CBR.Controllers.BaseController = new Class({
         this.$confirmEditBtn.click(jQuery.proxy(function () {
             this._doEditReport(report, successUrl);
         }, this));
-
-        // TODO: remove this._addModalHandlerForScrollbar(this.$editReportModal);
 
         this.$editReportModal.modal();
     },
@@ -132,57 +142,112 @@ CBR.Controllers.BaseController = new Class({
             this._doDeleteReport(reportId, successUrl);
         }, this));
 
-        // TODO: remove this._addModalHandlerForScrollbar(this.$deleteReportModal);
-
         this.$deleteReportModal.modal();
+    },
+
+    initEditReportValidation: function() {
+        this.editReportValidator = new CBR.Services.Validator({
+            fieldIds: [
+                "edit-author-name",
+                "edit-notes"
+            ]
+        });
+    },
+
+    removeEditAndDeleteLinksForReportsCreatedByOthers: function () {
+        var idOfCreatedReports = this.getIdOfCreatedReports();
+
+        jQuery(".reports > article").each(function (index, element) {
+            var $article = jQuery(element);
+
+            var reportId = parseInt($article.data("id"), 10);
+
+            var isCreatedByUser = false;
+
+            for (var i = 0; i < idOfCreatedReports.length; i++) {
+                if (idOfCreatedReports[i] === reportId) {
+                    isCreatedByUser = true;
+                    break;
+                }
+            }
+
+            if (!isCreatedByUser) {
+                $article.find(".edit-report").remove();
+                $article.find(".delete-report").remove();
+            }
+        }.bind(this));
+    },
+
+    getIdOfCreatedReports: function () {
+        var isGlobalScope = true;
+        var asString = this.getFromLocalStorage("idOfCreatedReports", isGlobalScope);
+        return asString ? JSON.parse(asString) : [];
     },
 
     _doEditReport: function (initialReport, successUrl) {
         if (this.editReportValidator.isValid()) {
             this.$confirmEditBtn.button('loading');
 
-            var authorName = this.$authorName.val();
-            var selectedSupportLevel = jQuery("#support-level").val();
+            var $authorName = jQuery("#edit-author-name");
+
+            var $mppRadios = jQuery("[name='edit-MPP']");
+            var $yesMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $safiRadios = jQuery("[name='edit-SAFI']");
+            var $yesSafiRadio = $safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noSafiRadio = $safiRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $ocuRadios = jQuery("[name='edit-OCU']");
+            var $yesOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var $pvcRadios = jQuery("[name='edit-PVC']");
+            var $yesPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+
+            var authorName = $authorName.val();
+            var selectedSupportLevel = jQuery("#edit-support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
-            if (this.$yesMppRadio.prop("checked")) {
+            if ($yesMppRadio.prop("checked")) {
                 isMoneyInPoliticsAProblem = true;
-            } else if (this.$noMppRadio.prop("checked")) {
+            } else if ($noMppRadio.prop("checked")) {
                 isMoneyInPoliticsAProblem = false;
             }
 
             var isSupportingAmendmentToFixIt = null;
-            if (this.$yesSafiRadio.prop("checked")) {
+            if ($yesSafiRadio.prop("checked")) {
                 isSupportingAmendmentToFixIt = true;
-            } else if (this.$noSafiRadio.prop("checked")) {
+            } else if ($noSafiRadio.prop("checked")) {
                 isSupportingAmendmentToFixIt = false;
             }
 
             var isOpposingCitizensUnited = null;
-            if (this.$yesOcuRadio.prop("checked")) {
+            if ($yesOcuRadio.prop("checked")) {
                 isOpposingCitizensUnited = true;
-            } else if (this.$noOcuRadio.prop("checked")) {
+            } else if ($noOcuRadio.prop("checked")) {
                 isOpposingCitizensUnited = false;
             }
 
             var hasPreviouslyVotedForConvention = null;
-            if (this.$yesPvcRadio.prop("checked")) {
+            if ($yesPvcRadio.prop("checked")) {
                 hasPreviouslyVotedForConvention = true;
-            } else if (this.$noPvcRadio.prop("checked")) {
+            } else if ($noPvcRadio.prop("checked")) {
                 hasPreviouslyVotedForConvention = false;
             }
 
             var updatedReport = {
                 id: initialReport.getId(),
-                candidateId: this._getStateLegislator().getId(),
+                candidateId: initialReport.getCandidateId(),
                 authorName: authorName,
-                contact: jQuery("#contact").val(),
+                contact: jQuery("#edit-contact").val(),
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#notes").val()
+                notes: jQuery("#edit-notes").val()
             };
 
             new Request({
@@ -193,7 +258,7 @@ CBR.Controllers.BaseController = new Class({
                 data: CBR.JsonUtil.stringifyModel(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);
-                }.bind(this),
+                },
                 onFailure: function (xhr) {
                     this.$confirmEditBtn.button('reset');
                     alert("AJAX fail :(");
@@ -217,23 +282,6 @@ CBR.Controllers.BaseController = new Class({
                 alert("AJAX fail :(");
             }.bind(this)
         }).delete();
-    },
-
-    /* TODO: remove _addModalHandlerForScrollbar: function($modal) {
-        var $html = jQuery("html");
-        $html.addClass("with-modal");
-        $modal.on("hide.bs.modal", function (e) {
-            $html.removeClass("with-modal");
-        });
-    }, */
-
-    initEditReportValidation: function() {
-        this.editReportValidator = new CBR.Services.Validator({
-            fieldIds: [
-                "edit-author-name",
-                "edit-notes"
-            ]
-        });
     },
 
     _applyModernizrRules: function () {

@@ -9,7 +9,7 @@
     $label-width-state-reports: 4em;
     $width-submit-btn-state-reports: 7em;
 
-    form {
+    > form {
       > div {
         @include clearfix;
 
@@ -17,14 +17,14 @@
 
         margin: 0 auto;
       }
-    }
 
-    .form-group {
-      width: $label-width-state-reports + $field-width-search-pages;
+      .form-group {
+        width: $label-width-state-reports + $field-width-search-pages;
 
-      > label {
-        display: inline-block;
-        width: $label-width-state-reports;
+        > label {
+          display: inline-block;
+          width: $label-width-state-reports;
+        }
       }
     }
 

@@ -108,6 +108,36 @@ object ReportDto {
     }
   }
 
+  def update(report: Report) {
+    DB.withConnection {
+      implicit c =>
+
+        var supportLevelForQuery = "NULL"
+        if (report.supportLevel.isDefined && report.supportLevel.get != "")
+          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
+
+        var notesForQuery = "NULL"
+        if (report.notes.isDefined && report.notes.get != "")
+          notesForQuery = "'" + DbUtil.safetize(report.notes.get) + "'"
+
+        val query = """
+          update report set
+          author_name = '""" + DbUtil.safetize(report.authorName) + """',
+          contact = '""" + DbUtil.safetize(report.contact) + """',
+          is_money_in_politics_a_problem = """ + report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """,
+          is_supporting_amendment_to_fix_it = """ + report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """,
+          is_opposing_citizens_united = """ + report.isOpposingCitizensUnited.getOrElse("NULL") + """,
+          has_previously_voted_for_convention = """ + report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """,
+          support_level = """ + supportLevelForQuery + """,
+          notes = """ + notesForQuery + """
+          where id = """ + report.id.get + """;"""
+
+        Logger.info("ReportDto.update():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
   def delete(report: Report) {
     DB.withConnection {
       implicit c =>

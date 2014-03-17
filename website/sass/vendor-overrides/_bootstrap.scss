@@ -29,8 +29,16 @@ textarea.form-control {
     vertical-align: middle;
   }
 
-  > tbody > tr > td {
-    vertical-align: middle;
+  > tbody > tr {
+    &.clickable:hover {
+      td {
+        @include hovered-cell-colors;
+      }
+    }
+
+    > td {
+      vertical-align: middle;
+    }
   }
 }
 

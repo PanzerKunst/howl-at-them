@@ -27,3 +27,8 @@
 @function halfPos($w, $h) {
   @return $w/2 $h/2;
 }
+
+@mixin hovered-cell-colors {
+  background-color: $brand-primary;
+  color: white;
+}

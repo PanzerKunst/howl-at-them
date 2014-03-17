@@ -12,11 +12,20 @@ table.dataTable {
     padding: 5px;
   }
 
-  tr.odd td.sorting_1 {
-    background-color: #F9F9F9;
-  }
+  tr {
+    &.clickable.odd:hover,
+    &.clickable.even:hover {
+      td.sorting_1 {
+        @include hovered-cell-colors;
+      }
+    }
 
-  tr.even td.sorting_1 {
-    background-color: #FFF;
+    &.odd td.sorting_1 {
+      background-color: #F9F9F9;
+    }
+
+    &.even td.sorting_1 {
+      background-color: #FFF;
+    }
   }
 }

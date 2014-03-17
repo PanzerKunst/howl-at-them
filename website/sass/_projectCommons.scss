@@ -36,12 +36,14 @@
 
   // Wouldn't override declaration was outside #content
   &.report-listing {
-    .form-group {
-      // We want the margin even on small rez
-      margin-right: $odd-form-groups-margin-right;
+    > form {
+      .form-group {
+        // We want the margin even on small rez
+        margin-right: $odd-form-groups-margin-right;
 
-      // To have the inputs on one line even on small screens
-      float: left;
+        // To have the inputs on one line even on small screens
+        float: left;
+      }
     }
 
     .submit-wrapper {
@@ -150,5 +152,26 @@ $actionAlertWidth: 11em;
 
   .form-group:last-child {
     margin-bottom: 0;
+  }
+}
+
+
+.form-groups.report {
+  @include clearfix;
+
+  width: $field-width;
+  margin: auto;
+
+  @include medium-screen {
+    width: $field-width + $odd-form-groups-margin-right + $field-width;
+  }
+
+  > .form-group {
+    @include clearfix;
+
+    > .check-or-radio {
+      float: left;
+      margin-right: 2em;
+    }
   }
 }

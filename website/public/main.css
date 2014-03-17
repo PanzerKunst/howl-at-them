@@ -255,10 +255,7 @@ img {
   max-width: 100%; }
 
 html {
-  overflow-y: scroll;
-  /* TODO: remove &.with-modal {
-    overflow-y: visible;
-  } */ }
+  overflow-y: scroll; }
 
 body {
   /* TODO background-color: $bgColor;
@@ -395,7 +392,7 @@ tr.clickable {
 #content td > .yes-no-answer {
   text-align: center;
   width: 100%; }
-#content.report-listing .form-group {
+#content.report-listing > form .form-group {
   margin-right: 2em;
   float: left; }
 #content.report-listing .submit-wrapper {
@@ -460,6 +457,24 @@ tr.clickable {
 #edit-report-modal .form-group:last-child {
   margin-bottom: 0; }
 
+.form-groups.report {
+  width: 20em;
+  margin: auto; }
+  .form-groups.report:after {
+    content: "";
+    display: table;
+    clear: both; }
+  @media screen and (min-width: 39.5em) {
+    .form-groups.report {
+      width: 42em; } }
+  .form-groups.report > .form-group:after {
+    content: "";
+    display: table;
+    clear: both; }
+  .form-groups.report > .form-group > .check-or-radio {
+    float: left;
+    margin-right: 2em; }
+
 html {
   font-size: 14px; }
 
@@ -484,6 +499,9 @@ textarea.form-control {
 
 .table > thead > tr > th {
   vertical-align: middle; }
+.table > tbody > tr.clickable:hover td {
+  background-color: #428bca;
+  color: white; }
 .table > tbody > tr > td {
   vertical-align: middle; }
 
@@ -512,6 +530,9 @@ textarea.form-control {
 table.dataTable thead th {
   border-bottom: 2px solid #DDDDDD;
   padding: 5px; }
+table.dataTable tr.clickable.odd:hover td.sorting_1, table.dataTable tr.clickable.even:hover td.sorting_1 {
+  background-color: #428bca;
+  color: white; }
 table.dataTable tr.odd td.sorting_1 {
   background-color: #F9F9F9; }
 table.dataTable tr.even td.sorting_1 {
@@ -548,16 +569,16 @@ table.dataTable tr.even td.sorting_1 {
   min-width: 55em; }
 #state-reports #content {
   min-width: 55em; }
-  #state-reports #content form > div {
+  #state-reports #content > form > div {
     width: 29em;
     margin: 0 auto; }
-    #state-reports #content form > div:after {
+    #state-reports #content > form > div:after {
       content: "";
       display: table;
       clear: both; }
-  #state-reports #content .form-group {
+  #state-reports #content > form .form-group {
     width: 20em; }
-    #state-reports #content .form-group > label {
+    #state-reports #content > form .form-group > label {
       display: inline-block;
       width: 4em; }
   #state-reports #content #us-state {
@@ -677,22 +698,5 @@ table.dataTable tr.even td.sorting_1 {
     font-size: 14px; }
 #state-legislator #content #new-report h2 {
   margin-top: 0; }
-#state-legislator #content .form-groups {
-  width: 20em;
-  margin: auto; }
-  #state-legislator #content .form-groups:after {
-    content: "";
-    display: table;
-    clear: both; }
-  @media screen and (min-width: 39.5em) {
-    #state-legislator #content .form-groups {
-      width: 42em; } }
-#state-legislator #content .form-group:after {
-  content: "";
-  display: table;
-  clear: both; }
-#state-legislator #content .form-group > .check-or-radio {
-  float: left;
-  margin-right: 2em; }
 #state-legislator #content .reports > .alert {
   text-align: center; }
