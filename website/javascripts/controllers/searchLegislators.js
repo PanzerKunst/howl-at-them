@@ -131,14 +131,13 @@ CBR.Controllers.SearchLegislators = new Class({
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getPoliticalPartiesAbbr();
+                        return '<span class="one-letter-cell">' + source.getPoliticalPartiesAbbr() + '</span>';
                     },
-                    "sTitle": "P",
-                    "bSortable": false
+                    "sTitle": "Party"
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getUsState().id + " " + source.getDistrict();
+                        return source.getUsState().id + " " + source.getChamber() + " " + source.getDistrict();
                     },
                     "sTitle": "District"
                 },
@@ -155,7 +154,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
@@ -177,7 +176,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
@@ -199,7 +198,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
@@ -224,7 +223,7 @@ CBR.Controllers.SearchLegislators = new Class({
 
                         if (latestReport) {
                             var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
-                            var result = '<span class="yes-no-answer">';
+                            var result = '<span class="one-letter-cell">';
 
                             if (hasPreviouslyVotedForConvention === true) {
                                 result += "Y";

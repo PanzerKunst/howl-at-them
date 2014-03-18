@@ -1,9 +1,9 @@
-@(usStates: List[UsState], account: Option[Account])
+@(usStates: List[UsState], isAdmin: Boolean)
 @main("Search legislators", "search-legislators") {
 <!--
     Header
 -->
-@navbar(account, "search-legislators")
+@navbar(isAdmin, "search-legislators")
 
 } {
 <!--
@@ -44,7 +44,7 @@
         <a id="advanced-toggle">Advanced</a>
     </div>
 
-    <p class="other-input-error">You must input at least one filter to perform a search... sorry!</p>
+    <p class="other-form-error">You must input at least one filter to perform a search... sorry!</p>
 </form>
 
 <div id="table-wrapper"></div>

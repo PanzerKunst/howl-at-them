@@ -4711,49 +4711,49 @@ CBR.Models.Report.contact = {
     options: {  // Defaults
     },
 
-    getId: function() {
+    getId: function () {
         return this.options.id;
     },
 
-    getFirstName: function() {
+    getFirstName: function () {
         return this.options.firstName;
     },
 
-    getLastName: function() {
+    getLastName: function () {
         return this.options.lastName;
     },
 
-    getTitle: function() {
+    getTitle: function () {
         return this.options.title;
     },
 
-    getPoliticalParties: function() {
+    getPoliticalParties: function () {
         return this.options.politicalParties;
     },
 
-    getUsState: function() {
+    getUsState: function () {
         return this.options.usState;
     },
 
-    getDistrict: function() {
+    getDistrict: function () {
         return this.options.district;
     },
 
-    getReports: function() {
-        return this.options.reports.map(function(report) {
+    getReports: function () {
+        return this.options.reports.map(function (report) {
             return new CBR.Models.Report(report);
         });
     },
 
-    getReportCount: function() {
+    getReportCount: function () {
         return this.options.reports.length;
     },
 
-    getLatestReport: function() {
+    getLatestReport: function () {
         return this.options.reports.length > 0 ? new CBR.Models.Report(this.options.reports[0]) : null;
     },
 
-    getTitleAbbr: function() {
+    getTitleAbbr: function () {
         switch (this.getTitle().toLowerCase()) {
             case "representative":
                 return "<abbr title=\"" + this.getTitle() + "\">Rep.</abbr>";
@@ -4766,7 +4766,7 @@ CBR.Models.Report.contact = {
         }
     },
 
-    getPoliticalPartiesAbbr: function() {
+    getPoliticalPartiesAbbr: function () {
         if (this.getPoliticalParties().length === 0) {
             return null;
         }
@@ -4777,11 +4777,18 @@ CBR.Models.Report.contact = {
             case "republican":
                 return "<abbr title=\"" + this.getPoliticalParties().join(", ") + "\">R</abbr>";
             default:
-                var abbr = this.getPoliticalParties().map(function(politicalParty) {
+                var abbr = this.getPoliticalParties().map(function (politicalParty) {
                     return politicalParty.substring(0, 1);
                 }).join("");
                 return "<abbr title=\"" + this.getPoliticalParties().join(", ") + "\">" + abbr + "</abbr>";
         }
+    },
+
+    getChamber: function () {
+        if (this.getTitle().toLowerCase() == "senator") {
+            return "SD";
+        }
+        return "HD";
     }
 });
 ;CBR.Controllers.BaseController = new Class({
@@ -5120,6 +5127,77 @@ CBR.Models.Report.contact = {
         }).post();
     }
 });
+;CBR.Controllers.AdminLogin = new Class({
+    Extends: CBR.Controllers.BaseController,
+
+    initialize: function (options) {
+        this.parent(options);
+    },
+
+    run: function () {
+        this.initElements();
+        this._initValidation();
+        this._initEvents();
+    },
+
+    initElements: function () {
+        this.parent();
+
+        this.$authFailed = jQuery(".other-form-error");
+        this.$form = jQuery("form");
+        this.$submitBtn = jQuery("[type=submit]");
+    },
+
+    _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "username",
+                "password"
+            ]
+        });
+    },
+
+    _initEvents: function () {
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+    },
+
+    _doSubmit:function (e) {
+        e.preventDefault();
+
+        this.$authFailed.slideUpCustom();
+
+        if (this.validator.isValid()) {
+            this.$submitBtn.button('loading');
+
+            var account = {
+                username: jQuery("#username").val(),
+                password: jQuery("#password").val()
+            };
+
+            var _this = this;
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/authenticate",
+                data: CBR.JsonUtil.stringifyModel(account),
+                onSuccess: function (responseText, responseXML) {
+                    if (this.status === _this.httpStatusCode.noContent) {
+                        _this.$submitBtn.button('reset');
+                        _this.$authFailed.slideDownCustom();
+                    }
+                    else {
+                        location.replace("/admin");
+                    }
+                },
+                onFailure: function (xhr) {
+                    this.$submitBtn.button('reset');
+                    alert("AJAX fail :(");
+                }.bind(this)
+            }).post();
+        }
+    }
+});
 ;CBR.Controllers.SearchLegislators = new Class({
     Extends: CBR.Controllers.BaseController,
 
@@ -5253,14 +5331,13 @@ CBR.Models.Report.contact = {
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getPoliticalPartiesAbbr();
+                        return '<span class="one-letter-cell">' + source.getPoliticalPartiesAbbr() + '</span>';
                     },
-                    "sTitle": "P",
-                    "bSortable": false
+                    "sTitle": "Party"
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getUsState().id + " " + source.getDistrict();
+                        return source.getUsState().id + " " + source.getChamber() + " " + source.getDistrict();
                     },
                     "sTitle": "District"
                 },
@@ -5277,7 +5354,7 @@ CBR.Models.Report.contact = {
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
@@ -5299,7 +5376,7 @@ CBR.Models.Report.contact = {
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
@@ -5321,7 +5398,7 @@ CBR.Models.Report.contact = {
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="yes-no-answer">';
+                        var result = '<span class="one-letter-cell">';
 
                         if (latestReport) {
                             var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
@@ -5346,7 +5423,7 @@ CBR.Models.Report.contact = {
 
                         if (latestReport) {
                             var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
-                            var result = '<span class="yes-no-answer">';
+                            var result = '<span class="one-letter-cell">';
 
                             if (hasPreviouslyVotedForConvention === true) {
                                 result += "Y";

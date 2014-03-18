@@ -45,6 +45,15 @@
 
     table {
       margin: $line-height-computed 0 0 0;
+
+      &.first {
+        th:nth-child(3) {
+          text-align: center;
+          padding: 0;
+
+          @include transform(rotate(-90deg));
+        }
+      }
     }
 
     th {
@@ -52,10 +61,11 @@
         width: 5%;
       }
       &.name {
-        width: 23%;
+        width: 21.5%;
       }
       &.political-parties {
-        width: 3%;
+        width: 4.5%;
+        text-align: center;
       }
       &.district {
         width: 14%;

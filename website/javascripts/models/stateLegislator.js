@@ -4,49 +4,49 @@ CBR.Models.StateLegislator = new Class({
     options: {  // Defaults
     },
 
-    getId: function() {
+    getId: function () {
         return this.options.id;
     },
 
-    getFirstName: function() {
+    getFirstName: function () {
         return this.options.firstName;
     },
 
-    getLastName: function() {
+    getLastName: function () {
         return this.options.lastName;
     },
 
-    getTitle: function() {
+    getTitle: function () {
         return this.options.title;
     },
 
-    getPoliticalParties: function() {
+    getPoliticalParties: function () {
         return this.options.politicalParties;
     },
 
-    getUsState: function() {
+    getUsState: function () {
         return this.options.usState;
     },
 
-    getDistrict: function() {
+    getDistrict: function () {
         return this.options.district;
     },
 
-    getReports: function() {
-        return this.options.reports.map(function(report) {
+    getReports: function () {
+        return this.options.reports.map(function (report) {
             return new CBR.Models.Report(report);
         });
     },
 
-    getReportCount: function() {
+    getReportCount: function () {
         return this.options.reports.length;
     },
 
-    getLatestReport: function() {
+    getLatestReport: function () {
         return this.options.reports.length > 0 ? new CBR.Models.Report(this.options.reports[0]) : null;
     },
 
-    getTitleAbbr: function() {
+    getTitleAbbr: function () {
         switch (this.getTitle().toLowerCase()) {
             case "representative":
                 return "<abbr title=\"" + this.getTitle() + "\">Rep.</abbr>";
@@ -59,7 +59,7 @@ CBR.Models.StateLegislator = new Class({
         }
     },
 
-    getPoliticalPartiesAbbr: function() {
+    getPoliticalPartiesAbbr: function () {
         if (this.getPoliticalParties().length === 0) {
             return null;
         }
@@ -70,10 +70,17 @@ CBR.Models.StateLegislator = new Class({
             case "republican":
                 return "<abbr title=\"" + this.getPoliticalParties().join(", ") + "\">R</abbr>";
             default:
-                var abbr = this.getPoliticalParties().map(function(politicalParty) {
+                var abbr = this.getPoliticalParties().map(function (politicalParty) {
                     return politicalParty.substring(0, 1);
                 }).join("");
                 return "<abbr title=\"" + this.getPoliticalParties().join(", ") + "\">" + abbr + "</abbr>";
         }
+    },
+
+    getChamber: function () {
+        if (this.getTitle().toLowerCase() == "senator") {
+            return "SD";
+        }
+        return "HD";
     }
 });

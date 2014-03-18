@@ -1,20 +1,4 @@
 @(isAdmin: Boolean, pageId: String)
-@if(pageId == "_state-reports" || pageId == "_search-legislators") {
-<nav class="non-responsive-navbar" role="navigation">
-    <a href="/">Howl at Them</a>
-    <ul>
-        <li @if(pageId == "state-reports") { class="active" }><a href="/state-reports">State reports</a></li>
-        <li @if(pageId == "search-legislators") { class="active" }><a href="/state-legislators">Search legislators</a></li>
-        <li><a href="#">Script</a></li>
-        <li><a href="#">Toolbox</a></li>
-        @if(isAdmin) {
-        <li><a href="/logout">Logout</a></li>
-        } else {
-        <li><a href="/admin-login">Admin</a></li>
-        }
-    </ul>
-</nav>
-} else {
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -36,12 +20,11 @@
                 <li><a href="#">Script</a></li>
                 <li><a href="#">Toolbox</a></li>
                 @if(isAdmin) {
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/logout">Log out</a></li>
                 } else {
-                <li><a href="/admin-login">Admin</a></li>
+                <li @if(pageId == "admin-login") { class="active" }><a href="/admin">Admin</a></li>
                 }
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-}

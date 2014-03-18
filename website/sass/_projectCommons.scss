@@ -28,10 +28,19 @@
   }
 
   td {
-    > .yes-no-answer {
+    > .one-letter-cell {
       text-align: center;
       width: 100%;
     }
+  }
+
+  .other-form-error {
+    display: none;
+
+    font-style: italic;
+    font-size: $font-size-input-error;
+    color: $state-danger-text;
+    text-align: center;
   }
 
   // Wouldn't override declaration was outside #content

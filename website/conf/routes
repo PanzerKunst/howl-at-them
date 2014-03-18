@@ -12,6 +12,7 @@ GET     /state-legislators                      controllers.Application.searchLe
 GET     /state-legislators/:id                  controllers.Application.stateLegislator(id: Int)
 GET     /admin-login                            controllers.Application.adminLogin
 GET     /admin                                  controllers.Application.admin
+GET     /logout                                 controllers.Application.logOut
 
 # API
 POST    /api/db/re-create-non-vote-smart-tables controllers.api.DbAdminApi.reCreateNonVoteSmartTables
@@ -21,8 +22,9 @@ GET     /api/state-legislators                  controllers.api.StateLegislatorA
 
 POST    /api/reports                            controllers.api.ReportApi.create
 PUT     /api/reports                            controllers.api.ReportApi.update
-DELETE  /api/reports/:id                        controllers.api.ReportApi.delete(id:Long)
+DELETE  /api/reports/:id                        controllers.api.ReportApi.delete(id: Long)
 
 POST    /api/accounts                           controllers.api.AccountApi.create
+DELETE  /api/accounts/:username                 controllers.api.AccountApi.delete(username: String)
 
 POST    /api/authenticate                       controllers.api.AuthApi.authenticate

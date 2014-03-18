@@ -47,12 +47,12 @@
         <text>Wolf-PAC</text>
       </controlProperties>
     </control>
-    <control controlID="116" controlTypeID="com.balsamiq.mockups::Button" x="455" y="75" w="114" h="45" measuredW="101" measuredH="27" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="116" controlTypeID="com.balsamiq.mockups::Button" x="447" y="75" w="114" h="45" measuredW="101" measuredH="27" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <text>State%20reports</text>
       </controlProperties>
     </control>
-    <control controlID="117" controlTypeID="com.balsamiq.mockups::Button" x="562" y="75" w="127" h="45" measuredW="129" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="117" controlTypeID="com.balsamiq.mockups::Button" x="555" y="75" w="134" h="45" measuredW="129" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Find%20your%20legislator</text>
       </controlProperties>

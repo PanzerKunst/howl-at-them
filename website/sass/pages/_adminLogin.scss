@@ -1,0 +1,19 @@
+#admin-login {
+  #content {
+    #auth-failed {
+      display: none;
+      text-align: center;
+    }
+
+    .form-groups {
+      @include clearfix;
+
+      width: $field-width;
+      margin: auto;
+    }
+
+    .submit-wrapper {
+      padding-top: 0;
+    }
+  }
+}

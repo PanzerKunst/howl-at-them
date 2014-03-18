@@ -16,7 +16,9 @@ object AuthApi extends Controller {
           Ok.withSession(
             session + ("accountId" -> account.id.get.toString)
           )
-        case None => NoContent
+
+        case None =>
+          NoContent
       }
   }
 }

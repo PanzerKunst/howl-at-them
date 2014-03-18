@@ -46,12 +46,12 @@
 </form>
 
 @if(firstLegislator.isDefined) {
-<table class="table table-striped table-bordered table-condensed">
+<table class="table table-striped table-bordered table-condensed first">
     <thead>
         <tr>
             <th class="title">Title</th>
             <th class="name">Name</th>
-            <th class="political-parties">P</th>
+            <th class="political-parties">Party</th>
             <th class="district">District</th>
             <th class="support-level">Support level</th>
             <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
@@ -64,8 +64,8 @@
         <tr data-id="@firstLegislator.get.id" class="clickable">
             <td>@Html(firstLegislator.get.getTitleAbbr)</td>
             <td>@firstLegislator.get.firstName @firstLegislator.get.lastName</td>
-            <td>@Html(firstLegislator.get.getPoliticalPartiesAbbr)</td>
-            <td>@firstLegislator.get.usState.id @firstLegislator.get.district</td>
+            <td><span class="one-letter-cell">@Html(firstLegislator.get.getPoliticalPartiesAbbr)</span></td>
+            <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber @firstLegislator.get.district</td>
             <td>
                 @if(!firstLegislator.get.reports.isEmpty) {
                     @Html(firstLegislator.get.reports.head.getSupportLevelSpan)
@@ -137,8 +137,8 @@
         <tr data-id="@legislator.id" class="clickable">
             <td>@Html(legislator.getTitleAbbr)</td>
             <td>@legislator.firstName @legislator.lastName</td>
-            <td>@Html(legislator.getPoliticalPartiesAbbr)</td>
-            <td>@legislator.usState.id @legislator.district</td>
+            <td><span class="one-letter-cell">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
+            <td>@legislator.usState.id @firstLegislator.get.getChamber @legislator.district</td>
             <td>
                 @if(!legislator.reports.isEmpty) {
                 @Html(legislator.reports.head.getSupportLevelSpan)

@@ -350,11 +350,6 @@ body {
   font-size: 13px;
   color: #a94442;
   margin-bottom: 0; }
-#content form .other-input-error {
-  display: none;
-  font-style: italic;
-  font-size: 13px;
-  color: #a94442; }
 #content .check-or-radio {
   display: table-row; }
   #content .check-or-radio > div {
@@ -389,9 +384,15 @@ tr.clickable {
     text-align: center;
     width: 100%;
     font-size: 10px; }
-#content td > .yes-no-answer {
+#content td > .one-letter-cell {
   text-align: center;
   width: 100%; }
+#content .other-form-error {
+  display: none;
+  font-style: italic;
+  font-size: 13px;
+  color: #a94442;
+  text-align: center; }
 #content.report-listing > form .form-group {
   margin-right: 2em;
   float: left; }
@@ -548,6 +549,19 @@ table.dataTable tr.even td.sorting_1 {
     #admin #content p {
       font-size: 16px; } }
 
+#admin-login #content #auth-failed {
+  display: none;
+  text-align: center; }
+#admin-login #content .form-groups {
+  width: 20em;
+  margin: auto; }
+  #admin-login #content .form-groups:after {
+    content: "";
+    display: table;
+    clear: both; }
+#admin-login #content .submit-wrapper {
+  padding-top: 0; }
+
 #search-legislators header {
   min-width: 68.5em; }
 #search-legislators #content {
@@ -562,8 +576,14 @@ table.dataTable tr.even td.sorting_1 {
   #search-legislators #content #advanced-toggle {
     float: right;
     padding-top: 29px; }
-  #search-legislators #content .other-input-error {
-    text-align: center; }
+  #search-legislators #content th:nth-child(3) {
+    text-align: center;
+    padding: 0;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg); }
 
 #state-reports header {
   min-width: 55em; }
@@ -591,12 +611,21 @@ table.dataTable tr.even td.sorting_1 {
       width: 7em; }
   #state-reports #content table {
     margin: 20px 0 0 0; }
+    #state-reports #content table.first th:nth-child(3) {
+      text-align: center;
+      padding: 0;
+      -webkit-transform: rotate(-90deg);
+      -moz-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+      -o-transform: rotate(-90deg);
+      transform: rotate(-90deg); }
   #state-reports #content th.title {
     width: 5%; }
   #state-reports #content th.name {
-    width: 23%; }
+    width: 21.5%; }
   #state-reports #content th.political-parties {
-    width: 3%; }
+    width: 4.5%;
+    text-align: center; }
   #state-reports #content th.district {
     width: 14%; }
   #state-reports #content th.support-level {

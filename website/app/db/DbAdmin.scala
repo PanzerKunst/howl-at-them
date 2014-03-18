@@ -115,7 +115,7 @@ object DbAdmin {
           CREATE TABLE account (
             id bigserial primary key,
             username VARCHAR(64) NOT NULL,
-            password VARCHAR(1024) NOT NULL,
+            password VARCHAR(128) NOT NULL,
             UNIQUE (username)
           );"""
 

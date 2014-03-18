@@ -23,12 +23,26 @@ object AccountDto {
     }
   }
 
+  def delete(account: Account) {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+                      delete from account
+          where id = """ + account.id.get + """;"""
+
+        Logger.info("AccountDto.delete():" + query)
+
+        SQL(query).execute()
+    }
+  }
+
   def getOfId(id: Long): Option[Account] = {
     DB.withConnection {
       implicit c =>
 
         val query = """
-          select username, password
+          select username
           from account
           where id = """ + id + """;"""
 
@@ -37,10 +51,33 @@ object AccountDto {
         SQL(query).apply().headOption match {
           case Some(row) =>
             Some(
-              new Account(
+              Account(
                 Some(id),
-                row[String]("username"),
-                row[Option[String]]("password")
+                row[String]("username")
+              )
+            )
+          case None => None
+        }
+    }
+  }
+
+  def getOfUsername(username: String): Option[Account] = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select id
+          from account
+          where username = '""" + DbUtil.safetize(username) + """';"""
+
+        Logger.info("AccountDto.getOfUsername():" + query)
+
+        SQL(query).apply().headOption match {
+          case Some(row) =>
+            Some(
+              Account(
+                row[Option[Long]]("id"),
+                username
               )
             )
           case None => None
@@ -64,7 +101,7 @@ object AccountDto {
         SQL(query).apply().headOption match {
           case Some(row) =>
             Some(
-              new Account(
+              Account(
                 Some(row[Long]("id")),
                 username,
                 Some(password)

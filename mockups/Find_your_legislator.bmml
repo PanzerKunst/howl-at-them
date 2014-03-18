@@ -15,9 +15,9 @@
         <text>Search</text>
       </controlProperties>
     </control>
-    <control controlID="35" controlTypeID="com.balsamiq.mockups::DataGrid" x="301" y="277" w="422" h="84" measuredW="366" measuredH="85" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="35" controlTypeID="com.balsamiq.mockups::DataGrid" x="289" y="277" w="434" h="84" measuredW="411" measuredH="85" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Title%2C%20Name%2C%20Dictrict%2C%20Support%20%28nb%20reports%29%0ARep%2C%20Allen%20Alma%20%28D%29%2C%20TX%20131%2C%20Supportive%20%20%283%29%0ARep%2C%20Alonzo%20Roberto%20%28R%29%2C%20TX%20104%2C%20Needs%20convincing%20%20%281%29</text>
+        <text>Title%2C%20Name%2C%20Party%2C%20Dictrict%2C%20Support%20%28nb%20reports%29%0ARep%2C%20Allen%20Alma%2C%20D%2C%20TX%20HD%20131%2C%20Supportive%20%20%283%29%0ARep%2C%20Alonzo%20Roberto%2C%20R%2C%20TX%20HD%20104%2C%20Needs%20convincing%20%20%281%29</text>
       </controlProperties>
     </control>
     <control controlID="46" controlTypeID="com.balsamiq.mockups::ModalScreen" x="0" y="71" w="1024" h="49" measuredW="320" measuredH="240" zOrder="4" locked="false" isInGroup="-1"/>
@@ -43,25 +43,25 @@
         <text/>
       </controlProperties>
     </control>
-    <control controlID="98" controlTypeID="com.balsamiq.mockups::Canvas" x="561" y="302" w="70" h="22" measuredW="100" measuredH="70" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="98" controlTypeID="com.balsamiq.mockups::Canvas" x="573" y="302" w="70" h="22" measuredW="100" measuredH="70" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <borderStyle>none</borderStyle>
         <color>15658734</color>
       </controlProperties>
     </control>
-    <control controlID="99" controlTypeID="com.balsamiq.mockups::Label" x="561" y="303" w="-1" h="-1" measuredW="67" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="99" controlTypeID="com.balsamiq.mockups::Label" x="573" y="303" w="-1" h="-1" measuredW="67" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <color>40463</color>
         <text>Supportive</text>
       </controlProperties>
     </control>
-    <control controlID="100" controlTypeID="com.balsamiq.mockups::Canvas" x="561" y="331" w="104" h="22" measuredW="100" measuredH="70" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="100" controlTypeID="com.balsamiq.mockups::Canvas" x="573" y="331" w="104" h="22" measuredW="100" measuredH="70" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <borderStyle>none</borderStyle>
         <color>16777215</color>
       </controlProperties>
     </control>
-    <control controlID="101" controlTypeID="com.balsamiq.mockups::Label" x="561" y="332" w="-1" h="-1" measuredW="104" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="101" controlTypeID="com.balsamiq.mockups::Label" x="573" y="332" w="-1" h="-1" measuredW="104" measuredH="21" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <color>16750848</color>
         <text>Needs%20convincing</text>
@@ -72,12 +72,12 @@
         <text>Wolf-PAC</text>
       </controlProperties>
     </control>
-    <control controlID="109" controlTypeID="com.balsamiq.mockups::Button" x="455" y="75" w="114" h="45" measuredW="101" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="109" controlTypeID="com.balsamiq.mockups::Button" x="449" y="75" w="114" h="45" measuredW="101" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>State%20reports</text>
       </controlProperties>
     </control>
-    <control controlID="110" controlTypeID="com.balsamiq.mockups::Button" x="562" y="75" w="127" h="45" measuredW="129" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="110" controlTypeID="com.balsamiq.mockups::Button" x="556" y="75" w="133" h="45" measuredW="129" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <color>14540253</color>
         <text>Find%20your%20legislator</text>

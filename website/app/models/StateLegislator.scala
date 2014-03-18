@@ -50,6 +50,13 @@ class StateLegislator(_id: Int,
     }
   }
 
+  def getChamber: String = {
+    if (this.title.toLowerCase == "senator")
+      "SD"
+    else
+      "HD"
+  }
+
   def getPhotoUrl: String = {
     "http://static.votesmart.org/canphoto/" + this.id + ".jpg"
   }

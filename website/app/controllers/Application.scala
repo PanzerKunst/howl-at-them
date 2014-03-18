@@ -38,7 +38,7 @@ object Application extends Controller {
   def logOut = Action {
     implicit request =>
 
-      Redirect(routes.Application.index).withNewSession
+      Redirect(routes.Application.index).withSession(session - "accountId")
   }
 
   def stateReports = Action {
@@ -77,7 +77,7 @@ object Application extends Controller {
 
   def searchLegislators = Action {
     implicit request =>
-      Ok(views.html.searchLegislators(UsStateDto.getAll, loggedInUser(session)))
+      Ok(views.html.searchLegislators(UsStateDto.getAll, isAdmin(session)))
   }
 
   def stateLegislator(id: Int) = Action {

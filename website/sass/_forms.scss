@@ -30,8 +30,6 @@
       }
     }
 
-    $font-size-input-error: ($font-size-base + $font-size-small) / 2;
-
     .field-error {
       display: none;
 
@@ -40,14 +38,6 @@
       color: $state-danger-text;
 
       margin-bottom: 0;
-    }
-
-    .other-input-error {
-      display: none;
-
-      font-style: italic;
-      font-size: $font-size-input-error;
-      color: $state-danger-text;
     }
   }
 
