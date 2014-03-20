@@ -94,6 +94,6 @@ object Report {
   }
 
   def getSpanForYesNoAnswer(answer: Option[Boolean]): String = {
-    "<span class=\"one-letter-cell\">" + getLetterForYesNoAnswer(answer) + "</span>"
+    "<span class=\"centered-contents\">" + getLetterForYesNoAnswer(answer) + "</span>"
   }
 }

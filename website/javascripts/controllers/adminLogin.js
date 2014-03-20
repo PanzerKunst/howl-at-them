@@ -54,7 +54,9 @@ CBR.Controllers.AdminLogin = new Class({
                 data: CBR.JsonUtil.stringifyModel(account),
                 onSuccess: function (responseText, responseXML) {
                     if (this.status === _this.httpStatusCode.noContent) {
-                        _this.$submitBtn.button('reset');
+                        // We delay because seeing the loading state a bit longer looks better
+                        _.delay(function() { _this.$submitBtn.button('reset'); }, 500);
+
                         _this.$authFailed.slideDownCustom();
                     }
                     else {

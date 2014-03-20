@@ -38,7 +38,7 @@
             @for(office <- stateLegislator.offices) {
             <article>
                 <label>@office.officeType</label><!--
-             --><span>@office.phoneNumber</span>
+             --><a href="tel:+1@office.phoneNumber">@office.phoneNumber</a>
             </article>
             }
 
@@ -77,10 +77,10 @@
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isOpposingCitizensUnited))</td>
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.hasPreviouslyVotedForConvention))</td>
                     } else {
-                    <td><span class="yes-no-answer">?</span></td>
-                    <td><span class="yes-no-answer">?</span></td>
-                    <td><span class="yes-no-answer">?</span></td>
-                    <td><span class="yes-no-answer">?</span></td>
+                    <td><span class="centered-contents">?</span></td>
+                    <td><span class="centered-contents">?</span></td>
+                    <td><span class="centered-contents">?</span></td>
+                    <td><span class="centered-contents">?</span></td>
                     }
                 </tr>
             </tbody>
@@ -309,8 +309,6 @@
             <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
             <span class="existing-report-contact">@report.getReadableContact</span>
             <span class="existing-report-author-name">@report.authorName</span>
-            <a class="delete-report">Delete</a>
-            <a class="edit-report">Edit</a>
         </div>
         <div>
             @Html(report.getSupportLevelSpan)

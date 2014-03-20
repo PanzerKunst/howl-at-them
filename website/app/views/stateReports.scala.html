@@ -46,151 +46,161 @@
 </form>
 
 @if(firstLegislator.isDefined) {
-<table class="table table-striped table-bordered table-condensed first">
-    <thead>
-        <tr>
-            <th class="title">Title</th>
-            <th class="name">Name</th>
-            <th class="political-parties">Party</th>
-            <th class="district">District</th>
-            <th class="support-level">Support level</th>
-            <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
-            <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
-            <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
-            <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr data-id="@firstLegislator.get.id" class="clickable">
-            <td>@Html(firstLegislator.get.getTitleAbbr)</td>
-            <td>@firstLegislator.get.firstName @firstLegislator.get.lastName</td>
-            <td><span class="one-letter-cell">@Html(firstLegislator.get.getPoliticalPartiesAbbr)</span></td>
-            <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber @firstLegislator.get.district</td>
-            <td>
-                @if(!firstLegislator.get.reports.isEmpty) {
-                    @Html(firstLegislator.get.reports.head.getSupportLevelSpan)
-                }
-            </td>
-            <td>
-                @if(!firstLegislator.get.reports.isEmpty) {
-                    @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isMoneyInPoliticsAProblem))
-                }
-            </td>
-            <td>
-                @if(!firstLegislator.get.reports.isEmpty) {
-                    @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isSupportingAmendmentToFixIt))
-                }
-            </td>
-            <td>
-                @if(!firstLegislator.get.reports.isEmpty) {
-                    @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isOpposingCitizensUnited))
-                }
-            </td>
-            <td>
-                @if(!firstLegislator.get.reports.isEmpty) {
-                    @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.hasPreviouslyVotedForConvention))
-                }
-            </td>
-        </tr>
-    </tbody>
-</table>
-@if(!firstLegislator.get.reports.isEmpty) {
-<section class="reports">
-    @for(report <- firstLegislator.get.reports) {
-    <article data-id="@report.id">
-        <div>
-            <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
-            <span class="existing-report-contact">@report.getReadableContact</span>
-            <span class="existing-report-author-name">@report.authorName</span>
-            <a class="delete-report">Delete</a>
-            <a class="edit-report">Edit</a>
-        </div>
-        <div>
-            @Html(report.getSupportLevelSpan)
-            <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
-            @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
-            @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
-            @Report.getLetterForYesNoAnswer(report.hasPreviouslyVotedForConvention)</span>
-        </div>
-        <p>@Html(report.getNotesForWeb)</p>
-    </article>
-    }
+<section class="table-filter">
+    <div>
+        <label>Filter
+            <input type="text" class="form-control">
+        </label>
+    </div>
 </section>
-}
 
-@for(legislator <- nextLegislators) {
-<table class="table table-striped table-bordered table-condensed">
-    <thead>
-        <tr>
-            <th class="title">Title</th>
-            <th class="name">Name</th>
-            <th class="political-parties">P</th>
-            <th class="district">District</th>
-            <th class="support-level">Support level</th>
-            <th class="mpp">MPP</th>
-            <th class="safi">SAFI</th>
-            <th class="ocu">OCU</th>
-            <th class="pvc">PVC</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr data-id="@legislator.id" class="clickable">
-            <td>@Html(legislator.getTitleAbbr)</td>
-            <td>@legislator.firstName @legislator.lastName</td>
-            <td><span class="one-letter-cell">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
-            <td>@legislator.usState.id @firstLegislator.get.getChamber @legislator.district</td>
-            <td>
-                @if(!legislator.reports.isEmpty) {
-                @Html(legislator.reports.head.getSupportLevelSpan)
-                }
-            </td>
-            <td>
-                @if(!legislator.reports.isEmpty) {
-                @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isMoneyInPoliticsAProblem))
-                }
-            </td>
-            <td>
-                @if(!legislator.reports.isEmpty) {
-                @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isSupportingAmendmentToFixIt))
-                }
-            </td>
-            <td>
-                @if(!legislator.reports.isEmpty) {
-                @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isOpposingCitizensUnited))
-                }
-            </td>
-            <td>
-                @if(!legislator.reports.isEmpty) {
-                @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.hasPreviouslyVotedForConvention))
-                }
-            </td>
-        </tr>
-    </tbody>
-</table>
-@if(!legislator.reports.isEmpty) {
-<section class="reports">
-    @for(report <- legislator.reports) {
-    <article data-id="@report.id">
-        <div>
-            <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
-            <span class="existing-report-contact">@report.getReadableContact</span>
-            <span class="existing-report-author-name">@report.authorName</span>
-            <a class="delete-report">Delete</a>
-            <a class="edit-report">Edit</a>
-        </div>
-        <div>
-            @Html(report.getSupportLevelSpan)
-            <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
-            @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
-            @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
-            @Report.getLetterForYesNoAnswer(report.hasPreviouslyVotedForConvention)</span>
-        </div>
-        <p>@Html(report.getNotesForWeb)</p>
+<section id="search-results">
+    <article>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th class="title">Title</th>
+                    <th class="name">Name</th>
+                    <th class="political-parties">Party</th>
+                    <th class="district">District</th>
+                    <th class="support-level">Support level</th>
+                    <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
+                    <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
+                    <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
+                    <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-id="@firstLegislator.get.id" class="clickable">
+                    <td>@Html(firstLegislator.get.getTitleAbbr)</td>
+                    <td>@firstLegislator.get.firstName @firstLegislator.get.lastName</td>
+                    <td><span class="centered-contents">@Html(firstLegislator.get.getPoliticalPartiesAbbr)</span></td>
+                    <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber @firstLegislator.get.district</td>
+                    <td>
+                        @if(!firstLegislator.get.reports.isEmpty) {
+                            @Html(firstLegislator.get.reports.head.getSupportLevelSpan)
+                        }
+                    </td>
+                    <td>
+                        @if(!firstLegislator.get.reports.isEmpty) {
+                            @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isMoneyInPoliticsAProblem))
+                        }
+                    </td>
+                    <td>
+                        @if(!firstLegislator.get.reports.isEmpty) {
+                            @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isSupportingAmendmentToFixIt))
+                        }
+                    </td>
+                    <td>
+                        @if(!firstLegislator.get.reports.isEmpty) {
+                            @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.isOpposingCitizensUnited))
+                        }
+                    </td>
+                    <td>
+                        @if(!firstLegislator.get.reports.isEmpty) {
+                            @Html(Report.getSpanForYesNoAnswer(firstLegislator.get.reports.head.hasPreviouslyVotedForConvention))
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @if(!firstLegislator.get.reports.isEmpty) {
+        <section class="reports">
+            @for(report <- firstLegislator.get.reports) {
+            <article data-id="@report.id">
+                <div>
+                    <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
+                    <span class="existing-report-contact">@report.getReadableContact</span>
+                    <span class="existing-report-author-name">@report.authorName</span>
+                </div>
+                <div>
+                    @Html(report.getSupportLevelSpan)
+                    <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
+                    @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
+                    @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
+                    @Report.getLetterForYesNoAnswer(report.hasPreviouslyVotedForConvention)</span>
+                </div>
+                <p>@Html(report.getNotesForWeb)</p>
+            </article>
+            }
+        </section>
+        }
+    </article>
+
+    @for(legislator <- nextLegislators) {
+    <article>
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th class="title">Title</th>
+                    <th class="name">Name</th>
+                    <th class="political-parties">P</th>
+                    <th class="district">District</th>
+                    <th class="support-level">Support level</th>
+                    <th class="mpp">MPP</th>
+                    <th class="safi">SAFI</th>
+                    <th class="ocu">OCU</th>
+                    <th class="pvc">PVC</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-id="@legislator.id" class="clickable">
+                    <td>@Html(legislator.getTitleAbbr)</td>
+                    <td>@legislator.firstName @legislator.lastName</td>
+                    <td><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
+                    <td>@legislator.usState.id @legislator.getChamber @legislator.district</td>
+                    <td>
+                        @if(!legislator.reports.isEmpty) {
+                        @Html(legislator.reports.head.getSupportLevelSpan)
+                        }
+                    </td>
+                    <td>
+                        @if(!legislator.reports.isEmpty) {
+                        @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isMoneyInPoliticsAProblem))
+                        }
+                    </td>
+                    <td>
+                        @if(!legislator.reports.isEmpty) {
+                        @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isSupportingAmendmentToFixIt))
+                        }
+                    </td>
+                    <td>
+                        @if(!legislator.reports.isEmpty) {
+                        @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isOpposingCitizensUnited))
+                        }
+                    </td>
+                    <td>
+                        @if(!legislator.reports.isEmpty) {
+                        @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.hasPreviouslyVotedForConvention))
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @if(!legislator.reports.isEmpty) {
+        <section class="reports">
+            @for(report <- legislator.reports) {
+            <article data-id="@report.id">
+                <div>
+                    <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
+                    <span class="existing-report-contact">@report.getReadableContact</span>
+                    <span class="existing-report-author-name">@report.authorName</span>
+                </div>
+                <div>
+                    @Html(report.getSupportLevelSpan)
+                    <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
+                    @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
+                    @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
+                    @Report.getLetterForYesNoAnswer(report.hasPreviouslyVotedForConvention)</span>
+                </div>
+                <p>@Html(report.getNotesForWeb)</p>
+            </article>
+            }
+        </section>
+        }
     </article>
     }
 </section>
-}
-}
 } else {
 @if(selectedUsStateId.isDefined) {
 <div class="alert alert-warning">No legislator for this state O_o; we may have a problem here...</div>

@@ -64,6 +64,9 @@ module.exports = function (grunt) {
                     "libs/fastclick.js",
                     "libs/datatables/jquery.dataTables.min.js",
                     "libs/handlebars-v1.3.0.js",
+                    "libs/lodash.js",
+                    "libs/jvectormap/jquery-jvectormap-1.2.2.min.js",
+                    "libs/jvectormap/jquery-jvectormap-us-aea-en.js",
 
                     // Global
                     "javascripts/global.js",
@@ -85,6 +88,8 @@ module.exports = function (grunt) {
                     "javascripts/controllers/baseController.js",
                     "javascripts/controllers/admin.js",
                     "javascripts/controllers/adminLogin.js",
+                    "javascripts/controllers/findYourLegislator.js",
+                    "javascripts/controllers/index.js",
                     "javascripts/controllers/searchLegislators.js",
                     "javascripts/controllers/stateLegislator.js",
                     "javascripts/controllers/stateReports.js",

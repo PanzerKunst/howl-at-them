@@ -77,7 +77,7 @@
         }
       }
 
-      span {
+      a {
         font-size: $font-size-phone-numbers;
         line-height: 1em;
       }
@@ -153,7 +153,7 @@
     }
 
     .reports {
-      > .alert {
+      > .alert-info {
         text-align: center;
       }
     }

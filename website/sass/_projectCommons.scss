@@ -28,8 +28,7 @@
   }
 
   td {
-    > .one-letter-cell {
-      text-align: center;
+    > .centered-contents {
       width: 100%;
     }
   }
@@ -44,7 +43,7 @@
   }
 
   // Wouldn't override declaration was outside #content
-  &.report-listing {
+  &.legislator-listing {
     > form {
       .form-group {
         // We want the margin even on small rez
@@ -56,7 +55,6 @@
     }
 
     .submit-wrapper {
-      float: left;
       padding-top: 24px;
     }
 
@@ -182,5 +180,23 @@ $actionAlertWidth: 11em;
       float: left;
       margin-right: 2em;
     }
+  }
+}
+
+.dataTables_filter,
+.table-filter > div {
+  .form-control {
+    display: inline-block;
+    width: auto;
+
+    font-weight: normal;
+  }
+}
+
+.table-filter {
+  @include clearfix;
+
+  > div {
+    float: right;
   }
 }

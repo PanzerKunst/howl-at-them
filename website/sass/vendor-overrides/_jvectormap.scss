@@ -1,0 +1,8 @@
+$jvectormap-zoom-button-padding: 3px;
+
+// Because of general box-sizing: border-box, we need to increase the size of the buttons of 2*padding
+.jvectormap-zoomin,
+.jvectormap-zoomout {
+  width: 10px + 2*$jvectormap-zoom-button-padding;
+  height: 10px + 2*$jvectormap-zoom-button-padding;
+}

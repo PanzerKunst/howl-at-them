@@ -1,10 +1,5 @@
 #admin-login {
   #content {
-    #auth-failed {
-      display: none;
-      text-align: center;
-    }
-
     .form-groups {
       @include clearfix;
 
@@ -14,6 +9,10 @@
 
     .submit-wrapper {
       padding-top: 0;
+    }
+
+    .other-form-error {
+      margin-top: $line-height-computed;
     }
   }
 }

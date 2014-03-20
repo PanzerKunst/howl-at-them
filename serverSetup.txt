@@ -12,7 +12,9 @@ $ sudo vi /etc/hosts
 # Add missing packages
 ######################
 
-$ sudo apt-get install postgresql
+$ sudo apt-get install nginx postgresql postgresql-contrib
+
+Package "postgresql-contrib" is required to install the "pgcrypto" extension
 
 
 #################
@@ -27,6 +29,10 @@ Ctrl + D
 Create the "howlatthem" DB:
 $ sudo -u postgres createdb howlatthem
 
+Install pgcrypto extension:
+$ sudo -u postgres psql howlatthem
+# CREATE EXTENSION pgcrypto;
+
 
 #################################
 # Export and import DB (optional)
@@ -37,6 +43,8 @@ Export:
 > pg_dump --username=postgres howlatthem > d:\Pro\howl-at-them\dbDump.sql
 
 Import:
+$ sudo -u postgres dropdb howlatthem
+$ sudo -u postgres createdb howlatthem
 $ sudo -u postgres psql howlatthem < /home/play/howl-at-them/dbDump.sql
 
 

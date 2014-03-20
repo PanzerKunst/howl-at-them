@@ -260,7 +260,7 @@ th {
 
 html {
   font-size: 62.5%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+  -webkit-tap-highlight-color: transparent; }
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -549,7 +549,7 @@ dd {
   display: table; }
 .dl-horizontal dd:after {
   clear: both; }
-@media (min-width: 39.5em) {
+@media (min-width: 49.5em) {
   .dl-horizontal dt {
     float: left;
     width: 160px;
@@ -1463,7 +1463,6 @@ input[type="button"].btn-block {
   font-family: 'Glyphicons Halflings';
   src: url("bootstrap/glyphicons-halflings-regular.eot");
   src: url("bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
-
 .glyphicon {
   position: relative;
   top: 1px;
@@ -2191,7 +2190,7 @@ input[type="button"].btn-block {
   bottom: 100%;
   margin-bottom: 1px; }
 
-@media (min-width: 39.5em) {
+@media (min-width: 49.5em) {
   .navbar-right .dropdown-menu {
     right: 0;
     left: auto; }
@@ -2587,7 +2586,7 @@ input[type="button"].btn-block {
     display: table; }
   .navbar:after {
     clear: both; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar {
       border-radius: 4px; } }
 
@@ -2596,7 +2595,7 @@ input[type="button"].btn-block {
   display: table; }
 .navbar-header:after {
   clear: both; }
-@media (min-width: 39.5em) {
+@media (min-width: 49.5em) {
   .navbar-header {
     float: left; } }
 
@@ -2615,7 +2614,7 @@ input[type="button"].btn-block {
     clear: both; }
   .navbar-collapse.in {
     overflow-y: auto; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-collapse {
       width: auto;
       border-top: 0;
@@ -2637,7 +2636,7 @@ input[type="button"].btn-block {
 .container-fluid > .navbar-collapse {
   margin-right: -15px;
   margin-left: -15px; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .container > .navbar-header,
     .container > .navbar-collapse,
     .container-fluid > .navbar-header,
@@ -2648,7 +2647,7 @@ input[type="button"].btn-block {
 .navbar-static-top {
   z-index: 1000;
   border-width: 0 0 1px; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-static-top {
       border-radius: 0; } }
 
@@ -2658,7 +2657,7 @@ input[type="button"].btn-block {
   right: 0;
   left: 0;
   z-index: 1030; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-fixed-top,
     .navbar-fixed-bottom {
       border-radius: 0; } }
@@ -2680,7 +2679,7 @@ input[type="button"].btn-block {
   height: 50px; }
   .navbar-brand:hover, .navbar-brand:focus {
     text-decoration: none; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
       margin-left: -15px; } }
 
@@ -2704,7 +2703,7 @@ input[type="button"].btn-block {
     border-radius: 1px; }
   .navbar-toggle .icon-bar + .icon-bar {
     margin-top: 4px; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-toggle {
       display: none; } }
 
@@ -2714,7 +2713,7 @@ input[type="button"].btn-block {
     padding-top: 10px;
     padding-bottom: 10px;
     line-height: 20px; }
-  @media (max-width: 38.5em) {
+  @media (max-width: 48.5em) {
     .navbar-nav .open .dropdown-menu {
       position: static;
       float: none;
@@ -2730,7 +2729,7 @@ input[type="button"].btn-block {
         line-height: 20px; }
         .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-nav .open .dropdown-menu > li > a:focus {
           background-image: none; } }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-nav {
       float: left;
       margin: 0; }
@@ -2742,7 +2741,7 @@ input[type="button"].btn-block {
       .navbar-nav.navbar-right:last-child {
         margin-right: -15px; } }
 
-@media (min-width: 39.5em) {
+@media (min-width: 49.5em) {
   .navbar-left {
     float: left !important; }
 
@@ -2758,10 +2757,10 @@ input[type="button"].btn-block {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   margin-top: 8px;
   margin-bottom: 8px; }
-  @media (max-width: 38.5em) {
+  @media (max-width: 48.5em) {
     .navbar-form .form-group {
       margin-bottom: 5px; } }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-form {
       width: auto;
       border: 0;
@@ -2796,7 +2795,7 @@ input[type="button"].btn-block {
 .navbar-text {
   margin-top: 15px;
   margin-bottom: 15px; }
-  @media (min-width: 39.5em) {
+  @media (min-width: 49.5em) {
     .navbar-text {
       float: left;
       margin-left: 15px;
@@ -2837,7 +2836,7 @@ input[type="button"].btn-block {
   .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     background-color: #e7e7e7;
     color: #555555; }
-  @media (max-width: 38.5em) {
+  @media (max-width: 48.5em) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
       color: #777777; }
       .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
@@ -2893,7 +2892,7 @@ input[type="button"].btn-block {
   .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
     background-color: #090909;
     color: white; }
-  @media (max-width: 38.5em) {
+  @media (max-width: 48.5em) {
     .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
       border-color: #090909; }
     .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
@@ -3256,14 +3255,12 @@ a.thumbnail.active {
 
   to {
     background-position: 0 0; } }
-
 @keyframes progress-bar-stripes {
   from {
     background-position: 40px 0; }
 
   to {
     background-position: 0 0; } }
-
 .progress {
   overflow: hidden;
   height: 20px;
@@ -4162,7 +4159,7 @@ button.close {
     border-radius: 10px;
     cursor: pointer;
     background-color: #000 \9;
-    background-color: rgba(0, 0, 0, 0); }
+    background-color: transparent; }
   .carousel-indicators .active {
     margin: 0;
     width: 12px;
@@ -4243,7 +4240,6 @@ button.close {
 
 @-ms-viewport {
   width: device-width; }
-
 .visible-xs, .visible-sm, .visible-md, .visible-lg {
   display: none !important; }
 

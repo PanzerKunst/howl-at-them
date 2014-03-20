@@ -3,36 +3,16 @@ package controllers
 import play.api.mvc._
 import db.{StateLegislatorDto, AccountDto, UsStateDto}
 import models.Account
-import services.VoteSmartService
+import services.{GoogleCivicInformationService, VoteSmartService}
+import concurrent.ExecutionContext.Implicits.global
+import concurrent.Future
 
 object Application extends Controller {
 
   def index = Action {
     implicit request =>
 
-    /* TODO implicit val context = scala.concurrent.ExecutionContext.Implicits.global
-
-   // Google Civic Information
-   WS.url("https://www.googleapis.com/civicinfo/us_v1/voterinfo/2000/lookup")
-     .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
-     .withHeaders("Content-Type" -> "application/json")
-     .withHeaders("X-JavaScript-User-Agent" -> "Google APIs Explorer")
-     .post(Json.obj(
-       "address" -> "410 Market St, Chapel Hill, NC"
-     ))
-     map {
-     response =>
-       val contests = (response.json \ "contests").as[List[JsObject]]
-       for (contest <- contests) {
-         val district = (contest \ "district").as[JsValue]
-         val districtScope = (district \ "scope").as[String]
-         if (districtScope == "stateLower" || districtScope == "stateUpper") {
-           val districtName = (district \ "name").as[String]
-         }
-       }
-   } */
-
-      Ok(views.html.index(UsStateDto.getAll))
+      Ok(views.html.index())
   }
 
   def logOut = Action {
@@ -112,7 +92,27 @@ object Application extends Controller {
       }
   }
 
-  def isAdmin(session: Session): Boolean = {
+  def findYourLegislator = Action.async {
+    implicit request =>
+      if (request.queryString.contains("address")) {
+        val address = request.queryString.get("address").get.head
+        GoogleCivicInformationService.fetchDistrictsForAddress(address).map {
+          statesAndDistricts =>
+            val yourLegislators = if (statesAndDistricts.isEmpty) {
+              List()
+            } else {
+              StateLegislatorDto.getOfDistricts(statesAndDistricts)
+            }
+            Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.getAll, Some(address), yourLegislators))
+        }
+      } else {
+        Future {
+          Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.getAll, None, List()))
+        }
+      }
+  }
+
+  private def isAdmin(session: Session): Boolean = {
     loggedInUser(session).isDefined
   }
 

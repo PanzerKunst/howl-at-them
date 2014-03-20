@@ -27,7 +27,7 @@ object UsStateDto {
     }
   }
 
-  def getOfId(id: String): UsState = {
+  def getOfId(id: String): Option[UsState] = {
     DB.withConnection {
       implicit c =>
 
@@ -38,12 +38,16 @@ object UsStateDto {
 
         Logger.info("UsStateDto.getOfId():" + query)
 
-        val firstRow = SQL(query).apply().head
-
-        new UsState(
-          id,
-          firstRow[String]("name")
-        )
+        SQL(query).apply().headOption match {
+          case Some(row) =>
+            Some(
+              UsState(
+                id,
+                row[String]("name")
+              )
+            )
+          case None => None
+        }
     }
   }
 }

@@ -221,21 +221,143 @@ table.dataTable thead td:active {
   *margin-top: -1px;
   -webkit-overflow-scrolling: touch; }
 
+.jvectormap-label {
+  position: absolute;
+  display: none;
+  border: solid 1px #CDCDCD;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #292929;
+  color: white;
+  font-family: sans-serif, Verdana;
+  font-size: smaller;
+  padding: 3px; }
+
+.jvectormap-zoomin, .jvectormap-zoomout {
+  position: absolute;
+  left: 10px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #292929;
+  padding: 3px;
+  color: white;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  line-height: 10px;
+  text-align: center; }
+
+.jvectormap-zoomin {
+  top: 10px; }
+
+.jvectormap-zoomout {
+  top: 30px; }
+
 @font-face {
   font-family: 'Oxygen';
-  src: url("fonts/oxygen/Oxygen.otf");
-  font-weight: normal;
-  font-style: normal; }
+  src: url("fonts/oxygen/Oxygen.otf"); }
 @font-face {
-  font-family: 'Oxygen-Bold';
+  font-family: 'Oxygen';
   src: url("fonts/oxygen/Oxygen-Bold.otf");
-  font-weight: normal;
-  font-style: normal; }
+  font-weight: bold; }
 @font-face {
   font-family: 'Open-Sans';
-  src: url("fonts/open-sans/OpenSans-Regular.ttf");
-  font-weight: normal;
-  font-style: normal; }
+  src: url("fonts/open-sans/OpenSans-Regular.ttf"); }
+@font-face {
+  font-family: 'Open-Sans';
+  src: url("fonts/open-sans/OpenSans-Bold.ttf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Open-Sans";
+  src: url("fonts/open-sans/OpenSans-Italic.ttf");
+  font-style: italic; }
+@font-face {
+  font-family: "Open-Sans";
+  src: url("fonts/open-sans/OpenSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic; }
+@font-face {
+  font-family: 'Source-Sans-Pro';
+  src: url("fonts/source-sans-pro/SourceSansPro-Regular.otf"); }
+@font-face {
+  font-family: 'Source-Sans-Pro';
+  src: url("fonts/source-sans-pro/SourceSansPro-Bold.otf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Source-Sans-Pro";
+  src: url("fonts/source-sans-pro/SourceSansPro-It.otf");
+  font-style: italic; }
+@font-face {
+  font-family: "Source-Sans-Pro";
+  src: url("fonts/source-sans-pro/SourceSansPro-BoldIt.otf");
+  font-weight: bold;
+  font-style: italic; }
+@font-face {
+  font-family: 'Clear-Sans';
+  src: url("fonts/clear-sans/ClearSans-Regular.ttf"); }
+@font-face {
+  font-family: 'Clear-Sans';
+  src: url("fonts/clear-sans/ClearSans-Bold.ttf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Clear-Sans";
+  src: url("fonts/clear-sans/ClearSans-Italic.ttf");
+  font-style: italic; }
+@font-face {
+  font-family: "Clear-Sans";
+  src: url("fonts/clear-sans/ClearSans-BoldItalic.ttf");
+  font-weight: bold;
+  font-style: italic; }
+@font-face {
+  font-family: 'Fira-sans';
+  src: url("fonts/fira-sans/FiraSansOT-Regular.otf"); }
+@font-face {
+  font-family: 'Fira-sans';
+  src: url("fonts/fira-sans/FiraSansOT-Bold.otf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Fira-sans";
+  src: url("fonts/fira-sans/FiraSansOT-RegularItalic.otf");
+  font-style: italic; }
+@font-face {
+  font-family: "Fira-sans";
+  src: url("fonts/fira-sans/FiraSansOT-BoldItalic.otf");
+  font-weight: bold;
+  font-style: italic; }
+@font-face {
+  font-family: 'Karla';
+  src: url("fonts/karla/Karla-Regular.otf"); }
+@font-face {
+  font-family: 'Karla';
+  src: url("fonts/karla/Karla-Bold.otf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla/Karla-Italic.otf");
+  font-style: italic; }
+@font-face {
+  font-family: "Karla";
+  src: url("fonts/karla/Karla-BoldItalic.otf");
+  font-weight: bold;
+  font-style: italic; }
+@font-face {
+  font-family: 'Roboto';
+  src: url("fonts/roboto/Roboto-Regular.otf"); }
+@font-face {
+  font-family: 'Roboto';
+  src: url("fonts/roboto/Roboto-Bold.otf");
+  font-weight: bold; }
+@font-face {
+  font-family: "Roboto";
+  src: url("fonts/roboto/Roboto-Italic.otf");
+  font-style: italic; }
+@font-face {
+  font-family: "Roboto";
+  src: url("fonts/roboto/Roboto-BoldItalic.otf");
+  font-weight: bold;
+  font-style: italic; }
 #content {
   width: 100%;
   margin: 0 auto;
@@ -275,8 +397,9 @@ body {
   #content h1 {
     padding: 0 0 20px 0;
     margin: 0;
-    font-family: "Oxygen-Bold", sans-serif;
-    font-size: 30px; }
+    font-family: "Oxygen", sans-serif;
+    font-size: 30px;
+    font-weight: bold; }
     @media screen and (min-width: 49.5em) {
       #content h1 {
         font-size: 36px;
@@ -384,8 +507,7 @@ tr.clickable {
     text-align: center;
     width: 100%;
     font-size: 10px; }
-#content td > .one-letter-cell {
-  text-align: center;
+#content td > .centered-contents {
   width: 100%; }
 #content .other-form-error {
   display: none;
@@ -393,13 +515,12 @@ tr.clickable {
   font-size: 13px;
   color: #a94442;
   text-align: center; }
-#content.report-listing > form .form-group {
+#content.legislator-listing > form .form-group {
   margin-right: 2em;
   float: left; }
-#content.report-listing .submit-wrapper {
-  float: left;
+#content.legislator-listing .submit-wrapper {
   padding-top: 24px; }
-#content.report-listing .support-level {
+#content.legislator-listing .support-level {
   width: 9em; }
 #content .reports > article {
   border: 1px solid #dddddd;
@@ -476,6 +597,19 @@ tr.clickable {
     float: left;
     margin-right: 2em; }
 
+.dataTables_filter .form-control,
+.table-filter > div .form-control {
+  display: inline-block;
+  width: auto;
+  font-weight: normal; }
+
+.table-filter:after {
+  content: "";
+  display: table;
+  clear: both; }
+.table-filter > div {
+  float: right; }
+
 html {
   font-size: 14px; }
 
@@ -523,7 +657,6 @@ textarea.form-control {
     font-size: 16px; } }
 
 .dataTables_length,
-.dataTables_filter,
 .dataTables_info,
 .dataTables_paginate {
   display: none; }
@@ -539,9 +672,64 @@ table.dataTable tr.odd td.sorting_1 {
 table.dataTable tr.even td.sorting_1 {
   background-color: #FFF; }
 
-#index #content #auth-failed {
+.jvectormap-zoomin,
+.jvectormap-zoomout {
+  width: 16px;
+  height: 16px; }
+
+#index #content tr.spaced > td {
+  padding-top: 1.72em; }
+#index #content td {
+  width: 9em; }
+#index #content a > span {
+  font-weight: bold;
+  color: #d9534f; }
+#index #content table {
+  width: 18em;
+  margin: auto; }
+#index #content #three-cols,
+#index #content #four-cols,
+#index #content #five-cols,
+#index #content #six-cols {
+  display: none; }
+#index #content #map-container {
   display: none;
-  text-align: center; }
+  margin-top: 40px; }
+  @media screen and (min-width: 49.5em) {
+    #index #content #map-container {
+      display: block; } }
+#index #content #map {
+  width: 53em;
+  height: 30.11364em; }
+@media screen and (min-width: 26.4em) {
+  #index #content > #two-cols {
+    display: none; }
+  #index #content > #three-cols {
+    width: 27em;
+    display: block; } }
+@media screen and (min-width: 34.3em) {
+  #index #content > #three-cols {
+    display: none; }
+  #index #content > #four-cols {
+    width: 36em;
+    display: block; } }
+@media screen and (min-width: 42.1em) {
+  #index #content > #four-cols {
+    display: none; }
+  #index #content > #five-cols {
+    width: 45em;
+    display: block; } }
+@media screen and (min-width: 49.9em) {
+  #index #content {
+    /* > h1 {
+      font-size: 4.65vw;
+    } */ }
+    #index #content > #five-cols {
+      display: none; }
+    #index #content > #six-cols {
+      width: 54em;
+      display: block;
+      margin: auto; } }
 
 #admin #content {
   max-width: 45em; }
@@ -549,9 +737,6 @@ table.dataTable tr.even td.sorting_1 {
     #admin #content p {
       font-size: 16px; } }
 
-#admin-login #content #auth-failed {
-  display: none;
-  text-align: center; }
 #admin-login #content .form-groups {
   width: 20em;
   margin: auto; }
@@ -561,18 +746,58 @@ table.dataTable tr.even td.sorting_1 {
     clear: both; }
 #admin-login #content .submit-wrapper {
   padding-top: 0; }
+#admin-login #content .other-form-error {
+  margin-top: 20px; }
+
+#find-your-legislator header {
+  min-width: 34em; }
+#find-your-legislator #content {
+  min-width: 34em;
+  max-width: 34em; }
+  #find-your-legislator #content > form > div:after {
+    content: "";
+    display: table;
+    clear: both; }
+  #find-your-legislator #content > form .form-group {
+    width: 23em; }
+    #find-your-legislator #content > form .form-group > label {
+      display: inline-block;
+      width: 7em; }
+  #find-your-legislator #content #address {
+    display: inline-block;
+    width: 16em; }
+  #find-your-legislator #content .submit-wrapper {
+    padding-top: 0; }
+    #find-your-legislator #content .submit-wrapper > button {
+      width: 7em; }
+  #find-your-legislator #content .alert-warning {
+    text-align: center; }
+  #find-your-legislator #content th.title {
+    width: 8%;
+    text-align: center; }
+  #find-your-legislator #content th.name {
+    width: 28%; }
+  #find-your-legislator #content th.political-parties {
+    width: 10.5%;
+    text-align: center; }
+  #find-your-legislator #content th.district {
+    width: 22.5%; }
+  #find-your-legislator #content th.support-level {
+    width: 31%; }
 
 #search-legislators header {
   min-width: 68.5em; }
 #search-legislators #content {
-  max-width: 68.5em;
-  min-width: 68.5em; }
+  min-width: 68.5em;
+  max-width: 68.5em; }
   #search-legislators #content form > div:after {
     content: "";
     display: table;
     clear: both; }
   #search-legislators #content .form-group {
     width: 16em; }
+  #search-legislators #content .submit-wrapper {
+    float: left; }
   #search-legislators #content #advanced-toggle {
     float: right;
     padding-top: 29px; }
@@ -589,29 +814,32 @@ table.dataTable tr.even td.sorting_1 {
   min-width: 55em; }
 #state-reports #content {
   min-width: 55em; }
+  #state-reports #content:after {
+    content: "";
+    display: table;
+    clear: both; }
   #state-reports #content > form > div {
-    width: 29em;
+    width: 28em;
     margin: 0 auto; }
     #state-reports #content > form > div:after {
       content: "";
       display: table;
       clear: both; }
   #state-reports #content > form .form-group {
-    width: 20em; }
+    width: 19em; }
     #state-reports #content > form .form-group > label {
       display: inline-block;
-      width: 4em; }
+      width: 3em; }
   #state-reports #content #us-state {
     display: inline-block;
     width: 16em; }
   #state-reports #content .submit-wrapper {
-    padding-top: 0;
-    float: left; }
+    padding-top: 0; }
     #state-reports #content .submit-wrapper > button {
       width: 7em; }
-  #state-reports #content table {
-    margin: 20px 0 0 0; }
-    #state-reports #content table.first th:nth-child(3) {
+  #state-reports #content > #search-results > article {
+    margin-bottom: 20px; }
+    #state-reports #content > #search-results > article:first-child th:nth-child(3) {
       text-align: center;
       padding: 0;
       -webkit-transform: rotate(-90deg);
@@ -619,6 +847,8 @@ table.dataTable tr.even td.sorting_1 {
       -ms-transform: rotate(-90deg);
       -o-transform: rotate(-90deg);
       transform: rotate(-90deg); }
+  #state-reports #content table {
+    margin-bottom: 0; }
   #state-reports #content th.title {
     width: 5%; }
   #state-reports #content th.name {
@@ -690,7 +920,7 @@ table.dataTable tr.even td.sorting_1 {
     width: 4.5em; }
     #state-legislator #content #phone-numbers label[for="other-phone-number"] {
       margin: 6px 0 0 0; }
-  #state-legislator #content #phone-numbers span {
+  #state-legislator #content #phone-numbers a {
     font-size: 29px;
     line-height: 1em; }
 #state-legislator #content #other-phone-number {
@@ -727,5 +957,5 @@ table.dataTable tr.even td.sorting_1 {
     font-size: 14px; }
 #state-legislator #content #new-report h2 {
   margin-top: 0; }
-#state-legislator #content .reports > .alert {
+#state-legislator #content .reports > .alert-info {
   text-align: center; }

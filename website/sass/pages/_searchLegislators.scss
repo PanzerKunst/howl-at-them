@@ -6,8 +6,8 @@
   }
 
   #content {
-    max-width: $search-legislator-page-width;
     min-width: $search-legislator-page-width;
+    max-width: $search-legislator-page-width;
 
     form {
       > div {
@@ -17,6 +17,10 @@
 
     .form-group {
       width: $field-width-search-pages;
+    }
+
+    .submit-wrapper {
+      float: left;
     }
 
     #advanced-toggle {

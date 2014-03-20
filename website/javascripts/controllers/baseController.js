@@ -154,26 +154,32 @@ CBR.Controllers.BaseController = new Class({
         });
     },
 
-    removeEditAndDeleteLinksForReportsCreatedByOthers: function () {
+    addEditAndDeleteReportLinks: function () {
         var idOfCreatedReports = this.getIdOfCreatedReports();
+
+        var links = '<a class="delete-report">Delete</a><a class="edit-report">Edit</a>';
 
         jQuery(".reports > article").each(function (index, element) {
             var $article = jQuery(element);
 
-            var reportId = parseInt($article.data("id"), 10);
-
-            var isCreatedByUser = false;
-
-            for (var i = 0; i < idOfCreatedReports.length; i++) {
-                if (idOfCreatedReports[i] === reportId) {
-                    isCreatedByUser = true;
-                    break;
-                }
+            if (this.isAdmin()) {
+                jQuery($article.children("div").get(0)).append(links);
             }
+            else {
+                var reportId = parseInt($article.data("id"), 10);
 
-            if (!isCreatedByUser) {
-                $article.find(".edit-report").remove();
-                $article.find(".delete-report").remove();
+                var isCreatedByUser = false;
+
+                for (var i = 0; i < idOfCreatedReports.length; i++) {
+                    if (idOfCreatedReports[i] === reportId) {
+                        isCreatedByUser = true;
+                        break;
+                    }
+                }
+
+                if (isCreatedByUser) {
+                    jQuery($article.children("div").get(0)).append(links);
+                }
             }
         }.bind(this));
     },
@@ -265,6 +271,10 @@ CBR.Controllers.BaseController = new Class({
                 }.bind(this)
             }).put();
         }
+    },
+
+    navigateToStateLegislatorPage: function (e) {
+        location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
     },
 
     _doDeleteReport: function (reportId, successUrl) {

@@ -39,9 +39,7 @@ CBR.Controllers.StateLegislator = new Class({
 
         this._initForm();
 
-        if (!this.isAdmin()) {
-            this.removeEditAndDeleteLinksForReportsCreatedByOthers();
-        }
+        this.addEditAndDeleteReportLinks();
     },
 
     _getStateLegislator: function () {

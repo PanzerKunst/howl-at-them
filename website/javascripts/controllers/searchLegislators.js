@@ -22,12 +22,12 @@ CBR.Controllers.SearchLegislators = new Class({
         this.$firstName = jQuery("#first-name");
         this.$lastName = jQuery("#last-name");
         this.$usStateSelect = jQuery("#us-state");
-        this.$otherInputError = jQuery(".other-input-error");
+        this.$otherInputError = jQuery(".other-form-error");
         this.$submitBtn = jQuery("[type=submit]");
 
         this.$tableWrapper = jQuery("#table-wrapper");
 
-        this.getEl().addClass("report-listing");
+        this.getEl().addClass("legislator-listing");
     },
 
     _areAllFiltersEmpty: function() {
@@ -127,11 +127,11 @@ CBR.Controllers.SearchLegislators = new Class({
                         return source.getFirstName() + " " + source.getLastName();
                     },
                     "sTitle": "Name",
-                    "sWidth": "20%"
+                    "sWidth": "17%"
                 },
                 {
                     "mData": function (source, type, val) {
-                        return '<span class="one-letter-cell">' + source.getPoliticalPartiesAbbr() + '</span>';
+                        return '<span class="centered-contents">' + source.getPoliticalPartiesAbbr() + '</span>';
                     },
                     "sTitle": "Party"
                 },
@@ -139,7 +139,8 @@ CBR.Controllers.SearchLegislators = new Class({
                     "mData": function (source, type, val) {
                         return source.getUsState().id + " " + source.getChamber() + " " + source.getDistrict();
                     },
-                    "sTitle": "District"
+                    "sTitle": "District",
+                    "sWidth": "13%"
                 },
                 {
                     "mData": function (source, type, val) {
@@ -154,7 +155,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="one-letter-cell">';
+                        var result = '<span class="centered-contents">';
 
                         if (latestReport) {
                             var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
@@ -176,7 +177,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="one-letter-cell">';
+                        var result = '<span class="centered-contents">';
 
                         if (latestReport) {
                             var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
@@ -198,7 +199,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 {
                     "mData": function (source, type, val) {
                         var latestReport = source.getLatestReport();
-                        var result = '<span class="one-letter-cell">';
+                        var result = '<span class="centered-contents">';
 
                         if (latestReport) {
                             var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
@@ -223,7 +224,7 @@ CBR.Controllers.SearchLegislators = new Class({
 
                         if (latestReport) {
                             var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
-                            var result = '<span class="one-letter-cell">';
+                            var result = '<span class="centered-contents">';
 
                             if (hasPreviouslyVotedForConvention === true) {
                                 result += "Y";
@@ -250,14 +251,14 @@ CBR.Controllers.SearchLegislators = new Class({
                 }
             ],
             "oLanguage": {
-                "sEmptyTable": "No matching state legislator"
+                "sEmptyTable": "No matching state legislator",
+                "sSearch": "Filter"
             }
         });
 
-        jQuery("tr.clickable").click(jQuery.proxy(this._navigateToStateLegislatorPage, this));
-    },
+        // To make it look like Bootstrap inputs
+        jQuery(".dataTables_filter input").addClass("form-control");
 
-    _navigateToStateLegislatorPage: function(e) {
-        location.href = "/state-legislators/" + jQuery(e.currentTarget).data("id");
+        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
     }
 });

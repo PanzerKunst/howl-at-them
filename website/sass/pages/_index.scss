@@ -1,9 +1,107 @@
 #index {
   #content {
-    #auth-failed {
+    $state-list-item-width: 9em;
+
+    tr.spaced {
+      > td {
+        padding-top: 1.72em;  // Same as a row height
+      }
+    }
+
+    td {
+      width: $state-list-item-width;
+    }
+
+    a {
+      > span {
+        font-weight: bold;
+        color: $brand-danger;
+      }
+    }
+
+    table {
+      width: 2 * $state-list-item-width;
+      margin: auto;
+    }
+
+    #three-cols,
+    #four-cols,
+    #five-cols,
+    #six-cols {
+      display: none;
+    }
+
+    #map-container {
       display: none;
 
-      text-align: center;
+      margin-top: $line-height-computed * 2;
+
+      @include large-screen {
+        display: block;
+      }
+    }
+
+    #map {
+      $mapWidth: $large-screen-min-width - 2 * $page-side-padding;
+
+      width: $mapWidth;
+      height: $mapWidth * 400 / 704;  // The default dimentions are 704px * 400px
+    }
+
+    $strange-em-difference-for-three-col-breakpoint: 0.6em;
+    @media screen and (min-width: $state-list-item-width * 3 - $strange-em-difference-for-three-col-breakpoint) {
+      > #two-cols {
+        display: none;
+      }
+
+      > #three-cols {
+        width: 3 * $state-list-item-width;
+        display: block;
+      }
+    }
+
+    $strange-em-difference-for-four-col-breakpoint: 1.7em;
+    @media screen and (min-width: $state-list-item-width * 4 - $strange-em-difference-for-four-col-breakpoint) {
+      > #three-cols {
+        display: none;
+      }
+
+      > #four-cols {
+        width: 4 * $state-list-item-width;
+        display: block;
+      }
+    }
+
+    $strange-em-difference-for-five-col-breakpoint: 2.9em;
+    @media screen and (min-width: $state-list-item-width * 5 - $strange-em-difference-for-five-col-breakpoint) {
+      > #four-cols {
+        display: none;
+      }
+
+      > #five-cols {
+        width: 5 * $state-list-item-width;
+        display: block;
+      }
+    }
+
+    $strange-em-difference-for-six-col-breakpoint: 4.1em;
+    @media screen and (min-width: $state-list-item-width * 6 - $strange-em-difference-for-six-col-breakpoint) {
+      /* > h1 {
+        font-size: 4.65vw;
+      } */
+
+      > #five-cols {
+        display: none;
+      }
+
+      > #six-cols {
+        width: 6 * $state-list-item-width;
+        display: block;
+
+        //font-size: 1.78vw;
+
+        margin: auto;
+      }
     }
   }
 }
