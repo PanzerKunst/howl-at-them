@@ -20,6 +20,7 @@ POST    /api/db/re-create-non-vote-smart-tables controllers.api.DbAdminApi.reCre
 POST    /api/db/update-vote-smart-data          controllers.api.DbAdminApi.updateVoteSmartData
 
 GET     /api/state-legislators                  controllers.api.StateLegislatorApi.search
+PUT     /api/state-legislators                  controllers.api.StateLegislatorApi.update
 
 POST    /api/reports                            controllers.api.ReportApi.create
 PUT     /api/reports                            controllers.api.ReportApi.update

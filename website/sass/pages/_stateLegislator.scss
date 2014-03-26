@@ -1,5 +1,17 @@
 #state-legislator {
   #content {
+    $action-alert-width-state-legislator: 11.2em;
+    > #other-phone-number-saved {
+      width: $action-alert-width-state-legislator;
+      margin-left: -$action-alert-width-state-legislator/2;
+    }
+
+    $action-alert-width-state-legislator: 10.6em;
+    > #is-a-priority-target-saved {
+      width: $action-alert-width-state-legislator;
+      margin-left: -$action-alert-width-state-legislator/2;
+    }
+
     #legislator-data,
     #committees {
       width: $field-width;

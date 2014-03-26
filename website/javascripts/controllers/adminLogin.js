@@ -51,7 +51,7 @@ CBR.Controllers.AdminLogin = new Class({
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/authenticate",
-                data: CBR.JsonUtil.stringifyModel(account),
+                data: JSON.stringify(account),
                 onSuccess: function (responseText, responseXML) {
                     if (this.status === _this.httpStatusCode.noContent) {
                         // We delay because seeing the loading state a bit longer looks better

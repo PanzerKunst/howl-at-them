@@ -5,15 +5,32 @@ import play.api.Logger
 import anorm._
 import play.api.Play.current
 import models.UsState
+import util.control.Breaks._
 
 object UsStateDto {
-  def getAll: List[UsState] = {
+  val all = getAll
+
+  def getOfId(id: String): Option[UsState] = {
+    var result: Option[UsState] = None
+    breakable {
+      for (usState <- all) {
+        if (usState.id == id) {
+          result = Some(usState)
+          break()
+        }
+      }
+    }
+    result
+  }
+
+  private def getAll: List[UsState] = {
     DB.withConnection {
       implicit c =>
 
         val query = """
           select id, name
-          from us_state;"""
+          from us_state
+          order by id;"""
 
         Logger.info("UsStateDto.getAll():" + query)
 
@@ -24,30 +41,6 @@ object UsStateDto {
               row[String]("name")
             )
         }.toList
-    }
-  }
-
-  def getOfId(id: String): Option[UsState] = {
-    DB.withConnection {
-      implicit c =>
-
-        val query = """
-          select name
-          from us_state
-          where id = '""" + id + """';"""
-
-        Logger.info("UsStateDto.getOfId():" + query)
-
-        SQL(query).apply().headOption match {
-          case Some(row) =>
-            Some(
-              UsState(
-                id,
-                row[String]("name")
-              )
-            )
-          case None => None
-        }
     }
   }
 }

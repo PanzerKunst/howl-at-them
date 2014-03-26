@@ -145,7 +145,7 @@ CBR.Controllers.BaseController = new Class({
         this.$deleteReportModal.modal();
     },
 
-    initEditReportValidation: function() {
+    initEditReportValidation: function () {
         this.editReportValidator = new CBR.Services.Validator({
             fieldIds: [
                 "edit-author-name",
@@ -188,6 +188,30 @@ CBR.Controllers.BaseController = new Class({
         var isGlobalScope = true;
         var asString = this.getFromLocalStorage("idOfCreatedReports", isGlobalScope);
         return asString ? JSON.parse(asString) : [];
+    },
+
+    fadeOutFloatingAlerts: function () {
+        var $floatingAlerts = jQuery(".alert.floating");
+
+        _.delay(function () {
+            $floatingAlerts.fadeOut("slow", function () {
+                $floatingAlerts.remove();
+            });
+        }, this.floatingAlertFadeOutDelay);
+    },
+
+    showAlert: function (id, text) {
+        // In case another alert is displayed, we delete it
+        jQuery(".alert.floating").remove();
+
+        var $alertDiv = jQuery('<div id="' + id + '" class="alert alert-success floating">' + text + '</div>');
+
+        this.getEl().prepend($alertDiv);
+        _.delay(function () {
+            $alertDiv.fadeOut("slow", function () {
+                $alertDiv.remove();
+            });
+        }, this.floatingAlertFadeOutDelay);
     },
 
     _doEditReport: function (initialReport, successUrl) {
@@ -261,7 +285,7 @@ CBR.Controllers.BaseController = new Class({
                 headers: { "Content-Type": "application/json" },
                 emulation: false, // Otherwise PUT and DELETE requests are sent as POST
                 url: "/api/reports/",
-                data: CBR.JsonUtil.stringifyModel(updatedReport),
+                data: JSON.stringify(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);
                 },
@@ -303,5 +327,7 @@ CBR.Controllers.BaseController = new Class({
     httpStatusCode: {
         noContent: 204,
         unauthorized: 401
-    }
+    },
+
+    floatingAlertFadeOutDelay: 3000
 });

@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean)
+@(usStates: List[UsState], committeeNames: List[String], isAdmin: Boolean)
 @main("Search legislators", "search-legislators") {
 <!--
     Header
@@ -42,6 +42,45 @@
         </div>
 
         <a id="advanced-toggle">Advanced</a>
+    </div>
+
+    <div id="advanced-search-fields">
+        <div class="form-group">
+            <label>Leadership position</label>
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="138" disabled /></div>
+                <div><label>@db.LeadershipPositionDto.getOfId(138).get.name</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="111" disabled /></div>
+                <div><label>@db.LeadershipPositionDto.getOfId(111).get.name</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="313" disabled /></div>
+                <div><label>@db.LeadershipPositionDto.getOfId(313).get.name</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="314" disabled /></div>
+                <div><label>@db.LeadershipPositionDto.getOfId(314).get.name</label></div>
+            </article>
+        </div>
+
+        <div class="form-group" id="committees-form-group">
+            <label for="committee">Committee</label><!--
+         --><select id="committee" class="form-control">
+                <option value=""></option>
+                @for(committeeName <- committeeNames) {
+                <option value="@committeeName">@committeeName</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group" id="priority-target-form-group">
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="priority-target" /></div>
+                <div><label>Priority target</label></div>
+            </article>
+        </div>
     </div>
 
     <p class="other-form-error">You must input at least one field to perform a search... sorry!</p>

@@ -9,8 +9,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import db.UsStateDto
 
 object VoteSmartLeadershipService {
-  val allUsStates = UsStateDto.getAll
-
   var isOfficialsWithLeadershipPositionWebServiceCallRunning = false
   var isOfficialsWithLeadershipPositionInStateWebServiceCallRunning = false
 
@@ -49,7 +47,7 @@ object VoteSmartLeadershipService {
 
       isOfficialsWithLeadershipPositionWebServiceCallRunning = true
 
-      for (usState <- allUsStates) {
+      for (usState <- UsStateDto.all) {
         while (isOfficialsWithLeadershipPositionInStateWebServiceCallRunning) {
           //Pause for 100 ms
           Thread.sleep(100)

@@ -32,10 +32,30 @@ CBR.Models.StateLegislator = new Class({
         return this.options.district;
     },
 
+    getLeadershipPosition: function() {
+        return this.options.leadershipPosition;
+    },
+
+    getOffices: function() {
+        return this.options.offices;
+    },
+
+    getCommittees: function() {
+        return this.options.committees;
+    },
+
     getReports: function () {
         return this.options.reports.map(function (report) {
             return new CBR.Models.Report(report);
         });
+    },
+
+    getOtherPhoneNumber: function () {
+        return this.options.otherPhoneNumber;
+    },
+
+    isAPriorityTarget: function () {
+        return this.options.isAPriorityTarget;
     },
 
     getReportCount: function () {

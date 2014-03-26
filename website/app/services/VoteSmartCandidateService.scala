@@ -19,7 +19,7 @@ object VoteSmartCandidateService {
     if (!VoteSmartService.isRunning) {
       VoteSmartService.isRunning = true
 
-      for (usState <- UsStateDto.getAll) {
+      for (usState <- UsStateDto.all) {
         isCandidatesWebServiceCallRunning = true
 
         Logger.info("Calling candidates WS for " + usState.id)

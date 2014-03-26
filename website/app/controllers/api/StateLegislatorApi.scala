@@ -1,8 +1,10 @@
 package controllers.api
 
 import play.api.mvc.{Action, Controller}
-import db.StateLegislatorDto
+import db.{CommitteeDto, StateLegislatorDto}
 import play.api.libs.json.Json
+import services.JsonUtil
+import models.frontend.DetailedStateLegislator
 
 object StateLegislatorApi extends Controller {
   def search = Action {
@@ -23,10 +25,21 @@ object StateLegislatorApi extends Controller {
       else
         None
 
-      if (!firstNameFilter.isDefined && !lastNameFilter.isDefined && !usStateId.isDefined) {
+      val committees = if (request.queryString.contains("committeeName")) {
+        val committeeName = request.queryString.get("committeeName").get.head
+        CommitteeDto.getOfName(committeeName)
+      } else
+        List()
+
+      val isAPriorityTarget = if (request.queryString.contains("isAPriorityTarget"))
+        request.queryString.get("isAPriorityTarget").get.head.toBoolean
+      else
+        false
+
+      if (!firstNameFilter.isDefined && !lastNameFilter.isDefined && !usStateId.isDefined && committees.isEmpty && !isAPriorityTarget) {
         Forbidden
       } else {
-        val matchingLegislators = StateLegislatorDto.getMatching(firstNameFilter, lastNameFilter, usStateId)
+        val matchingLegislators = StateLegislatorDto.getMatching(firstNameFilter, lastNameFilter, usStateId, committees, isAPriorityTarget)
 
         usStateId match {
           case Some(id) =>
@@ -36,6 +49,25 @@ object StateLegislatorApi extends Controller {
           case None =>
             Ok(Json.toJson(matchingLegislators))
         }
+      }
+  }
+
+  def update = Action(parse.json) {
+    implicit request =>
+
+      val stateLegislator = JsonUtil.deserialize[DetailedStateLegislator](request.body.toString())
+
+      StateLegislatorDto.getOfId(stateLegislator.id) match {
+        case None =>
+          BadRequest("No state legislator found for id '" + stateLegislator.id + "'")
+        case Some(existingStateLegislator) =>
+          if (StateLegislatorDto.doesStateLegislatorHaveExtraInfo(existingStateLegislator)) {
+            StateLegislatorDto.updateExtras(stateLegislator)
+          } else {
+            StateLegislatorDto.insertExtras(stateLegislator)
+          }
+
+          Ok
       }
   }
 }

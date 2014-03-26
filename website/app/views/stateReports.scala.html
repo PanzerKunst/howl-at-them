@@ -10,17 +10,11 @@
     Content
 -->
 @if(action.isDefined && action.get == "savedReport") {
-<div id="report-saved" class="alert alert-success alert-dismissable floating">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    Report saved
-</div>
+<div id="report-saved" class="alert alert-success floating">Report saved</div>
 }
 
 @if(action.isDefined && action.get == "deletedReport") {
-<div id="report-deleted" class="alert alert-success alert-dismissable floating">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    Report deleted
-</div>
+<div id="report-deleted" class="alert alert-success floating">Report deleted</div>
 }
 
 <h1>State reports</h1>

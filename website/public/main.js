@@ -11544,10 +11544,30 @@ CBR.Models.Report.contact = {
         return this.options.district;
     },
 
+    getLeadershipPosition: function() {
+        return this.options.leadershipPosition;
+    },
+
+    getOffices: function() {
+        return this.options.offices;
+    },
+
+    getCommittees: function() {
+        return this.options.committees;
+    },
+
     getReports: function () {
         return this.options.reports.map(function (report) {
             return new CBR.Models.Report(report);
         });
+    },
+
+    getOtherPhoneNumber: function () {
+        return this.options.otherPhoneNumber;
+    },
+
+    isAPriorityTarget: function () {
+        return this.options.isAPriorityTarget;
     },
 
     getReportCount: function () {
@@ -11743,7 +11763,7 @@ CBR.Models.Report.contact = {
         this.$deleteReportModal.modal();
     },
 
-    initEditReportValidation: function() {
+    initEditReportValidation: function () {
         this.editReportValidator = new CBR.Services.Validator({
             fieldIds: [
                 "edit-author-name",
@@ -11786,6 +11806,30 @@ CBR.Models.Report.contact = {
         var isGlobalScope = true;
         var asString = this.getFromLocalStorage("idOfCreatedReports", isGlobalScope);
         return asString ? JSON.parse(asString) : [];
+    },
+
+    fadeOutFloatingAlerts: function () {
+        var $floatingAlerts = jQuery(".alert.floating");
+
+        _.delay(function () {
+            $floatingAlerts.fadeOut("slow", function () {
+                $floatingAlerts.remove();
+            });
+        }, this.floatingAlertFadeOutDelay);
+    },
+
+    showAlert: function (id, text) {
+        // In case another alert is displayed, we delete it
+        jQuery(".alert.floating").remove();
+
+        var $alertDiv = jQuery('<div id="' + id + '" class="alert alert-success floating">' + text + '</div>');
+
+        this.getEl().prepend($alertDiv);
+        _.delay(function () {
+            $alertDiv.fadeOut("slow", function () {
+                $alertDiv.remove();
+            });
+        }, this.floatingAlertFadeOutDelay);
     },
 
     _doEditReport: function (initialReport, successUrl) {
@@ -11859,7 +11903,7 @@ CBR.Models.Report.contact = {
                 headers: { "Content-Type": "application/json" },
                 emulation: false, // Otherwise PUT and DELETE requests are sent as POST
                 url: "/api/reports/",
-                data: CBR.JsonUtil.stringifyModel(updatedReport),
+                data: JSON.stringify(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);
                 },
@@ -11901,7 +11945,9 @@ CBR.Models.Report.contact = {
     httpStatusCode: {
         noContent: 204,
         unauthorized: 401
-    }
+    },
+
+    floatingAlertFadeOutDelay: 3000
 });;CBR.Controllers.Admin = new Class({
     Extends: CBR.Controllers.BaseController,
 
@@ -11995,7 +12041,7 @@ CBR.Models.Report.contact = {
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/authenticate",
-                data: CBR.JsonUtil.stringifyModel(account),
+                data: JSON.stringify(account),
                 onSuccess: function (responseText, responseXML) {
                     if (this.status === _this.httpStatusCode.noContent) {
                         // We delay because seeing the loading state a bit longer looks better
@@ -12109,9 +12155,15 @@ CBR.Models.Report.contact = {
         this.parent();
 
         this.$form = jQuery("form");
+
         this.$firstName = jQuery("#first-name");
         this.$lastName = jQuery("#last-name");
         this.$usStateSelect = jQuery("#us-state");
+
+        this.$advancedSearchFields = jQuery("#advanced-search-fields");
+        this.$committeeSelect = jQuery("#committee");
+        this.$priorityTargetCheckbox = jQuery("#priority-target");
+
         this.$otherInputError = jQuery(".other-form-error");
         this.$submitBtn = jQuery("[type=submit]");
 
@@ -12121,7 +12173,7 @@ CBR.Models.Report.contact = {
     },
 
     _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val();
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$committeeSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
     },
 
     _initValidation: function () {
@@ -12140,11 +12192,11 @@ CBR.Models.Report.contact = {
     },
 
     _toggleAdvancedSearch: function (e) {
-        /* TODO if (this.$form.is(":visible")) {
-            this.$form.slideUpCustom();
+        if (this.$advancedSearchFields.is(":visible")) {
+            this.$advancedSearchFields.slideUpCustom();
         } else {
-            this.$form.slideDownCustom();
-        } */
+            this.$advancedSearchFields.slideDownCustom();
+        }
     },
 
     _doSubmit: function (e) {
@@ -12162,18 +12214,21 @@ CBR.Models.Report.contact = {
             var inputFirstName = this.$firstName.val().toLowerCase();
             var inputLastName = this.$lastName.val().toLowerCase();
             var selectedUsStateId = this.$usStateSelect.val();
+            var selectedCommitteeName = this.$committeeSelect.val();
 
             var stateLegislatorSearch = {
                 firstName: inputFirstName ? inputFirstName : null,
                 lastName: inputLastName ? inputLastName : null,
-                usStateId: selectedUsStateId ? selectedUsStateId : null
+                usStateId: selectedUsStateId ? selectedUsStateId : null,
+                committeeName: selectedCommitteeName ? selectedCommitteeName : null,
+                isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
             };
 
             new Request({
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/state-legislators",
-                data: stateLegislatorSearch,
+                data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
                 onSuccess: function (responseText, responseXML) {
                     this.$submitBtn.button('reset');
                     this._storeMatchingStateLegislators(JSON.parse(responseText));
@@ -12368,6 +12423,9 @@ CBR.Models.Report.contact = {
     initElements: function () {
         this.parent();
 
+        this.$otherPhoneNumber = jQuery("#other-phone-number");
+        this.$priorityTargetCheckbox = jQuery("#priority-target");
+
         this.$committeesList = jQuery("#committees > ul");
 
         this.$authorName = jQuery("#author-name");
@@ -12394,6 +12452,7 @@ CBR.Models.Report.contact = {
         this._initForm();
 
         this.addEditAndDeleteReportLinks();
+        this.fadeOutFloatingAlerts();
     },
 
     _getStateLegislator: function () {
@@ -12416,6 +12475,16 @@ CBR.Models.Report.contact = {
     },
 
     _initEvents: function () {
+        this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
+            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+        }, this), 1000));
+        this.$otherPhoneNumber.blur(jQuery.proxy(function () {
+            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+        }, this));
+        this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
+            this._updateStateLegislator("is-a-priority-target-saved", "Priority status saved");
+        }, this));
+
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
         jQuery("#new-report-toggle").click(jQuery.proxy(this._toggleNewReport, this));
 
@@ -12507,7 +12576,7 @@ CBR.Models.Report.contact = {
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/reports",
-                data: CBR.JsonUtil.stringifyModel(report),
+                data: JSON.stringify(report),
                 onSuccess: function (responseText, responseXML) {
                     this._addReportIdToLocalStorage(parseInt(responseText, 10));
                     location.replace("/state-legislators/" + report.candidateId + "?action=savedReport");
@@ -12518,6 +12587,42 @@ CBR.Models.Report.contact = {
                 }.bind(this)
             }).post();
         }
+    },
+
+    _updateStateLegislator: function (floatingAlertId, floatingAlertText) {
+        var stateLegislator = this._getStateLegislator();
+
+        var otherPhoneNumber = this.$otherPhoneNumber.val();
+
+        var updatedStateLegislator = {
+            id: stateLegislator.getId(),
+            firstName: stateLegislator.getFirstName(),
+            lastName: stateLegislator.getLastName(),
+            title: stateLegislator.getTitle(),
+            politicalParties: stateLegislator.getPoliticalParties(),
+            usState: stateLegislator.getUsState(),
+            district: stateLegislator.getDistrict(),
+            leadershipPosition: stateLegislator.getLeadershipPosition(),
+            offices: stateLegislator.getOffices(),
+            committees: stateLegislator.getCommittees(),
+            reports: stateLegislator.getReports(),
+            otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
+            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/state-legislators/",
+            data: JSON.stringify(updatedStateLegislator),
+            onSuccess: function (responseText, responseXML) {
+                this.showAlert(floatingAlertId, floatingAlertText);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).put();
     },
 
     _addReportIdToLocalStorage: function (reportId) {
@@ -12584,6 +12689,7 @@ CBR.Models.Report.contact = {
         this.getEl().addClass("legislator-listing");
 
         this.addEditAndDeleteReportLinks();
+        this.fadeOutFloatingAlerts();
     },
 
     _getStateLegislators: function () {

@@ -14,6 +14,9 @@ CBR.Controllers.StateLegislator = new Class({
     initElements: function () {
         this.parent();
 
+        this.$otherPhoneNumber = jQuery("#other-phone-number");
+        this.$priorityTargetCheckbox = jQuery("#priority-target");
+
         this.$committeesList = jQuery("#committees > ul");
 
         this.$authorName = jQuery("#author-name");
@@ -40,6 +43,7 @@ CBR.Controllers.StateLegislator = new Class({
         this._initForm();
 
         this.addEditAndDeleteReportLinks();
+        this.fadeOutFloatingAlerts();
     },
 
     _getStateLegislator: function () {
@@ -62,6 +66,16 @@ CBR.Controllers.StateLegislator = new Class({
     },
 
     _initEvents: function () {
+        this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
+            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+        }, this), 1000));
+        this.$otherPhoneNumber.blur(jQuery.proxy(function () {
+            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+        }, this));
+        this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
+            this._updateStateLegislator("is-a-priority-target-saved", "Priority status saved");
+        }, this));
+
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
         jQuery("#new-report-toggle").click(jQuery.proxy(this._toggleNewReport, this));
 
@@ -153,7 +167,7 @@ CBR.Controllers.StateLegislator = new Class({
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/reports",
-                data: CBR.JsonUtil.stringifyModel(report),
+                data: JSON.stringify(report),
                 onSuccess: function (responseText, responseXML) {
                     this._addReportIdToLocalStorage(parseInt(responseText, 10));
                     location.replace("/state-legislators/" + report.candidateId + "?action=savedReport");
@@ -164,6 +178,42 @@ CBR.Controllers.StateLegislator = new Class({
                 }.bind(this)
             }).post();
         }
+    },
+
+    _updateStateLegislator: function (floatingAlertId, floatingAlertText) {
+        var stateLegislator = this._getStateLegislator();
+
+        var otherPhoneNumber = this.$otherPhoneNumber.val();
+
+        var updatedStateLegislator = {
+            id: stateLegislator.getId(),
+            firstName: stateLegislator.getFirstName(),
+            lastName: stateLegislator.getLastName(),
+            title: stateLegislator.getTitle(),
+            politicalParties: stateLegislator.getPoliticalParties(),
+            usState: stateLegislator.getUsState(),
+            district: stateLegislator.getDistrict(),
+            leadershipPosition: stateLegislator.getLeadershipPosition(),
+            offices: stateLegislator.getOffices(),
+            committees: stateLegislator.getCommittees(),
+            reports: stateLegislator.getReports(),
+            otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
+            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/state-legislators/",
+            data: JSON.stringify(updatedStateLegislator),
+            onSuccess: function (responseText, responseXML) {
+                this.showAlert(floatingAlertId, floatingAlertText);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).put();
     },
 
     _addReportIdToLocalStorage: function (reportId) {

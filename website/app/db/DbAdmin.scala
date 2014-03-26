@@ -7,13 +7,15 @@ import play.api.Logger
 
 object DbAdmin {
   def reCreateNonVoteSmartTables() {
-    dropTableAccount()
-    dropTableReport()
-    dropTableUsState()
+    dropTable("state_legislator_extra")
+    dropTable("account")
+    dropTable("report")
+    dropTable("us_state")
 
     createTableUsState()
     createTableReport()
     createTableAccount()
+    createTableStateLegislatorExtra()
   }
 
   def initData() {
@@ -120,6 +122,23 @@ object DbAdmin {
           );"""
 
         Logger.info("DbAdmin.createTableAccount():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def createTableStateLegislatorExtra() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          create table state_legislator_extra (
+            candidate_id integer not null primary key/* Can't have that reference because we want to be able to drop the table references vote_smart_candidate(candidate_id) */,
+            other_phone_number varchar(32),
+            is_a_priority_target boolean not null default false
+            );"""
+
+        Logger.info("DbAdmin.createTableStateLegislatorExtra():" + query)
 
         SQL(query).executeUpdate()
     }
@@ -254,7 +273,8 @@ object DbAdmin {
             c.office_parties as political_parties,
             c.office_state_id as us_state_id,
             c.office_district_name as district,
-            lo.position_name as leadership_position,
+            lo.leadership_id as leadership_position_id,
+            lo.position_name as leadership_position_name,
             o.office_type,
             o.street as office_street,
             o.city as office_city,
@@ -262,11 +282,14 @@ object DbAdmin {
             o.zip as office_zip,
             o.phone1 as office_phone_number,
             cc.committee_id,
-            cc.committee_name
+            cc.committee_name,
+            sle.other_phone_number,
+            sle.is_a_priority_target
             from vote_smart_candidate c
             left join vote_smart_leading_official lo on lo.candidate_id = c.candidate_id
             left join vote_smart_candidate_office o on o.candidate_id = c.candidate_id
             left join vote_smart_candidate_committee cc on cc.candidate_id = c.candidate_id
+            left join state_legislator_extra sle on sle.candidate_id = c.candidate_id
             where c.office_type_id = 'L';"""
 
         Logger.info("DbAdmin.createViewStateLegislator():" + query)
@@ -275,32 +298,12 @@ object DbAdmin {
     }
   }
 
-  private def dropTableUsState() {
+  private def dropTable(tableName: String) {
     DB.withConnection {
       implicit c =>
 
-        val query = "drop table if exists us_state;"
-        Logger.info("DbAdmin.dropTableUsState(): " + query)
-        SQL(query).executeUpdate()
-    }
-  }
-
-  private def dropTableReport() {
-    DB.withConnection {
-      implicit c =>
-
-        val query = "drop table if exists report;"
-        Logger.info("DbAdmin.dropTableReport(): " + query)
-        SQL(query).executeUpdate()
-    }
-  }
-
-  private def dropTableAccount() {
-    DB.withConnection {
-      implicit c =>
-
-        val query = "drop table if exists account;"
-        Logger.info("DbAdmin.dropTableAccount(): " + query)
+        val query = "drop table if exists " + tableName + ";"
+        Logger.info("DbAdmin.dropTable(): " + query)
         SQL(query).executeUpdate()
     }
   }

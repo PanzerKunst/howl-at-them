@@ -93,7 +93,7 @@ object ReportDto {
 
         SQL(query)().map {
           row =>
-            new Report(row[Option[Long]]("id"),
+            Report(row[Option[Long]]("id"),
               candidateId,
               row[String]("author_name"),
               row[String]("contact"),

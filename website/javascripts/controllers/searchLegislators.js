@@ -19,9 +19,15 @@ CBR.Controllers.SearchLegislators = new Class({
         this.parent();
 
         this.$form = jQuery("form");
+
         this.$firstName = jQuery("#first-name");
         this.$lastName = jQuery("#last-name");
         this.$usStateSelect = jQuery("#us-state");
+
+        this.$advancedSearchFields = jQuery("#advanced-search-fields");
+        this.$committeeSelect = jQuery("#committee");
+        this.$priorityTargetCheckbox = jQuery("#priority-target");
+
         this.$otherInputError = jQuery(".other-form-error");
         this.$submitBtn = jQuery("[type=submit]");
 
@@ -31,7 +37,7 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val();
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$committeeSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
     },
 
     _initValidation: function () {
@@ -50,11 +56,11 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _toggleAdvancedSearch: function (e) {
-        /* TODO if (this.$form.is(":visible")) {
-            this.$form.slideUpCustom();
+        if (this.$advancedSearchFields.is(":visible")) {
+            this.$advancedSearchFields.slideUpCustom();
         } else {
-            this.$form.slideDownCustom();
-        } */
+            this.$advancedSearchFields.slideDownCustom();
+        }
     },
 
     _doSubmit: function (e) {
@@ -72,18 +78,21 @@ CBR.Controllers.SearchLegislators = new Class({
             var inputFirstName = this.$firstName.val().toLowerCase();
             var inputLastName = this.$lastName.val().toLowerCase();
             var selectedUsStateId = this.$usStateSelect.val();
+            var selectedCommitteeName = this.$committeeSelect.val();
 
             var stateLegislatorSearch = {
                 firstName: inputFirstName ? inputFirstName : null,
                 lastName: inputLastName ? inputLastName : null,
-                usStateId: selectedUsStateId ? selectedUsStateId : null
+                usStateId: selectedUsStateId ? selectedUsStateId : null,
+                committeeName: selectedCommitteeName ? selectedCommitteeName : null,
+                isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
             };
 
             new Request({
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 url: "/api/state-legislators",
-                data: stateLegislatorSearch,
+                data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
                 onSuccess: function (responseText, responseXML) {
                     this.$submitBtn.button('reset');
                     this._storeMatchingStateLegislators(JSON.parse(responseText));

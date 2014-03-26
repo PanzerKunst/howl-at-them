@@ -449,6 +449,47 @@ body {
   height: 48px;
   margin: 0 auto; }
 
+html,
+body {
+  height: 100%; }
+
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #222222;
+  color: white;
+  text-align: center; }
+  @media screen and (min-width: 49.5em) {
+    footer {
+      font-size: 16px; } }
+  footer > a,
+  footer > a:visited,
+  footer > a:hover,
+  footer > a:focus {
+    display: inline-block;
+    padding: 0.3em 1em;
+    color: white;
+    text-decoration: underline;
+    width: 100%; }
+    @media screen and (min-width: 39.5em) {
+      footer > a,
+      footer > a:visited,
+      footer > a:hover,
+      footer > a:focus {
+        width: auto; } }
+
+#container {
+  min-height: 100%;
+  position: relative; }
+
+#content {
+  padding-bottom: 14em; }
+  @media screen and (min-width: 39.5em) {
+    #content {
+      padding-bottom: 4em; } }
+
 #content form .form-group {
   width: 20em; }
   @media screen and (min-width: 39.5em) {
@@ -551,23 +592,21 @@ tr.clickable {
   margin-right: 1em; }
 
 .alert.floating {
-  position: fixed;
+  position: absolute;
   left: 50%;
-  margin-top: -2.8em;
+  margin-top: -2.5em;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  padding-top: 7.5px;
-  padding-bottom: 7.5px;
-  padding-left: 7.5px; }
-  .alert.floating.alert-dismissable .close {
-    top: -1px; }
+  padding: 3px 7px 4px 7px;
+  border-radius: 3px;
+  text-align: center; }
 
 #report-saved {
-  width: 10.2em;
-  margin-left: -5.1em; }
+  width: 7.3em;
+  margin-left: -3.65em; }
 
 #report-deleted {
-  width: 11em;
-  margin-left: -5.5em; }
+  width: 8.1em;
+  margin-left: -4.05em; }
 
 @media screen and (min-width: 39.5em) {
   #edit-report-modal > .modal-dialog {
@@ -646,6 +685,9 @@ textarea.form-control {
 .container > .navbar-header {
   margin-right: 0; }
 
+/* TODO .navbar-default {
+  background-color: $alternate-bg-colour;
+} */
 /* TODO .form-control {
   &:focus {
     border-color: $actionColor;
@@ -801,6 +843,14 @@ table.dataTable tr.even td.sorting_1 {
   #search-legislators #content #advanced-toggle {
     float: right;
     padding-top: 29px; }
+  #search-legislators #content #advanced-search-fields {
+    display: none; }
+  #search-legislators #content #committees-form-group {
+    width: 34em; }
+  #search-legislators #content #priority-target-form-group {
+    width: 10em; }
+    #search-legislators #content #priority-target-form-group label {
+      font-weight: bold; }
   #search-legislators #content th:nth-child(3) {
     text-align: center;
     padding: 0;
@@ -873,6 +923,12 @@ table.dataTable tr.even td.sorting_1 {
     width: 9%;
     text-align: center; }
 
+#state-legislator #content > #other-phone-number-saved {
+  width: 11.2em;
+  margin-left: -5.6em; }
+#state-legislator #content > #is-a-priority-target-saved {
+  width: 10.6em;
+  margin-left: -5.3em; }
 #state-legislator #content #legislator-data,
 #state-legislator #content #committees {
   width: 20em; }

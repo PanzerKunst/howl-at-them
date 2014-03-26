@@ -7,6 +7,7 @@ import models._
 import play.api.Play.current
 import frontend.DetailedStateLegislator
 import scala.Some
+import anorm.SqlParser._
 
 object StateLegislatorDto {
   def getOfId(id: Int): Option[DetailedStateLegislator] = {
@@ -15,9 +16,10 @@ object StateLegislatorDto {
 
         val query = """
           select first_name, last_name, title, political_parties, us_state_id, district,
-            leadership_position,
+            leadership_position_id, leadership_position_name,
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
             committee_id, committee_name,
+            other_phone_number, is_a_priority_target,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -31,7 +33,7 @@ object StateLegislatorDto {
           where l.id = """ + id + """
           order by creation_timestamp desc;"""
 
-        Logger.info("StateLegislatorDto.getOfId(" + id + "):" + query)
+        Logger.info("StateLegislatorDto.getOfId():" + query)
 
         val denormalizedStateLegislator = SQL(query)().map {
           row =>
@@ -46,6 +48,12 @@ object StateLegislatorDto {
               case None =>
             }
 
+            val leadershipPosition = row[Option[Int]]("leadership_position_id") match {
+              case Some(leadershipPositionId) => Some(LeadershipPosition(leadershipPositionId,
+                row[String]("leadership_position_name")))
+              case None => None
+            }
+
             val stateLegislator = new StateLegislator(id,
               row[String]("first_name"),
               row[String]("last_name"),
@@ -53,11 +61,12 @@ object StateLegislatorDto {
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
               row[String]("district"),
-              row[Option[String]]("leadership_position"))
+              leadershipPosition,
+              row[Option[String]]("other_phone_number"),
+              row[Option[Boolean]]("is_a_priority_target").getOrElse(false))
 
             val candidateOffice = row[Option[String]]("office_type") match {
-              case Some(officeType) => Some(CandidateOffice(id,
-                officeType,
+              case Some(officeType) => Some(CandidateOffice(officeType,
                 row[Option[String]]("office_street"),
                 row[Option[String]]("office_city"),
                 row[Option[String]]("office_us_state_id"),
@@ -66,9 +75,13 @@ object StateLegislatorDto {
               case None => None
             }
 
-            val candidateCommittee = CandidateCommittee(id,
-              row[Option[Int]]("committee_id"),
-              row[Option[String]]("committee_name"))
+            val committee = row[Option[Int]]("committee_id") match {
+              case Some(committeeId) => Some(Committee(
+                committeeId,
+                row[String]("committee_name")
+              ))
+              case None => None
+            }
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -87,14 +100,70 @@ object StateLegislatorDto {
               case None => None
             }
 
-            (stateLegislator, candidateOffice, candidateCommittee, report)
+            (stateLegislator, candidateOffice, committee, report)
         }
 
         normalizeStateLegislator(denormalizedStateLegislator)
     }
   }
 
-  def getMatching(firstNameFilter: Option[String], lastNameFilter: Option[String], usStateId: Option[String]): List[DetailedStateLegislator] = {
+  def doesStateLegislatorHaveExtraInfo(stateLegislator: StateLegislator): Boolean = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select count(*) from state_legislator_extra
+          where candidate_id = """ + stateLegislator.id + """;"""
+
+        Logger.info("StateLegislatorDto.doesStateLegislatorHaveExtraInfo():" + query)
+
+        val count: Long = SQL(query).as(scalar[Long].single)
+
+        count > 0
+    }
+  }
+
+  def insertExtras(detailedStateLegislator: DetailedStateLegislator) {
+    DB.withConnection {
+      implicit c =>
+
+        var otherPhoneNumberForQuery = "NULL"
+        if (detailedStateLegislator.otherPhoneNumber.isDefined && detailedStateLegislator.otherPhoneNumber.get != "")
+          otherPhoneNumberForQuery = "'" + DbUtil.safetize(detailedStateLegislator.otherPhoneNumber.get) + "'"
+
+        val query = """
+               insert into state_legislator_extra(candidate_id, other_phone_number, is_a_priority_target)
+          values(""" + detailedStateLegislator.id + """, """ +
+          otherPhoneNumberForQuery + """, """ +
+          detailedStateLegislator.isAPriorityTarget + """);"""
+
+        Logger.info("StateLegislatorDto.insertExtras():" + query)
+
+        SQL(query).executeInsert()
+    }
+  }
+
+  def updateExtras(detailedStateLegislator: DetailedStateLegislator) {
+    DB.withConnection {
+      implicit c =>
+
+        var otherPhoneNumberForQuery = "NULL"
+        if (detailedStateLegislator.otherPhoneNumber.isDefined && detailedStateLegislator.otherPhoneNumber.get != "")
+          otherPhoneNumberForQuery = "'" + DbUtil.safetize(detailedStateLegislator.otherPhoneNumber.get) + "'"
+
+        val query = """
+          update state_legislator_extra set
+          other_phone_number = """ + otherPhoneNumberForQuery + """,
+          is_a_priority_target = """ + detailedStateLegislator.isAPriorityTarget + """
+          where candidate_id = """ + detailedStateLegislator.id + """;"""
+
+        Logger.info("StateLegislatorDto.updateExtras():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
+  def getMatching(firstNameFilter: Option[String], lastNameFilter: Option[String], usStateId: Option[String], committees: List[Committee], isAPriorityTarget: Boolean): List[DetailedStateLegislator] = {
     DB.withConnection {
       implicit c =>
 
@@ -113,9 +182,29 @@ object StateLegislatorDto {
           case None => "%"
         }
 
+        val committeeIdsClause = if (committees.isEmpty) {
+          ""
+        } else {
+          val ids = committees.map {
+            committee => "%s".format(committee.id)
+          }
+            .mkString(", ")
+
+          """
+            and committee_id in (""" + ids + """)"""
+        }
+
+        val isAPriorityTargetClause = if (isAPriorityTarget) {
+          """
+            and is_a_priority_target is true"""
+        } else {
+          ""
+        }
+
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
-            leadership_position,
+            leadership_position_id, leadership_position_name,
+            other_phone_number, is_a_priority_target,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -128,7 +217,9 @@ object StateLegislatorDto {
             and r.is_deleted is false
           where lower(first_name) like '""" + firstNameFilterForQuery + """'
             and lower(last_name) like '""" + lastNameFilterForQuery + """'
-            and us_state_id like '""" + usStateIdFilterForQuery + """'
+            and us_state_id like '""" + usStateIdFilterForQuery + """'""" +
+            committeeIdsClause +
+            isAPriorityTargetClause + """
           order by title, first_name, creation_timestamp desc;"""
 
         Logger.info("StateLegislatorDto.getMatching():" + query)
@@ -148,6 +239,12 @@ object StateLegislatorDto {
 
             val candidateId = row[Int]("id")
 
+            val leadershipPosition = row[Option[Int]]("leadership_position_id") match {
+              case Some(leadershipPositionId) => Some(LeadershipPosition(leadershipPositionId,
+                row[String]("leadership_position_name")))
+              case None => None
+            }
+
             val stateLegislator = new StateLegislator(candidateId,
               row[String]("first_name"),
               row[String]("last_name"),
@@ -155,7 +252,7 @@ object StateLegislatorDto {
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
               row[String]("district"),
-              row[Option[String]]("leadership_position"))
+              leadershipPosition)
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -188,6 +285,7 @@ object StateLegislatorDto {
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, district,
             leadership_position,
+            other_phone_number, is_a_priority_target,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -218,6 +316,12 @@ object StateLegislatorDto {
 
             val candidateId = row[Int]("id")
 
+            val leadershipPosition = row[Option[Int]]("leadership_position_id") match {
+              case Some(leadershipPositionId) => Some(LeadershipPosition(leadershipPositionId,
+                row[String]("leadership_position_name")))
+              case None => None
+            }
+
             val stateLegislator = new StateLegislator(candidateId,
               row[String]("first_name"),
               row[String]("last_name"),
@@ -225,7 +329,7 @@ object StateLegislatorDto {
               politicalParties,
               UsState(usStateId, row[String]("name")),
               row[String]("district"),
-              row[Option[String]]("leadership_position"))
+              leadershipPosition)
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -299,6 +403,12 @@ object StateLegislatorDto {
 
             val candidateId = row[Int]("id")
 
+            val leadershipPosition = row[Option[Int]]("leadership_position_id") match {
+              case Some(leadershipPositionId) => Some(LeadershipPosition(leadershipPositionId,
+                row[String]("leadership_position_name")))
+              case None => None
+            }
+
             val stateLegislator = new StateLegislator(candidateId,
               row[String]("first_name"),
               row[String]("last_name"),
@@ -306,7 +416,7 @@ object StateLegislatorDto {
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
               row[String]("district"),
-              row[Option[String]]("leadership_position"))
+              leadershipPosition)
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -332,19 +442,18 @@ object StateLegislatorDto {
     }
   }
 
-  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], CandidateCommittee, Option[Report])]): Option[DetailedStateLegislator] = {
+  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], Option[Committee], Option[Report])]): Option[DetailedStateLegislator] = {
     if (denormalizedStateLegislator.isEmpty)
       None
     else {
       val stateLegislator = denormalizedStateLegislator.head._1
 
       var candidateOffices: List[CandidateOffice] = List()
-      var candidateCommittees: List[CandidateCommittee] = List()
+      var committees: List[Committee] = List()
       var reports: List[Report] = List()
 
       for (row <- denormalizedStateLegislator) {
-        val candidateCommittee = row._3
-        val reportOption = row._4
+        val committee = row._3
 
         var isInListAlready = false
 
@@ -366,26 +475,26 @@ object StateLegislatorDto {
         }
 
 
-        // candidateCommittee
+        // committee
 
-        if (candidateCommittee.committeeId.isDefined) {
+        if (committee.isDefined) {
           isInListAlready = false
 
-          for (candidateCommitteeItem <- candidateCommittees) {
-            if (!isInListAlready && candidateCommitteeItem.committeeId.get == candidateCommittee.committeeId.get) {
+          for (committeeItem <- committees) {
+            if (!isInListAlready && committeeItem.id == committee.get.id) {
               isInListAlready = true
             }
           }
 
           if (!isInListAlready) {
-            candidateCommittees = candidateCommittees :+ candidateCommittee
+            committees = committees :+ committee.get
           }
         }
 
 
         // reports
 
-        reportOption match {
+        row._4 match {
           case Some(report) =>
             isInListAlready = false
 
@@ -411,10 +520,11 @@ object StateLegislatorDto {
           stateLegislator.usState,
           stateLegislator.district,
           stateLegislator.leadershipPosition,
+          stateLegislator.otherPhoneNumber,
+          stateLegislator.isAPriorityTarget,
 
           candidateOffices,
-          candidateCommittees,
-          false,
+          committees,
           reports)
       )
     }
@@ -432,7 +542,10 @@ object StateLegislatorDto {
             stateLegislator.title,
             stateLegislator.politicalParties,
             stateLegislator.usState,
-            stateLegislator.district)
+            stateLegislator.district,
+            stateLegislator.leadershipPosition,
+            stateLegislator.otherPhoneNumber,
+            stateLegislator.isAPriorityTarget)
 
         case Some(report) =>
           var isInListAlready = false
@@ -455,10 +568,12 @@ object StateLegislatorDto {
               stateLegislator.usState,
               stateLegislator.district,
               stateLegislator.leadershipPosition,
+              stateLegislator.otherPhoneNumber,
+              stateLegislator.isAPriorityTarget,
 
               List(),
               List(),
-              false,
+
               List(report))
           }
       }

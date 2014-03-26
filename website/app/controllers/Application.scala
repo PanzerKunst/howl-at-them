@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import db.{StateLegislatorDto, AccountDto, UsStateDto}
+import db.{CommitteeDto, StateLegislatorDto, AccountDto, UsStateDto}
 import models.Account
 import services.{GoogleCivicInformationService, VoteSmartService}
 import concurrent.ExecutionContext.Implicits.global
@@ -36,7 +36,7 @@ object Application extends Controller {
 
         val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
 
-        Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action)).withSession(
+        Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action)).withSession(
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
@@ -48,16 +48,16 @@ object Application extends Controller {
 
             val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
 
-            Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action))
+            Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), firstLegislator, nextLegislators.toList, action))
 
-          case None => Ok(views.html.stateReports(UsStateDto.getAll, isAdmin(session), None, None, List(), action))
+          case None => Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), None, None, List(), action))
         }
       }
   }
 
   def searchLegislators = Action {
     implicit request =>
-      Ok(views.html.searchLegislators(UsStateDto.getAll, isAdmin(session)))
+      Ok(views.html.searchLegislators(UsStateDto.all, CommitteeDto.allNames, isAdmin(session)))
   }
 
   def stateLegislator(id: Int) = Action {
@@ -103,11 +103,11 @@ object Application extends Controller {
             } else {
               StateLegislatorDto.getOfDistricts(statesAndDistricts)
             }
-            Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.getAll, Some(address), yourLegislators))
+            Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.all, Some(address), yourLegislators))
         }
       } else {
         Future {
-          Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.getAll, None, List()))
+          Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.all, None, List()))
         }
       }
   }

@@ -28,6 +28,22 @@
       padding-top: 29px;
     }
 
+    #advanced-search-fields {
+      display: none;
+    }
+
+    #committees-form-group {
+      width: 34em;
+    }
+
+    #priority-target-form-group {
+      width: 10em;
+
+      label {
+        font-weight: bold;
+      }
+    }
+
     th:nth-child(3) {
       text-align: center;
       padding: 0;

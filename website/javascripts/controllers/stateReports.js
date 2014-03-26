@@ -24,6 +24,7 @@ CBR.Controllers.StateReports = new Class({
         this.getEl().addClass("legislator-listing");
 
         this.addEditAndDeleteReportLinks();
+        this.fadeOutFloatingAlerts();
     },
 
     _getStateLegislators: function () {
