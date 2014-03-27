@@ -13,8 +13,9 @@ object GoogleCivicInformationService {
   val gciApiKey = Play.application().configuration().getString("google.civicinformation.apikey")
 
   def fetchDistrictsForAddress(address: String): Future[List[StateAndDistrict]] = {
-    WS.url("https://www.googleapis.com/civicinfo/us_v1/voterinfo/2000/lookup")
+    WS.url("https://www.googleapis.com/civicinfo/us_v1/representatives/lookup")
       .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
+      .withQueryString("includeOffices" -> "false")
       .withHeaders("Content-Type" -> "application/json")
       .withHeaders("X-JavaScript-User-Agent" -> "Google APIs Explorer")
       .post(Json.obj(
@@ -23,28 +24,23 @@ object GoogleCivicInformationService {
       response =>
         Logger.info("fetchDistrictsForAddress JSON reponse: " + response.json)
 
-        (response.json \ "contests").asOpt[List[JsObject]] match {
-          case Some(contests) =>
+        (response.json \ "divisions").asOpt[JsObject] match {
+          case Some(divisions) =>
             var statesAndDistricts: List[StateAndDistrict] = List()
 
-            for (contest <- contests) {
-              val district = (contest \ "district").as[JsValue]
+            for (division <- divisions.values) {
+              val divisionScope = (division \ "scope").as[String]
+              if (divisionScope == "stateLower" || divisionScope == "stateUpper") {
+                val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
 
-              (district \ "scope").asOpt[String] match {
-                case Some(districtScope) =>
-                  if (districtScope == "stateLower" || districtScope == "stateUpper") {
-                    val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
-
-                    UsStateDto.getOfId(usStateId) match {
-                      case Some(usState) =>
-                        statesAndDistricts = statesAndDistricts :+ StateAndDistrict(
-                          usState,
-                          (district \ "name").as[String]
-                        )
-                      case None =>
-                    }
-                  }
-                case None =>
+                UsStateDto.getOfId(usStateId) match {
+                  case Some(usState) =>
+                    statesAndDistricts = statesAndDistricts :+ StateAndDistrict(
+                      usState,
+                      (division \ "name").as[String]
+                    )
+                  case None =>
+                }
               }
             }
 

@@ -42,10 +42,10 @@
     }
 
     #map {
-      $mapWidth: $large-screen-min-width - 2 * $page-side-padding;
+      $map-width: $large-screen-min-width - 2 * $page-side-padding;
 
-      width: $mapWidth;
-      height: $mapWidth * 400 / 704;  // The default dimentions are 704px * 400px
+      width: $map-width;
+      height: $map-width * 400 / 704;  // The default dimentions are 704px * 400px
     }
 
     $strange-em-difference-for-three-col-breakpoint: 0.6em;
