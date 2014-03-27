@@ -284,7 +284,7 @@ object StateLegislatorDto {
 
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, district,
-            leadership_position,
+            leadership_position_id, leadership_position_name,
             other_phone_number, is_a_priority_target,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
@@ -371,7 +371,7 @@ object StateLegislatorDto {
 
         val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
-            leadership_position,
+            leadership_position_id, leadership_position_name,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,

@@ -40,7 +40,7 @@ $ sudo -u postgres psql howlatthem
 
 Export:
 > cd d:\ProgramFiles\PostgreSQL\9.3\bin
-> pg_dump --username=postgres howlatthem > d:\Pro\howl-at-them\dbDump.sql
+> pg_dump --username=postgres howlatthem > c:\Users\Blackbird\Desktop\dbDump.sql
 
 Import:
 $ sudo -u postgres dropdb howlatthem
