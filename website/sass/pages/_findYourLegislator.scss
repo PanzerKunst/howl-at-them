@@ -1,16 +1,16 @@
 #find-your-legislator {
-  $label-width-find-your-legislator: 7em;
+  $address-field-width: 23em;
   $width-submit-btn-find-your-legislator: 7em;
 
-  $find-your-legislator-page-width: $page-side-padding + $label-width-find-your-legislator + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-find-your-legislator + $page-side-padding;
+  $find-your-legislator-page-min-width: $page-side-padding + $address-field-width + $odd-form-groups-margin-right + $width-submit-btn-find-your-legislator + $page-side-padding;
 
   header {
-    min-width: $find-your-legislator-page-width;
+    min-width: $find-your-legislator-page-min-width;
   }
 
   #content {
-    min-width: $find-your-legislator-page-width;
-    max-width: $find-your-legislator-page-width;
+    min-width: $find-your-legislator-page-min-width;
+    max-width: $find-your-legislator-page-min-width;
 
     > form {
       > div {
@@ -18,23 +18,11 @@
       }
 
       .form-group {
-        width: $label-width-find-your-legislator + $field-width-search-pages;
-
-        > label {
-          display: inline-block;
-          width: $label-width-find-your-legislator;
-        }
+        width: $address-field-width;
       }
     }
 
-    #address {
-      display: inline-block;
-      width: $field-width-search-pages;
-    }
-
     .submit-wrapper {
-      padding-top: 0;
-
       > button {
         width: $width-submit-btn-find-your-legislator;
       }
@@ -63,5 +51,9 @@
         width: 31%;
       }
     }
+  }
+
+  footer {
+    min-width: $find-your-legislator-page-min-width;
   }
 }

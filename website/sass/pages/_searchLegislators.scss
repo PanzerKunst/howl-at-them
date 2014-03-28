@@ -1,13 +1,13 @@
 #search-legislators {
-  $search-legislator-page-width: 68.5em;  // ~960px
+  $search-legislator-page-min-width: 68.5em;  // ~960px
 
   header {
-    min-width: $search-legislator-page-width;
+    min-width: $search-legislator-page-min-width;
   }
 
   #content {
-    min-width: $search-legislator-page-width;
-    max-width: $search-legislator-page-width;
+    min-width: $search-legislator-page-min-width;
+    max-width: $search-legislator-page-min-width;
 
     form {
       > div {
@@ -17,10 +17,6 @@
 
     .form-group {
       width: $field-width-search-pages;
-    }
-
-    .submit-wrapper {
-      float: left;
     }
 
     #advanced-toggle {
@@ -49,6 +45,21 @@
       padding: 0;
 
       @include transform(rotate(-90deg));
+    }
+  }
+
+  footer {
+    min-width: $search-legislator-page-min-width * $font-size-base / $font-size-body-large-screen;
+
+    // We always want the large font size
+    font-size: $font-size-body-large-screen;
+
+    // We always want the large screen version
+    > a,
+    > a:visited,
+    > a:hover,
+    > a:focus {
+      width: auto;
     }
   }
 }

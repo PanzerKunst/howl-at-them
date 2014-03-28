@@ -97,4 +97,19 @@
       }
     }
   }
+
+  footer {
+    min-width: $large-screen-min-width * $font-size-base / $font-size-body-large-screen;
+
+    // We always want the large font size
+    font-size: $font-size-body-large-screen;
+
+    // We always want the large screen version
+    > a,
+    > a:visited,
+    > a:hover,
+    > a:focus {
+      width: auto;
+    }
+  }
 }
