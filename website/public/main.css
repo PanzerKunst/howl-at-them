@@ -593,7 +593,7 @@ tr.clickable {
   margin-right: 1em; }
 
 .alert.floating {
-  position: absolute;
+  position: fixed;
   left: 50%;
   margin-top: -2.5em;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
@@ -831,7 +831,8 @@ table.dataTable tr.even td.sorting_1 {
   min-width: 68.5em; }
 #search-legislators #content {
   min-width: 68.5em;
-  max-width: 68.5em; }
+  max-width: 68.5em;
+  padding-bottom: 4em; }
   #search-legislators #content form > div:after {
     content: "";
     display: table;
@@ -869,7 +870,8 @@ table.dataTable tr.even td.sorting_1 {
 #state-reports header {
   min-width: 55em; }
 #state-reports #content {
-  min-width: 55em; }
+  min-width: 55em;
+  padding-bottom: 4em; }
   #state-reports #content:after {
     content: "";
     display: table;
@@ -941,8 +943,8 @@ table.dataTable tr.even td.sorting_1 {
   width: 11.2em;
   margin-left: -5.6em; }
 #state-legislator #content > #is-a-priority-target-saved {
-  width: 10.6em;
-  margin-left: -5.3em; }
+  width: 10.7em;
+  margin-left: -5.35em; }
 #state-legislator #content #legislator-data,
 #state-legislator #content #committees {
   width: 20em; }
@@ -953,9 +955,8 @@ table.dataTable tr.even td.sorting_1 {
 #state-legislator #content #legislator-data {
   margin: 0 auto 20px auto; }
   #state-legislator #content #legislator-data > div:first-child > p {
-    text-align: center; }
-    #state-legislator #content #legislator-data > div:first-child > p:nth-child(2), #state-legislator #content #legislator-data > div:first-child > p:nth-child(3) {
-      margin-bottom: 0; }
+    text-align: center;
+    margin-bottom: 0; }
   #state-legislator #content #legislator-data img {
     margin-bottom: 10px; }
   @media screen and (min-width: 49.5em) {
@@ -978,7 +979,11 @@ table.dataTable tr.even td.sorting_1 {
         #state-legislator #content #legislator-data > div:last-child {
           width: 30%; } }
 #state-legislator #content #phone-numbers {
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  margin-top: 10px; }
+  @media screen and (min-width: 49.5em) {
+    #state-legislator #content #phone-numbers {
+      margin-top: 0; } }
   #state-legislator #content #phone-numbers > article,
   #state-legislator #content #phone-numbers > .form-group {
     width: 20em;
@@ -1027,5 +1032,7 @@ table.dataTable tr.even td.sorting_1 {
     font-size: 14px; }
 #state-legislator #content #new-report h2 {
   margin-top: 0; }
+#state-legislator #content #new-report .submit-wrapper {
+  padding-top: 0; }
 #state-legislator #content .reports > .alert-info {
   text-align: center; }

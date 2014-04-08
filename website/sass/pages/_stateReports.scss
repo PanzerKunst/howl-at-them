@@ -11,6 +11,9 @@
     $label-width-state-reports: 3em;
     $width-submit-btn-state-reports: 7em;
 
+    // Because the large-screen footer is always displayed
+    padding-bottom: $footer-item-height * 2;
+
     > form {
       > div {
         @include clearfix;

@@ -1,18 +1,19 @@
 package services
 
-import play.api.libs.json.{JsValue, JsObject, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.Play
 import play.api.libs.ws.WS
 import concurrent.Future
-import concurrent.ExecutionContext.Implicits.global
 import models.StateAndDistrict
 import play.api.Logger
-import db.UsStateDto
+import db.{StateLegislatorDto, UsStateDto}
+import models.frontend.DetailedStateLegislator
+import concurrent.ExecutionContext.Implicits.global
 
 object GoogleCivicInformationService {
   val gciApiKey = Play.application().configuration().getString("google.civicinformation.apikey")
 
-  def fetchDistrictsForAddress(address: String): Future[List[StateAndDistrict]] = {
+  def fetchStateLegislatorsForAddress(address: String): Future[List[DetailedStateLegislator]] = {
     WS.url("https://www.googleapis.com/civicinfo/us_v1/representatives/lookup")
       .withQueryString("key" -> Play.application().configuration().getString("google.civicinformation.apikey"))
       .withQueryString("includeOffices" -> "false")
@@ -26,7 +27,7 @@ object GoogleCivicInformationService {
 
         (response.json \ "divisions").asOpt[JsObject] match {
           case Some(divisions) =>
-            var statesAndDistricts: List[StateAndDistrict] = List()
+            var stateLegislators: List[DetailedStateLegislator] = List()
 
             for (division <- divisions.values) {
               val divisionScope = (division \ "scope").as[String]
@@ -35,21 +36,26 @@ object GoogleCivicInformationService {
 
                 UsStateDto.getOfId(usStateId) match {
                   case Some(usState) =>
-                    statesAndDistricts = statesAndDistricts :+ StateAndDistrict(
+                    val stateAndDistrict = StateAndDistrict(
                       usState,
-                      (division \ "name").as[String]
+                      districtNumberFromWebServiceResult(
+                        (division \ "name").as[String]
+                      )
                     )
+
+                    for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
+                      if ((stateLegislator.isUpperHouse && divisionScope == "stateUpper") ||
+                          (stateLegislator.isLowerHouse && divisionScope == "stateLower")) {
+                        stateLegislators = stateLegislators :+ stateLegislator
+                      }
+                    }
+
                   case None =>
                 }
               }
             }
 
-            statesAndDistricts.map {
-              district =>
-                StateAndDistrict(district.usState,
-                  districtNumberFromWebServiceResult(district.district)
-                )
-            }
+            stateLegislators
 
           case None =>
             List()

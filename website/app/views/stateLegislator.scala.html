@@ -24,7 +24,10 @@
         <img src="@stateLegislator.getPhotoUrl" />
         <p>@stateLegislator.politicalParties.mkString("; ")</p>
         <p>@stateLegislator.usState.name district @stateLegislator.district</p>
-        <p>@stateLegislator.leadershipPosition</p>
+
+        @if(stateLegislator.leadershipPosition.isDefined) {
+        <p>@stateLegislator.leadershipPosition.get.name</p>
+        }
     </div>
 
     <div>

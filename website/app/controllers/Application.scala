@@ -96,13 +96,8 @@ object Application extends Controller {
     implicit request =>
       if (request.queryString.contains("address")) {
         val address = request.queryString.get("address").get.head
-        GoogleCivicInformationService.fetchDistrictsForAddress(address).map {
-          statesAndDistricts =>
-            val yourLegislators = if (statesAndDistricts.isEmpty) {
-              List()
-            } else {
-              StateLegislatorDto.getOfDistricts(statesAndDistricts)
-            }
+        GoogleCivicInformationService.fetchStateLegislatorsForAddress(address).map {
+          yourLegislators =>
             Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.all, Some(address), yourLegislators))
         }
       } else {

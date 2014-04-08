@@ -9,6 +9,9 @@
     min-width: $search-legislator-page-min-width;
     max-width: $search-legislator-page-min-width;
 
+    // Because the large-screen footer is always displayed
+    padding-bottom: $footer-item-height * 2;
+
     form {
       > div {
         @include clearfix;

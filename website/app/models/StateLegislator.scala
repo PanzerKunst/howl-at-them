@@ -23,6 +23,14 @@ class StateLegislator(_id: Int,
   var otherPhoneNumber: Option[String] = _otherPhoneNumber
   var isAPriorityTarget: Boolean = _isAPriorityTarget
 
+  def isUpperHouse: Boolean = {
+    this.title.toLowerCase == "senator"
+  }
+
+  def isLowerHouse: Boolean = {
+    this.title.toLowerCase == "representative" || this.title.toLowerCase == "assembly member"
+  }
+
   def getTitleAbbr: String = {
     this.title.toLowerCase match {
       case "representative" => "<abbr title=\"" + this.title + "\">Rep.</abbr>"
