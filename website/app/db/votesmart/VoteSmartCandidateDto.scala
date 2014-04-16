@@ -8,6 +8,24 @@ import play.api.Logger
 import play.api.Play.current
 
 object VoteSmartCandidateDto {
+  def isCandidateOfIdAlreadyExisting(candidateId: Int): Boolean = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select 1
+          from temp_vote_smart_candidate
+          where candidate_id = """ + candidateId + """;"""
+
+        Logger.debug("VoteSmartCandidateDto.isCandidateOfIdAlreadyExisting():" + query)
+
+        SQL(query).apply().headOption match {
+          case Some(row) => true
+          case None => false
+        }
+    }
+  }
+
   def create(voteSmartCandidate: VoteSmartCandidate): Option[Long] = {
     DB.withConnection {
       implicit c =>
@@ -105,10 +123,10 @@ object VoteSmartCandidateDto {
           officePartiesForQuery + """, """ +
           voteSmartCandidate.officeDistrictId.getOrElse("NULL") + """, """ +
           officeDistrictNameForQuery + """, '""" +
-          voteSmartCandidate.officeStateId + """', """ +
+          DbUtil.safetize(voteSmartCandidate.officeStateId) + """', """ +
           voteSmartCandidate.officeId + """, '""" +
-          voteSmartCandidate.officeName + """', '""" +
-          voteSmartCandidate.officeTypeId + """');"""
+          DbUtil.safetize(voteSmartCandidate.officeName) + """', '""" +
+          DbUtil.safetize(voteSmartCandidate.officeTypeId) + """');"""
 
         Logger.debug("VoteSmartCandidateDto.create():" + query)
 

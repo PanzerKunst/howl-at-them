@@ -1,7 +1,7 @@
 package db.votesmart
 
 import anorm._
-import models.votesmart.{VoteSmartCommittee, VoteSmartCandidateCommittee}
+import models.votesmart.VoteSmartCommittee
 import db.DbUtil
 import play.api.db.DB
 import play.api.Logger

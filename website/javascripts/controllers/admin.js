@@ -23,7 +23,7 @@ CBR.Controllers.Admin = new Class({
     _doUpdateData: function (e) {
         e.preventDefault();
 
-        this.$updateDataBtn.button('updating data');
+        this.$updateDataBtn.button('loading');
 
         new Request({
             urlEncoded: false,
