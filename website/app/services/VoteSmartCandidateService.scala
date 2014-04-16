@@ -4,9 +4,9 @@ import db.UsStateDto
 import play.api.libs.ws.WS
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
-import models.votesmart.{VoteSmartCandidateOffice, VoteSmartCandidateCommittee, VoteSmartCandidate}
+import models.votesmart.{VoteSmartCandidateOffice, VoteSmartCandidate}
 import models.UsState
-import db.votesmart.{VoteSmartCandidateOfficeDto, VoteSmartCandidateCommitteeDto, VoteSmartCandidateDto}
+import db.votesmart.{VoteSmartCandidateOfficeDto, VoteSmartCandidateDto}
 import play.Play
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -60,13 +60,6 @@ object VoteSmartCandidateService {
       val candidateId = (voteSmartCandidateJson \ "candidateId").as[String].toInt
 
       storeVoteSmartOfficial(voteSmartCandidateJson, officeTypeId, candidateId)
-
-      while (isCandidateBioWebServiceCallRunning) {
-        //Pause for 100 ms
-        Thread.sleep(100)
-      }
-
-      fetchCandidateBio(candidateId)
 
       while (isCandidateOfficesWebServiceCallRunning) {
         //Pause for 100 ms
@@ -144,52 +137,35 @@ object VoteSmartCandidateService {
 
     val officeName = (voteSmartCandidateJson \ "officeName").as[String]
 
-    Logger.debug("Trying to store candidate")
+    if (!VoteSmartCandidateDto.isCandidateOfIdAlreadyExisting(candidateId)) {
+      Logger.debug("Trying to store candidate")
 
-    VoteSmartCandidateDto.create(
-      new VoteSmartCandidate(candidateId,
-        firstName,
-        nickName,
-        middleName,
-        preferredName,
-        lastName,
-        suffix,
-        title,
-        ballotName,
-        electionParties,
-        electionDistrictId,
-        electionDistrictName,
-        electionOffice,
-        electionOfficeId,
-        electionStateId,
-        electionOfficeTypeId,
-        electionYear,
-        officeParties,
-        officeDistrictId,
-        officeDistrictName,
-        officeStateId,
-        officeId,
-        officeName,
-        officeTypeId)
-    )
-  }
-
-  private def fetchCandidateBio(candidateId: Int) {
-    isCandidateBioWebServiceCallRunning = true
-
-    WS.url("http://api.votesmart.org/CandidateBio.getBio")
-      .withQueryString("key" -> VoteSmartService.voteSmartApiKey)
-      .withQueryString("o" -> "JSON")
-      .withQueryString("candidateId" -> candidateId.toString)
-      .get()
-      .map {
-      response =>
-        try {
-          processJsonFromVoteSmartCandidateBio(response.json, candidateId)
-        }
-        catch {
-          case e: Exception => Logger.error(e.getStackTraceString)
-        }
+      VoteSmartCandidateDto.create(
+        new VoteSmartCandidate(candidateId,
+          firstName,
+          nickName,
+          middleName,
+          preferredName,
+          lastName,
+          suffix,
+          title,
+          ballotName,
+          electionParties,
+          electionDistrictId,
+          electionDistrictName,
+          electionOffice,
+          electionOfficeId,
+          electionStateId,
+          electionOfficeTypeId,
+          electionYear,
+          officeParties,
+          officeDistrictId,
+          officeDistrictName,
+          officeStateId,
+          officeId,
+          officeName,
+          officeTypeId)
+      )
     }
   }
 
@@ -212,34 +188,6 @@ object VoteSmartCandidateService {
     }
   }
 
-  private def processJsonFromVoteSmartCandidateBio(json: JsValue, candidateId: Int) {
-    val voteSmartBioOfficeJsValue = (json \ "bio" \ "office")
-
-    val voteSmartBioOfficeJsonList = voteSmartBioOfficeJsValue.asOpt[List[JsObject]] match {
-      case Some(jsonList) => jsonList
-      case None => voteSmartBioOfficeJsValue.asOpt[JsObject] match {
-        case Some(jsObject) => List(jsObject)
-        case None => List()
-      }
-    }
-
-    for (voteSmartBioOfficeJson <- voteSmartBioOfficeJsonList) {
-      val voteSmartBioCommitteesJsValue = (voteSmartBioOfficeJson \ "committee")
-
-      val voteSmartBioCommitteesJsonList = voteSmartBioCommitteesJsValue.asOpt[List[JsObject]] match {
-        case Some(jsonList) => jsonList
-        case None => voteSmartBioCommitteesJsValue.asOpt[JsObject] match {
-          case Some(jsObject) => List(jsObject)
-          case None => List()
-        }
-      }
-
-      processCommitteesJsonFromVoteSmartCandidatesBio(voteSmartBioCommitteesJsonList, candidateId)
-    }
-
-    isCandidateBioWebServiceCallRunning = false
-  }
-
   private def processJsonFromVoteSmartCandidateOffices(json: JsValue, candidateId: Int) {
     (json \ "error").asOpt[JsObject] match {
       case None =>
@@ -259,23 +207,6 @@ object VoteSmartCandidateService {
     }
 
     isCandidateOfficesWebServiceCallRunning = false
-  }
-
-  private def processCommitteesJsonFromVoteSmartCandidatesBio(voteSmartBioCommitteesJsonList: List[JsObject], candidateId: Int) {
-    for (voteSmartBioCommitteesJson <- voteSmartBioCommitteesJsonList) {
-      storeVoteSmartCommittee(voteSmartBioCommitteesJson, candidateId)
-    }
-  }
-
-  private def storeVoteSmartCommittee(voteSmartBioCommitteesJson: JsObject, candidateId: Int) {
-    val committeeId = (voteSmartBioCommitteesJson \ "committeeId").as[String].toInt
-    val committeeName = (voteSmartBioCommitteesJson \ "committeeName").as[String]
-
-    VoteSmartCandidateCommitteeDto.create(
-      VoteSmartCandidateCommittee(candidateId = candidateId,
-        committeeId = committeeId,
-        committeeName = committeeName)
-    )
   }
 
   private def storeVoteSmartCandidateOffice(voteSmartOfficeJson: JsObject, candidateId: Int) {

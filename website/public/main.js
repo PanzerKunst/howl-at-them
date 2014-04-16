@@ -3027,7 +3027,7 @@ CBR.Models.Report.contact = {
     _doUpdateData: function (e) {
         e.preventDefault();
 
-        this.$updateDataBtn.button('updating data');
+        this.$updateDataBtn.button('loading');
 
         new Request({
             urlEncoded: false,
@@ -3227,20 +3227,22 @@ CBR.Models.Report.contact = {
     },
 
     _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$committeeSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
     },
 
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
                 "first-name",
-                "last-name"
+                "last-name",
+                "us-state"
             ]
         });
     },
 
     _initEvents: function () {
         jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
+        this.$usStateSelect.change(jQuery.proxy(this._populateCommitteesSelect, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -3253,14 +3255,42 @@ CBR.Models.Report.contact = {
         }
     },
 
+    _populateCommitteesSelect: function(e) {
+        var selectedUsStateId = this.$usStateSelect.val();
+
+        if (selectedUsStateId) {
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/committees",
+                data: {usStateId: selectedUsStateId},    // GET request doesn't require JSON.stringify()
+                onSuccess: function (responseText, responseXML) {
+                    this.$committeeSelect.html(
+                        CBR.Templates.committeeSelect({
+                            committeeNames: JSON.parse(responseText)
+                        })
+                    );
+                    this.$committeeSelect.prop("disabled", false);
+                }.bind(this),
+                onFailure: function (xhr) {
+                    alert("AJAX fail :(");
+                }
+            }).get();
+        }
+        else {
+            this.$committeeSelect.prop("disabled", true);
+            this.$committeeSelect.html(jQuery('<option value="">Please select a state first</option>'));
+        }
+    },
+
     _doSubmit: function (e) {
         if (e)
             e.preventDefault();
 
-        if (this._areAllFiltersEmpty()) {
+        /* TODO if (this._areAllFiltersEmpty()) {
             this.$otherInputError.slideDownCustom();
         }
-        else if (this.validator.isValid()) {
+        else */if (this.validator.isValid()) {
             this.$otherInputError.slideUpCustom();
             this.$submitBtn.button('loading');
             this.$tableWrapper.html('<div class="data-loading"></div>');
@@ -3885,6 +3915,29 @@ CBR.Models.Report.contact = {
 });
 ;this["CBR"] = this["CBR"] || {};
 this["CBR"]["Templates"] = this["CBR"]["Templates"] || {};
+
+this["CBR"]["Templates"]["committeeSelect"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "";
+  buffer += "\r\n<option value=\""
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "\">"
+    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
+    + "</option>\r\n";
+  return buffer;
+  }
+
+  buffer += "<option value=\"\"></option>\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.committeeNames), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
+  return buffer;
+  });
 
 this["CBR"]["Templates"]["deleteReportModal"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];

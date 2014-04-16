@@ -41,7 +41,7 @@
 
             <div class="form-group">
                 <label for="other-phone-number">Other</label><!--
-             --><input type="text" id="other-phone-number" class="form-control" @if(stateLegislator.otherPhoneNumber.isDefined) { value="@stateLegislator.otherPhoneNumber.get" } />
+             --><input type="text" id="other-phone-number" class="form-control" maxlength="16" @if(stateLegislator.otherPhoneNumber.isDefined) { value="@stateLegislator.otherPhoneNumber.get" } />
             </div>
         </section>
 
@@ -100,8 +100,8 @@
 <section id="committees">
     <a id="committees-toggle">Legislative committees</a>
     <ul>
-        @for(committee <- stateLegislator.committees) {
-        <li>@committee.name</li>
+        @for(candidateCommittee <- stateLegislator.committees) {
+        <li>@candidateCommittee.committee.name &mdash; @candidateCommittee.position</li>
         }
     </ul>
 </section>

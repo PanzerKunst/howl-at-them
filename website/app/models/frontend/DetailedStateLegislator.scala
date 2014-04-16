@@ -15,7 +15,7 @@ case class DetailedStateLegislator(_id: Int,
                                    _isAPriorityTarget: Boolean = false,
 
                                    _offices: List[CandidateOffice] = List(),
-                                   _committees: List[Committee] = List(),
+                                   _committees: List[CandidateCommittee] = List(),
 
                                    _reports: List[Report] = List())
   extends StateLegislator(_id,
@@ -30,7 +30,7 @@ case class DetailedStateLegislator(_id: Int,
     _isAPriorityTarget) {
 
   var offices: List[CandidateOffice] = _offices
-  var committees: List[Committee] = _committees
+  var committees: List[CandidateCommittee] = _committees
 
   var reports: List[Report] = _reports
 }

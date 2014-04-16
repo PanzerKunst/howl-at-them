@@ -29,4 +29,6 @@ DELETE  /api/reports/:id                        controllers.api.ReportApi.delete
 POST    /api/accounts                           controllers.api.AccountApi.create
 DELETE  /api/accounts/:username                 controllers.api.AccountApi.delete(username: String)
 
+GET     /api/committees                         controllers.api.CommitteeApi.search
+
 POST    /api/authenticate                       controllers.api.AuthApi.authenticate

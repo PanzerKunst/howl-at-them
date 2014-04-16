@@ -27,7 +27,7 @@ object StateLegislatorApi extends Controller {
 
       val committees = if (request.queryString.contains("committeeName")) {
         val committeeName = request.queryString.get("committeeName").get.head
-        CommitteeDto.getOfName(committeeName)
+        CommitteeDto.getOfNameInState(committeeName, usStateId.get)
       } else
         List()
 
@@ -36,7 +36,7 @@ object StateLegislatorApi extends Controller {
       else
         false
 
-      if (!firstNameFilter.isDefined && !lastNameFilter.isDefined && !usStateId.isDefined && committees.isEmpty && !isAPriorityTarget) {
+      if (!firstNameFilter.isDefined && !lastNameFilter.isDefined && !usStateId.isDefined && !isAPriorityTarget) {
         Forbidden
       } else {
         val matchingLegislators = StateLegislatorDto.getMatching(firstNameFilter, lastNameFilter, usStateId, committees, isAPriorityTarget)

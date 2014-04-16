@@ -18,7 +18,8 @@ object StateLegislatorDto {
           select first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
-            committee_id, committee_name,
+            committee_membership_id, committee_position,
+            committee_id, committee_us_state_id, committee_name,
             other_phone_number, is_a_priority_target,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
@@ -75,10 +76,14 @@ object StateLegislatorDto {
               case None => None
             }
 
-            val committee = row[Option[Int]]("committee_id") match {
-              case Some(committeeId) => Some(Committee(
-                committeeId,
-                row[String]("committee_name")
+            val candidateCommittee = row[Option[Int]]("committee_id") match {
+              case Some(committeeId) => Some(CandidateCommittee(
+                row[Long]("committee_membership_id"),
+                Committee(row[Int]("committee_id"),
+                  UsState(row[String]("committee_us_state_id"), row[String]("name")),
+                  row[String]("committee_name")
+                ),
+                row[String]("committee_position")
               ))
               case None => None
             }
@@ -100,7 +105,7 @@ object StateLegislatorDto {
               case None => None
             }
 
-            (stateLegislator, candidateOffice, committee, report)
+            (stateLegislator, candidateOffice, candidateCommittee, report)
         }
 
         normalizeStateLegislator(denormalizedStateLegislator)
@@ -183,7 +188,7 @@ object StateLegislatorDto {
       ""
     } else {
       val ids = committees.map {
-        committee => "%s".format(committee.id)
+        committee => "%s".format(committee.committeeId)
       }
         .mkString(", ")
 
@@ -280,19 +285,17 @@ object StateLegislatorDto {
     executeFetchQueryAndReturnListOfLegislators(query)
   }
 
-  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], Option[Committee], Option[Report])]): Option[DetailedStateLegislator] = {
+  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], Option[CandidateCommittee], Option[Report])]): Option[DetailedStateLegislator] = {
     if (denormalizedStateLegislator.isEmpty)
       None
     else {
       val stateLegislator = denormalizedStateLegislator.head._1
 
       var candidateOffices: List[CandidateOffice] = List()
-      var committees: List[Committee] = List()
+      var candidateCommittees: List[CandidateCommittee] = List()
       var reports: List[Report] = List()
 
       for (row <- denormalizedStateLegislator) {
-        val committee = row._3
-
         var isInListAlready = false
 
 
@@ -313,20 +316,22 @@ object StateLegislatorDto {
         }
 
 
-        // committee
+        // candidateCommittee
 
-        if (committee.isDefined) {
-          isInListAlready = false
+        row._3 match {
+          case Some(candidateCommittee) =>
+            isInListAlready = false
 
-          for (committeeItem <- committees) {
-            if (!isInListAlready && committeeItem.id == committee.get.id) {
-              isInListAlready = true
+            for (candidateCommitteeItem <- candidateCommittees) {
+              if (!isInListAlready && candidateCommitteeItem.id == candidateCommittee.id) {
+                isInListAlready = true
+              }
             }
-          }
 
-          if (!isInListAlready) {
-            committees = committees :+ committee.get
-          }
+            if (!isInListAlready) {
+              candidateCommittees = candidateCommittees :+ candidateCommittee
+            }
+          case None =>
         }
 
 
@@ -362,7 +367,7 @@ object StateLegislatorDto {
           stateLegislator.isAPriorityTarget,
 
           candidateOffices,
-          committees,
+          candidateCommittees,
           reports)
       )
     }

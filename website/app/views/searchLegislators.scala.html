@@ -1,4 +1,4 @@
-@(usStates: List[UsState], committeeNames: List[String], isAdmin: Boolean)
+@(usStates: List[UsState], isAdmin: Boolean)
 @main("Search legislators", "search-legislators") {
 <!--
     Header
@@ -35,6 +35,8 @@
                 <option value="@usState.id">@usState.name</option>
                 }
             </select>
+
+            <p class="field-error" data-check="empty"></p>
         </div>
 
         <div class="submit-wrapper">
@@ -67,11 +69,8 @@
 
         <div class="form-group" id="committees-form-group">
             <label for="committee">Committee</label><!--
-         --><select id="committee" class="form-control">
-                <option value=""></option>
-                @for(committeeName <- committeeNames) {
-                <option value="@committeeName">@committeeName</option>
-                }
+         --><select id="committee" class="form-control" disabled>
+                <option value="">Please select a state first</option>
             </select>
         </div>
 

@@ -37,20 +37,22 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$committeeSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
+        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
     },
 
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
                 "first-name",
-                "last-name"
+                "last-name",
+                "us-state"
             ]
         });
     },
 
     _initEvents: function () {
         jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
+        this.$usStateSelect.change(jQuery.proxy(this._populateCommitteesSelect, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -63,14 +65,42 @@ CBR.Controllers.SearchLegislators = new Class({
         }
     },
 
+    _populateCommitteesSelect: function(e) {
+        var selectedUsStateId = this.$usStateSelect.val();
+
+        if (selectedUsStateId) {
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/committees",
+                data: {usStateId: selectedUsStateId},    // GET request doesn't require JSON.stringify()
+                onSuccess: function (responseText, responseXML) {
+                    this.$committeeSelect.html(
+                        CBR.Templates.committeeSelect({
+                            committeeNames: JSON.parse(responseText)
+                        })
+                    );
+                    this.$committeeSelect.prop("disabled", false);
+                }.bind(this),
+                onFailure: function (xhr) {
+                    alert("AJAX fail :(");
+                }
+            }).get();
+        }
+        else {
+            this.$committeeSelect.prop("disabled", true);
+            this.$committeeSelect.html(jQuery('<option value="">Please select a state first</option>'));
+        }
+    },
+
     _doSubmit: function (e) {
         if (e)
             e.preventDefault();
 
-        if (this._areAllFiltersEmpty()) {
+        /* TODO if (this._areAllFiltersEmpty()) {
             this.$otherInputError.slideDownCustom();
         }
-        else if (this.validator.isValid()) {
+        else */if (this.validator.isValid()) {
             this.$otherInputError.slideUpCustom();
             this.$submitBtn.button('loading');
             this.$tableWrapper.html('<div class="data-loading"></div>');

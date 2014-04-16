@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc._
-import db.{CommitteeDto, StateLegislatorDto, AccountDto, UsStateDto}
+import db.{StateLegislatorDto, AccountDto, UsStateDto}
 import models.Account
 import services.{GoogleCivicInformationService, VoteSmartService}
 import concurrent.ExecutionContext.Implicits.global
@@ -57,7 +57,7 @@ object Application extends Controller {
 
   def searchLegislators = Action {
     implicit request =>
-      Ok(views.html.searchLegislators(UsStateDto.all, CommitteeDto.allNames, isAdmin(session)))
+      Ok(views.html.searchLegislators(UsStateDto.all, isAdmin(session)))
   }
 
   def stateLegislator(id: Int) = Action {
