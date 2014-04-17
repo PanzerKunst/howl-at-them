@@ -14,6 +14,7 @@ CBR.Controllers.StateLegislator = new Class({
     initElements: function () {
         this.parent();
 
+        this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
@@ -42,6 +43,7 @@ CBR.Controllers.StateLegislator = new Class({
 
         this._initForm();
 
+        this._replacePhoneNumberSpansByHyperlinksOnMobile();
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -92,6 +94,16 @@ CBR.Controllers.StateLegislator = new Class({
 
         if (action === "savedReport" || action === "deletedReport") {
             this.$form.hide();
+        }
+    },
+
+    _replacePhoneNumberSpansByHyperlinksOnMobile: function() {
+        if (this.isBrowserSmallScreen()) {
+            this.$phoneNumbersSection.find("span").each(function (index, element) {
+                var $span = jQuery(element);
+                var phoneNumber = $span.html();
+                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+            });
         }
     },
 

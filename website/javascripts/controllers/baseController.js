@@ -24,6 +24,10 @@ CBR.Controllers.BaseController = new Class({
         this._applyModernizrRules();
     },
 
+    isBrowserSmallScreen: function () {
+        return !this.isBrowserMediumScreen();
+    },
+
     isBrowserMediumScreen: function () {
         return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
     },

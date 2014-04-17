@@ -2696,6 +2696,10 @@ CBR.Models.Report.contact = {
         this._applyModernizrRules();
     },
 
+    isBrowserSmallScreen: function () {
+        return !this.isBrowserMediumScreen();
+    },
+
     isBrowserMediumScreen: function () {
         return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
     },
@@ -3507,6 +3511,7 @@ CBR.Models.Report.contact = {
     initElements: function () {
         this.parent();
 
+        this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
@@ -3535,6 +3540,7 @@ CBR.Models.Report.contact = {
 
         this._initForm();
 
+        this._replacePhoneNumberSpansByHyperlinksOnMobile();
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -3585,6 +3591,16 @@ CBR.Models.Report.contact = {
 
         if (action === "savedReport" || action === "deletedReport") {
             this.$form.hide();
+        }
+    },
+
+    _replacePhoneNumberSpansByHyperlinksOnMobile: function() {
+        if (this.isBrowserSmallScreen()) {
+            this.$phoneNumbersSection.find("span").each(function (index, element) {
+                var $span = jQuery(element);
+                var phoneNumber = $span.html();
+                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+            });
         }
     },
 

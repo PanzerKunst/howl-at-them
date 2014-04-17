@@ -995,6 +995,7 @@ table.dataTable tr.even td.sorting_1 {
     width: 4.5em; }
     #state-legislator #content #phone-numbers label[for="other-phone-number"] {
       margin: 6px 0 0 0; }
+  #state-legislator #content #phone-numbers span,
   #state-legislator #content #phone-numbers a {
     font-size: 29px;
     line-height: 1em; }
