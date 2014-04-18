@@ -46,26 +46,29 @@
       }
     }
 
+    > #fixed-table-header {
+      display: none;
+
+      position: fixed;
+      top: 0;
+      z-index: 1;
+
+      width: $large-screen-min-width - 2 * $page-side-padding;
+    }
+
     > #search-results {
       > article {
         margin-bottom: $line-height-computed;
-
-        &:first-child {
-          th:nth-child(3) {
-            text-align: center;
-            padding: 0;
-
-            @include transform(rotate(-90deg));
-          }
-        }
       }
     }
 
     table {
       margin-bottom: 0;
+      background-color: #fff;
     }
 
-    th {
+    th,
+    td {
       &.title {
         width: 5%;
       }
@@ -98,6 +101,13 @@
         width: 9%;
         text-align: center;
       }
+    }
+
+    th:nth-child(3) {
+      text-align: center;
+      padding: 0;
+
+      @include transform(rotate(-90deg));
     }
   }
 

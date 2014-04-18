@@ -18,7 +18,9 @@ CBR.Controllers.StateReports = new Class({
         this.$usStateSelect = jQuery("#us-state");
         this.$submitBtn = jQuery("[type=submit]");
 
-        this.$filter = jQuery(".table-filter input");
+        this.$filterSection = jQuery(".table-filter");
+        this.$filter = this.$filterSection.find("input");
+        this.$fixedTableHeader = jQuery("#fixed-table-header");
         this.$results = jQuery("#search-results > article");
 
         this.getEl().addClass("legislator-listing");
@@ -60,6 +62,8 @@ CBR.Controllers.StateReports = new Class({
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
 
         this.$filter.keyup(_.debounce(jQuery.proxy(this._doFilterResults, this), 100));
+
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleFixedTableHeader, this), 15));
     },
 
     _doSubmit: function (e) {
@@ -161,6 +165,14 @@ CBR.Controllers.StateReports = new Class({
                     $article.hide();
                 }
             });
+        }
+    },
+
+    _toggleFixedTableHeader: function() {
+        if (this.$filterSection.visible(true)) {
+            this.$fixedTableHeader.hide();
+        } else {
+            this.$fixedTableHeader.show();
         }
     }
 });

@@ -97,10 +97,7 @@ CBR.Controllers.SearchLegislators = new Class({
         if (e)
             e.preventDefault();
 
-        /* TODO if (this._areAllFiltersEmpty()) {
-            this.$otherInputError.slideDownCustom();
-        }
-        else */if (this.validator.isValid()) {
+        if (this.validator.isValid()) {
             this.$otherInputError.slideUpCustom();
             this.$submitBtn.button('loading');
             this.$tableWrapper.html('<div class="data-loading"></div>');

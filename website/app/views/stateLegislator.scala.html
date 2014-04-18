@@ -101,7 +101,7 @@
     <a id="committees-toggle">Legislative committees</a>
     <ul>
         @for(candidateCommittee <- stateLegislator.committees) {
-        <li>@candidateCommittee.committee.name &mdash; @candidateCommittee.position</li>
+        <li>@candidateCommittee.committee.name &mdash; <span>@candidateCommittee.position</span></li>
         }
     </ul>
 </section>

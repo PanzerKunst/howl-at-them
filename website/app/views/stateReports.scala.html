@@ -48,6 +48,22 @@
     </div>
 </section>
 
+<table class="table table-striped table-bordered table-condensed" id="fixed-table-header">
+    <thead>
+    <tr>
+        <th class="title">Title</th>
+        <th class="name">Name</th>
+        <th class="political-parties">Party</th>
+        <th class="district">District</th>
+        <th class="support-level">Support level</th>
+        <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
+        <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
+        <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
+        <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+    </tr>
+    </thead>
+</table>
+
 <section id="search-results">
     <article>
         <table class="table table-striped table-bordered table-condensed">
@@ -124,46 +140,33 @@
     @for(legislator <- nextLegislators) {
     <article>
         <table class="table table-striped table-bordered table-condensed">
-            <thead>
-                <tr>
-                    <th class="title">Title</th>
-                    <th class="name">Name</th>
-                    <th class="political-parties">P</th>
-                    <th class="district">District</th>
-                    <th class="support-level">Support level</th>
-                    <th class="mpp">MPP</th>
-                    <th class="safi">SAFI</th>
-                    <th class="ocu">OCU</th>
-                    <th class="pvc">PVC</th>
-                </tr>
-            </thead>
             <tbody>
                 <tr data-id="@legislator.id" class="clickable">
-                    <td>@Html(legislator.getTitleAbbr)</td>
-                    <td>@legislator.firstName @legislator.lastName</td>
-                    <td><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
-                    <td>@legislator.usState.id @legislator.getChamber @legislator.district</td>
-                    <td>
+                    <td class="title">@Html(legislator.getTitleAbbr)</td>
+                    <td class="name">@legislator.firstName @legislator.lastName</td>
+                    <td class="political-parties"><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
+                    <td class="district">@legislator.usState.id @legislator.getChamber @legislator.district</td>
+                    <td class="support-level">
                         @if(!legislator.reports.isEmpty) {
                         @Html(legislator.reports.head.getSupportLevelSpan)
                         }
                     </td>
-                    <td>
+                    <td class="mpp">
                         @if(!legislator.reports.isEmpty) {
                         @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isMoneyInPoliticsAProblem))
                         }
                     </td>
-                    <td>
+                    <td class="safi">
                         @if(!legislator.reports.isEmpty) {
                         @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isSupportingAmendmentToFixIt))
                         }
                     </td>
-                    <td>
+                    <td class="ocu">
                         @if(!legislator.reports.isEmpty) {
                         @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isOpposingCitizensUnited))
                         }
                     </td>
-                    <td>
+                    <td class="pvc">
                         @if(!legislator.reports.isEmpty) {
                         @Html(Report.getSpanForYesNoAnswer(legislator.reports.head.hasPreviouslyVotedForConvention))
                         }

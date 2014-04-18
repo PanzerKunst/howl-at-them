@@ -895,41 +895,57 @@ table.dataTable tr.even td.sorting_1 {
     padding-top: 0; }
     #state-reports #content .submit-wrapper > button {
       width: 7em; }
+  #state-reports #content > #fixed-table-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    width: 53em; }
   #state-reports #content > #search-results > article {
     margin-bottom: 20px; }
-    #state-reports #content > #search-results > article:first-child th:nth-child(3) {
-      text-align: center;
-      padding: 0;
-      -webkit-transform: rotate(-90deg);
-      -moz-transform: rotate(-90deg);
-      -ms-transform: rotate(-90deg);
-      -o-transform: rotate(-90deg);
-      transform: rotate(-90deg); }
   #state-reports #content table {
-    margin-bottom: 0; }
-  #state-reports #content th.title {
+    margin-bottom: 0;
+    background-color: #fff; }
+  #state-reports #content th.title,
+  #state-reports #content td.title {
     width: 5%; }
-  #state-reports #content th.name {
+  #state-reports #content th.name,
+  #state-reports #content td.name {
     width: 21.5%; }
-  #state-reports #content th.political-parties {
+  #state-reports #content th.political-parties,
+  #state-reports #content td.political-parties {
     width: 4.5%;
     text-align: center; }
-  #state-reports #content th.district {
+  #state-reports #content th.district,
+  #state-reports #content td.district {
     width: 14%; }
-  #state-reports #content th.support-level {
+  #state-reports #content th.support-level,
+  #state-reports #content td.support-level {
     width: 19%; }
-  #state-reports #content th.mpp {
+  #state-reports #content th.mpp,
+  #state-reports #content td.mpp {
     width: 9%;
     text-align: center; }
-  #state-reports #content th.safi {
+  #state-reports #content th.safi,
+  #state-reports #content td.safi {
     width: 10%;
     text-align: center; }
-  #state-reports #content th.ocu {
+  #state-reports #content th.ocu,
+  #state-reports #content td.ocu {
     width: 8%;
     text-align: center; }
-  #state-reports #content th.pvc {
+  #state-reports #content th.pvc,
+  #state-reports #content td.pvc {
     width: 9%;
     text-align: center; }
+  #state-reports #content th:nth-child(3) {
+    text-align: center;
+    padding: 0;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg); }
 #state-reports footer {
   min-width: 48.125em;
   font-size: 16px; }
@@ -1031,6 +1047,8 @@ table.dataTable tr.even td.sorting_1 {
     text-align: left; }
   #state-legislator #content #committees li {
     font-size: 14px; }
+  #state-legislator #content #committees span {
+    font-style: italic; }
 #state-legislator #content #new-report h2 {
   margin-top: 0; }
 #state-legislator #content #new-report .submit-wrapper {

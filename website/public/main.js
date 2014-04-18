@@ -2047,7 +2047,7 @@ return l(o),l(i),n},J.min=function(n,t,e){var u=1/0,o=u;if(typeof t!="function"&
 },J.take=Bt,J.head=Bt,h(J,function(n,t){var e="sample"!==t;J.prototype[t]||(J.prototype[t]=function(t,r){var u=this.__chain__,o=n(this.__wrapped__,t,r);return u||null!=t&&(!r||e&&typeof t=="function")?new Q(o,u):o})}),J.VERSION="2.4.1",J.prototype.chain=function(){return this.__chain__=true,this},J.prototype.toString=function(){return oe(this.__wrapped__)},J.prototype.value=Qt,J.prototype.valueOf=Qt,St(["join","pop","shift"],function(n){var t=ae[n];J.prototype[n]=function(){var n=this.__chain__,e=t.apply(this.__wrapped__,arguments);
 return n?new Q(e,n):e}}),St(["push","reverse","sort","unshift"],function(n){var t=ae[n];J.prototype[n]=function(){return t.apply(this.__wrapped__,arguments),this}}),St(["concat","slice","splice"],function(n){var t=ae[n];J.prototype[n]=function(){return new Q(t.apply(this.__wrapped__,arguments),this.__chain__)}}),J}var v,h=[],g=[],y=0,m=+new Date+"",b=75,_=40,d=" \t\x0B\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000",w=/\b__p\+='';/g,j=/\b(__p\+=)''\+/g,k=/(__e\(.*?\)|\b__t\))\+'';/g,x=/\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g,C=/\w*$/,O=/^\s*function[ \n\r\t]+\w/,N=/<%=([\s\S]+?)%>/g,I=RegExp("^["+d+"]*0+(?=.$)"),S=/($^)/,E=/\bthis\b/,R=/['\n\r\t\u2028\u2029\\]/g,A="Array Boolean Date Function Math Number Object RegExp String _ attachEvent clearTimeout isFinite isNaN parseInt setTimeout".split(" "),D="[object Arguments]",$="[object Array]",T="[object Boolean]",F="[object Date]",B="[object Function]",W="[object Number]",q="[object Object]",z="[object RegExp]",P="[object String]",K={};
 K[B]=false,K[D]=K[$]=K[T]=K[F]=K[W]=K[q]=K[z]=K[P]=true;var L={leading:false,maxWait:0,trailing:false},M={configurable:false,enumerable:false,value:null,writable:false},V={"boolean":false,"function":true,object:true,number:false,string:false,undefined:false},U={"\\":"\\","'":"'","\n":"n","\r":"r","\t":"t","\u2028":"u2028","\u2029":"u2029"},G=V[typeof window]&&window||this,H=V[typeof exports]&&exports&&!exports.nodeType&&exports,J=V[typeof module]&&module&&!module.nodeType&&module,Q=J&&J.exports===H&&H,X=V[typeof global]&&global;!X||X.global!==X&&X.window!==X||(G=X);
-var Y=s();typeof define=="function"&&typeof define.amd=="object"&&define.amd?(G._=Y, define(function(){return Y})):H&&J?Q?(J.exports=Y)._=Y:H._=Y:G._=Y}).call(this);;/**
+var Y=s();typeof define=="function"&&typeof define.amd=="object"&&define.amd?(G._=Y, define(function(){return Y})):H&&J?Q?(J.exports=Y)._=Y:H._=Y:G._=Y}).call(this);;(function(e){e.fn.visible=function(t,n,r){var i=e(this).eq(0),s=i.get(0),o=e(window),u=o.scrollTop(),a=u+o.height(),f=o.scrollLeft(),l=f+o.width(),c=i.offset().top,h=c+i.height(),p=i.offset().left,d=p+i.width(),v=t===true?h:c,m=t===true?c:h,g=t===true?d:p,y=t===true?p:d,b=n===true?s.offsetWidth*s.offsetHeight:true,r=r?r:"both";if(r==="both")return!!b&&m<=a&&v>=u&&y<=l&&g>=f;else if(r==="vertical")return!!b&&m<=a&&v>=u;else if(r==="horizontal")return!!b&&y<=l&&g>=f}})(jQuery);/**
  * jVectorMap version 1.2.2
  *
  * Copyright 2011-2013, Kirill Lebedev
@@ -3291,10 +3291,7 @@ CBR.Models.Report.contact = {
         if (e)
             e.preventDefault();
 
-        /* TODO if (this._areAllFiltersEmpty()) {
-            this.$otherInputError.slideDownCustom();
-        }
-        else */if (this.validator.isValid()) {
+        if (this.validator.isValid()) {
             this.$otherInputError.slideUpCustom();
             this.$submitBtn.button('loading');
             this.$tableWrapper.html('<div class="data-loading"></div>');
@@ -3783,7 +3780,9 @@ CBR.Models.Report.contact = {
         this.$usStateSelect = jQuery("#us-state");
         this.$submitBtn = jQuery("[type=submit]");
 
-        this.$filter = jQuery(".table-filter input");
+        this.$filterSection = jQuery(".table-filter");
+        this.$filter = this.$filterSection.find("input");
+        this.$fixedTableHeader = jQuery("#fixed-table-header");
         this.$results = jQuery("#search-results > article");
 
         this.getEl().addClass("legislator-listing");
@@ -3825,6 +3824,8 @@ CBR.Models.Report.contact = {
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
 
         this.$filter.keyup(_.debounce(jQuery.proxy(this._doFilterResults, this), 100));
+
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleFixedTableHeader, this), 15));
     },
 
     _doSubmit: function (e) {
@@ -3926,6 +3927,14 @@ CBR.Models.Report.contact = {
                     $article.hide();
                 }
             });
+        }
+    },
+
+    _toggleFixedTableHeader: function() {
+        if (this.$filterSection.visible(true)) {
+            this.$fixedTableHeader.hide();
+        } else {
+            this.$fixedTableHeader.show();
         }
     }
 });
