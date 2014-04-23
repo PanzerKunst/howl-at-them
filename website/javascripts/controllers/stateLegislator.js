@@ -43,7 +43,6 @@ CBR.Controllers.StateLegislator = new Class({
 
         this._initForm();
 
-        this._replacePhoneNumberSpansByHyperlinksOnMobile();
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -85,6 +84,12 @@ CBR.Controllers.StateLegislator = new Class({
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
+
+        Breakpoints.on({
+            name: "STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT",
+            matched: jQuery.proxy(this._onMediumScreenBreakpointMatch, this),
+            exit: jQuery.proxy(this._onMediumScreenBreakpointExit, this)
+        });
     },
 
     _initForm: function () {
@@ -97,14 +102,30 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _replacePhoneNumberSpansByHyperlinksOnMobile: function() {
-        if (this.isBrowserSmallScreen()) {
-            this.$phoneNumbersSection.find("span").each(function (index, element) {
-                var $span = jQuery(element);
-                var phoneNumber = $span.html();
-                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
-            });
-        }
+    _onMediumScreenBreakpointMatch: function() {
+        this.$phoneNumbersSection.find("a").each(function (index, element) {
+            var $a = jQuery(element);
+
+            var phoneNumber = $a.html();
+
+            $a.replaceWith('<span>' + phoneNumber + '</span>');
+        });
+    },
+
+    _onMediumScreenBreakpointExit: function() {
+        this.$phoneNumbersSection.find("span").each(function (index, element) {
+            var $span = jQuery(element);
+
+            var phoneNumber = $span.html();
+
+            // Because some browsers like iOS Safari automatically wrap phone number by anchor tags
+            var $childAnchor = $span.children("a").get(0);
+            if ($childAnchor) {
+                phoneNumber = jQuery($childAnchor).html();
+            }
+
+            $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+        });
     },
 
     _toggleCommittees: function (e) {

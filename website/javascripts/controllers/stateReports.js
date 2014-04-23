@@ -20,8 +20,9 @@ CBR.Controllers.StateReports = new Class({
 
         this.$filterSection = jQuery(".table-filter");
         this.$filter = this.$filterSection.find("input");
-        this.$fixedTableHeader = jQuery("#fixed-table-header");
+        this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$results = jQuery("#search-results > article");
+        this.$secondOrSubsequentResultTableHeaders = jQuery(".thead-of-second-or-subsequent-result");
 
         this.getEl().addClass("legislator-listing");
 
@@ -63,7 +64,13 @@ CBR.Controllers.StateReports = new Class({
 
         this.$filter.keyup(_.debounce(jQuery.proxy(this._doFilterResults, this), 100));
 
-        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleFixedTableHeader, this), 15));
+        Breakpoints.on({
+            name: "STATE_REPORTS_LARGE_SCREEN_BREAKPOINT",
+            matched: jQuery.proxy(this._onLargeScreenBreakpointMatch, this),
+            exit: jQuery.proxy(this._onLargeScreenBreakpointExit, this)
+        });
+
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
     },
 
     _doSubmit: function (e) {
@@ -109,7 +116,7 @@ CBR.Controllers.StateReports = new Class({
         return null;
     },
 
-    _doFilterResults: function(e) {
+    _doFilterResults: function (e) {
         var filter = this.$filter.val();
 
         if (filter.length < 2) {
@@ -124,28 +131,28 @@ CBR.Controllers.StateReports = new Class({
                 // Title
                 var $td = jQuery(tds.get(0));
                 var value = jQuery($td.children().get(0)).attr("title");
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // Name
                 $td = jQuery(tds.get(1));
                 value = $td.html();
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // Party
                 $td = jQuery(tds.get(2));
                 value = jQuery($td.find("abbr")).attr("title");
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // District
                 $td = jQuery(tds.get(3));
                 value = $td.html();
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
@@ -154,7 +161,7 @@ CBR.Controllers.StateReports = new Class({
                 var $span = $td.children();
                 if ($span.size() > 0) {
                     value = $span.get(0).innerHTML;
-                    if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                    if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                         isResultMatchedByFilter = true;
                     }
                 }
@@ -168,11 +175,27 @@ CBR.Controllers.StateReports = new Class({
         }
     },
 
-    _toggleFixedTableHeader: function() {
-        if (this.$filterSection.visible(true)) {
-            this.$fixedTableHeader.hide();
+    _onLargeScreenBreakpointMatch: function() {
+        this.isBrowserLargeScreen = true;
+
+        this.$secondOrSubsequentResultTableHeaders.hide();
+        if (!this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        }
+    },
+
+    _onLargeScreenBreakpointExit: function() {
+        this.isBrowserLargeScreen = false;
+
+        this.$stickyTableHeader.hide();
+        this.$secondOrSubsequentResultTableHeaders.show();
+    },
+
+    _toggleStickyTableHeader: function () {
+        if (this.isBrowserLargeScreen && !this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
         } else {
-            this.$fixedTableHeader.show();
+            this.$stickyTableHeader.hide();
         }
     }
 });

@@ -1,3 +1,9 @@
+html:after {
+  content: "js-breakpoints-getComputedStyleTest";
+  visibility: hidden;
+  position: absolute;
+  clip: rect(0 0 0 0); }
+
 /*
  * Table
  */
@@ -867,6 +873,14 @@ table.dataTable tr.even td.sorting_1 {
   #search-legislators footer > a:focus {
     width: auto; }
 
+@media screen and (min-width: 49.5em) {
+  #state-reports:after {
+    content: "STATE_REPORTS_LARGE_SCREEN_BREAKPOINT";
+    visibility: hidden;
+    position: absolute;
+    clip: rect(0 0 0 0); }
+  #state-reports .js-breakpoints-STATE_REPORTS_LARGE_SCREEN_BREAKPOINT {
+    position: absolute; } }
 #state-reports header {
   min-width: 55em; }
 #state-reports #content {
@@ -895,7 +909,7 @@ table.dataTable tr.even td.sorting_1 {
     padding-top: 0; }
     #state-reports #content .submit-wrapper > button {
       width: 7em; }
-  #state-reports #content > #fixed-table-header {
+  #state-reports #content > #sticky-table-header {
     display: none;
     position: fixed;
     top: 0;
@@ -938,7 +952,7 @@ table.dataTable tr.even td.sorting_1 {
   #state-reports #content td.pvc {
     width: 9%;
     text-align: center; }
-  #state-reports #content th:nth-child(3) {
+  #state-reports #content th.political-parties {
     text-align: center;
     padding: 0;
     -webkit-transform: rotate(-90deg);
@@ -946,6 +960,12 @@ table.dataTable tr.even td.sorting_1 {
     -ms-transform: rotate(-90deg);
     -o-transform: rotate(-90deg);
     transform: rotate(-90deg); }
+  #state-reports #content .thead-of-second-or-subsequent-result .political-parties {
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    -o-transform: none;
+    transform: none; }
 #state-reports footer {
   min-width: 48.125em;
   font-size: 16px; }
@@ -955,6 +975,14 @@ table.dataTable tr.even td.sorting_1 {
   #state-reports footer > a:focus {
     width: auto; }
 
+@media screen and (min-width: 39.5em) {
+  #state-legislator:after {
+    content: "STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT";
+    visibility: hidden;
+    position: absolute;
+    clip: rect(0 0 0 0); }
+  #state-legislator .js-breakpoints-STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT {
+    position: absolute; } }
 #state-legislator #content > #other-phone-number-saved {
   width: 11.2em;
   margin-left: -5.6em; }

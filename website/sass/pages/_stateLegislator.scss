@@ -1,4 +1,8 @@
 #state-legislator {
+  @include medium-screen {
+    @include defineBreakpoint("STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT");
+  }
+
   #content {
     $action-alert-width-state-legislator: 11.2em;
     > #other-phone-number-saved {

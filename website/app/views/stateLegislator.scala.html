@@ -35,7 +35,7 @@
             @for(office <- stateLegislator.offices) {
             <article>
                 <label>@office.officeType</label><!--
-             --><span>@office.phoneNumber</span>
+             --><a href="tel:+1@office.phoneNumber">@office.phoneNumber</a>
             </article>
             }
 

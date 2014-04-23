@@ -24,18 +24,6 @@ CBR.Controllers.BaseController = new Class({
         this._applyModernizrRules();
     },
 
-    isBrowserSmallScreen: function () {
-        return !this.isBrowserMediumScreen();
-    },
-
-    isBrowserMediumScreen: function () {
-        return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
-    },
-
-    isBrowserLargeScreen: function () {
-        return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
-    },
-
     saveInLocalStorage: function (key, value, isGlobalScope) {
         if (Modernizr.localstorage) {
             if (isGlobalScope) {

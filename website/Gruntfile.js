@@ -66,6 +66,7 @@ module.exports = function (grunt) {
                     "libs/handlebars.runtime-v1.3.0.js",
                     "libs/lodash.min.js",
                     "libs/jquery.visible.min.js",
+                    "libs/js-breakpoints/breakpoints.js",
                     "libs/jvectormap/jquery-jvectormap-1.2.2.min.js",
                     "libs/jvectormap/jquery-jvectormap-us-aea-en.js",
 

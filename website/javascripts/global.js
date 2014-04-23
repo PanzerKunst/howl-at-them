@@ -20,6 +20,3 @@ if (typeof String.prototype.startsWith !== 'function') {
         return this.slice(0, str.length) === str;
     };
 }
-
-CBR.mediumScreenBreakPoint = "39.5em";
-CBR.largeScreenBreakPoint = "49.5em";

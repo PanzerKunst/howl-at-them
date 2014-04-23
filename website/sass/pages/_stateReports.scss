@@ -1,4 +1,8 @@
 #state-reports {
+  @include large-screen {
+    @include defineBreakpoint("STATE_REPORTS_LARGE_SCREEN_BREAKPOINT");
+  }
+
   header {
     min-width: $large-screen-min-width;
   }
@@ -46,7 +50,7 @@
       }
     }
 
-    > #fixed-table-header {
+    > #sticky-table-header {
       display: none;
 
       position: fixed;
@@ -103,11 +107,17 @@
       }
     }
 
-    th:nth-child(3) {
+    th.political-parties {
       text-align: center;
       padding: 0;
 
       @include transform(rotate(-90deg));
+    }
+
+    .thead-of-second-or-subsequent-result {
+      .political-parties {
+        @include transform(none);
+      }
     }
   }
 

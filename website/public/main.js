@@ -2047,7 +2047,150 @@ return l(o),l(i),n},J.min=function(n,t,e){var u=1/0,o=u;if(typeof t!="function"&
 },J.take=Bt,J.head=Bt,h(J,function(n,t){var e="sample"!==t;J.prototype[t]||(J.prototype[t]=function(t,r){var u=this.__chain__,o=n(this.__wrapped__,t,r);return u||null!=t&&(!r||e&&typeof t=="function")?new Q(o,u):o})}),J.VERSION="2.4.1",J.prototype.chain=function(){return this.__chain__=true,this},J.prototype.toString=function(){return oe(this.__wrapped__)},J.prototype.value=Qt,J.prototype.valueOf=Qt,St(["join","pop","shift"],function(n){var t=ae[n];J.prototype[n]=function(){var n=this.__chain__,e=t.apply(this.__wrapped__,arguments);
 return n?new Q(e,n):e}}),St(["push","reverse","sort","unshift"],function(n){var t=ae[n];J.prototype[n]=function(){return t.apply(this.__wrapped__,arguments),this}}),St(["concat","slice","splice"],function(n){var t=ae[n];J.prototype[n]=function(){return new Q(t.apply(this.__wrapped__,arguments),this.__chain__)}}),J}var v,h=[],g=[],y=0,m=+new Date+"",b=75,_=40,d=" \t\x0B\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000",w=/\b__p\+='';/g,j=/\b(__p\+=)''\+/g,k=/(__e\(.*?\)|\b__t\))\+'';/g,x=/\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g,C=/\w*$/,O=/^\s*function[ \n\r\t]+\w/,N=/<%=([\s\S]+?)%>/g,I=RegExp("^["+d+"]*0+(?=.$)"),S=/($^)/,E=/\bthis\b/,R=/['\n\r\t\u2028\u2029\\]/g,A="Array Boolean Date Function Math Number Object RegExp String _ attachEvent clearTimeout isFinite isNaN parseInt setTimeout".split(" "),D="[object Arguments]",$="[object Array]",T="[object Boolean]",F="[object Date]",B="[object Function]",W="[object Number]",q="[object Object]",z="[object RegExp]",P="[object String]",K={};
 K[B]=false,K[D]=K[$]=K[T]=K[F]=K[W]=K[q]=K[z]=K[P]=true;var L={leading:false,maxWait:0,trailing:false},M={configurable:false,enumerable:false,value:null,writable:false},V={"boolean":false,"function":true,object:true,number:false,string:false,undefined:false},U={"\\":"\\","'":"'","\n":"n","\r":"r","\t":"t","\u2028":"u2028","\u2029":"u2029"},G=V[typeof window]&&window||this,H=V[typeof exports]&&exports&&!exports.nodeType&&exports,J=V[typeof module]&&module&&!module.nodeType&&module,Q=J&&J.exports===H&&H,X=V[typeof global]&&global;!X||X.global!==X&&X.window!==X||(G=X);
-var Y=s();typeof define=="function"&&typeof define.amd=="object"&&define.amd?(G._=Y, define(function(){return Y})):H&&J?Q?(J.exports=Y)._=Y:H._=Y:G._=Y}).call(this);;(function(e){e.fn.visible=function(t,n,r){var i=e(this).eq(0),s=i.get(0),o=e(window),u=o.scrollTop(),a=u+o.height(),f=o.scrollLeft(),l=f+o.width(),c=i.offset().top,h=c+i.height(),p=i.offset().left,d=p+i.width(),v=t===true?h:c,m=t===true?c:h,g=t===true?d:p,y=t===true?p:d,b=n===true?s.offsetWidth*s.offsetHeight:true,r=r?r:"both";if(r==="both")return!!b&&m<=a&&v>=u&&y<=l&&g>=f;else if(r==="vertical")return!!b&&m<=a&&v>=u;else if(r==="horizontal")return!!b&&y<=l&&g>=f}})(jQuery);/**
+var Y=s();typeof define=="function"&&typeof define.amd=="object"&&define.amd?(G._=Y, define(function(){return Y})):H&&J?Q?(J.exports=Y)._=Y:H._=Y:G._=Y}).call(this);;(function(e){e.fn.visible=function(t,n,r){var i=e(this).eq(0),s=i.get(0),o=e(window),u=o.scrollTop(),a=u+o.height(),f=o.scrollLeft(),l=f+o.width(),c=i.offset().top,h=c+i.height(),p=i.offset().left,d=p+i.width(),v=t===true?h:c,m=t===true?c:h,g=t===true?d:p,y=t===true?p:d,b=n===true?s.offsetWidth*s.offsetHeight:true,r=r?r:"both";if(r==="both")return!!b&&m<=a&&v>=u&&y<=l&&g>=f;else if(r==="vertical")return!!b&&m<=a&&v>=u;else if(r==="horizontal")return!!b&&y<=l&&g>=f}})(jQuery);/*global window:true */
+
+window.Breakpoints = (function (window, document) {
+	'use strict';
+
+	var B = {},
+	resizingTimeout = 200,
+	breakpoints = [],
+	hasFullComputedStyleSupport = null,
+
+	TEST_FULL_GETCOMPUTEDSTYLE_SUPPORT = 'js-breakpoints-getComputedStyleTest',
+	TEST_FALLBACK_PROPERTY = 'position',
+	TEST_FALLBACK_VALUE = 'absolute',
+
+	// thanks John Resig
+	addEvent = function (obj, type, fn) {
+	  if (obj.attachEvent) {
+	    obj['e'+type+fn] = fn;
+	    obj[type+fn] = function () {obj['e'+type+fn]( window.event );};
+	    obj.attachEvent('on'+type, obj[type+fn]);
+	  } else {
+	    obj.addEventListener(type, fn, false);
+	  }
+	},
+
+	debounce = function (func, wait, immediate) {
+		var timeout, result;
+		return function() {
+
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) result = func.apply(context, args);
+			};
+
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) result = func.apply(context, args);
+			return result;
+		};
+	},
+
+	injectElementWithClassName = function (parent, className, callback) {
+		var div = document.createElement('div');
+		div.className = 'js-breakpoints-' + className;
+		parent.appendChild(div);
+		callback(div);
+		div.parentNode.removeChild(div);
+	},
+
+	check = function (breakpoint) {
+		var match = B.isMatched(breakpoint);
+
+		if (match && !breakpoint.isMatched) {
+			breakpoint.matched.call(breakpoint.context);
+			breakpoint.isMatched = true;
+		} else if (!match && breakpoint.isMatched) {
+			breakpoint.exit.call(breakpoint.context);
+			breakpoint.isMatched = false;
+		}
+		return breakpoint;
+	},
+
+	onWindowResize = function () {
+		for( var i = 0; i < breakpoints.length; i++ ) {
+			check(breakpoints[i]);
+		}
+	},
+
+	getStyle = function (el, pseudo, property) {
+		if (window.getComputedStyle) {
+			return window.getComputedStyle(el, pseudo).getPropertyValue(property);
+		}
+		else if (el.currentStyle && pseudo.length === 0) {
+			return el.currentStyle[property];
+		}
+		return '';
+	},
+
+	/*
+	 * If not already checked:
+	 * 1. check if we have getComputedStyle and check if we can read pseudo elements
+	 */
+	checkComputedStyleSupport = function () {
+		if (hasFullComputedStyleSupport !== null) {
+			return;
+		}
+
+		hasFullComputedStyleSupport = false;
+		
+		if (window.getComputedStyle) {
+			var content = window.getComputedStyle(document.documentElement, ':after').getPropertyValue('content');
+			hasFullComputedStyleSupport = content.replace(/\"/g, "") === TEST_FULL_GETCOMPUTEDSTYLE_SUPPORT;
+		}
+	},
+
+	init = function () {
+		var debounceResize = debounce( onWindowResize, resizingTimeout);
+		addEvent(window, 'resize', debounceResize);
+		addEvent(window, 'orientationchange', debounceResize);
+		return B;
+	};
+
+	B.isMatched = function(breakpoint) {
+		var el = breakpoint.el || document.body,
+		    matched = false,
+		    value;
+
+		if (hasFullComputedStyleSupport) {
+			value = getStyle(el, ':after', 'content');
+			matched = value.replace(/\"/g, "") === breakpoint.name;
+		}
+		else {
+			injectElementWithClassName(el, breakpoint.name, function (el) {
+				value = getStyle(el, '', TEST_FALLBACK_PROPERTY);
+				matched = value === TEST_FALLBACK_VALUE;
+			});
+		}
+
+		return matched;
+	};
+
+	B.on = function(breakpoint) {
+		checkComputedStyleSupport();
+		breakpoints.push(breakpoint);
+		breakpoint.isMatched = false;
+		breakpoint.matched = breakpoint.matched || function() {};
+		breakpoint.exit = breakpoint.exit || function() {};
+		breakpoint.context = breakpoint.context || breakpoint;
+		return check(breakpoint);
+	};
+
+	B.off = function (breakpoint) {
+		var i = breakpoints.indexOf(breakpoint);
+		if (i > -1) {
+			breakpoints.splice(i, 1);
+		}
+	};
+
+	return init();
+
+})(window, document);
+;/**
  * jVectorMap version 1.2.2
  *
  * Copyright 2011-2013, Kirill Lebedev
@@ -2089,9 +2232,6 @@ if (typeof String.prototype.startsWith !== 'function') {
         return this.slice(0, str.length) === str;
     };
 }
-
-CBR.mediumScreenBreakPoint = "39.5em";
-CBR.largeScreenBreakPoint = "49.5em";
 ;(function ($) {
     $.fn.slideDownCustom = function () {
         if (Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")"))
@@ -2694,18 +2834,6 @@ CBR.Models.Report.contact = {
 
     initElements: function () {
         this._applyModernizrRules();
-    },
-
-    isBrowserSmallScreen: function () {
-        return !this.isBrowserMediumScreen();
-    },
-
-    isBrowserMediumScreen: function () {
-        return Modernizr.mq("screen and (min-width: " + CBR.mediumScreenBreakPoint + ")");
-    },
-
-    isBrowserLargeScreen: function () {
-        return Modernizr.mq("screen and (min-width: " + CBR.largeScreenBreakPoint + ")");
     },
 
     saveInLocalStorage: function (key, value, isGlobalScope) {
@@ -3537,7 +3665,6 @@ CBR.Models.Report.contact = {
 
         this._initForm();
 
-        this._replacePhoneNumberSpansByHyperlinksOnMobile();
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -3579,6 +3706,12 @@ CBR.Models.Report.contact = {
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
+
+        Breakpoints.on({
+            name: "STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT",
+            matched: jQuery.proxy(this._onMediumScreenBreakpointMatch, this),
+            exit: jQuery.proxy(this._onMediumScreenBreakpointExit, this)
+        });
     },
 
     _initForm: function () {
@@ -3591,14 +3724,30 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _replacePhoneNumberSpansByHyperlinksOnMobile: function() {
-        if (this.isBrowserSmallScreen()) {
-            this.$phoneNumbersSection.find("span").each(function (index, element) {
-                var $span = jQuery(element);
-                var phoneNumber = $span.html();
-                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
-            });
-        }
+    _onMediumScreenBreakpointMatch: function() {
+        this.$phoneNumbersSection.find("a").each(function (index, element) {
+            var $a = jQuery(element);
+
+            var phoneNumber = $a.html();
+
+            $a.replaceWith('<span>' + phoneNumber + '</span>');
+        });
+    },
+
+    _onMediumScreenBreakpointExit: function() {
+        this.$phoneNumbersSection.find("span").each(function (index, element) {
+            var $span = jQuery(element);
+
+            var phoneNumber = $span.html();
+
+            // Because some browsers like iOS Safari automatically wrap phone number by anchor tags
+            var $childAnchor = $span.children("a").get(0);
+            if ($childAnchor) {
+                phoneNumber = jQuery($childAnchor).html();
+            }
+
+            $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+        });
     },
 
     _toggleCommittees: function (e) {
@@ -3782,8 +3931,9 @@ CBR.Models.Report.contact = {
 
         this.$filterSection = jQuery(".table-filter");
         this.$filter = this.$filterSection.find("input");
-        this.$fixedTableHeader = jQuery("#fixed-table-header");
+        this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$results = jQuery("#search-results > article");
+        this.$secondOrSubsequentResultTableHeaders = jQuery(".thead-of-second-or-subsequent-result");
 
         this.getEl().addClass("legislator-listing");
 
@@ -3825,7 +3975,13 @@ CBR.Models.Report.contact = {
 
         this.$filter.keyup(_.debounce(jQuery.proxy(this._doFilterResults, this), 100));
 
-        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleFixedTableHeader, this), 15));
+        Breakpoints.on({
+            name: "STATE_REPORTS_LARGE_SCREEN_BREAKPOINT",
+            matched: jQuery.proxy(this._onLargeScreenBreakpointMatch, this),
+            exit: jQuery.proxy(this._onLargeScreenBreakpointExit, this)
+        });
+
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
     },
 
     _doSubmit: function (e) {
@@ -3871,7 +4027,7 @@ CBR.Models.Report.contact = {
         return null;
     },
 
-    _doFilterResults: function(e) {
+    _doFilterResults: function (e) {
         var filter = this.$filter.val();
 
         if (filter.length < 2) {
@@ -3886,28 +4042,28 @@ CBR.Models.Report.contact = {
                 // Title
                 var $td = jQuery(tds.get(0));
                 var value = jQuery($td.children().get(0)).attr("title");
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // Name
                 $td = jQuery(tds.get(1));
                 value = $td.html();
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // Party
                 $td = jQuery(tds.get(2));
                 value = jQuery($td.find("abbr")).attr("title");
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
                 // District
                 $td = jQuery(tds.get(3));
                 value = $td.html();
-                if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                     isResultMatchedByFilter = true;
                 }
 
@@ -3916,7 +4072,7 @@ CBR.Models.Report.contact = {
                 var $span = $td.children();
                 if ($span.size() > 0) {
                     value = $span.get(0).innerHTML;
-                    if(value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                    if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
                         isResultMatchedByFilter = true;
                     }
                 }
@@ -3930,11 +4086,27 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _toggleFixedTableHeader: function() {
-        if (this.$filterSection.visible(true)) {
-            this.$fixedTableHeader.hide();
+    _onLargeScreenBreakpointMatch: function() {
+        this.isBrowserLargeScreen = true;
+
+        this.$secondOrSubsequentResultTableHeaders.hide();
+        if (!this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        }
+    },
+
+    _onLargeScreenBreakpointExit: function() {
+        this.isBrowserLargeScreen = false;
+
+        this.$stickyTableHeader.hide();
+        this.$secondOrSubsequentResultTableHeaders.show();
+    },
+
+    _toggleStickyTableHeader: function () {
+        if (this.isBrowserLargeScreen && !this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
         } else {
-            this.$fixedTableHeader.show();
+            this.$stickyTableHeader.hide();
         }
     }
 });
