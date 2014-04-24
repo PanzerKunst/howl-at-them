@@ -47,7 +47,7 @@ Please find your legislator another way... sorry!</div>
             <td>@Html(legislator.getTitleAbbr)</td>
             <td>@legislator.firstName @legislator.lastName</td>
             <td><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
-            <td>@legislator.usState.id @legislator.getChamber @legislator.district</td>
+            <td>@legislator.usState.id @legislator.getChamber.getAbbr @legislator.district</td>
             <td>
                 @if(!legislator.reports.isEmpty) {
                 @Html(legislator.reports.head.getSupportLevelSpan)

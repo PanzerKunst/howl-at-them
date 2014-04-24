@@ -569,7 +569,7 @@ tr.clickable {
   float: left;
   padding-top: 24px; }
 #content.legislator-listing .support-level {
-  width: 9em; }
+  width: 8.5em; }
 #content .reports > article {
   border: 1px solid #dddddd;
   border-bottom: none;
@@ -890,18 +890,20 @@ table.dataTable tr.even td.sorting_1 {
     content: "";
     display: table;
     clear: both; }
-  #state-reports #content > form > div {
-    width: 28em;
-    margin: 0 auto; }
-    #state-reports #content > form > div:after {
-      content: "";
-      display: table;
-      clear: both; }
-  #state-reports #content > form .form-group {
-    width: 19em; }
-    #state-reports #content > form .form-group > label {
-      display: inline-block;
-      width: 3em; }
+  #state-reports #content > form {
+    margin-bottom: 0; }
+    #state-reports #content > form > div {
+      width: 28em;
+      margin: 0 auto; }
+      #state-reports #content > form > div:after {
+        content: "";
+        display: table;
+        clear: both; }
+    #state-reports #content > form .form-group {
+      width: 19em; }
+      #state-reports #content > form .form-group > label {
+        display: inline-block;
+        width: 3em; }
   #state-reports #content #us-state {
     display: inline-block;
     width: 16em; }
@@ -909,6 +911,46 @@ table.dataTable tr.even td.sorting_1 {
     padding-top: 0; }
     #state-reports #content .submit-wrapper > button {
       width: 7em; }
+  #state-reports #content > #whip-count-per-chamber:after {
+    content: "";
+    display: table;
+    clear: both; }
+  #state-reports #content > #whip-count-per-chamber > article {
+    float: left; }
+    #state-reports #content > #whip-count-per-chamber > article:last-child {
+      float: right; }
+  #state-reports #content > #whip-count-per-chamber ul {
+    list-style-type: none;
+    padding-left: 0; }
+  #state-reports #content > #whip-count-per-chamber li {
+    margin-bottom: 5px; }
+    #state-reports #content > #whip-count-per-chamber li:after {
+      content: "";
+      display: table;
+      clear: both; }
+  #state-reports #content > #whip-count-per-chamber .support-level,
+  #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper,
+  #state-reports #content > #whip-count-per-chamber .count {
+    float: left; }
+  #state-reports #content > #whip-count-per-chamber .support-level {
+    width: 8.5em;
+    font-size: 12px;
+    margin-top: 0.2em; }
+  #state-reports #content > #whip-count-per-chamber .count {
+    width: 2em;
+    text-align: center; }
+  #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper {
+    width: 16em; }
+    #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div {
+      min-height: 1.75em; }
+      #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.UNKNOWN {
+        background-color: #999999; }
+      #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.SUPPORTIVE {
+        background-color: #5cb85c; }
+      #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.NEEDS_CONVINCING {
+        background-color: #f0ad4e; }
+      #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.NOT_SUPPORTIVE {
+        background-color: #d9534f; }
   #state-reports #content > #sticky-table-header {
     display: none;
     position: fixed;
@@ -922,7 +964,7 @@ table.dataTable tr.even td.sorting_1 {
     background-color: #fff; }
   #state-reports #content th.title,
   #state-reports #content td.title {
-    width: 5%; }
+    width: 6%; }
   #state-reports #content th.name,
   #state-reports #content td.name {
     width: 21.5%; }
@@ -935,7 +977,7 @@ table.dataTable tr.even td.sorting_1 {
     width: 14%; }
   #state-reports #content th.support-level,
   #state-reports #content td.support-level {
-    width: 19%; }
+    width: 18%; }
   #state-reports #content th.mpp,
   #state-reports #content td.mpp {
     width: 9%;

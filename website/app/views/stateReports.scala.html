@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: Option[String], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: Option[String], whipCountPerChamber: Option[(models.frontend.WhipCountForChamber, models.frontend.WhipCountForChamber)], firstLegislator: Option[models.frontend.DetailedStateLegislator], nextLegislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
@@ -38,6 +38,55 @@
         </div>
     </div>
 </form>
+
+@if(whipCountPerChamber.isDefined) {
+<section id="whip-count-per-chamber">
+    <article>
+        <h3>@whipCountPerChamber.get._1.chamber.getString</h3>
+        <ul>
+            @for(whipCount <- whipCountPerChamber.get._1.whipCounts) {
+            <li>
+                @if(whipCount.supportLevel.isDefined) {
+                <span class="support-level">@whipCount.supportLevel.get.getString</span>
+                <span class="count">@whipCount.count</span>
+                <div class="support-level-bar-wrapper">
+                    <div class="@whipCount.supportLevel.get" style="width: @whipCount.percentage%"></div>
+                </div>
+                } else {
+                <span class="support-level">Unknown</span>
+                <span class="count">@whipCount.count</span>
+                <div class="support-level-bar-wrapper">
+                    <div class="UNKNOWN" style="width: @whipCount.percentage%"></div>
+                </div>
+                }
+            </li>
+            }
+        </ul>
+    </article>
+    <article>
+        <h3>@whipCountPerChamber.get._2.chamber.getString</h3>
+        <ul>
+            @for(whipCount <- whipCountPerChamber.get._2.whipCounts) {
+            <li>
+                @if(whipCount.supportLevel.isDefined) {
+                <span class="support-level">@whipCount.supportLevel.get.getString</span>
+                <span class="count">@whipCount.count</span>
+                <div class="support-level-bar-wrapper">
+                    <div class="@whipCount.supportLevel.get" style="width: @whipCount.percentage%"></div>
+                </div>
+                } else {
+                <span class="support-level">Unknown</span>
+                <span class="count">@whipCount.count</span>
+                <div class="support-level-bar-wrapper">
+                    <div class="UNKNOWN" style="width: @whipCount.percentage%"></div>
+                </div>
+                }
+            </li>
+            }
+        </ul>
+    </article>
+</section>
+}
 
 @if(firstLegislator.isDefined) {
 <section class="table-filter">
@@ -85,7 +134,7 @@
                     <td>@Html(firstLegislator.get.getTitleAbbr)</td>
                     <td>@firstLegislator.get.firstName @firstLegislator.get.lastName</td>
                     <td><span class="centered-contents">@Html(firstLegislator.get.getPoliticalPartiesAbbr)</span></td>
-                    <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber @firstLegislator.get.district</td>
+                    <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber.getAbbr @firstLegislator.get.district</td>
                     <td>
                         @if(!firstLegislator.get.reports.isEmpty) {
                             @Html(firstLegislator.get.reports.head.getSupportLevelSpan)
@@ -158,7 +207,7 @@
                     <td class="title">@Html(legislator.getTitleAbbr)</td>
                     <td class="name">@legislator.firstName @legislator.lastName</td>
                     <td class="political-parties"><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
-                    <td class="district">@legislator.usState.id @legislator.getChamber @legislator.district</td>
+                    <td class="district">@legislator.usState.id @legislator.getChamber.getAbbr @legislator.district</td>
                     <td class="support-level">
                         @if(!legislator.reports.isEmpty) {
                         @Html(legislator.reports.head.getSupportLevelSpan)

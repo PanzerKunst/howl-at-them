@@ -19,6 +19,8 @@
     padding-bottom: $footer-item-height * 2;
 
     > form {
+      margin-bottom: 0;
+
       > div {
         @include clearfix;
 
@@ -50,6 +52,72 @@
       }
     }
 
+    > #whip-count-per-chamber {
+      @include clearfix;
+
+      > article {
+        float: left;
+
+        &:last-child {
+          float: right;
+        }
+      }
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      li {
+        @include clearfix;
+
+        margin-bottom: $line-height-computed / 4;
+      }
+
+      .support-level,
+      .support-level-bar-wrapper,
+      .count {
+        float: left;
+      }
+
+      .support-level {
+        width: 8.5em;
+
+        font-size: $font-size-small;
+        margin-top: 0.2em;  // To align with .count
+      }
+
+      .count {
+        width: 2em;
+        text-align: center;
+      }
+
+      .support-level-bar-wrapper {
+        width: 16em;
+
+        > div {
+          // Otherwise empty divs don't take the width
+          min-height: 1.75em;
+
+          &.UNKNOWN {
+            background-color: $gray-light;
+          }
+
+          &.SUPPORTIVE {
+            background-color: $brand-success;
+          }
+
+          &.NEEDS_CONVINCING {
+            background-color: $brand-warning;
+          }
+
+          &.NOT_SUPPORTIVE {
+            background-color: $brand-danger;
+          }
+        }
+      }
+    }
+
     > #sticky-table-header {
       display: none;
 
@@ -74,7 +142,7 @@
     th,
     td {
       &.title {
-        width: 5%;
+        width: 6%;
       }
       &.name {
         width: 21.5%;
@@ -87,7 +155,7 @@
         width: 14%;
       }
       &.support-level {
-        width: 19%;
+        width: 18%;
       }
       &.mpp {
         width: 9%;

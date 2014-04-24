@@ -23,7 +23,7 @@
     <div class="centered-contents">
         <img src="@stateLegislator.getPhotoUrl" />
         <p>@stateLegislator.politicalParties.mkString("; ")</p>
-        <p>@stateLegislator.usState.name district @stateLegislator.district</p>
+        <p>@stateLegislator.usState.id @stateLegislator.getChamber.getAbbr @stateLegislator.district</p>
 
         @if(stateLegislator.leadershipPosition.isDefined) {
         <p>@stateLegislator.leadershipPosition.get.name</p>

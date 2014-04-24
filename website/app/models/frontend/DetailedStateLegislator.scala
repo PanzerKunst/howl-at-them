@@ -33,6 +33,48 @@ case class DetailedStateLegislator(_id: Int,
   var committees: List[CandidateCommittee] = _committees
 
   var reports: List[Report] = _reports
+
+  def getTitleAbbr: String = {
+    this.title.toLowerCase match {
+      case "representative" => "<abbr title=\"" + this.title + "\">Rep.</abbr>"
+      case "senator" => "<abbr title=\"" + this.title + "\">Sen.</abbr>"
+      case "assembly member" => "<abbr title=\"" + this.title + "\">Asm.</abbr>"
+      case _ => this.title
+    }
+  }
+
+  def getPoliticalPartiesAsString: String = {
+    this.politicalParties.mkString(", ")
+  }
+
+  def getPoliticalPartiesAbbr: String = {
+    if (this.politicalParties.isEmpty) {
+      ""
+    } else {
+      this.politicalParties.head.toLowerCase match {
+        case "democratic" =>
+          "<abbr title=\"" + this.politicalParties.mkString(", ") + "\">D</abbr>"
+        case "republican" =>
+          "<abbr title=\"" + this.politicalParties.mkString(", ") + "\">R</abbr>"
+        case _ =>
+          val abbr = this.politicalParties.map {
+            politicalParty => politicalParty.substring(0, 1)
+          }.mkString("")
+          "<abbr title=\"" + this.politicalParties.mkString(", ") + "\">" + abbr + "</abbr>"
+      }
+    }
+  }
+
+  def getChamber: Chamber = {
+    if (this.title.toLowerCase == "senator")
+      Chamber.SENATE
+    else
+      Chamber.HOUSE
+  }
+
+  def getPhotoUrl: String = {
+    "http://static.votesmart.org/canphoto/" + this.id + ".jpg"
+  }
 }
 
 object DetailedStateLegislator {

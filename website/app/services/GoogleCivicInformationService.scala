@@ -30,28 +30,31 @@ object GoogleCivicInformationService {
             var stateLegislators: List[DetailedStateLegislator] = List()
 
             for (division <- divisions.values) {
-              val divisionScope = (division \ "scope").as[String]
-              if (divisionScope == "stateLower" || divisionScope == "stateUpper") {
-                val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
+              (division \ "scope").asOpt[String] match {
+                case Some(divisionScope) =>
+                  if (divisionScope == "stateLower" || divisionScope == "stateUpper") {
+                    val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
 
-                UsStateDto.getOfId(usStateId) match {
-                  case Some(usState) =>
-                    val stateAndDistrict = StateAndDistrict(
-                      usState,
-                      districtNumberFromWebServiceResult(
-                        (division \ "name").as[String]
-                      )
-                    )
+                    UsStateDto.getOfId(usStateId) match {
+                      case Some(usState) =>
+                        val stateAndDistrict = StateAndDistrict(
+                          usState,
+                          districtNumberFromWebServiceResult(
+                            (division \ "name").as[String]
+                          )
+                        )
 
-                    for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
-                      if ((stateLegislator.isUpperHouse && divisionScope == "stateUpper") ||
-                          (stateLegislator.isLowerHouse && divisionScope == "stateLower")) {
-                        stateLegislators = stateLegislators :+ stateLegislator
-                      }
+                        for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
+                          if ((stateLegislator.isUpperHouse && divisionScope == "stateUpper") ||
+                            (stateLegislator.isLowerHouse && divisionScope == "stateLower")) {
+                            stateLegislators = stateLegislators :+ stateLegislator
+                          }
+                        }
+
+                      case None =>
                     }
-
-                  case None =>
-                }
+                  }
+                case None =>
               }
             }
 
