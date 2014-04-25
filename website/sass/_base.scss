@@ -1,6 +1,14 @@
 html {
   // Always display the vertical scrollbar
   overflow-y: scroll;
+
+  @include medium-screen {
+    @include defineBreakpoint("GLOBAL_MEDIUM_SCREEN_BREAKPOINT");
+  }
+
+  @include large-screen {
+    @include defineBreakpoint("GLOBAL_LARGE_SCREEN_BREAKPOINT");
+  }
 }
 
 body {

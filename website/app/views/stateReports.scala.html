@@ -49,13 +49,13 @@
                 @if(whipCount.supportLevel.isDefined) {
                 <span class="support-level">@whipCount.supportLevel.get.getString</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper">
+                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
                     <div class="@whipCount.supportLevel.get" style="width: @whipCount.percentage%"></div>
                 </div>
                 } else {
                 <span class="support-level">Unknown</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper">
+                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
                     <div class="UNKNOWN" style="width: @whipCount.percentage%"></div>
                 </div>
                 }
@@ -71,13 +71,13 @@
                 @if(whipCount.supportLevel.isDefined) {
                 <span class="support-level">@whipCount.supportLevel.get.getString</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper">
+                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
                     <div class="@whipCount.supportLevel.get" style="width: @whipCount.percentage%"></div>
                 </div>
                 } else {
                 <span class="support-level">Unknown</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper">
+                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
                     <div class="UNKNOWN" style="width: @whipCount.percentage%"></div>
                 </div>
                 }

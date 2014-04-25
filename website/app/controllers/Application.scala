@@ -142,6 +142,7 @@ object Application extends Controller {
               case Some("SUPPORTIVE") => nbHouseLegislatorsSupportive = nbHouseLegislatorsSupportive + 1
               case Some("NEEDS_CONVINCING") => nbHouseLegislatorsNeedingConvincing = nbHouseLegislatorsNeedingConvincing + 1
               case Some("NOT_SUPPORTIVE") => nbHouseLegislatorsNotSupportive = nbHouseLegislatorsNotSupportive + 1
+              case Some(_) =>
               case None =>
             }
 
@@ -156,6 +157,7 @@ object Application extends Controller {
               case Some("SUPPORTIVE") => nbSenateLegislatorsSupportive = nbSenateLegislatorsSupportive + 1
               case Some("NEEDS_CONVINCING") => nbSenateLegislatorsNeedingConvincing = nbSenateLegislatorsNeedingConvincing + 1
               case Some("NOT_SUPPORTIVE") => nbSenateLegislatorsNotSupportive = nbSenateLegislatorsNotSupportive + 1
+              case Some(_) =>
               case None =>
             }
 

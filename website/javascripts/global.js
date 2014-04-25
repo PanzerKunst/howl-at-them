@@ -1,3 +1,9 @@
+if (typeof String.prototype.startsWith !== 'function') {
+    String.prototype.startsWith = function (str) {
+        return this.slice(0, str.length) === str;
+    };
+}
+
 // create the base namespace
 var CBR = CBR || {};
 
@@ -15,8 +21,20 @@ CBR.isEmptyObject = function (obj) {
     return true;
 };
 
-if (typeof String.prototype.startsWith !== 'function') {
-    String.prototype.startsWith = function (str) {
-        return this.slice(0, str.length) === str;
-    };
-}
+CBR.isBrowserSmallScreen = function () {
+    return window.getComputedStyle(
+        document.querySelector("html"), ":after"
+    ).getPropertyValue("content") === "none";
+};
+
+CBR.isBrowserMediumScreen = function () {
+    return window.getComputedStyle(
+        document.querySelector("html"), ":after"
+    ).getPropertyValue("content") === "\"GLOBAL_MEDIUM_SCREEN_BREAKPOINT\"";
+};
+
+CBR.isBrowserLargeScreen = function () {
+    return window.getComputedStyle(
+        document.querySelector("html"), ":after"
+    ).getPropertyValue("content") === "\"GLOBAL_LARGE_SCREEN_BREAKPOINT\"";
+};
