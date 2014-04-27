@@ -24,13 +24,10 @@
         <div class="form-group">
             <label for="us-state">State</label><!--
          --><select id="us-state" class="form-control">
-                <option value=""></option>
                 @for(usState <- usStates) {
                 <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
                 }
             </select>
-
-            <p class="field-error" data-check="empty"></p>
         </div>
 
         <div class="submit-wrapper">
@@ -42,7 +39,7 @@
 @if(whipCountPerChamber.isDefined) {
 <section id="whip-count-per-chamber">
     <article>
-        <h3>@whipCountPerChamber.get._1.chamber.getString</h3>
+        <h2>@whipCountPerChamber.get._1.chamber.getString</h2>
         <ul>
             @for(whipCount <- whipCountPerChamber.get._1.whipCounts) {
             <li>
@@ -64,7 +61,7 @@
         </ul>
     </article>
     <article>
-        <h3>@whipCountPerChamber.get._2.chamber.getString</h3>
+        <h2>@whipCountPerChamber.get._2.chamber.getString</h2>
         <ul>
             @for(whipCount <- whipCountPerChamber.get._2.whipCounts) {
             <li>
@@ -132,7 +129,7 @@
             <tbody>
                 <tr data-id="@firstLegislator.get.id" class="clickable">
                     <td>@Html(firstLegislator.get.getTitleAbbr)</td>
-                    <td>@firstLegislator.get.firstName @firstLegislator.get.lastName</td>
+                    <td>@firstLegislator.get.lastName @firstLegislator.get.firstName</td>
                     <td><span class="centered-contents">@Html(firstLegislator.get.getPoliticalPartiesAbbr)</span></td>
                     <td>@firstLegislator.get.usState.id @firstLegislator.get.getChamber.getAbbr @firstLegislator.get.district</td>
                     <td>
@@ -205,7 +202,7 @@
             <tbody>
                 <tr data-id="@legislator.id" class="clickable">
                     <td class="title">@Html(legislator.getTitleAbbr)</td>
-                    <td class="name">@legislator.firstName @legislator.lastName</td>
+                    <td class="name">@legislator.lastName @legislator.firstName</td>
                     <td class="political-parties"><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
                     <td class="district">@legislator.usState.id @legislator.getChamber.getAbbr @legislator.district</td>
                     <td class="support-level">

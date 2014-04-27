@@ -24,8 +24,6 @@ CBR.Controllers.StateReports = new Class({
         this.$results = jQuery("#search-results > article");
         this.$secondOrSubsequentResultTableHeaders = jQuery(".thead-of-second-or-subsequent-result");
 
-        this.getEl().addClass("legislator-listing");
-
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -45,12 +43,6 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "us-state"
-            ]
-        });
-
         this.initEditReportValidation();
     },
 
@@ -76,10 +68,8 @@ CBR.Controllers.StateReports = new Class({
     _doSubmit: function (e) {
         e.preventDefault();
 
-        if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
-            location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
-        }
+        this.$submitBtn.button('loading');
+        location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
     },
 
     _showEditReportModal: function (e) {

@@ -45,19 +45,42 @@
   // Wouldn't override declaration was outside #content
   &.legislator-listing {
     > form {
+      margin-bottom: 0;
+
+      > div:first-child {
+        @include clearfix;
+
+        margin: 0 auto;
+      }
+
       .form-group {
         // We want the margin even on small rez
         margin-right: $odd-form-groups-margin-right;
 
         // To have the inputs on one line even on small screens
         float: left;
+
+        width: $label-width-us-state + $field-width-search-pages;
       }
+    }
+
+    label[for="us-state"] {
+      display: inline-block;
+      width: $label-width-us-state;
+    }
+
+    #us-state {
+      display: inline-block;
+      width: $field-width-search-pages;
     }
 
     .submit-wrapper {
       float: left;
+      padding-top: 0;
 
-      padding-top: 24px;
+      > button {
+        width: $width-submit-btn-legislator-listing;
+      }
     }
 
     .support-level {

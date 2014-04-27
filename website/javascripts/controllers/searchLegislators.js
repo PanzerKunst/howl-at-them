@@ -7,12 +7,9 @@ CBR.Controllers.SearchLegislators = new Class({
 
     run: function () {
         this.initElements();
-        this._initValidation();
         this._initEvents();
 
-        if (!this._areAllFiltersEmpty()) {
-            this._doSubmit(null);
-        }
+        this._doSubmit(null);
     },
 
     initElements: function () {
@@ -20,39 +17,24 @@ CBR.Controllers.SearchLegislators = new Class({
 
         this.$form = jQuery("form");
 
-        this.$firstName = jQuery("#first-name");
-        this.$lastName = jQuery("#last-name");
         this.$usStateSelect = jQuery("#us-state");
 
         this.$advancedSearchFields = jQuery("#advanced-search-fields");
+        this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
-        this.$otherInputError = jQuery(".other-form-error");
         this.$submitBtn = jQuery("[type=submit]");
 
         this.$tableWrapper = jQuery("#table-wrapper");
-
-        this.getEl().addClass("legislator-listing");
-    },
-
-    _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
-    },
-
-    _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "first-name",
-                "last-name",
-                "us-state"
-            ]
-        });
     },
 
     _initEvents: function () {
         jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
-        this.$usStateSelect.change(jQuery.proxy(this._populateCommitteesSelect, this));
+        this.$usStateSelect.change(jQuery.proxy(function(e) {
+            this._populateLeadershipPositionsSelect(e);
+            this._populateCommitteesSelect(e);
+        }, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -65,72 +47,78 @@ CBR.Controllers.SearchLegislators = new Class({
         }
     },
 
-    _populateCommitteesSelect: function(e) {
-        var selectedUsStateId = this.$usStateSelect.val();
+    _populateLeadershipPositionsSelect: function(e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/leadership-positions",
+            data: {usStateId: this.$usStateSelect.val()},    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$leadershipPositionSelect.html(
+                    CBR.Templates.leadershipPositionSelect({
+                        leadershipPositions: JSON.parse(responseText)
+                    })
+                );
+                this.$leadershipPositionSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
 
-        if (selectedUsStateId) {
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/committees",
-                data: {usStateId: selectedUsStateId},    // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this.$committeeSelect.html(
-                        CBR.Templates.committeeSelect({
-                            committeeNames: JSON.parse(responseText)
-                        })
-                    );
-                    this.$committeeSelect.prop("disabled", false);
-                }.bind(this),
-                onFailure: function (xhr) {
-                    alert("AJAX fail :(");
-                }
-            }).get();
-        }
-        else {
-            this.$committeeSelect.prop("disabled", true);
-            this.$committeeSelect.html(jQuery('<option value="">Please select a state first</option>'));
-        }
+    _populateCommitteesSelect: function(e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/committees",
+            data: {usStateId: this.$usStateSelect.val()},    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$committeeSelect.html(
+                    CBR.Templates.committeeSelect({
+                        committeeNames: JSON.parse(responseText)
+                    })
+                );
+                this.$committeeSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
     },
 
     _doSubmit: function (e) {
         if (e)
             e.preventDefault();
 
-        if (this.validator.isValid()) {
-            this.$otherInputError.slideUpCustom();
-            this.$submitBtn.button('loading');
-            this.$tableWrapper.html('<div class="data-loading"></div>');
+        this.$submitBtn.button('loading');
+        this.$tableWrapper.html('<div class="data-loading"></div>');
 
-            var inputFirstName = this.$firstName.val().toLowerCase();
-            var inputLastName = this.$lastName.val().toLowerCase();
-            var selectedUsStateId = this.$usStateSelect.val();
-            var selectedCommitteeName = this.$committeeSelect.val();
+        var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
+        var selectedCommitteeName = this.$committeeSelect.val();
 
-            var stateLegislatorSearch = {
-                firstName: inputFirstName ? inputFirstName : null,
-                lastName: inputLastName ? inputLastName : null,
-                usStateId: selectedUsStateId ? selectedUsStateId : null,
-                committeeName: selectedCommitteeName ? selectedCommitteeName : null,
-                isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
-            };
+        var stateLegislatorSearch = {
+            usStateId: this.$usStateSelect.val(),
+            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+            committeeName: selectedCommitteeName ? selectedCommitteeName : null,
+            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+        };
 
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/state-legislators",
-                data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this.$submitBtn.button('reset');
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this._createResultsTable();
-                }.bind(this),
-                onFailure: function (xhr) {
-                    this.$submitBtn.button('reset');
-                    alert("AJAX fail :(");
-                }.bind(this)
-            }).get();
-        }
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/state-legislators",
+            data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$submitBtn.button('reset');
+                this._storeMatchingStateLegislators(JSON.parse(responseText));
+                this._createResultsTable();
+            }.bind(this),
+            onFailure: function (xhr) {
+                this.$submitBtn.button('reset');
+                alert("AJAX fail :(");
+            }.bind(this)
+        }).get();
     },
 
     _storeMatchingStateLegislators: function (stateLegislators) {
@@ -160,7 +148,7 @@ CBR.Controllers.SearchLegislators = new Class({
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getFirstName() + " " + source.getLastName();
+                        return source.getLastName() + " " + source.getFirstName();
                     },
                     "sTitle": "Name",
                     "sWidth": "17%"

@@ -9,7 +9,7 @@ import models.{UsState, Committee}
 object CommitteeDto {
   val all = getAll
 
-  def getOfState(stateId: String): List[Committee] = {
+  def getInState(stateId: String): List[Committee] = {
     var committeesOfState: List[Committee] = List()
 
     for (committee <- all) {
@@ -24,7 +24,7 @@ object CommitteeDto {
   def getOfNameInState(name: String, stateId: String): List[Committee] = {
     var committeesOfNameInState: List[Committee] = List()
 
-    for (committee <- getOfState(stateId)) {
+    for (committee <- getInState(stateId)) {
       if (committee.name == name) {
         committeesOfNameInState = committeesOfNameInState :+ committee
       }

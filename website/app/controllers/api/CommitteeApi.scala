@@ -14,8 +14,8 @@ object CommitteeApi extends Controller {
       if (request.queryString.contains("usStateId")) {
         UsStateDto.getOfId(request.queryString.get("usStateId").get.head) match {
           case Some(usState) =>
-            val committeesOfState = CommitteeDto.getOfState(usState.id)
-            val nameOfMatchingCommittees = committeeNamesWithoutDuplicates(committeesOfState)
+            val committeesInState = CommitteeDto.getInState(usState.id)
+            val nameOfMatchingCommittees = committeeNamesWithoutDuplicates(committeesInState)
             Ok(Json.toJson(nameOfMatchingCommittees))
           case None =>
             NoContent
@@ -24,7 +24,7 @@ object CommitteeApi extends Controller {
         Forbidden
   }
 
-  private def committeeNamesWithoutDuplicates(committeesWithDuplicates: List[Committee]): List[String] = {
+  def committeeNamesWithoutDuplicates(committeesWithDuplicates: List[Committee]): List[String] = {
     var result: List[String] = List()
 
     for (committee <- committeesWithDuplicates) {

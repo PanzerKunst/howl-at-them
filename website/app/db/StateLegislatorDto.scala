@@ -93,7 +93,7 @@ object StateLegislatorDto {
                 Some(reportId),
                 id,
                 row[String]("author_name"),
-                row[String]("contact"),
+                row[Option[String]]("contact"),
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
@@ -168,20 +168,12 @@ object StateLegislatorDto {
     }
   }
 
-  def getMatching(firstNameFilter: Option[String], lastNameFilter: Option[String], usStateId: Option[String], committees: List[Committee], isAPriorityTarget: Boolean): List[DetailedStateLegislator] = {
-    val firstNameFilterForQuery = firstNameFilter match {
-      case Some(fnFilter) => DbUtil.safetize(fnFilter.replaceAll("\\*", "%"))
-      case None => "%"
-    }
-
-    val lastNameFilterForQuery = lastNameFilter match {
-      case Some(lnFilter) => DbUtil.safetize(lnFilter.replaceAll("\\*", "%"))
-      case None => "%"
-    }
-
-    val usStateIdFilterForQuery = usStateId match {
-      case Some(stateId) => DbUtil.safetize(stateId)
-      case None => "%"
+  def getMatching(usStateId: String, leadershipPositionId: Option[Int], committees: List[Committee], isAPriorityTarget: Boolean): List[DetailedStateLegislator] = {
+    val leadershipPositionIdClause = leadershipPositionId match {
+      case Some(id) =>
+        """
+          and leadership_position_id = """ + id
+      case None => ""
     }
 
     val committeeIdsClause = if (committees.isEmpty) {
@@ -217,11 +209,10 @@ object StateLegislatorDto {
           left join report r
             on r.candidate_id = l.id
             and r.is_deleted is false
-          where lower(first_name) like '""" + firstNameFilterForQuery + """'
-            and lower(last_name) like '""" + lastNameFilterForQuery + """'
-            and us_state_id like '""" + usStateIdFilterForQuery + """'""" +
-      committeeIdsClause +
-      isAPriorityTargetClause + """
+          where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
+            leadershipPositionIdClause +
+            committeeIdsClause +
+            isAPriorityTargetClause + """
           order by title, last_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getMatching():" + query)
@@ -412,7 +403,7 @@ object StateLegislatorDto {
                 Some(reportId),
                 candidateId,
                 row[String]("author_name"),
-                row[String]("contact"),
+                row[Option[String]]("contact"),
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),

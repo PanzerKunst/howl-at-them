@@ -2697,7 +2697,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     },
 
     getReadableContact: function() {
-        return CBR.Models.Report.contact[this.getContact()];
+        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : "No contact";
     }
 });
 
@@ -2719,8 +2719,7 @@ CBR.Models.Report.contact = {
     TALKED_TO_LEGISLATOR: "Talked to legislator",
     CONTACT_WITH_STAFF: "Contact with staff",
     WAITING_FOR_CALLBACK: "Waiting for callback",
-    LEFT_VOICEMAIL: "Left voicemail",
-    NONE: "None"
+    LEFT_VOICEMAIL: "Left voicemail"
 };
 ;CBR.Models.StateLegislator = new Class({
     Extends: CBR.Models.JsonSerializable,
@@ -3040,8 +3039,6 @@ CBR.Models.Report.contact = {
         if (this.editReportValidator.isValid()) {
             this.$confirmEditBtn.button('loading');
 
-            var $authorName = jQuery("#edit-author-name");
-
             var $mppRadios = jQuery("[name='edit-MPP']");
             var $yesMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
             var $noMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
@@ -3058,7 +3055,8 @@ CBR.Models.Report.contact = {
             var $yesPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
             var $noPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
-            var authorName = $authorName.val();
+            var authorName = jQuery("#edit-author-name").val();
+            var selectedContact = jQuery("#edit-contact").val();
             var selectedSupportLevel = jQuery("#edit-support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
@@ -3089,17 +3087,19 @@ CBR.Models.Report.contact = {
                 hasPreviouslyVotedForConvention = false;
             }
 
+            var notes = jQuery("#edit-notes").val();
+
             var updatedReport = {
                 id: initialReport.getId(),
                 candidateId: initialReport.getCandidateId(),
                 authorName: authorName,
-                contact: jQuery("#edit-contact").val(),
+                contact: selectedContact ? selectedContact : null,
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#edit-notes").val()
+                notes: notes ? notes : null
             };
 
             new Request({
@@ -3283,8 +3283,6 @@ CBR.Models.Report.contact = {
 
         this.$form = jQuery("form");
         this.$submitBtn = jQuery("[type=submit]");
-
-        this.getEl().addClass("legislator-listing");
     },
 
     _initValidation: function () {
@@ -3347,12 +3345,9 @@ CBR.Models.Report.contact = {
 
     run: function () {
         this.initElements();
-        this._initValidation();
         this._initEvents();
 
-        if (!this._areAllFiltersEmpty()) {
-            this._doSubmit(null);
-        }
+        this._doSubmit(null);
     },
 
     initElements: function () {
@@ -3360,39 +3355,24 @@ CBR.Models.Report.contact = {
 
         this.$form = jQuery("form");
 
-        this.$firstName = jQuery("#first-name");
-        this.$lastName = jQuery("#last-name");
         this.$usStateSelect = jQuery("#us-state");
 
         this.$advancedSearchFields = jQuery("#advanced-search-fields");
+        this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
-        this.$otherInputError = jQuery(".other-form-error");
         this.$submitBtn = jQuery("[type=submit]");
 
         this.$tableWrapper = jQuery("#table-wrapper");
-
-        this.getEl().addClass("legislator-listing");
-    },
-
-    _areAllFiltersEmpty: function() {
-        return !this.$firstName.val() && !this.$lastName.val() && !this.$usStateSelect.val() && !this.$priorityTargetCheckbox.is(":checked");
-    },
-
-    _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "first-name",
-                "last-name",
-                "us-state"
-            ]
-        });
     },
 
     _initEvents: function () {
         jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
-        this.$usStateSelect.change(jQuery.proxy(this._populateCommitteesSelect, this));
+        this.$usStateSelect.change(jQuery.proxy(function(e) {
+            this._populateLeadershipPositionsSelect(e);
+            this._populateCommitteesSelect(e);
+        }, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
@@ -3405,72 +3385,78 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _populateCommitteesSelect: function(e) {
-        var selectedUsStateId = this.$usStateSelect.val();
+    _populateLeadershipPositionsSelect: function(e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/leadership-positions",
+            data: {usStateId: this.$usStateSelect.val()},    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$leadershipPositionSelect.html(
+                    CBR.Templates.leadershipPositionSelect({
+                        leadershipPositions: JSON.parse(responseText)
+                    })
+                );
+                this.$leadershipPositionSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
 
-        if (selectedUsStateId) {
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/committees",
-                data: {usStateId: selectedUsStateId},    // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this.$committeeSelect.html(
-                        CBR.Templates.committeeSelect({
-                            committeeNames: JSON.parse(responseText)
-                        })
-                    );
-                    this.$committeeSelect.prop("disabled", false);
-                }.bind(this),
-                onFailure: function (xhr) {
-                    alert("AJAX fail :(");
-                }
-            }).get();
-        }
-        else {
-            this.$committeeSelect.prop("disabled", true);
-            this.$committeeSelect.html(jQuery('<option value="">Please select a state first</option>'));
-        }
+    _populateCommitteesSelect: function(e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/committees",
+            data: {usStateId: this.$usStateSelect.val()},    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$committeeSelect.html(
+                    CBR.Templates.committeeSelect({
+                        committeeNames: JSON.parse(responseText)
+                    })
+                );
+                this.$committeeSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
     },
 
     _doSubmit: function (e) {
         if (e)
             e.preventDefault();
 
-        if (this.validator.isValid()) {
-            this.$otherInputError.slideUpCustom();
-            this.$submitBtn.button('loading');
-            this.$tableWrapper.html('<div class="data-loading"></div>');
+        this.$submitBtn.button('loading');
+        this.$tableWrapper.html('<div class="data-loading"></div>');
 
-            var inputFirstName = this.$firstName.val().toLowerCase();
-            var inputLastName = this.$lastName.val().toLowerCase();
-            var selectedUsStateId = this.$usStateSelect.val();
-            var selectedCommitteeName = this.$committeeSelect.val();
+        var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
+        var selectedCommitteeName = this.$committeeSelect.val();
 
-            var stateLegislatorSearch = {
-                firstName: inputFirstName ? inputFirstName : null,
-                lastName: inputLastName ? inputLastName : null,
-                usStateId: selectedUsStateId ? selectedUsStateId : null,
-                committeeName: selectedCommitteeName ? selectedCommitteeName : null,
-                isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
-            };
+        var stateLegislatorSearch = {
+            usStateId: this.$usStateSelect.val(),
+            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+            committeeName: selectedCommitteeName ? selectedCommitteeName : null,
+            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+        };
 
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/state-legislators",
-                data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this.$submitBtn.button('reset');
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this._createResultsTable();
-                }.bind(this),
-                onFailure: function (xhr) {
-                    this.$submitBtn.button('reset');
-                    alert("AJAX fail :(");
-                }.bind(this)
-            }).get();
-        }
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/state-legislators",
+            data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$submitBtn.button('reset');
+                this._storeMatchingStateLegislators(JSON.parse(responseText));
+                this._createResultsTable();
+            }.bind(this),
+            onFailure: function (xhr) {
+                this.$submitBtn.button('reset');
+                alert("AJAX fail :(");
+            }.bind(this)
+        }).get();
     },
 
     _storeMatchingStateLegislators: function (stateLegislators) {
@@ -3500,7 +3486,7 @@ CBR.Models.Report.contact = {
                 },
                 {
                     "mData": function (source, type, val) {
-                        return source.getFirstName() + " " + source.getLastName();
+                        return source.getLastName() + " " + source.getFirstName();
                     },
                     "sTitle": "Name",
                     "sWidth": "17%"
@@ -3792,6 +3778,7 @@ CBR.Models.Report.contact = {
             this.$submitBtn.button('loading');
 
             var authorName = this.$authorName.val();
+            var selectedContact = jQuery("#contact").val();
             var selectedSupportLevel = jQuery("#support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
@@ -3825,7 +3812,7 @@ CBR.Models.Report.contact = {
             var report = {
                 candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
-                contact: jQuery("#contact").val(),
+                contact: selectedContact ? selectedContact : null,
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
@@ -3953,8 +3940,6 @@ CBR.Models.Report.contact = {
         this.$results = jQuery("#search-results > article");
         this.$secondOrSubsequentResultTableHeaders = jQuery(".thead-of-second-or-subsequent-result");
 
-        this.getEl().addClass("legislator-listing");
-
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
@@ -3974,12 +3959,6 @@ CBR.Models.Report.contact = {
     },
 
     _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "us-state"
-            ]
-        });
-
         this.initEditReportValidation();
     },
 
@@ -4005,10 +3984,8 @@ CBR.Models.Report.contact = {
     _doSubmit: function (e) {
         e.preventDefault();
 
-        if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
-            location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
-        }
+        this.$submitBtn.button('loading');
+        location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
     },
 
     _showEditReportModal: function (e) {
@@ -4194,7 +4171,7 @@ function program7(depth0,data) {
 
   buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups report\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.authorName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"MET_LEGISLATOR\" ";
+    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"\"></option>\r\n                                <option value=\"MET_LEGISLATOR\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
@@ -4219,11 +4196,6 @@ function program7(depth0,data) {
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.LEFT_VOICEMAIL)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"NONE\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.none), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.NONE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Money in politics is a problem</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-MPP\" value=\"?\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsIsAProblem), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -4279,5 +4251,32 @@ function program7(depth0,data) {
   stack1 = ((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.notes)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1);
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</textarea>\r\n\r\n                            <p class=\"field-error\" data-check=\"max-length\">512 characters maximum</p>\r\n                        </div>\r\n                    </section>\r\n                </form>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Saving report...\" id=\"confirm-edit\">Save report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+  return buffer;
+  });
+
+this["CBR"]["Templates"]["leadershipPositionSelect"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\r\n<option value=\"";
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">";
+  if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</option>\r\n";
+  return buffer;
+  }
+
+  buffer += "<option value=\"\"></option>\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.leadershipPositions), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
   return buffer;
   });

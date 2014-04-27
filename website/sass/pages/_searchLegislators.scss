@@ -12,34 +12,41 @@
     // Because the large-screen footer is always displayed
     padding-bottom: $footer-item-height * 2;
 
+    $search-legislator-advanced-toggle-link-width: 5em;
+
     form {
-      > div {
-        @include clearfix;
+      > div:first-child {
+        width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-legislator-listing + $odd-form-groups-margin-right + $search-legislator-advanced-toggle-link-width;
       }
     }
 
-    .form-group {
-      width: $field-width-search-pages;
-    }
-
     #advanced-toggle {
-      float: right;
-      padding-top: 29px;
+      float: left;
+
+      width: $search-legislator-advanced-toggle-link-width;
+      margin-left: $odd-form-groups-margin-right;
+      padding-top: 5px;
     }
 
     #advanced-search-fields {
-      display: none;
-    }
+      // Floated children
+      @include clearfix;
 
-    #committees-form-group {
-      width: 34em;
-    }
+      > .form-group {
+        width: $field-width-search-pages;
+      }
 
-    #priority-target-form-group {
-      width: 10em;
+      #committees-form-group {
+        width: 34em;
+      }
 
-      label {
-        font-weight: bold;
+      #priority-target-form-group {
+        width: 10em;
+        margin-top: 30px;
+
+        label {
+          font-weight: bold;
+        }
       }
     }
 

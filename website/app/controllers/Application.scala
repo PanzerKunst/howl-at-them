@@ -1,12 +1,17 @@
 package controllers
 
+import api.CommitteeApi
 import play.api.mvc._
-import db.{StateLegislatorDto, AccountDto, UsStateDto}
+import db._
 import models.{SupportLevel, Chamber, Account}
 import services.{GoogleCivicInformationService, VoteSmartService}
 import concurrent.ExecutionContext.Implicits.global
 import concurrent.Future
 import models.frontend.{WhipCount, WhipCountForChamber, DetailedStateLegislator}
+import models.frontend.WhipCount
+import models.frontend.WhipCountForChamber
+import scala.Some
+import models.Account
 
 object Application extends Controller {
 
@@ -59,7 +64,44 @@ object Application extends Controller {
 
   def searchLegislators = Action {
     implicit request =>
-      Ok(views.html.searchLegislators(UsStateDto.all, isAdmin(session)))
+
+      if (request.queryString.contains("usStateId")) {
+        val selectedUsStateId = request.queryString.get("usStateId").get.head
+
+        val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
+          case Some(positionId) => Some(positionId.toInt)
+          case None => None
+        }
+
+        val committeesInState = CommitteeDto.getInState(selectedUsStateId)
+        val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
+
+        val selectedIsAPriorityTarget = session.get("selectedIsAPriorityTarget") match {
+          case Some(isAPriorityTarget) => isAPriorityTarget.toBoolean
+          case None => false
+        }
+
+        Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), Some(selectedUsStateId), selectedLeadershipPositionId, session.get("selectedCommitteeName"), selectedIsAPriorityTarget)).withSession(
+          session + ("selectedUsStateId" -> selectedUsStateId)
+        )
+      } else {
+        val selectedUsStateId = session.get("selectedUsStateId").get
+
+        val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
+          case Some(positionId) => Some(positionId.toInt)
+          case None => None
+        }
+
+        val committeesInState = CommitteeDto.getInState(selectedUsStateId)
+        val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
+
+        val selectedIsAPriorityTarget = session.get("selectedIsAPriorityTarget") match {
+          case Some(isAPriorityTarget) => isAPriorityTarget.toBoolean
+          case None => false
+        }
+
+        Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), Some(selectedUsStateId), selectedLeadershipPositionId, session.get("selectedCommitteeName"), selectedIsAPriorityTarget))
+      }
   }
 
   def stateLegislator(id: Int) = Action {
@@ -142,7 +184,7 @@ object Application extends Controller {
               case Some("SUPPORTIVE") => nbHouseLegislatorsSupportive = nbHouseLegislatorsSupportive + 1
               case Some("NEEDS_CONVINCING") => nbHouseLegislatorsNeedingConvincing = nbHouseLegislatorsNeedingConvincing + 1
               case Some("NOT_SUPPORTIVE") => nbHouseLegislatorsNotSupportive = nbHouseLegislatorsNotSupportive + 1
-              case Some(_) =>
+              case Some(otherString) =>
               case None =>
             }
 
@@ -157,7 +199,7 @@ object Application extends Controller {
               case Some("SUPPORTIVE") => nbSenateLegislatorsSupportive = nbSenateLegislatorsSupportive + 1
               case Some("NEEDS_CONVINCING") => nbSenateLegislatorsNeedingConvincing = nbSenateLegislatorsNeedingConvincing + 1
               case Some("NOT_SUPPORTIVE") => nbSenateLegislatorsNotSupportive = nbSenateLegislatorsNotSupportive + 1
-              case Some(_) =>
+              case Some(otherString) =>
               case None =>
             }
 

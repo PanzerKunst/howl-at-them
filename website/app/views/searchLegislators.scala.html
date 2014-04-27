@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean)
+@(usStates: List[UsState], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], isAdmin: Boolean, selectedUsStateId: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String], selectedIsAPriorityTarget: Boolean)
 @main("Search legislators", "search-legislators") {
 <!--
     Header
@@ -14,29 +14,12 @@
 <form role="form">
     <div>
         <div class="form-group">
-            <label for="first-name">First name</label><!--
-         --><input type="text" id="first-name" class="form-control" data-min-length="2" />
-
-            <p class="field-error" data-check="min-length">Two characters minimun</p>
-        </div>
-
-        <div class="form-group">
-            <label for="last-name">Last name</label><!--
-         --><input type="text" id="last-name" class="form-control" data-min-length="2" />
-
-            <p class="field-error" data-check="min-length">Two characters minimun</p>
-        </div>
-
-        <div class="form-group">
             <label for="us-state">State</label><!--
          --><select id="us-state" class="form-control">
-                <option value=""></option>
                 @for(usState <- usStates) {
-                <option value="@usState.id">@usState.name</option>
+                <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
                 }
             </select>
-
-            <p class="field-error" data-check="empty"></p>
         </div>
 
         <div class="submit-wrapper">
@@ -46,43 +29,34 @@
         <a id="advanced-toggle">Advanced</a>
     </div>
 
-    <div id="advanced-search-fields">
+    <div id="advanced-search-fields" @if(!selectedLeadershipPositionId.isDefined && !selectedCommitteeName.isDefined && !selectedIsAPriorityTarget) { style="display: none" }>
         <div class="form-group">
-            <label>Leadership position</label>
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="138" disabled /></div>
-                <div><label>@db.LeadershipPositionDto.getOfId(138).get.name</label></div>
-            </article>
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="111" disabled /></div>
-                <div><label>@db.LeadershipPositionDto.getOfId(111).get.name</label></div>
-            </article>
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="313" disabled /></div>
-                <div><label>@db.LeadershipPositionDto.getOfId(313).get.name</label></div>
-            </article>
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="314" disabled /></div>
-                <div><label>@db.LeadershipPositionDto.getOfId(314).get.name</label></div>
-            </article>
+            <label for="leadership-position">Leadership position</label><!--
+         --><select id="leadership-position" class="form-control">
+                <option value=""></option>
+                @for(leadershipPosition <- leadershipPositionsInState) {
+                <option value="@leadershipPosition.id" @if(selectedLeadershipPositionId.isDefined && selectedLeadershipPositionId.get == leadershipPosition.id) { selected }>@leadershipPosition.name</option>
+                }
+            </select>
         </div>
 
         <div class="form-group" id="committees-form-group">
             <label for="committee">Committee</label><!--
-         --><select id="committee" class="form-control" disabled>
-                <option value="">Please select a state first</option>
+         --><select id="committee" class="form-control">
+                <option value=""></option>
+                @for(committeeName <- committeeNamesInState) {
+                <option value="@committeeName" @if(selectedCommitteeName.isDefined && selectedCommitteeName.get == committeeName) { selected }>@committeeName</option>
+                }
             </select>
         </div>
 
         <div class="form-group" id="priority-target-form-group">
             <article class="check-or-radio">
-                <div><input type="checkbox" id="priority-target" /></div>
+                <div><input type="checkbox" id="priority-target" @if(selectedIsAPriorityTarget) { checked } /></div>
                 <div><label>Priority target</label></div>
             </article>
         </div>
     </div>
-
-    <p class="other-form-error">You must input at least one field to perform a search... sorry!</p>
 </form>
 
 <div id="table-wrapper"></div>

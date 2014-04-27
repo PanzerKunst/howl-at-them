@@ -152,6 +152,7 @@ CBR.Controllers.StateLegislator = new Class({
             this.$submitBtn.button('loading');
 
             var authorName = this.$authorName.val();
+            var selectedContact = jQuery("#contact").val();
             var selectedSupportLevel = jQuery("#support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
@@ -185,7 +186,7 @@ CBR.Controllers.StateLegislator = new Class({
             var report = {
                 candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
-                contact: jQuery("#contact").val(),
+                contact: selectedContact ? selectedContact : null,
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,

@@ -23,6 +23,29 @@ object LeadershipPositionDto {
     result
   }
 
+  def getInState(stateId: String): List[LeadershipPosition] = {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          select distinct leadership_id, position_name
+          from vote_smart_leading_official lo
+          inner join state_legislator l on l.id = lo.candidate_id
+          where us_state_id = '""" + stateId + """'
+          order by position_name;"""
+
+        Logger.info("LeadershipPositionDto.getInState():" + query)
+
+        SQL(query)().map {
+          row =>
+            LeadershipPosition(
+              row[Int]("leadership_id"),
+              row[String]("position_name")
+            )
+        }.toList
+    }
+  }
+
   private def getAll: List[LeadershipPosition] = {
     DB.withConnection {
       implicit c =>

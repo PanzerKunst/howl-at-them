@@ -50,7 +50,7 @@ CBR.Models.Report = new Class({
     },
 
     getReadableContact: function() {
-        return CBR.Models.Report.contact[this.getContact()];
+        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : "No contact";
     }
 });
 
@@ -72,6 +72,5 @@ CBR.Models.Report.contact = {
     TALKED_TO_LEGISLATOR: "Talked to legislator",
     CONTACT_WITH_STAFF: "Contact with staff",
     WAITING_FOR_CALLBACK: "Waiting for callback",
-    LEFT_VOICEMAIL: "Left voicemail",
-    NONE: "None"
+    LEFT_VOICEMAIL: "Left voicemail"
 };

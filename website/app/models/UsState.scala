@@ -28,6 +28,6 @@ object UsState {
       usStateName
     }
 
-    "<a href=\"/state-reports?usStateId=" + id + "\">" + linkContent + "</a>"
+    "<a href=\"/state-legislators?usStateId=" + id + "\">" + linkContent + "</a>"
   }
 }

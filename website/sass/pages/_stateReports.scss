@@ -12,43 +12,12 @@
 
     min-width: $large-screen-min-width;
 
-    $label-width-state-reports: 3em;
-    $width-submit-btn-state-reports: 7em;
-
     // Because the large-screen footer is always displayed
     padding-bottom: $footer-item-height * 2;
 
     > form {
-      margin-bottom: 0;
-
-      > div {
-        @include clearfix;
-
-        width: $label-width-state-reports + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-state-reports;
-
-        margin: 0 auto;
-      }
-
-      .form-group {
-        width: $label-width-state-reports + $field-width-search-pages;
-
-        > label {
-          display: inline-block;
-          width: $label-width-state-reports;
-        }
-      }
-    }
-
-    #us-state {
-      display: inline-block;
-      width: $field-width-search-pages;
-    }
-
-    .submit-wrapper {
-      padding-top: 0;
-
-      > button {
-        width: $width-submit-btn-state-reports;
+      > div:first-child {
+        width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-legislator-listing;
       }
     }
 
@@ -116,6 +85,10 @@
           }
         }
       }
+    }
+
+    h2 {
+      text-align: left;
     }
 
     > #sticky-table-header {

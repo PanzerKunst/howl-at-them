@@ -27,7 +27,7 @@
             @header
         </header>
 
-        <div id="content" role="main">
+        <div id="content" role="main" @if(page == "state-reports" || page == "search-legislators" || page == "find-your-legislator") { class="legislator-listing" }>
             @content
         </div>
 

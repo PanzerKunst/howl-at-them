@@ -23,6 +23,9 @@
     }
 
     .submit-wrapper {
+      // TODO: remove after putting the label on the same line
+      margin-top: 24px;
+
       > button {
         width: $width-submit-btn-find-your-legislator;
       }

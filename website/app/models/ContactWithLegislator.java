@@ -5,8 +5,7 @@ public enum ContactWithLegislator {
     TALKED_TO_LEGISLATOR("Talked to legislator"),
     CONTACT_WITH_STAFF("Contact with staff"),
     WAITING_FOR_CALLBACK("Waiting for callback"),
-    LEFT_VOICEMAIL("Left voicemail"),
-    NONE("None");
+    LEFT_VOICEMAIL("Left voicemail");
 
     private String string;
 

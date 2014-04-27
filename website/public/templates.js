@@ -64,7 +64,7 @@ function program7(depth0,data) {
 
   buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups report\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.authorName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"MET_LEGISLATOR\" ";
+    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"\"></option>\r\n                                <option value=\"MET_LEGISLATOR\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
@@ -89,11 +89,6 @@ function program7(depth0,data) {
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.LEFT_VOICEMAIL)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"NONE\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.none), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.NONE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Money in politics is a problem</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-MPP\" value=\"?\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsIsAProblem), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -149,5 +144,32 @@ function program7(depth0,data) {
   stack1 = ((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.notes)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1);
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</textarea>\r\n\r\n                            <p class=\"field-error\" data-check=\"max-length\">512 characters maximum</p>\r\n                        </div>\r\n                    </section>\r\n                </form>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Saving report...\" id=\"confirm-edit\">Save report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+  return buffer;
+  });
+
+this["CBR"]["Templates"]["leadershipPositionSelect"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\r\n<option value=\"";
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">";
+  if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</option>\r\n";
+  return buffer;
+  }
+
+  buffer += "<option value=\"\"></option>\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.leadershipPositions), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
   return buffer;
   });

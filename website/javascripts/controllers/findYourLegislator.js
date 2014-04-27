@@ -16,8 +16,6 @@ CBR.Controllers.FindYourLegislator = new Class({
 
         this.$form = jQuery("form");
         this.$submitBtn = jQuery("[type=submit]");
-
-        this.getEl().addClass("legislator-listing");
     },
 
     _initValidation: function () {

@@ -8,7 +8,7 @@ import java.util.Date
 case class Report(_id: Option[Long] = None,
                   _candidateId: Int,
                   _authorName: String,
-                  _contact: String,
+                  _contact: Option[String],
                   _isMoneyInPoliticsAProblem: Option[Boolean] = None,
                   _isSupportingAmendmentToFixIt: Option[Boolean] = None,
                   _isOpposingCitizensUnited: Option[Boolean] = None,
@@ -23,7 +23,7 @@ case class Report(_id: Option[Long] = None,
 
   val candidateId: Int = _candidateId
   val authorName: String = _authorName
-  val contact: String = _contact
+  val contact: Option[String] = _contact
   val isMoneyInPoliticsAProblem: Option[Boolean] = _isMoneyInPoliticsAProblem
   val isSupportingAmendmentToFixIt: Option[Boolean] = _isSupportingAmendmentToFixIt
   val isOpposingCitizensUnited: Option[Boolean] = _isOpposingCitizensUnited
@@ -39,12 +39,13 @@ case class Report(_id: Option[Long] = None,
 
   def getReadableContact: String = {
     contact match {
-      case "MET_LEGISLATOR" => ContactWithLegislator.MET_LEGISLATOR.getString
-      case "TALKED_TO_LEGISLATOR" => ContactWithLegislator.TALKED_TO_LEGISLATOR.getString
-      case "CONTACT_WITH_STAFF" => ContactWithLegislator.CONTACT_WITH_STAFF.getString
-      case "WAITING_FOR_CALLBACK" => ContactWithLegislator.WAITING_FOR_CALLBACK.getString
-      case "LEFT_VOICEMAIL" => ContactWithLegislator.LEFT_VOICEMAIL.getString
-      case "NONE" => ContactWithLegislator.NONE.getString
+      case Some("MET_LEGISLATOR") => ContactWithLegislator.MET_LEGISLATOR.getString
+      case Some("TALKED_TO_LEGISLATOR") => ContactWithLegislator.TALKED_TO_LEGISLATOR.getString
+      case Some("CONTACT_WITH_STAFF") => ContactWithLegislator.CONTACT_WITH_STAFF.getString
+      case Some("WAITING_FOR_CALLBACK") => ContactWithLegislator.WAITING_FOR_CALLBACK.getString
+      case Some("LEFT_VOICEMAIL") => ContactWithLegislator.LEFT_VOICEMAIL.getString
+      case Some(otherString) => "No contact"
+      case None => "No contact"
     }
   }
 

@@ -96,7 +96,7 @@ object DbAdmin {
             id bigserial primary key,
             candidate_id integer not null/* Can't have that reference because we want to be able to drop the table - references vote_smart_candidate(candidate_id) */,
             author_name varchar(64) not null,
-            contact varchar(32) not null,
+            contact varchar(32),
             is_money_in_politics_a_problem boolean,
             is_supporting_amendment_to_fix_it boolean,
             is_opposing_citizens_united boolean,

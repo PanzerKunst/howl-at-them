@@ -210,8 +210,6 @@ CBR.Controllers.BaseController = new Class({
         if (this.editReportValidator.isValid()) {
             this.$confirmEditBtn.button('loading');
 
-            var $authorName = jQuery("#edit-author-name");
-
             var $mppRadios = jQuery("[name='edit-MPP']");
             var $yesMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
             var $noMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
@@ -228,7 +226,8 @@ CBR.Controllers.BaseController = new Class({
             var $yesPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
             var $noPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
-            var authorName = $authorName.val();
+            var authorName = jQuery("#edit-author-name").val();
+            var selectedContact = jQuery("#edit-contact").val();
             var selectedSupportLevel = jQuery("#edit-support-level").val();
 
             var isMoneyInPoliticsAProblem = null;
@@ -259,17 +258,19 @@ CBR.Controllers.BaseController = new Class({
                 hasPreviouslyVotedForConvention = false;
             }
 
+            var notes = jQuery("#edit-notes").val();
+
             var updatedReport = {
                 id: initialReport.getId(),
                 candidateId: initialReport.getCandidateId(),
                 authorName: authorName,
-                contact: jQuery("#edit-contact").val(),
+                contact: selectedContact ? selectedContact : null,
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#edit-notes").val()
+                notes: notes ? notes : null
             };
 
             new Request({

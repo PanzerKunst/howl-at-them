@@ -12,6 +12,10 @@ object ReportDto {
     DB.withConnection {
       implicit c =>
 
+        var contactForQuery = "NULL"
+        if (report.contact.isDefined && report.contact.get != "")
+          contactForQuery = "'" + DbUtil.safetize(report.contact.get) + "'"
+
         var supportLevelForQuery = "NULL"
         if (report.supportLevel.isDefined && report.supportLevel.get != "")
           supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
@@ -24,8 +28,8 @@ object ReportDto {
                insert into report(candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
           is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes, creation_timestamp)
           values(""" + report.candidateId + """, '""" +
-          DbUtil.safetize(report.authorName) + """', '""" +
-          DbUtil.safetize(report.contact) + """', """ +
+          DbUtil.safetize(report.authorName) + """', """ +
+          contactForQuery + """, """ +
           report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """, """ +
           report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """, """ +
           report.isOpposingCitizensUnited.getOrElse("NULL") + """, """ +
@@ -60,7 +64,7 @@ object ReportDto {
                 Some(id),
                 row[Int]("candidate_id"),
                 row[String]("author_name"),
-                row[String]("contact"),
+                row[Option[String]]("contact"),
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
@@ -96,7 +100,7 @@ object ReportDto {
             Report(row[Option[Long]]("id"),
               candidateId,
               row[String]("author_name"),
-              row[String]("contact"),
+              row[Option[String]]("contact"),
               row[Option[Boolean]]("is_money_in_politics_a_problem"),
               row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
               row[Option[Boolean]]("is_opposing_citizens_united"),
@@ -112,6 +116,10 @@ object ReportDto {
     DB.withConnection {
       implicit c =>
 
+        var contactForQuery = "NULL"
+        if (report.contact.isDefined && report.contact.get != "")
+          contactForQuery = "'" + DbUtil.safetize(report.contact.get) + "'"
+
         var supportLevelForQuery = "NULL"
         if (report.supportLevel.isDefined && report.supportLevel.get != "")
           supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
@@ -123,7 +131,7 @@ object ReportDto {
         val query = """
           update report set
           author_name = '""" + DbUtil.safetize(report.authorName) + """',
-          contact = '""" + DbUtil.safetize(report.contact) + """',
+          contact = """ + contactForQuery + """,
           is_money_in_politics_a_problem = """ + report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """,
           is_supporting_amendment_to_fix_it = """ + report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """,
           is_opposing_citizens_united = """ + report.isOpposingCitizensUnited.getOrElse("NULL") + """,

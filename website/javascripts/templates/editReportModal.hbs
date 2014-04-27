@@ -15,12 +15,12 @@
                         <div class="form-group">
                             <label for="edit-contact">Contact</label><!--
                          --><select id="edit-contact" class="form-control">
+                                <option value=""></option>
                                 <option value="MET_LEGISLATOR" {{#if isContact.metLegislator}} selected {{/if}}>{{ContactWithLegislator.MET_LEGISLATOR}}</option>
                                 <option value="TALKED_TO_LEGISLATOR" {{#if isContact.talkedToLegislator}} selected {{/if}}>{{ContactWithLegislator.TALKED_TO_LEGISLATOR}}</option>
                                 <option value="CONTACT_WITH_STAFF" {{#if isContact.contactWithStaff}} selected {{/if}}>{{ContactWithLegislator.CONTACT_WITH_STAFF}}</option>
                                 <option value="WAITING_FOR_CALLBACK" {{#if isContact.waitingForCallback}} selected {{/if}}>{{ContactWithLegislator.WAITING_FOR_CALLBACK}}</option>
                                 <option value="LEFT_VOICEMAIL" {{#if isContact.leftVoiceMail}} selected {{/if}}>{{ContactWithLegislator.LEFT_VOICEMAIL}}</option>
-                                <option value="NONE" {{#if isContact.none}} selected {{/if}}>{{ContactWithLegislator.NONE}}</option>
                             </select>
                         </div>
 

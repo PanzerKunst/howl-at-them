@@ -10,46 +10,42 @@ object StateLegislatorApi extends Controller {
   def search = Action {
     implicit request =>
 
-      val firstNameFilter = if (request.queryString.contains("firstName"))
-        Some(request.queryString.get("firstName").get.head)
-      else
-        None
+      if (request.queryString.contains("usStateId")) {
+        val usStateId = request.queryString.get("usStateId").get.head
 
-      val lastNameFilter = if (request.queryString.contains("lastName"))
-        Some(request.queryString.get("lastName").get.head)
-      else
-        None
+        var newSession = session + ("selectedUsStateId" -> usStateId)
 
-      val usStateId = if (request.queryString.contains("usStateId"))
-        Some(request.queryString.get("usStateId").get.head)
-      else
-        None
-
-      val committees = if (request.queryString.contains("committeeName")) {
-        val committeeName = request.queryString.get("committeeName").get.head
-        CommitteeDto.getOfNameInState(committeeName, usStateId.get)
-      } else
-        List()
-
-      val isAPriorityTarget = if (request.queryString.contains("isAPriorityTarget"))
-        request.queryString.get("isAPriorityTarget").get.head.toBoolean
-      else
-        false
-
-      if (!firstNameFilter.isDefined && !lastNameFilter.isDefined && !usStateId.isDefined && !isAPriorityTarget) {
-        Forbidden
-      } else {
-        val matchingLegislators = StateLegislatorDto.getMatching(firstNameFilter, lastNameFilter, usStateId, committees, isAPriorityTarget)
-
-        usStateId match {
-          case Some(id) =>
-            Ok(Json.toJson(matchingLegislators)).withSession(
-              session + ("selectedUsStateId" -> id)
-            )
-          case None =>
-            Ok(Json.toJson(matchingLegislators))
+        val leadershipPositionId = if (request.queryString.contains("leadershipPositionId")) {
+          val id = request.queryString.get("leadershipPositionId").get.head
+          newSession = newSession + ("selectedLeadershipPositionId" -> id)
+          Some(id.toInt)
+        } else {
+          newSession = newSession - "selectedLeadershipPositionId"
+          None
         }
-      }
+
+        val committees = if (request.queryString.contains("committeeName")) {
+          val committeeName = request.queryString.get("committeeName").get.head
+          newSession = newSession + ("selectedCommitteeName" -> committeeName)
+          CommitteeDto.getOfNameInState(committeeName, usStateId)
+        } else {
+          newSession = newSession - "selectedCommitteeName"
+          List()
+        }
+
+        val isAPriorityTarget = if (request.queryString.contains("isAPriorityTarget") && request.queryString.get("isAPriorityTarget").get.head.toBoolean) {
+          newSession = newSession + ("selectedIsAPriorityTarget" -> "true")
+          true
+        } else {
+          newSession = newSession - "selectedIsAPriorityTarget"
+          false
+        }
+
+        val matchingLegislators = StateLegislatorDto.getMatching(usStateId, leadershipPositionId, committees, isAPriorityTarget)
+
+        Ok(Json.toJson(matchingLegislators)).withSession(newSession)
+      } else
+        Forbidden
   }
 
   def update = Action(parse.json) {
