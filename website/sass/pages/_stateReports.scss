@@ -92,12 +92,6 @@
     }
 
     > #sticky-table-header {
-      display: none;
-
-      position: fixed;
-      top: 0;
-      z-index: 1;
-
       width: $large-screen-min-width - 2 * $page-side-padding;
     }
 
@@ -109,7 +103,6 @@
 
     table {
       margin-bottom: 0;
-      background-color: #fff;
     }
 
     th,
@@ -121,8 +114,7 @@
         width: 21.5%;
       }
       &.political-parties {
-        width: 4.5%;
-        text-align: center;
+        width: 4.7%;
       }
       &.district {
         width: 14%;
@@ -131,20 +123,16 @@
         width: 18%;
       }
       &.mpp {
-        width: 9%;
-        text-align: center;
+        width: 8.9%;
       }
       &.safi {
-        width: 10%;
-        text-align: center;
+        width: 9.1%;
       }
       &.ocu {
         width: 8%;
-        text-align: center;
       }
       &.pvc {
         width: 9%;
-        text-align: center;
       }
     }
 

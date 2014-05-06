@@ -27,6 +27,8 @@ CBR.Controllers.SearchLegislators = new Class({
         this.$submitBtn = jQuery("[type=submit]");
 
         this.$tableWrapper = jQuery("#table-wrapper");
+
+        this.$stickyTableHeader = jQuery("#sticky-table-header");
     },
 
     _initEvents: function () {
@@ -37,6 +39,14 @@ CBR.Controllers.SearchLegislators = new Class({
         }, this));
 
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
+
+        Breakpoints.on({
+            name: "SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT",
+            matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
+            exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
+        });
+
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
     },
 
     _toggleAdvancedSearch: function (e) {
@@ -144,20 +154,22 @@ CBR.Controllers.SearchLegislators = new Class({
                     "mData": function (source, type, val) {
                         return source.getTitleAbbr();
                     },
-                    "sTitle": "Title"
+                    "sTitle": "Title",
+                    "sWidth": "5.9%"
                 },
                 {
                     "mData": function (source, type, val) {
                         return source.getLastName() + " " + source.getFirstName();
                     },
                     "sTitle": "Name",
-                    "sWidth": "17%"
+                    "sWidth": "17.1%"
                 },
                 {
                     "mData": function (source, type, val) {
                         return '<span class="centered-contents">' + source.getPoliticalPartiesAbbr() + '</span>';
                     },
-                    "sTitle": "Party"
+                    "sTitle": "Party",
+                    "sWidth": "4%"
                 },
                 {
                     "mData": function (source, type, val) {
@@ -174,7 +186,8 @@ CBR.Controllers.SearchLegislators = new Class({
                             null;
                     },
                     "sTitle": "Support (nb reports)",
-                    "bSortable": false
+                    "bSortable": false,
+                    "sWidth": "16.5%"
                 },
                 {
                     "mData": function (source, type, val) {
@@ -262,7 +275,8 @@ CBR.Controllers.SearchLegislators = new Class({
                             return null;
                         }
                     },
-                    "sTitle": '<span class="yes-no-answer">Previous<br />vote for<br />convention</span>'
+                    "sTitle": '<span class="yes-no-answer">Previous<br />vote for<br />convention</span>',
+                    "sWidth": "7.5%"
                 },
                 {
                     "mData": function (source, type, val) {
@@ -271,7 +285,8 @@ CBR.Controllers.SearchLegislators = new Class({
                             latestReport.getReadableContact() :
                             null;
                     },
-                    "sTitle": "Last contact"
+                    "sTitle": "Last contact",
+                    "sWidth": "13.5%"
                 }
             ],
             "oLanguage": {
@@ -283,6 +298,32 @@ CBR.Controllers.SearchLegislators = new Class({
         // To make it look like Bootstrap inputs
         jQuery(".dataTables_filter input").addClass("form-control");
 
+        this.$filterSection = jQuery(".dataTables_filter");
+        this._toggleStickyTableHeader();
+
         jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
+    },
+
+    _onFullWidthBreakpointMatch: function() {
+        this.isBrowserFullWidth = true;
+
+        if (this.$filterSection && !this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        }
+    },
+
+    _onFullWidthBreakpointExit: function() {
+        this.isBrowserFullWidth = false;
+        this.$stickyTableHeader.hide();
+    },
+
+    _toggleStickyTableHeader: function () {
+        if (this.isBrowserFullWidth &&
+                this.$filterSection &&
+                !this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        } else {
+            this.$stickyTableHeader.hide();
+        }
     }
 });

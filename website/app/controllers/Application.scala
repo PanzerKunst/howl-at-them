@@ -85,7 +85,7 @@ object Application extends Controller {
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
-        val selectedUsStateId = session.get("selectedUsStateId").get
+        val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
 
         val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
           case Some(positionId) => Some(positionId.toInt)

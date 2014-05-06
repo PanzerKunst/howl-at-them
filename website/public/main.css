@@ -590,6 +590,12 @@ tr.clickable {
     margin-right: 2em;
     float: left;
     width: 19em; }
+#content.legislator-listing > #sticky-table-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  background-color: #fff; }
 #content.legislator-listing label[for="us-state"] {
   display: inline-block;
   width: 3em; }
@@ -603,6 +609,15 @@ tr.clickable {
     width: 7em; }
 #content.legislator-listing .support-level {
   width: 8.5em; }
+#content.legislator-listing th.political-parties, #content.legislator-listing th.mpp, #content.legislator-listing th.safi, #content.legislator-listing th.ocu, #content.legislator-listing th.pvc,
+#content.legislator-listing td.political-parties,
+#content.legislator-listing td.mpp,
+#content.legislator-listing td.safi,
+#content.legislator-listing td.ocu,
+#content.legislator-listing td.pvc {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0; }
 #content .reports > article {
   border: 1px solid #dddddd;
   border-bottom: none;
@@ -868,6 +883,14 @@ table.dataTable tr.even td.sorting_1 {
 #find-your-legislator footer {
   min-width: 34em; }
 
+@media screen and (min-width: 61.5em) {
+  #search-legislators:after {
+    content: "SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT";
+    visibility: hidden;
+    position: absolute;
+    clip: rect(0 0 0 0); }
+  #search-legislators .js-breakpoints-SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT {
+    position: absolute; } }
 #search-legislators header {
   min-width: 68.5em; }
 #search-legislators #content {
@@ -902,6 +925,28 @@ table.dataTable tr.even td.sorting_1 {
     -ms-transform: rotate(-90deg);
     -o-transform: rotate(-90deg);
     transform: rotate(-90deg); }
+  #search-legislators #content > #sticky-table-header {
+    width: 66.5em; }
+    #search-legislators #content > #sticky-table-header .title {
+      width: 5.3%; }
+    #search-legislators #content > #sticky-table-header .name {
+      width: 17.6%; }
+    #search-legislators #content > #sticky-table-header .political-parties {
+      width: 4.2%; }
+    #search-legislators #content > #sticky-table-header .district {
+      width: 13.2%; }
+    #search-legislators #content > #sticky-table-header .support-level {
+      width: 17%; }
+    #search-legislators #content > #sticky-table-header .mpp {
+      width: 7%; }
+    #search-legislators #content > #sticky-table-header .safi {
+      width: 8.2%; }
+    #search-legislators #content > #sticky-table-header .ocu {
+      width: 6.2%; }
+    #search-legislators #content > #sticky-table-header .pvc {
+      width: 7.5%; }
+    #search-legislators #content > #sticky-table-header .last-contact {
+      width: 13.8%; }
 #search-legislators footer {
   min-width: 59.9375em;
   font-size: 16px; }
@@ -973,16 +1018,11 @@ table.dataTable tr.even td.sorting_1 {
   #state-reports #content h2 {
     text-align: left; }
   #state-reports #content > #sticky-table-header {
-    display: none;
-    position: fixed;
-    top: 0;
-    z-index: 1;
     width: 53em; }
   #state-reports #content > #search-results > article {
     margin-bottom: 20px; }
   #state-reports #content table {
-    margin-bottom: 0;
-    background-color: #fff; }
+    margin-bottom: 0; }
   #state-reports #content th.title,
   #state-reports #content td.title {
     width: 6%; }
@@ -991,8 +1031,7 @@ table.dataTable tr.even td.sorting_1 {
     width: 21.5%; }
   #state-reports #content th.political-parties,
   #state-reports #content td.political-parties {
-    width: 4.5%;
-    text-align: center; }
+    width: 4.7%; }
   #state-reports #content th.district,
   #state-reports #content td.district {
     width: 14%; }
@@ -1001,20 +1040,16 @@ table.dataTable tr.even td.sorting_1 {
     width: 18%; }
   #state-reports #content th.mpp,
   #state-reports #content td.mpp {
-    width: 9%;
-    text-align: center; }
+    width: 8.9%; }
   #state-reports #content th.safi,
   #state-reports #content td.safi {
-    width: 10%;
-    text-align: center; }
+    width: 9.1%; }
   #state-reports #content th.ocu,
   #state-reports #content td.ocu {
-    width: 8%;
-    text-align: center; }
+    width: 8%; }
   #state-reports #content th.pvc,
   #state-reports #content td.pvc {
-    width: 9%;
-    text-align: center; }
+    width: 9%; }
   #state-reports #content th.political-parties {
     text-align: center;
     padding: 0;

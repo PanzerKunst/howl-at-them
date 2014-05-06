@@ -64,6 +64,16 @@
       }
     }
 
+    > #sticky-table-header {
+      display: none;
+
+      position: fixed;
+      top: 0;
+      z-index: 1;
+
+      background-color: #fff;
+    }
+
     label[for="us-state"] {
       display: inline-block;
       width: $label-width-us-state;
@@ -85,6 +95,20 @@
 
     .support-level {
       width: 8.5em;
+    }
+
+    th,
+    td {
+      &.political-parties,
+      &.mpp,
+      &.safi,
+      &.ocu,
+      &.pvc {
+        text-align: center;
+
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
   }
 

@@ -1,6 +1,13 @@
 #search-legislators {
   $search-legislator-page-min-width: 68.5em;  // ~960px
 
+  $strange-em-difference-for-search-legislator-page-mq-breakpoint: 7em;
+  $search-legislator-page-full-width-mq-breakpoint: $search-legislator-page-min-width - $strange-em-difference-for-search-legislator-page-mq-breakpoint;
+
+  @media screen and (min-width: $search-legislator-page-full-width-mq-breakpoint) {
+    @include defineBreakpoint("SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT");
+  }
+
   header {
     min-width: $search-legislator-page-min-width;
   }
@@ -55,6 +62,41 @@
       padding: 0;
 
       @include transform(rotate(-90deg));
+    }
+
+    > #sticky-table-header {
+      width: $search-legislator-page-min-width - 2 * $page-side-padding;
+
+      .title {
+        width: 5.3%;
+      }
+      .name {
+        width: 17.6%;
+      }
+      .political-parties {
+        width: 4.2%;
+      }
+      .district {
+        width: 13.2%;
+      }
+      .support-level {
+        width: 17%;
+      }
+      .mpp {
+        width: 7%;
+      }
+      .safi {
+        width: 8.2%;
+      }
+      .ocu {
+        width: 6.2%;
+      }
+      .pvc {
+        width: 7.5%;
+      }
+      .last-contact {
+        width: 13.8%;
+      }
     }
   }
 
