@@ -98,7 +98,7 @@ object StateLegislatorDto {
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
                 row[Option[Boolean]]("has_previously_voted_for_convention"),
-                row[Option[String]]("support_level"),
+                row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp")
               ))
@@ -408,7 +408,7 @@ object StateLegislatorDto {
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
                 row[Option[Boolean]]("has_previously_voted_for_convention"),
-                row[Option[String]]("support_level"),
+                row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp")
               ))

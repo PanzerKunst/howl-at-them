@@ -269,7 +269,7 @@ CBR.Controllers.BaseController = new Class({
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
-                supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
+                supportLevel: selectedSupportLevel,
                 notes: notes ? notes : null
             };
 

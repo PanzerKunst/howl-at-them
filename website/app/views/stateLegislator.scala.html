@@ -254,28 +254,25 @@
             <div class="form-group">
                 <label for="support-level">Support level</label><!--
              --><select id="support-level" class="form-control">
-                    <option value=""></option>
+                    <option value="@SupportLevel.UNKNOWN"></option>
 
                     <option value="@SupportLevel.SUPPORTIVE"
                     @if(!stateLegislator.reports.isEmpty &&
-                        stateLegislator.reports.head.supportLevel.isDefined &&
-                        stateLegislator.reports.head.supportLevel.get == "SUPPORTIVE") {
+                        stateLegislator.reports.head.supportLevel == "SUPPORTIVE") {
                             selected
                     }
                     >@SupportLevel.SUPPORTIVE.getString</option><!-- comparing with SupportLevel.SUPPORTIVE doesn't work, strange... -->
 
                     <option value="@SupportLevel.NEEDS_CONVINCING"
                     @if(!stateLegislator.reports.isEmpty &&
-                        stateLegislator.reports.head.supportLevel.isDefined &&
-                        stateLegislator.reports.head.supportLevel.get == "NEEDS_CONVINCING") {
+                        stateLegislator.reports.head.supportLevel == "NEEDS_CONVINCING") {
                             selected
                     }
                     >@SupportLevel.NEEDS_CONVINCING.getString</option>
 
                     <option value="@SupportLevel.NOT_SUPPORTIVE"
                     @if(!stateLegislator.reports.isEmpty &&
-                        stateLegislator.reports.head.supportLevel.isDefined &&
-                        stateLegislator.reports.head.supportLevel.get == "NOT_SUPPORTIVE") {
+                        stateLegislator.reports.head.supportLevel == "NOT_SUPPORTIVE") {
                             selected
                     }
                     >@SupportLevel.NOT_SUPPORTIVE.getString</option>

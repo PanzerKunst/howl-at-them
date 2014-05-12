@@ -39,11 +39,7 @@ object Application extends Controller {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
         val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
-        val firstLegislator = detailedLegislatorsForThisState.headOption
-
-        val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
-
-        Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), firstLegislator, nextLegislators.toList, action)).withSession(
+        Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), detailedLegislatorsForThisState, action)).withSession(
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
@@ -51,13 +47,9 @@ object Application extends Controller {
           case Some(selectedUsStateId) =>
             val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
-            val firstLegislator = detailedLegislatorsForThisState.headOption
+            Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), detailedLegislatorsForThisState, action))
 
-            val nextLegislators = for (i <- 1 to detailedLegislatorsForThisState.length - 1) yield detailedLegislatorsForThisState.apply(i)
-
-            Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), firstLegislator, nextLegislators.toList, action))
-
-          case None => Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), None, None, None, List(), action))
+          case None => Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), None, None, List(), action))
         }
       }
   }
@@ -181,11 +173,10 @@ object Application extends Controller {
         stateLegislator.reports.headOption match {
           case Some(report) =>
             report.supportLevel match {
-              case Some("SUPPORTIVE") => nbHouseLegislatorsSupportive = nbHouseLegislatorsSupportive + 1
-              case Some("NEEDS_CONVINCING") => nbHouseLegislatorsNeedingConvincing = nbHouseLegislatorsNeedingConvincing + 1
-              case Some("NOT_SUPPORTIVE") => nbHouseLegislatorsNotSupportive = nbHouseLegislatorsNotSupportive + 1
-              case Some(otherString) =>
-              case None =>
+              case "SUPPORTIVE" => nbHouseLegislatorsSupportive = nbHouseLegislatorsSupportive + 1
+              case "NEEDS_CONVINCING" => nbHouseLegislatorsNeedingConvincing = nbHouseLegislatorsNeedingConvincing + 1
+              case "NOT_SUPPORTIVE" => nbHouseLegislatorsNotSupportive = nbHouseLegislatorsNotSupportive + 1
+              case otherString =>
             }
 
           case None =>
@@ -196,11 +187,10 @@ object Application extends Controller {
         stateLegislator.reports.headOption match {
           case Some(report) =>
             report.supportLevel match {
-              case Some("SUPPORTIVE") => nbSenateLegislatorsSupportive = nbSenateLegislatorsSupportive + 1
-              case Some("NEEDS_CONVINCING") => nbSenateLegislatorsNeedingConvincing = nbSenateLegislatorsNeedingConvincing + 1
-              case Some("NOT_SUPPORTIVE") => nbSenateLegislatorsNotSupportive = nbSenateLegislatorsNotSupportive + 1
-              case Some(otherString) =>
-              case None =>
+              case "SUPPORTIVE" => nbSenateLegislatorsSupportive = nbSenateLegislatorsSupportive + 1
+              case "NEEDS_CONVINCING" => nbSenateLegislatorsNeedingConvincing = nbSenateLegislatorsNeedingConvincing + 1
+              case "NOT_SUPPORTIVE" => nbSenateLegislatorsNotSupportive = nbSenateLegislatorsNotSupportive + 1
+              case otherString =>
             }
 
           case None =>
@@ -209,44 +199,44 @@ object Application extends Controller {
     }
 
     // House, supportive
-    val whipCountHouseSupportive = WhipCount(Some(SupportLevel.SUPPORTIVE),
+    val whipCountHouseSupportive = WhipCount(SupportLevel.SUPPORTIVE,
       nbHouseLegislatorsSupportive,
       (nbHouseLegislatorsSupportive.toDouble / nbHouseLegislators * 100).toInt)
 
     // House, needing convincing
-    val whipCountHouseNeedingConvincing = WhipCount(Some(SupportLevel.NEEDS_CONVINCING),
+    val whipCountHouseNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
       nbHouseLegislatorsNeedingConvincing,
       (nbHouseLegislatorsNeedingConvincing.toDouble / nbHouseLegislators * 100).toInt)
 
     // House, not supportive
-    val whipCountHouseNotSupportive = WhipCount(Some(SupportLevel.NOT_SUPPORTIVE),
+    val whipCountHouseNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
       nbHouseLegislatorsNotSupportive,
       (nbHouseLegislatorsNotSupportive.toDouble / nbHouseLegislators * 100).toInt)
 
     // House, unknown
     val nbHouseLegislatorsWhoseSupportLevelIsUnknown = nbHouseLegislators - nbHouseLegislatorsSupportive - nbHouseLegislatorsNeedingConvincing - nbHouseLegislatorsNotSupportive
-    val whipCountHouseUnknown = WhipCount(None,
+    val whipCountHouseUnknown = WhipCount(SupportLevel.UNKNOWN,
       nbHouseLegislatorsWhoseSupportLevelIsUnknown,
       (nbHouseLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbHouseLegislators * 100).toInt)
 
     // Senate, supportive
-    val whipCountSenateSupportive = WhipCount(Some(SupportLevel.SUPPORTIVE),
+    val whipCountSenateSupportive = WhipCount(SupportLevel.SUPPORTIVE,
       nbSenateLegislatorsSupportive,
       (nbSenateLegislatorsSupportive.toDouble / nbSenateLegislators * 100).toInt)
 
     // Senate, needing convincing
-    val whipCountSenateNeedingConvincing = WhipCount(Some(SupportLevel.NEEDS_CONVINCING),
+    val whipCountSenateNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
       nbSenateLegislatorsNeedingConvincing,
       (nbSenateLegislatorsNeedingConvincing.toDouble / nbSenateLegislators * 100).toInt)
 
     // Senate, not supportive
-    val whipCountSenateNotSupportive = WhipCount(Some(SupportLevel.NOT_SUPPORTIVE),
+    val whipCountSenateNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
       nbSenateLegislatorsNotSupportive,
       (nbSenateLegislatorsNotSupportive.toDouble / nbSenateLegislators * 100).toInt)
 
     // Senate, unknown
     val nbSenateLegislatorsWhoseSupportLevelIsUnknown = nbSenateLegislators - nbSenateLegislatorsSupportive - nbSenateLegislatorsNeedingConvincing - nbSenateLegislatorsNotSupportive
-    val whipCountSenateUnknown = WhipCount(None,
+    val whipCountSenateUnknown = WhipCount(SupportLevel.UNKNOWN,
       nbSenateLegislatorsWhoseSupportLevelIsUnknown,
       (nbSenateLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbSenateLegislators * 100).toInt)
 

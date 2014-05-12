@@ -2,7 +2,7 @@ package db
 
 import anorm._
 import play.api.Logger
-import models.Report
+import models.{SupportLevel, Report}
 import play.api.db.DB
 import play.api.Play.current
 import java.util.Date
@@ -17,8 +17,8 @@ object ReportDto {
           contactForQuery = "'" + DbUtil.safetize(report.contact.get) + "'"
 
         var supportLevelForQuery = "NULL"
-        if (report.supportLevel.isDefined && report.supportLevel.get != "")
-          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
+        if (report.supportLevel != SupportLevel.UNKNOWN.toString)
+          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel) + "'"
 
         var notesForQuery = "NULL"
         if (report.notes.isDefined && report.notes.get != "")
@@ -69,7 +69,7 @@ object ReportDto {
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
                 row[Option[Boolean]]("has_previously_voted_for_convention"),
-                row[Option[String]]("support_level"),
+                row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp"),
                 row[Boolean]("is_deleted")
@@ -105,7 +105,7 @@ object ReportDto {
               row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
               row[Option[Boolean]]("is_opposing_citizens_united"),
               row[Option[Boolean]]("has_previously_voted_for_convention"),
-              row[Option[String]]("support_level"),
+              row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
               row[Option[String]]("notes"),
               row[Option[Long]]("creation_timestamp"))
         }.toList
@@ -121,8 +121,8 @@ object ReportDto {
           contactForQuery = "'" + DbUtil.safetize(report.contact.get) + "'"
 
         var supportLevelForQuery = "NULL"
-        if (report.supportLevel.isDefined && report.supportLevel.get != "")
-          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel.get) + "'"
+        if (report.supportLevel != SupportLevel.UNKNOWN.toString)
+          supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel) + "'"
 
         var notesForQuery = "NULL"
         if (report.notes.isDefined && report.notes.get != "")

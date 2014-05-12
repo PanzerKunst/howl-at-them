@@ -95,6 +95,10 @@
       width: $large-screen-min-width - 2 * $page-side-padding;
     }
 
+    > #table-header-visible-even-when-no-results th {
+      border-bottom-width: 1px;
+    }
+
     > #search-results {
       > article {
         margin-bottom: $line-height-computed;
@@ -141,12 +145,6 @@
       padding: 0;
 
       @include transform(rotate(-90deg));
-    }
-
-    .thead-of-second-or-subsequent-result {
-      .political-parties {
-        @include transform(none);
-      }
     }
   }
 

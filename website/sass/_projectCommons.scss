@@ -224,8 +224,8 @@ $action-alert-width: 8.1em;
   }
 }
 
-.dataTables_filter,
-.table-filter > div {
+// TODO: remove
+.dataTables_filter {
   .form-control {
     display: inline-block;
     width: auto;
@@ -234,10 +234,80 @@ $action-alert-width: 8.1em;
   }
 }
 
-.table-filter {
+/* TODO: remove .table-filter {
   @include clearfix;
 
   > div {
     float: right;
+  }
+} */
+
+$table-filter-margin: 0.2em;
+
+.table-filter {
+  @include clearfix;
+
+  margin-bottom: 2px;
+
+  > .form-control {
+    float: left;
+
+    margin: 0 2px 0 1px;  // Right margin is 1px more than the left, it's the width of the border of the table column below
+
+    // To have more room for the text
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  > #title-filter {
+    width: 42px;
+  }
+
+  > #name-filter {
+    width: 158px;
+  }
+
+  > #party-filter {
+    width: 32px;
+    text-align: center;
+  }
+
+  > #district-filter {
+    width: 102px;
+  }
+
+  > #support-level-filter {
+    width: 131px;
+  }
+
+  > #mpp-filter {
+    width: 64px;
+    text-align: center;
+  }
+
+  > #safi-filter {
+    width: 65px;
+    text-align: center;
+  }
+
+  > #ocu-filter {
+    width: 56px;
+    text-align: center;
+  }
+
+  > #pvc-filter {
+    width: 66px;
+    text-align: center;
+    margin-right: 1px;
+  }
+
+  > .close {
+    position: relative;
+    margin: 5px -15px 0 0;
+
+    // To avoid the button stay dark gray after being clicked
+    &:focus {
+      opacity: 0.2;
+    }
   }
 }

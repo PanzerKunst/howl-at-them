@@ -3,7 +3,8 @@ package models;
 public enum SupportLevel {
     SUPPORTIVE("Supportive"),
     NEEDS_CONVINCING("Needs convincing"),
-    NOT_SUPPORTIVE("Not supportive");
+    NOT_SUPPORTIVE("Not supportive"),
+    UNKNOWN("Unknown");
 
     private String string;
 

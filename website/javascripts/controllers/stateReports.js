@@ -19,23 +19,29 @@ CBR.Controllers.StateReports = new Class({
         this.$submitBtn = jQuery("[type=submit]");
 
         this.$filterSection = jQuery(".table-filter");
-        this.$filter = this.$filterSection.find("input");
+        this.$inputFilters = this.$filterSection.find("input");
+        this.$titleFilter = jQuery("#title-filter");
+        this.$nameFilter = jQuery("#name-filter");
+        this.$partyFilter = jQuery("#party-filter");
+        this.$districtFilter = jQuery("#district-filter");
+        this.$supportLevelFilter = jQuery("#support-level-filter");
+        this.$mppFilter = jQuery("#mpp-filter");
+        this.$safiFilter = jQuery("#safi-filter");
+        this.$ocuFilter = jQuery("#ocu-filter");
+        this.$pvcFilter = jQuery("#pvc-filter");
+
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$results = jQuery("#search-results > article");
-        this.$secondOrSubsequentResultTableHeaders = jQuery(".thead-of-second-or-subsequent-result");
+        this.$secondOrSubsequentResultTableHeaders = jQuery(_.rest(jQuery("#search-results thead")));
 
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
     },
 
     _getStateLegislators: function () {
-        if (!this.options.firstLegislator) {
-            return [];
-        }
+        var result = [];
 
-        var result = [new CBR.Models.StateLegislator(this.options.firstLegislator)];
-
-        this.options.nextLegislators.forEach(function (item, index) {
+        this.options.legislators.forEach(function (item, index) {
             result.push(new CBR.Models.StateLegislator(item));
         });
 
@@ -49,12 +55,14 @@ CBR.Controllers.StateReports = new Class({
     _initEvents: function () {
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
 
+        this.$inputFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
+        this.$supportLevelFilter.change(jQuery.proxy(this._filterResults, this));
+        this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
+
         jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
-
-        this.$filter.keyup(_.debounce(jQuery.proxy(this._doFilterResults, this), 100));
 
         Breakpoints.on({
             name: "STATE_REPORTS_LARGE_SCREEN_BREAKPOINT",
@@ -106,66 +114,161 @@ CBR.Controllers.StateReports = new Class({
         return null;
     },
 
-    _doFilterResults: function (e) {
-        var filter = this.$filter.val();
+    _filterResults: function (e) {
+        this.$results.each(jQuery.proxy(function (index, element) {
+            var isResultMatchedByFilter = true;
 
-        if (filter.length < 2) {
-            this.$results.show();
-        } else {
-            this.$results.each(function (index, element) {
-                var isResultMatchedByFilter = false;
+            var $article = jQuery(element);
+            var tds = $article.find("td");
 
-                var $article = jQuery(element);
-                var tds = $article.find("td");
+            var $td, value, filter, $span;
 
-                // Title
-                var $td = jQuery(tds.get(0));
-                var value = jQuery($td.children().get(0)).attr("title");
-                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-                    isResultMatchedByFilter = true;
+            // Title
+            filter = this.$titleFilter.val();
+            if (filter.length > 0) {
+                $td = jQuery(tds.get(0));
+                value = jQuery($td.children().get(0)).attr("title").substring(0, 1);
+                if (value.toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
+                    isResultMatchedByFilter = false;
                 }
+            }
 
-                // Name
-                $td = jQuery(tds.get(1));
-                value = $td.html();
-                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-                    isResultMatchedByFilter = true;
-                }
-
-                // Party
-                $td = jQuery(tds.get(2));
-                value = jQuery($td.find("abbr")).attr("title");
-                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-                    isResultMatchedByFilter = true;
-                }
-
-                // District
-                $td = jQuery(tds.get(3));
-                value = $td.html();
-                if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-                    isResultMatchedByFilter = true;
-                }
-
-                // Support level
-                $td = jQuery(tds.get(4));
-                var $span = $td.children();
-                if ($span.size() > 0) {
-                    value = $span.get(0).innerHTML;
-                    if (value.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-                        isResultMatchedByFilter = true;
+            // Name
+            if (isResultMatchedByFilter) {
+                filter = this.$nameFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(1));
+                    value = $td.html();
+                    if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                        isResultMatchedByFilter = false;
                     }
                 }
+            }
 
-                if (isResultMatchedByFilter) {
-                    $article.show();
-                } else {
-                    $article.hide();
+            // Party
+            if (isResultMatchedByFilter) {
+                filter = this.$partyFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(2));
+                    value = jQuery($td.find("abbr")).html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
                 }
-            });
-        }
+            }
+
+            // District
+            if (isResultMatchedByFilter) {
+                filter = this.$districtFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(3));
+                    value = $td.html();
+                    if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // Support level
+            if (isResultMatchedByFilter) {
+                filter = this.$supportLevelFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(4));
+                    $span = $td.children();
+                    if ($span.size() === 0) {
+                        isResultMatchedByFilter = false;
+                    } else {
+                        value = $span.get(0).classList;
+                        if (!value.contains(filter)) {
+                            isResultMatchedByFilter = false;
+                        }
+                    }
+                }
+            }
+
+            // MPP
+            if (isResultMatchedByFilter) {
+                filter = this.$mppFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(5));
+                    $span = $td.children();
+                    if ($span.size() === 0) {
+                        isResultMatchedByFilter = false;
+                    } else {
+                        value = $span.html();
+                        if (value.toLowerCase() !== filter.toLowerCase()) {
+                            isResultMatchedByFilter = false;
+                        }
+                    }
+                }
+            }
+
+            // SAFI
+            if (isResultMatchedByFilter) {
+                filter = this.$safiFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(6));
+                    $span = $td.children();
+                    if ($span.size() === 0) {
+                        isResultMatchedByFilter = false;
+                    } else {
+                        value = $span.html();
+                        if (value.toLowerCase() !== filter.toLowerCase()) {
+                            isResultMatchedByFilter = false;
+                        }
+                    }
+                }
+            }
+
+            // OCU
+            if (isResultMatchedByFilter) {
+                filter = this.$ocuFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(7));
+                    $span = $td.children();
+                    if ($span.size() === 0) {
+                        isResultMatchedByFilter = false;
+                    } else {
+                        value = $span.html();
+                        if (value.toLowerCase() !== filter.toLowerCase()) {
+                            isResultMatchedByFilter = false;
+                        }
+                    }
+                }
+            }
+
+            // PVC
+            if (isResultMatchedByFilter) {
+                filter = this.$pvcFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds.get(8));
+                    $span = $td.children();
+                    if ($span.size() === 0) {
+                        isResultMatchedByFilter = false;
+                    } else {
+                        value = $span.html();
+                        if (value.toLowerCase() !== filter.toLowerCase()) {
+                            isResultMatchedByFilter = false;
+                        }
+                    }
+                }
+            }
+
+            if (isResultMatchedByFilter) {
+                $article.show();
+            } else {
+                $article.hide();
+            }
+        }, this));
     },
 
-    _onLargeScreenBreakpointMatch: function() {
+    _resetFilter: function (e) {
+        this.$supportLevelFilter.prop("selectedIndex", 0);
+        this.$inputFilters.val("");
+        this._filterResults();
+    },
+
+    _onLargeScreenBreakpointMatch: function () {
         this.isBrowserLargeScreen = true;
 
         this.$secondOrSubsequentResultTableHeaders.hide();
@@ -174,7 +277,7 @@ CBR.Controllers.StateReports = new Class({
         }
     },
 
-    _onLargeScreenBreakpointExit: function() {
+    _onLargeScreenBreakpointExit: function () {
         this.isBrowserLargeScreen = false;
 
         this.$stickyTableHeader.hide();

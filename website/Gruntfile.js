@@ -130,6 +130,8 @@ module.exports = function (grunt) {
                 src: [
                     // Libs
                     'libs/bootstrap/css/bootstrap.css',
+                    'libs/datatables/css/jquery.dataTables.css',
+                    'libs/jvectormap/jquery-jvectormap-1.2.2.css',
 
                     // Rest
                     'public/<%= pkg.name %>.css'

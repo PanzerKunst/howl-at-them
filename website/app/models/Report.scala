@@ -13,7 +13,7 @@ case class Report(_id: Option[Long] = None,
                   _isSupportingAmendmentToFixIt: Option[Boolean] = None,
                   _isOpposingCitizensUnited: Option[Boolean] = None,
                   _hasPreviouslyVotedForConvention: Option[Boolean] = None,
-                  _supportLevel: Option[String] = None,
+                  _supportLevel: String,
                   _notes: Option[String],
                   _creationTimestamp: Option[Long] = None,
                   _isDeleted: Boolean = false) {
@@ -28,7 +28,7 @@ case class Report(_id: Option[Long] = None,
   val isSupportingAmendmentToFixIt: Option[Boolean] = _isSupportingAmendmentToFixIt
   val isOpposingCitizensUnited: Option[Boolean] = _isOpposingCitizensUnited
   val hasPreviouslyVotedForConvention: Option[Boolean] = _hasPreviouslyVotedForConvention
-  val supportLevel: Option[String] = _supportLevel
+  val supportLevel: String = _supportLevel
   val notes: Option[String] = _notes
   val creationTimestamp: Option[Long] = _creationTimestamp
   val isDeleted: Boolean = _isDeleted
@@ -51,11 +51,10 @@ case class Report(_id: Option[Long] = None,
 
   def getSupportLevelSpan: String = {
     supportLevel match {
-      case Some("SUPPORTIVE") => "<span class=\"support-level " + SupportLevel.SUPPORTIVE + "\">" + SupportLevel.SUPPORTIVE.getString + "</span>"
-      case Some("NEEDS_CONVINCING") => "<span class=\"support-level " + SupportLevel.NEEDS_CONVINCING + "\">" + SupportLevel.NEEDS_CONVINCING.getString + "</span>"
-      case Some("NOT_SUPPORTIVE") => "<span class=\"support-level " + SupportLevel.NOT_SUPPORTIVE + "\">" + SupportLevel.NOT_SUPPORTIVE.getString + "</span>"
-      case Some(otherString) => "<span class=\"support-level UNKNOWN\">Unknown</span>"
-      case None => "<span class=\"support-level UNKNOWN\">Unknown</span>"
+      case "SUPPORTIVE" => "<span class=\"support-level " + SupportLevel.SUPPORTIVE + "\">" + SupportLevel.SUPPORTIVE.getString + "</span>"
+      case "NEEDS_CONVINCING" => "<span class=\"support-level " + SupportLevel.NEEDS_CONVINCING + "\">" + SupportLevel.NEEDS_CONVINCING.getString + "</span>"
+      case "NOT_SUPPORTIVE" => "<span class=\"support-level " + SupportLevel.NOT_SUPPORTIVE + "\">" + SupportLevel.NOT_SUPPORTIVE.getString + "</span>"
+      case "UNKNOWN" => "<span class=\"support-level " + SupportLevel.UNKNOWN + "\">" + SupportLevel.UNKNOWN.getString + "</span>"
     }
   }
 
