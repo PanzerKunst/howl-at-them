@@ -4023,7 +4023,7 @@ CBR.Models.Report.contact = {
         this.$filterSection.remove();
         jQuery("#table-header-visible-even-when-no-results").remove();
         jQuery("#search-results").html('<div class="data-loading"></div>');
-        
+
         location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
     },
 
