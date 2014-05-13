@@ -96,9 +96,6 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _doSubmit: function (e) {
-        if (e)
-            e.preventDefault();
-
         this.$tableWrapper.html('<div class="data-loading"></div>');
 
         var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();

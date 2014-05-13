@@ -3434,9 +3434,6 @@ CBR.Models.Report.contact = {
     },
 
     _doSubmit: function (e) {
-        if (e)
-            e.preventDefault();
-
         this.$tableWrapper.html('<div class="data-loading"></div>');
 
         var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
@@ -3967,7 +3964,6 @@ CBR.Models.Report.contact = {
         this.parent();
 
         this.$usStateSelect = jQuery("#us-state");
-        this.$submitBtn = jQuery("[type=submit]");
 
         this.$filterSection = jQuery(".table-filter");
         this.$inputFilters = this.$filterSection.find("input");
@@ -4024,9 +4020,10 @@ CBR.Models.Report.contact = {
     },
 
     _doSubmit: function (e) {
-        e.preventDefault();
-
-        this.$submitBtn.button('loading');
+        this.$filterSection.remove();
+        jQuery("#table-header-visible-even-when-no-results").remove();
+        jQuery("#search-results").html('<div class="data-loading"></div>');
+        
         location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
     },
 

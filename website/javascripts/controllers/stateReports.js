@@ -15,7 +15,6 @@ CBR.Controllers.StateReports = new Class({
         this.parent();
 
         this.$usStateSelect = jQuery("#us-state");
-        this.$submitBtn = jQuery("[type=submit]");
 
         this.$filterSection = jQuery(".table-filter");
         this.$inputFilters = this.$filterSection.find("input");
@@ -72,9 +71,10 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _doSubmit: function (e) {
-        e.preventDefault();
-
-        this.$submitBtn.button('loading');
+        this.$filterSection.remove();
+        jQuery("#table-header-visible-even-when-no-results").remove();
+        jQuery("#search-results").html('<div class="data-loading"></div>');
+        
         location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
     },
 
