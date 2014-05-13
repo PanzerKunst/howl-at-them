@@ -43,14 +43,10 @@ object Application extends Controller {
           session + ("selectedUsStateId" -> selectedUsStateId)
         )
       } else {
-        session.get("selectedUsStateId") match {
-          case Some(selectedUsStateId) =>
-            val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
+        val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
+        val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
-            Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), detailedLegislatorsForThisState, action))
-
-          case None => Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), None, None, List(), action))
-        }
+        Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), Some(selectedUsStateId), Some(calculateWhipCountPerChamber(detailedLegislatorsForThisState)), detailedLegislatorsForThisState, action))
       }
   }
 

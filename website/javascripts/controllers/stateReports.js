@@ -56,7 +56,6 @@ CBR.Controllers.StateReports = new Class({
         this.$form.submit(jQuery.proxy(this._doSubmit, this));
 
         this.$inputFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
-        this.$supportLevelFilter.change(jQuery.proxy(this._filterResults, this));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
 
         jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
@@ -121,14 +120,14 @@ CBR.Controllers.StateReports = new Class({
             var $article = jQuery(element);
             var tds = $article.find("td");
 
-            var $td, value, filter, $span;
+            var $td, value, filter;
 
             // Title
             filter = this.$titleFilter.val();
             if (filter.length > 0) {
                 $td = jQuery(tds.get(0));
-                value = jQuery($td.children().get(0)).attr("title").substring(0, 1);
-                if (value.toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
+                value = jQuery($td.children().get(0)).attr("title");
+                if (value.substring(0, 1).toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
                     isResultMatchedByFilter = false;
                 }
             }
@@ -174,14 +173,9 @@ CBR.Controllers.StateReports = new Class({
                 filter = this.$supportLevelFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(4));
-                    $span = $td.children();
-                    if ($span.size() === 0) {
+                    value = $td.children().html();
+                    if (value.substring(0, 2).toLowerCase() !== filter.substring(0, 2).toLowerCase()) {
                         isResultMatchedByFilter = false;
-                    } else {
-                        value = $span.get(0).classList;
-                        if (!value.contains(filter)) {
-                            isResultMatchedByFilter = false;
-                        }
                     }
                 }
             }
@@ -191,14 +185,9 @@ CBR.Controllers.StateReports = new Class({
                 filter = this.$mppFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(5));
-                    $span = $td.children();
-                    if ($span.size() === 0) {
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
-                    } else {
-                        value = $span.html();
-                        if (value.toLowerCase() !== filter.toLowerCase()) {
-                            isResultMatchedByFilter = false;
-                        }
                     }
                 }
             }
@@ -208,14 +197,9 @@ CBR.Controllers.StateReports = new Class({
                 filter = this.$safiFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(6));
-                    $span = $td.children();
-                    if ($span.size() === 0) {
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
-                    } else {
-                        value = $span.html();
-                        if (value.toLowerCase() !== filter.toLowerCase()) {
-                            isResultMatchedByFilter = false;
-                        }
                     }
                 }
             }
@@ -225,14 +209,9 @@ CBR.Controllers.StateReports = new Class({
                 filter = this.$ocuFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(7));
-                    $span = $td.children();
-                    if ($span.size() === 0) {
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
-                    } else {
-                        value = $span.html();
-                        if (value.toLowerCase() !== filter.toLowerCase()) {
-                            isResultMatchedByFilter = false;
-                        }
                     }
                 }
             }
@@ -242,14 +221,9 @@ CBR.Controllers.StateReports = new Class({
                 filter = this.$pvcFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(8));
-                    $span = $td.children();
-                    if ($span.size() === 0) {
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
-                    } else {
-                        value = $span.html();
-                        if (value.toLowerCase() !== filter.toLowerCase()) {
-                            isResultMatchedByFilter = false;
-                        }
                     }
                 }
             }
@@ -263,7 +237,6 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _resetFilter: function (e) {
-        this.$supportLevelFilter.prop("selectedIndex", 0);
         this.$inputFilters.val("");
         this._filterResults();
     },
