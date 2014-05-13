@@ -23,7 +23,7 @@
 
     form {
       > div:first-child {
-        width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right + $width-submit-btn-legislator-listing + $odd-form-groups-margin-right + $search-legislator-advanced-toggle-link-width;
+        width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right + $search-legislator-advanced-toggle-link-width;
       }
     }
 
@@ -31,7 +31,6 @@
       float: left;
 
       width: $search-legislator-advanced-toggle-link-width;
-      margin-left: $odd-form-groups-margin-right;
       padding-top: 5px;
     }
 

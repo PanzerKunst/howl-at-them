@@ -345,11 +345,6 @@ tr.clickable {
 #content.legislator-listing #us-state {
   display: inline-block;
   width: 16em; }
-#content.legislator-listing .submit-wrapper {
-  float: left;
-  padding-top: 0; }
-  #content.legislator-listing .submit-wrapper > button {
-    width: 7em; }
 #content.legislator-listing .support-level {
   width: 8.5em; }
 #content.legislator-listing th.political-parties, #content.legislator-listing th.mpp, #content.legislator-listing th.safi, #content.legislator-listing th.ocu, #content.legislator-listing th.pvc,
@@ -681,11 +676,10 @@ table.dataTable tr.even td.sorting_1 {
   max-width: 68.5em;
   padding-bottom: 4em; }
   #search-legislators #content form > div:first-child {
-    width: 35em; }
+    width: 26em; }
   #search-legislators #content #advanced-toggle {
     float: left;
     width: 5em;
-    margin-left: 2em;
     padding-top: 5px; }
   #search-legislators #content #advanced-search-fields:after {
     content: "";
@@ -757,7 +751,7 @@ table.dataTable tr.even td.sorting_1 {
     display: table;
     clear: both; }
   #state-reports #content > form > div:first-child {
-    width: 28em; }
+    width: 19em; }
   #state-reports #content > #whip-count-per-chamber:after {
     content: "";
     display: table;

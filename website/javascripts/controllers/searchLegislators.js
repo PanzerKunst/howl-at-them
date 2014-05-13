@@ -15,16 +15,11 @@ CBR.Controllers.SearchLegislators = new Class({
     initElements: function () {
         this.parent();
 
-        this.$form = jQuery("form");
-
         this.$usStateSelect = jQuery("#us-state");
-
         this.$advancedSearchFields = jQuery("#advanced-search-fields");
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
-
-        this.$submitBtn = jQuery("[type=submit]");
 
         this.$tableWrapper = jQuery("#table-wrapper");
 
@@ -38,7 +33,10 @@ CBR.Controllers.SearchLegislators = new Class({
             this._populateCommitteesSelect(e);
         }, this));
 
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+        this.$usStateSelect.change(jQuery.proxy(this._doSubmit, this));
+        this.$leadershipPositionSelect.change(jQuery.proxy(this._doSubmit, this));
+        this.$committeeSelect.change(jQuery.proxy(this._doSubmit, this));
+        this.$priorityTargetCheckbox.change(jQuery.proxy(this._doSubmit, this));
 
         Breakpoints.on({
             name: "SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT",
@@ -101,7 +99,6 @@ CBR.Controllers.SearchLegislators = new Class({
         if (e)
             e.preventDefault();
 
-        this.$submitBtn.button('loading');
         this.$tableWrapper.html('<div class="data-loading"></div>');
 
         var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
@@ -120,14 +117,12 @@ CBR.Controllers.SearchLegislators = new Class({
             url: "/api/state-legislators",
             data: stateLegislatorSearch,    // GET request doesn't require JSON.stringify()
             onSuccess: function (responseText, responseXML) {
-                this.$submitBtn.button('reset');
                 this._storeMatchingStateLegislators(JSON.parse(responseText));
                 this._createResultsTable();
             }.bind(this),
             onFailure: function (xhr) {
-                this.$submitBtn.button('reset');
                 alert("AJAX fail :(");
-            }.bind(this)
+            }
         }).get();
     },
 

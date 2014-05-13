@@ -14,7 +14,6 @@ CBR.Controllers.StateReports = new Class({
     initElements: function () {
         this.parent();
 
-        this.$form = jQuery("form");
         this.$usStateSelect = jQuery("#us-state");
         this.$submitBtn = jQuery("[type=submit]");
 
@@ -53,7 +52,7 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _initEvents: function () {
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+        this.$usStateSelect.change(jQuery.proxy(this._doSubmit, this));
 
         this.$inputFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
