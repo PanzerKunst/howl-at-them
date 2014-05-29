@@ -2307,10 +2307,22 @@ CBR.JsonUtil.stringifyModel = function (obj) {
 
     isValid: function () {
         var result = true;
+        var isFocusOnFirstInvalidFieldDone = false;
+        var $field;
 
-        for (var i = 0; i < this._getFieldIds().length; i++)
-            if (!this._validateField(jQuery("#" + this._getFieldIds()[i]), false))
+        for (var i = 0; i < this._getFieldIds().length; i++) {
+            $field = jQuery("#" + this._getFieldIds()[i]);
+
+            if (!this._validateField($field, false)) {
                 result = false;
+
+                // We focus on the first invalid field
+                if (!isFocusOnFirstInvalidFieldDone) {
+                    $field.focus();
+                    isFocusOnFirstInvalidFieldDone = true;
+                }
+            }
+        }
 
         return result;
     },
