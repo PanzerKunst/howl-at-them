@@ -24,11 +24,21 @@ object DbAdminApi extends Controller {
       DbAdmin.reCreateTempVoteSmartTables()
 
       VoteSmartCandidateService.fetchCandidates()
-      VoteSmartLeadershipService.fetchLeaderships()
-      VoteSmartCommitteeService.fetchCommittees()
 
       while (VoteSmartService.isRunning) {
         //Pause for 100 ms
+        Thread.sleep(100)
+      }
+
+      VoteSmartLeadershipService.fetchLeaderships()
+
+      while (VoteSmartService.isRunning) {
+        Thread.sleep(100)
+      }
+
+      VoteSmartCommitteeService.fetchCommittees()
+
+      while (VoteSmartService.isRunning) {
         Thread.sleep(100)
       }
 

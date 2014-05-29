@@ -13,7 +13,7 @@ object VoteSmartCommitteeDto {
       implicit c =>
 
         val query = """
-                   insert into temp_vote_smart_committee(committee_id, state_id, committee_name)
+                   insert into temp_vote_smart_committee(committee_id, us_state_id, committee_name)
           values(""" + voteSmartCommittee.id + """, '""" +
           DbUtil.safetize(voteSmartCommittee.usState.id) + """', '""" +
           DbUtil.safetize(voteSmartCommittee.name) + """');"""

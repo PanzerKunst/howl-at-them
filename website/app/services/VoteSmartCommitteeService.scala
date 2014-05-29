@@ -4,7 +4,7 @@ import play.api.libs.ws.WS
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
 import models.votesmart.{VoteSmartCommitteeMember, VoteSmartCommittee}
-import db.votesmart.{VoteSmartCommitteeMemberDto, VoteSmartCommitteeDto}
+import db.votesmart.{VoteSmartCommitteeMembershipDto, VoteSmartCommitteeDto}
 import scala.concurrent.ExecutionContext.Implicits.global
 import db.UsStateDto
 import models.UsState
@@ -133,7 +133,7 @@ object VoteSmartCommitteeService {
 
     val position = (voteSmartOfficeJson \ "position").as[String]
 
-    VoteSmartCommitteeMemberDto.create(
+    VoteSmartCommitteeMembershipDto.create(
       VoteSmartCommitteeMember(committeeId = committeeId,
         candidateId = candidateId,
         position = position)

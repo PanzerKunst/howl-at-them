@@ -7,13 +7,13 @@ import play.api.db.DB
 import play.api.Logger
 import play.api.Play.current
 
-object VoteSmartCommitteeMemberDto {
+object VoteSmartCommitteeMembershipDto {
   def create(voteSmartCommitteeMember: VoteSmartCommitteeMember): Option[Long] = {
     DB.withConnection {
       implicit c =>
 
         val query = """
-                   insert into temp_vote_smart_committee_member(committee_id, candidate_id, position)
+                   insert into temp_vote_smart_committee_membership(committee_id, candidate_id, position)
           values(""" + voteSmartCommitteeMember.committeeId + """, """ +
           voteSmartCommitteeMember.candidateId + """, '""" +
           DbUtil.safetize(voteSmartCommitteeMember.position) + """');"""
