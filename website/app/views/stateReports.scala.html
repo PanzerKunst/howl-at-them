@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: Option[String], whipCountPerChamber: Option[(models.frontend.WhipCountForChamber, models.frontend.WhipCountForChamber)], legislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, whipCountForHouse: List[models.frontend.WhipCount], whipCountForSenate: List[models.frontend.WhipCount], whipCountForBoth: List[models.frontend.WhipCount], legislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
@@ -25,23 +25,23 @@
             <label for="us-state">State</label><!--
          --><select id="us-state" class="form-control">
                 @for(usState <- usStates) {
-                <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
+                <option value="@usState.id" @if(selectedUsStateId == usState.id) { selected }>@usState.name</option>
                 }
             </select>
         </div>
     </div>
 </form>
 
-@if(whipCountPerChamber.isDefined) {
 <section id="whip-count-per-chamber">
     <article>
-        <h2>@whipCountPerChamber.get._1.chamber.getString</h2>
+        <h2>House</h2>
         <ul>
-            @for(whipCount <- whipCountPerChamber.get._1.whipCounts) {
+            @for(whipCount <- whipCountForHouse) {
             <li>
                 <span class="support-level">@whipCount.supportLevel.getString</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
+                <span class="percentage">@whipCount.percentage%</span>
+                <div class="support-level-bar-wrapper">
                     <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
                 </div>
             </li>
@@ -49,13 +49,29 @@
         </ul>
     </article>
     <article>
-        <h2>@whipCountPerChamber.get._2.chamber.getString</h2>
+        <h2>Senate</h2>
         <ul>
-            @for(whipCount <- whipCountPerChamber.get._2.whipCounts) {
+            @for(whipCount <- whipCountForSenate) {
             <li>
                 <span class="support-level">@whipCount.supportLevel.getString</span>
                 <span class="count">@whipCount.count</span>
-                <div class="support-level-bar-wrapper" title="@whipCount.percentage%">
+                <span class="percentage">@whipCount.percentage%</span>
+                <div class="support-level-bar-wrapper">
+                    <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
+                </div>
+            </li>
+            }
+        </ul>
+    </article>
+    <article>
+        <h2>Combined</h2>
+        <ul>
+            @for(whipCount <- whipCountForBoth) {
+            <li>
+                <span class="support-level">@whipCount.supportLevel.getString</span>
+                <span class="count">@whipCount.count</span>
+                <span class="percentage">@whipCount.percentage%</span>
+                <div class="support-level-bar-wrapper">
                     <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
                 </div>
             </li>
@@ -63,7 +79,6 @@
         </ul>
     </article>
 </section>
-}
 
 <section class="table-filter">
     <input type="text" class="form-control" id="title-filter" maxlength="3">

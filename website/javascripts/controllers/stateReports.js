@@ -16,6 +16,8 @@ CBR.Controllers.StateReports = new Class({
 
         this.$usStateSelect = jQuery("#us-state");
 
+        this.$whipCountListItem = jQuery("#whip-count-per-chamber li");
+
         this.$filterSection = jQuery(".table-filter");
         this.$inputFilters = this.$filterSection.find("input");
         this.$titleFilter = jQuery("#title-filter");
@@ -52,6 +54,9 @@ CBR.Controllers.StateReports = new Class({
 
     _initEvents: function () {
         this.$usStateSelect.change(jQuery.proxy(this._doSubmit, this));
+
+        this.$whipCountListItem.mouseenter(jQuery.proxy(this._showWhipCountPercentage, this));
+        this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
         this.$inputFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
@@ -262,5 +267,19 @@ CBR.Controllers.StateReports = new Class({
         } else {
             this.$stickyTableHeader.hide();
         }
+    },
+
+    _showWhipCountPercentage: function(e) {
+        var $li = jQuery(e.currentTarget);
+        $li.addClass("hover");
+        $li.children(".count").hide();
+        $li.children(".percentage").show();
+    },
+
+    _showWhipCountCount: function(e) {
+        var $li = jQuery(e.currentTarget);
+        $li.removeClass("hover");
+        $li.children(".percentage").hide();
+        $li.children(".count").show();
     }
 });

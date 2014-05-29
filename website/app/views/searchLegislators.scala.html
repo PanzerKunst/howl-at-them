@@ -1,4 +1,4 @@
-@(usStates: List[UsState], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], isAdmin: Boolean, selectedUsStateId: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String], selectedIsAPriorityTarget: Boolean)
+@(usStates: List[UsState], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], isAdmin: Boolean, selectedUsStateId: String, selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String], selectedIsAPriorityTarget: Boolean)
 @main("Search legislators", "search-legislators") {
 <!--
     Header
@@ -17,7 +17,7 @@
             <label for="us-state">State</label><!--
          --><select id="us-state" class="form-control">
                 @for(usState <- usStates) {
-                <option value="@usState.id" @if(selectedUsStateId.isDefined && selectedUsStateId.get == usState.id) { selected }>@usState.name</option>
+                <option value="@usState.id" @if(selectedUsStateId == usState.id) { selected }>@usState.name</option>
                 }
             </select>
         </div>

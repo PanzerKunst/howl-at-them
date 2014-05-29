@@ -759,9 +759,10 @@ table.dataTable tr.even td.sorting_1 {
     display: table;
     clear: both; }
   #state-reports #content > #whip-count-per-chamber > article {
-    float: left; }
+    float: left;
+    margin-right: 1em; }
     #state-reports #content > #whip-count-per-chamber > article:last-child {
-      float: right; }
+      margin-right: 0; }
   #state-reports #content > #whip-count-per-chamber ul {
     list-style-type: none;
     padding-left: 0; }
@@ -771,19 +772,25 @@ table.dataTable tr.even td.sorting_1 {
       content: "";
       display: table;
       clear: both; }
+    #state-reports #content > #whip-count-per-chamber li.hover > .support-level-bar-wrapper {
+      background-color: rgba(0, 0, 0, 0.05); }
   #state-reports #content > #whip-count-per-chamber .support-level,
-  #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper,
-  #state-reports #content > #whip-count-per-chamber .count {
+  #state-reports #content > #whip-count-per-chamber .count,
+  #state-reports #content > #whip-count-per-chamber .percentage,
+  #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper {
     float: left; }
   #state-reports #content > #whip-count-per-chamber .support-level {
     width: 8.5em;
     font-size: 12px;
     margin-top: 0.2em; }
-  #state-reports #content > #whip-count-per-chamber .count {
+  #state-reports #content > #whip-count-per-chamber .count,
+  #state-reports #content > #whip-count-per-chamber .percentage {
     width: 2em;
     text-align: center; }
+  #state-reports #content > #whip-count-per-chamber .percentage {
+    display: none; }
   #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper {
-    width: 16em; }
+    width: 7.6em; }
     #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div {
       min-height: 1.75em; }
       #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.UNKNOWN {

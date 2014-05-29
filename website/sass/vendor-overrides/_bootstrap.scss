@@ -32,7 +32,7 @@ textarea.form-control {
   > tbody > tr {
     &.clickable:hover {
       td {
-        @include hovered-cell-colors;
+        @include hovered-row-colors;
       }
     }
 
