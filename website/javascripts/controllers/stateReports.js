@@ -142,7 +142,7 @@ CBR.Controllers.StateReports = new Class({
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(1));
                     value = $td.html();
-                    if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                    if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                         isResultMatchedByFilter = false;
                     }
                 }
