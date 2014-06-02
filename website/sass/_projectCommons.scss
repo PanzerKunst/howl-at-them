@@ -302,3 +302,11 @@ $table-filter-margin: 0.2em;
     }
   }
 }
+
+#search-results {
+  .table {
+    span.support-level {
+      font-weight: bold;
+    }
+  }
+}
