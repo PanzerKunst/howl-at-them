@@ -136,7 +136,8 @@
         text-align: left; // Default is justify
 
         @include large-screen {
-          font-size: $font-size-small;
+          font-size: 13px;
+          letter-spacing: -0.5px;
         }
       }
     }

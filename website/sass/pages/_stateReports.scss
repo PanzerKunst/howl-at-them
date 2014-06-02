@@ -59,9 +59,10 @@
       }
 
       .support-level {
-        width: 8.5em;
+        font-size: 13px;
+        letter-spacing: -0.5px;
+        width: 7.8em;
 
-        font-size: $font-size-small;
         margin-top: 0.2em;  // To align with .count
       }
 
