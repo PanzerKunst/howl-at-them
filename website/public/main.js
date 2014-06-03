@@ -2246,15 +2246,20 @@ CBR.isBrowserSmallScreen = function () {
 };
 
 CBR.isBrowserMediumScreen = function () {
-    return window.getComputedStyle(
+    var content = window.getComputedStyle(
         document.querySelector("html"), ":after"
-    ).getPropertyValue("content") === "\"GLOBAL_MEDIUM_SCREEN_BREAKPOINT\"";
+    ).getPropertyValue("content");
+
+    // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
+    return _.contains(content, "GLOBAL_MEDIUM_SCREEN_BREAKPOINT");
 };
 
 CBR.isBrowserLargeScreen = function () {
-    return window.getComputedStyle(
+    var content = window.getComputedStyle(
         document.querySelector("html"), ":after"
-    ).getPropertyValue("content") === "\"GLOBAL_LARGE_SCREEN_BREAKPOINT\"";
+    ).getPropertyValue("content");
+
+    return _.contains(content, "GLOBAL_LARGE_SCREEN_BREAKPOINT");
 };
 ;(function ($) {
     $.fn.slideDownCustom = function () {
