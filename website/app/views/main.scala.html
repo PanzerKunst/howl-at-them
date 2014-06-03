@@ -12,12 +12,14 @@
     <title>@title</title>
     <meta name="description" content="">
     @if(page == "state-reports") {
-    <meta name="viewport" content="width=770">
+    <meta name="viewport" content="width=816">
     } else {@if(page == "search-legislators") {
     <meta name="viewport" content="width=959">
+    } else {@if(page == "find-your-legislator") {
+    <meta name="viewport" content="width=476, user-scalable=no">
     } else {
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    }}}
 
     <!-- Favicon
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">

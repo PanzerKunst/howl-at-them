@@ -66,14 +66,13 @@
         font-size: 13px;
         letter-spacing: -0.5px;
         width: 7.8em;
-
-        margin-top: 0.2em;  // To align with .count
       }
 
       .count,
       .percentage {
-        width: 2.5em;
+        font-size: 13px;
         text-align: center;
+        width: 2.5em;
       }
 
       .percentage {
@@ -111,7 +110,7 @@
     }
 
     > #sticky-table-header {
-      width: $large-screen-min-width - 2 * $page-side-padding;
+      width: $state-reports-page-min-width - 2 * $page-side-padding;
     }
 
     > #table-header-visible-even-when-no-results th {
@@ -134,7 +133,7 @@
         width: 5.5%;
       }
       &.name {
-        width: 18.5%;
+        width: 17.9%;
       }
       &.political-parties {
         width: 4.5%;
@@ -161,13 +160,13 @@
         width: 6%;
       }
       &.is-a-priority-target {
-        width: 5.4%;
+        width: 6%;
       }
     }
   }
 
   footer {
-    min-width: $large-screen-min-width * $font-size-base / $font-size-body-large-screen;
+    min-width: $state-reports-page-min-width * $font-size-base / $font-size-body-large-screen;
 
     // We always want the large font size
     font-size: $font-size-body-large-screen;

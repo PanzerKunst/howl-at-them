@@ -461,19 +461,19 @@ tr.clickable {
   .table-filter > #title-filter {
     width: 42px; }
   .table-filter > #name-filter {
-    width: 142px; }
+    width: 138px; }
   .table-filter > #party-filter {
-    width: 33px;
+    width: 32px;
     text-align: center; }
   .table-filter > #district-filter {
     width: 107px; }
   .table-filter > #support-level-filter {
     width: 133px; }
   .table-filter > #mpp-filter {
-    width: 52px;
+    width: 53px;
     text-align: center; }
   .table-filter > #safi-filter {
-    width: 61px;
+    width: 60px;
     text-align: center; }
   .table-filter > #ocu-filter {
     width: 46px;
@@ -666,12 +666,13 @@ table.dataTable tr.even td.sorting_1 {
   #find-your-legislator #content th.name {
     width: 28%; }
   #find-your-legislator #content th.political-parties {
-    width: 10.5%;
-    text-align: center; }
+    width: 8%;
+    text-align: center;
+    padding: 15px 0; }
   #find-your-legislator #content th.district {
-    width: 22.5%; }
+    width: 26%; }
   #find-your-legislator #content th.support-level {
-    width: 31%; }
+    width: 30%; }
 #find-your-legislator footer {
   min-width: 34em; }
 
@@ -783,12 +784,12 @@ table.dataTable tr.even td.sorting_1 {
   #state-reports #content > #whip-count-per-chamber .support-level {
     font-size: 13px;
     letter-spacing: -0.5px;
-    width: 7.8em;
-    margin-top: 0.2em; }
+    width: 7.8em; }
   #state-reports #content > #whip-count-per-chamber .count,
   #state-reports #content > #whip-count-per-chamber .percentage {
-    width: 2.5em;
-    text-align: center; }
+    font-size: 13px;
+    text-align: center;
+    width: 2.5em; }
   #state-reports #content > #whip-count-per-chamber .percentage {
     display: none; }
   #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper {
@@ -806,7 +807,7 @@ table.dataTable tr.even td.sorting_1 {
   #state-reports #content h2 {
     text-align: left; }
   #state-reports #content > #sticky-table-header {
-    width: 53em; }
+    width: 56.3em; }
   #state-reports #content > #table-header-visible-even-when-no-results th {
     border-bottom-width: 1px; }
   #state-reports #content > #search-results > article {
@@ -818,7 +819,7 @@ table.dataTable tr.even td.sorting_1 {
     width: 5.5%; }
   #state-reports #content th.name,
   #state-reports #content td.name {
-    width: 18.5%; }
+    width: 17.9%; }
   #state-reports #content th.political-parties,
   #state-reports #content td.political-parties {
     width: 4.5%; }
@@ -845,9 +846,9 @@ table.dataTable tr.even td.sorting_1 {
     width: 6%; }
   #state-reports #content th.is-a-priority-target,
   #state-reports #content td.is-a-priority-target {
-    width: 5.4%; }
+    width: 6%; }
 #state-reports footer {
-  min-width: 48.125em;
+  min-width: 51.0125em;
   font-size: 16px; }
   #state-reports footer > a,
   #state-reports footer > a:visited,

@@ -306,7 +306,7 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _toggleStickyTableHeader: function () {
-        if (this.isBrowserLargeScreen && !this.$filterSection.visible(true)) {
+        if (this.isBrowserFullWidth && !this.$filterSection.visible(true)) {
             this.$stickyTableHeader.show();
         } else {
             this.$stickyTableHeader.hide();
