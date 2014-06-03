@@ -309,6 +309,7 @@ CBR.Controllers.BaseController = new Class({
             urlEncoded: false,
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
             url: "/api/reports/" + reportId,
+            headers: {"Content-Type": null},    // Work-around to prevent bug https://github.com/mootools/mootools-core/issues/2608
             onSuccess: function (responseText, responseXML) {
                 location.replace(successUrl);
             },
@@ -342,5 +343,5 @@ CBR.Controllers.BaseController = new Class({
         unauthorized: 401
     },
 
-    floatingAlertFadeOutDelay: 3000
+    floatingAlertFadeOutDelay: 1500
 });
