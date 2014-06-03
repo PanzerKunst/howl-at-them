@@ -1,16 +1,20 @@
 #state-reports {
-  @include large-screen {
-    @include defineBreakpoint("STATE_REPORTS_LARGE_SCREEN_BREAKPOINT");
+  $state-reports-page-min-width: 58.3em;  // ~816px
+
+  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
+  $state-reports-page-full-width-mq-breakpoint: $state-reports-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
+
+  @media screen and (min-width: $state-reports-page-full-width-mq-breakpoint) {
+    @include defineBreakpoint("STATE_REPORTS_FULL_WIDTH_BREAKPOINT");
   }
 
   header {
-    min-width: $large-screen-min-width;
+    min-width: $state-reports-page-min-width;
   }
 
   #content {
-    @include clearfix;  // Filter is floated right
-
-    min-width: $large-screen-min-width;
+    min-width: $state-reports-page-min-width;
+    max-width: $state-reports-page-min-width;
 
     // Because the large-screen footer is always displayed
     padding-bottom: $footer-item-height * 2;
@@ -68,7 +72,7 @@
 
       .count,
       .percentage {
-        width: 2em;
+        width: 2.5em;
         text-align: center;
       }
 
@@ -77,7 +81,7 @@
       }
 
       .support-level-bar-wrapper {
-        width: 7.6em;
+        width: 8.3em;
 
         > div {
           // Otherwise empty divs don't take the width
@@ -127,39 +131,38 @@
     th,
     td {
       &.title {
-        width: 6%;
+        width: 5.5%;
       }
       &.name {
-        width: 21.5%;
+        width: 18.5%;
       }
       &.political-parties {
-        width: 4.7%;
+        width: 4.5%;
       }
       &.district {
         width: 14%;
       }
       &.support-level {
-        width: 18%;
+        width: 17.3%;
       }
       &.mpp {
-        width: 8.9%;
+        width: 7%;
       }
       &.safi {
-        width: 9.1%;
+        width: 8.1%;
       }
       &.ocu {
-        width: 8%;
+        width: 6.2%;
       }
       &.pvc {
-        width: 9%;
+        width: 7.5%;
       }
-    }
-
-    th.political-parties {
-      text-align: center;
-      padding: 0;
-
-      @include transform(rotate(-90deg));
+      &.is-missing-urgent-report {
+        width: 6%;
+      }
+      &.is-a-priority-target {
+        width: 5.4%;
+      }
     }
   }
 

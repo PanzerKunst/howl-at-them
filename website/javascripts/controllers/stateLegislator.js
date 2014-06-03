@@ -16,6 +16,8 @@ CBR.Controllers.StateLegislator = new Class({
 
         this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
+
+        this.$missingUrgentReportCheckbox = jQuery("#missing-urgent-report");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
         this.$committeesList = jQuery("#committees > ul");
@@ -68,13 +70,16 @@ CBR.Controllers.StateLegislator = new Class({
 
     _initEvents: function () {
         this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
-            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+            this._updateStateLegislator("Phone number saved");
         }, this), 1000));
         this.$otherPhoneNumber.blur(jQuery.proxy(function () {
-            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+            this._updateStateLegislator("Phone number saved");
+        }, this));
+        this.$missingUrgentReportCheckbox.change(jQuery.proxy(function () {
+            this._updateStateLegislator("Report status saved");
         }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("is-a-priority-target-saved", "Priority status saved");
+            this._updateStateLegislator("Priority status saved");
         }, this));
 
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
@@ -214,7 +219,7 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _updateStateLegislator: function (floatingAlertId, floatingAlertText) {
+    _updateStateLegislator: function (floatingAlertText) {
         var stateLegislator = this._getStateLegislator();
 
         var otherPhoneNumber = this.$otherPhoneNumber.val();
@@ -232,7 +237,8 @@ CBR.Controllers.StateLegislator = new Class({
             committees: stateLegislator.getCommittees(),
             reports: stateLegislator.getReports(),
             otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
-            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+            isAPriorityTarget: this.$priorityTargetCheckbox.prop("checked"),
+            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked")
         };
 
         new Request({
@@ -242,7 +248,7 @@ CBR.Controllers.StateLegislator = new Class({
             url: "/api/state-legislators/",
             data: JSON.stringify(updatedStateLegislator),
             onSuccess: function (responseText, responseXML) {
-                this.showAlert(floatingAlertId, floatingAlertText);
+                this.showAlert(floatingAlertText);
             }.bind(this),
             onFailure: function (xhr) {
                 alert("AJAX fail :(");

@@ -22,6 +22,7 @@ CBR.Controllers.BaseController = new Class({
 
     initElements: function () {
         this._applyModernizrRules();
+        this._initFloatingAlerts();
     },
 
     saveInLocalStorage: function (key, value, isGlobalScope) {
@@ -192,16 +193,23 @@ CBR.Controllers.BaseController = new Class({
         }, this.floatingAlertFadeOutDelay);
     },
 
-    showAlert: function (id, text) {
+    showAlert: function (text) {
         // In case another alert is displayed, we delete it
         jQuery(".alert.floating").remove();
 
-        var $alertDiv = jQuery('<div id="' + id + '" class="alert alert-success floating">' + text + '</div>');
+        var $floatingAlert = jQuery('<div class="alert alert-success floating">' + text + '</div>');
 
-        this.getEl().prepend($alertDiv);
+        this.getEl().prepend($floatingAlert);
+
+        // Center the alert
+        $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+
+        // Now that the floating alert is centered, we can show it
+        $floatingAlert.show();
+
         _.delay(function () {
-            $alertDiv.fadeOut("slow", function () {
-                $alertDiv.remove();
+            $floatingAlert.fadeOut("slow", function () {
+                $floatingAlert.remove();
             });
         }, this.floatingAlertFadeOutDelay);
     },
@@ -315,6 +323,18 @@ CBR.Controllers.BaseController = new Class({
         if (!Modernizr.input.placeholder) {
             jQuery(".mdnz-polyfill.placeholder").show();
         }
+    },
+
+    _initFloatingAlerts: function() {
+        jQuery(".alert.floating").each(function (index, element) {
+            var $floatingAlert = jQuery(element);
+
+            // Centering
+            $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+
+            // Now that the floating alert is centered, we can show it
+            $floatingAlert.show();
+        });
     },
 
     httpStatusCode: {

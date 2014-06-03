@@ -34,17 +34,15 @@ object Application extends Controller {
       else
         None
 
-      val (selectedUsStateId, detailedLegislatorsForThisState, newSession) = if (request.queryString.contains("usStateId")) {
+      val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
-        (selectedUsStateId,
-          StateLegislatorDto.getOfStateId(selectedUsStateId),
-          session + ("selectedUsStateId" -> selectedUsStateId))
+        (selectedUsStateId, session + ("selectedUsStateId" -> selectedUsStateId))
       } else {
         val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-        (selectedUsStateId,
-          StateLegislatorDto.getOfStateId(selectedUsStateId),
-          session)
+        (selectedUsStateId, session)
       }
+
+      val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
       val whipCountForHouse = calculateWhipCountForChamber(Chamber.HOUSE, detailedLegislatorsForThisState)
       val whipCountForSenate = calculateWhipCountForChamber(Chamber.SENATE, detailedLegislatorsForThisState)

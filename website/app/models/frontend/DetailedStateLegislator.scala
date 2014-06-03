@@ -13,6 +13,7 @@ case class DetailedStateLegislator(_id: Int,
                                    _leadershipPosition: Option[LeadershipPosition] = None,
                                    _otherPhoneNumber: Option[String] = None,
                                    _isAPriorityTarget: Boolean = false,
+                                   _isMissingUrgentReport: Boolean = false,
 
                                    _offices: List[CandidateOffice] = List(),
                                    _committees: List[CandidateCommittee] = List(),
@@ -27,7 +28,8 @@ case class DetailedStateLegislator(_id: Int,
     _district,
     _leadershipPosition,
     _otherPhoneNumber,
-    _isAPriorityTarget) {
+    _isAPriorityTarget,
+    _isMissingUrgentReport) {
 
   var offices: List[CandidateOffice] = _offices
   var committees: List[CandidateCommittee] = _committees
@@ -91,6 +93,7 @@ object DetailedStateLegislator {
         "leadershipPosition" -> detailedStateLegislator.leadershipPosition,
         "otherPhoneNumber" -> detailedStateLegislator.otherPhoneNumber,
         "isAPriorityTarget" -> detailedStateLegislator.isAPriorityTarget,
+        "isMissingUrgentReport" -> detailedStateLegislator.isMissingUrgentReport,
 
         "offices" -> detailedStateLegislator.offices,
         "committees" -> detailedStateLegislator.committees,

@@ -4,18 +4,6 @@
   }
 
   #content {
-    $action-alert-width-state-legislator: 11.2em;
-    > #other-phone-number-saved {
-      width: $action-alert-width-state-legislator;
-      margin-left: -$action-alert-width-state-legislator/2;
-    }
-
-    $action-alert-width-state-legislator: 10.7em;
-    > #is-a-priority-target-saved {
-      width: $action-alert-width-state-legislator;
-      margin-left: -$action-alert-width-state-legislator/2;
-    }
-
     #legislator-data,
     #committees {
       width: $field-width;
@@ -64,6 +52,10 @@
           }
         }
       }
+
+      table {
+        margin-bottom: $line-height-computed/2;
+      }
     }
 
     $font-size-phone-numbers: 29px;
@@ -110,18 +102,27 @@
       height: 41px;
     }
 
-    #support-level-and-priority-target {
+    #current-support-level {
+      text-align: center;
+      margin-bottom: $line-height-computed/2;
+
       > .support-level {
-        display: block;
+        font-weight: bold;
+      }
+    }
+
+    #missing-urgent-report-and-priority-target {
+      @include clearfix;
+
+      > article {
+        // To space the two items
+        letter-spacing: -0.5px;
+
         float: left;
 
-        font-weight: bold;
-        margin-left: 1em;
-      }
-
-      > .check-or-radio {
-        float: right;
-        margin-right: 1em;
+        &:last-child {
+          float: right;
+        }
       }
     }
 

@@ -23,7 +23,9 @@
     > .yes-no-answer {
       text-align: center;
       width: 100%;
-      font-size: 10px;
+
+      font-size: 11px;
+      letter-spacing: -0.5px;
     }
   }
 
@@ -85,7 +87,7 @@
     }
 
     .support-level {
-      width: 8.5em;
+      width: 8.8em;
     }
 
     th,
@@ -94,12 +96,23 @@
       &.mpp,
       &.safi,
       &.ocu,
-      &.pvc {
+      &.pvc,
+      &.is-a-priority-target,
+      &.is-missing-urgent-report {
         text-align: center;
 
         padding-left: 0;
         padding-right: 0;
       }
+    }
+
+    th.political-parties,
+    th.is-a-priority-target,
+    th.is-missing-urgent-report {
+      padding-top: 0;
+      padding-bottom: 0;
+
+      @include transform(rotate(-90deg));
     }
   }
 
@@ -161,18 +174,9 @@
   border-radius: 3px;
 
   text-align: center;
-}
 
-$action-alert-width: 7.3em;
-#report-saved {
-  width: $action-alert-width;
-  margin-left: -$action-alert-width/2;
-}
-
-$action-alert-width: 8.1em;
-#report-deleted {
-  width: $action-alert-width;
-  margin-left: -$action-alert-width/2;
+  // Because we want to center it via negative left margin in Javascript
+  display: none;
 }
 
 #edit-report-modal {
@@ -255,41 +259,48 @@ $table-filter-margin: 0.2em;
   }
 
   > #name-filter {
-    width: 158px;
+    width: 142px;
   }
 
   > #party-filter {
-    width: 32px;
+    width: 33px;
     text-align: center;
   }
 
   > #district-filter {
-    width: 102px;
+    width: 107px;
   }
 
   > #support-level-filter {
-    width: 131px;
+    width: 133px;
   }
 
   > #mpp-filter {
-    width: 64px;
+    width: 52px;
     text-align: center;
   }
 
   > #safi-filter {
-    width: 65px;
+    width: 61px;
     text-align: center;
   }
 
   > #ocu-filter {
-    width: 56px;
+    width: 46px;
     text-align: center;
   }
 
   > #pvc-filter {
-    width: 66px;
+    width: 56px;
     text-align: center;
-    margin-right: 1px;
+  }
+
+  > #is-missing-urgent-report-filter {
+    margin: 10px 0 0 16px;
+  }
+
+  > #is-a-priority-target-filter {
+    margin: 10px 0 0 28px;
   }
 
   > .close {

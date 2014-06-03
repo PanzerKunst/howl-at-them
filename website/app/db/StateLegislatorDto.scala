@@ -20,7 +20,7 @@ object StateLegislatorDto {
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
             committee_membership_id, committee_position,
             committee_id, committee_us_state_id, committee_name,
-            other_phone_number, is_a_priority_target,
+            other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -64,7 +64,8 @@ object StateLegislatorDto {
               row[String]("district"),
               leadershipPosition,
               row[Option[String]]("other_phone_number"),
-              row[Option[Boolean]]("is_a_priority_target").getOrElse(false))
+              row[Option[Boolean]]("is_a_priority_target").getOrElse(false),
+              row[Option[Boolean]]("is_missing_urgent_report").getOrElse(false))
 
             val candidateOffice = row[Option[String]]("office_type") match {
               case Some(officeType) => Some(CandidateOffice(officeType,
@@ -137,10 +138,11 @@ object StateLegislatorDto {
           otherPhoneNumberForQuery = "'" + DbUtil.safetize(detailedStateLegislator.otherPhoneNumber.get) + "'"
 
         val query = """
-               insert into state_legislator_extra(candidate_id, other_phone_number, is_a_priority_target)
+               insert into state_legislator_extra(candidate_id, other_phone_number, is_a_priority_target, is_missing_urgent_report)
           values(""" + detailedStateLegislator.id + """, """ +
           otherPhoneNumberForQuery + """, """ +
-          detailedStateLegislator.isAPriorityTarget + """);"""
+          detailedStateLegislator.isAPriorityTarget + """, """ +
+          detailedStateLegislator.isMissingUrgentReport + """);"""
 
         Logger.info("StateLegislatorDto.insertExtras():" + query)
 
@@ -159,7 +161,8 @@ object StateLegislatorDto {
         val query = """
           update state_legislator_extra set
           other_phone_number = """ + otherPhoneNumberForQuery + """,
-          is_a_priority_target = """ + detailedStateLegislator.isAPriorityTarget + """
+          is_a_priority_target = """ + detailedStateLegislator.isAPriorityTarget + """,
+          is_missing_urgent_report = """ + detailedStateLegislator.isMissingUrgentReport + """
           where candidate_id = """ + detailedStateLegislator.id + """;"""
 
         Logger.info("StateLegislatorDto.updateExtras():" + query)
@@ -198,7 +201,7 @@ object StateLegislatorDto {
     val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
-            other_phone_number, is_a_priority_target,
+            other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -224,7 +227,7 @@ object StateLegislatorDto {
     val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
-            other_phone_number, is_a_priority_target,
+            other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -257,6 +260,7 @@ object StateLegislatorDto {
     val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
+            other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -356,6 +360,7 @@ object StateLegislatorDto {
           stateLegislator.leadershipPosition,
           stateLegislator.otherPhoneNumber,
           stateLegislator.isAPriorityTarget,
+          stateLegislator.isMissingUrgentReport,
 
           candidateOffices,
           candidateCommittees,
@@ -396,7 +401,10 @@ object StateLegislatorDto {
               politicalParties,
               UsState(row[String]("us_state_id"), row[String]("name")),
               row[String]("district"),
-              leadershipPosition)
+              leadershipPosition,
+              row[Option[String]]("other_phone_number"),
+              row[Option[Boolean]]("is_a_priority_target").getOrElse(false),
+              row[Option[Boolean]]("is_missing_urgent_report").getOrElse(false))
 
             val report = row[Option[Long]]("report_id") match {
               case Some(reportId) => Some(Report(
@@ -437,7 +445,8 @@ object StateLegislatorDto {
             stateLegislator.district,
             stateLegislator.leadershipPosition,
             stateLegislator.otherPhoneNumber,
-            stateLegislator.isAPriorityTarget)
+            stateLegislator.isAPriorityTarget,
+            stateLegislator.isMissingUrgentReport)
 
         case Some(report) =>
           var isInListAlready = false
@@ -462,6 +471,7 @@ object StateLegislatorDto {
               stateLegislator.leadershipPosition,
               stateLegislator.otherPhoneNumber,
               stateLegislator.isAPriorityTarget,
+              stateLegislator.isMissingUrgentReport,
 
               List(),
               List(),

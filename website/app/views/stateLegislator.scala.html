@@ -45,16 +45,13 @@
             </div>
         </section>
 
-        <section id="support-level-and-priority-target">
+        <section id="current-support-level">
+            <span>Support level:</span>
             @if(!stateLegislator.reports.isEmpty) {
                 @Html(stateLegislator.reports.head.getSupportLevelSpan)
             } else {
             <span class="support-level UNKNOWN">Unknown</span>
             }
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="priority-target" @if(stateLegislator.isAPriorityTarget) { checked } /></div>
-                <div><label>Priority target</label></div>
-            </article>
         </section>
 
         <table class="table table-striped table-bordered table-condensed">
@@ -82,6 +79,17 @@
                 </tr>
             </tbody>
         </table>
+
+        <section id="missing-urgent-report-and-priority-target">
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="missing-urgent-report" @if(stateLegislator.isMissingUrgentReport) { checked } /></div>
+                <div><label>Missing urgent report</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="priority-target" @if(stateLegislator.isAPriorityTarget) { checked } /></div>
+                <div><label>Priority target</label></div>
+            </article>
+        </section>
     </div>
 
     <div>

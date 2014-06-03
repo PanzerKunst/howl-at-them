@@ -56,13 +56,6 @@
       }
     }
 
-    th:nth-child(3) {
-      text-align: center;
-      padding: 0;
-
-      @include transform(rotate(-90deg));
-    }
-
     > #sticky-table-header {
       width: $search-legislator-page-min-width - 2 * $page-side-padding;
 

@@ -58,6 +58,10 @@ CBR.Models.StateLegislator = new Class({
         return this.options.isAPriorityTarget;
     },
 
+    isMissingUrgentReport: function () {
+        return this.options.isMissingUrgentReport;
+    },
+
     getReportCount: function () {
         return this.options.reports.length;
     },

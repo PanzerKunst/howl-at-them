@@ -10,7 +10,8 @@ class StateLegislator(_id: Int,
                       _district: String,
                       _leadershipPosition: Option[LeadershipPosition] = None,
                       _otherPhoneNumber: Option[String] = None,
-                      _isAPriorityTarget: Boolean = false) {
+                      _isAPriorityTarget: Boolean = false,
+                      _isMissingUrgentReport: Boolean = false) {
 
   var id: Int = _id
   var firstName: String = _firstName
@@ -22,12 +23,5 @@ class StateLegislator(_id: Int,
   var leadershipPosition: Option[LeadershipPosition] = _leadershipPosition
   var otherPhoneNumber: Option[String] = _otherPhoneNumber
   var isAPriorityTarget: Boolean = _isAPriorityTarget
-
-  def isUpperHouse: Boolean = {
-    this.title.toLowerCase == "senator"
-  }
-
-  def isLowerHouse: Boolean = {
-    this.title.toLowerCase == "representative" || this.title.toLowerCase == "assembly member"
-  }
+  var isMissingUrgentReport: Boolean = _isMissingUrgentReport
 }

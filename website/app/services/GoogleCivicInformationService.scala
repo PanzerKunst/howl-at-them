@@ -4,7 +4,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.Play
 import play.api.libs.ws.WS
 import concurrent.Future
-import models.StateAndDistrict
+import models.{Chamber, StateAndDistrict}
 import play.api.Logger
 import db.{StateLegislatorDto, UsStateDto}
 import models.frontend.DetailedStateLegislator
@@ -45,8 +45,8 @@ object GoogleCivicInformationService {
                         )
 
                         for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
-                          if ((stateLegislator.isUpperHouse && divisionScope == "stateUpper") ||
-                            (stateLegislator.isLowerHouse && divisionScope == "stateLower")) {
+                          if ((stateLegislator.getChamber == Chamber.SENATE && divisionScope == "stateUpper") ||
+                            (stateLegislator.getChamber == Chamber.HOUSE && divisionScope == "stateLower")) {
                             stateLegislators = stateLegislators :+ stateLegislator
                           }
                         }

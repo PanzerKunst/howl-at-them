@@ -139,7 +139,8 @@ object DbAdmin {
           create table state_legislator_extra (
             candidate_id integer not null primary key/* Can't have that reference because we want to be able to drop the table - references vote_smart_candidate(candidate_id) */,
             other_phone_number varchar(16),
-            is_a_priority_target boolean not null default false
+            is_a_priority_target boolean not null default false,
+            is_missing_urgent_report boolean not null default false
             );"""
 
         Logger.info("DbAdmin.createTableStateLegislatorExtra():" + query)
@@ -308,7 +309,8 @@ object DbAdmin {
             com.us_state_id as committee_us_state_id,
             com.committee_name,
             sle.other_phone_number,
-            sle.is_a_priority_target
+            sle.is_a_priority_target,
+            sle.is_missing_urgent_report
             from vote_smart_candidate c
             left join vote_smart_leading_official lo on lo.candidate_id = c.candidate_id
             left join vote_smart_candidate_office o on o.candidate_id = c.candidate_id

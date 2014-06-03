@@ -2793,6 +2793,10 @@ CBR.Models.Report.contact = {
         return this.options.isAPriorityTarget;
     },
 
+    isMissingUrgentReport: function () {
+        return this.options.isMissingUrgentReport;
+    },
+
     getReportCount: function () {
         return this.options.reports.length;
     },
@@ -2863,6 +2867,7 @@ CBR.Models.Report.contact = {
 
     initElements: function () {
         this._applyModernizrRules();
+        this._initFloatingAlerts();
     },
 
     saveInLocalStorage: function (key, value, isGlobalScope) {
@@ -3033,16 +3038,23 @@ CBR.Models.Report.contact = {
         }, this.floatingAlertFadeOutDelay);
     },
 
-    showAlert: function (id, text) {
+    showAlert: function (text) {
         // In case another alert is displayed, we delete it
         jQuery(".alert.floating").remove();
 
-        var $alertDiv = jQuery('<div id="' + id + '" class="alert alert-success floating">' + text + '</div>');
+        var $floatingAlert = jQuery('<div class="alert alert-success floating">' + text + '</div>');
 
-        this.getEl().prepend($alertDiv);
+        this.getEl().prepend($floatingAlert);
+
+        // Center the alert
+        $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+
+        // Now that the floating alert is centered, we can show it
+        $floatingAlert.show();
+
         _.delay(function () {
-            $alertDiv.fadeOut("slow", function () {
-                $alertDiv.remove();
+            $floatingAlert.fadeOut("slow", function () {
+                $floatingAlert.remove();
             });
         }, this.floatingAlertFadeOutDelay);
     },
@@ -3156,6 +3168,18 @@ CBR.Models.Report.contact = {
         if (!Modernizr.input.placeholder) {
             jQuery(".mdnz-polyfill.placeholder").show();
         }
+    },
+
+    _initFloatingAlerts: function() {
+        jQuery(".alert.floating").each(function (index, element) {
+            var $floatingAlert = jQuery(element);
+
+            // Centering
+            $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+
+            // Now that the floating alert is centered, we can show it
+            $floatingAlert.show();
+        });
     },
 
     httpStatusCode: {
@@ -3687,6 +3711,8 @@ CBR.Models.Report.contact = {
 
         this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
+
+        this.$missingUrgentReportCheckbox = jQuery("#missing-urgent-report");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
         this.$committeesList = jQuery("#committees > ul");
@@ -3739,13 +3765,16 @@ CBR.Models.Report.contact = {
 
     _initEvents: function () {
         this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
-            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+            this._updateStateLegislator("Phone number saved");
         }, this), 1000));
         this.$otherPhoneNumber.blur(jQuery.proxy(function () {
-            this._updateStateLegislator("other-phone-number-saved", "Phone number saved");
+            this._updateStateLegislator("Phone number saved");
+        }, this));
+        this.$missingUrgentReportCheckbox.change(jQuery.proxy(function () {
+            this._updateStateLegislator("Report status saved");
         }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("is-a-priority-target-saved", "Priority status saved");
+            this._updateStateLegislator("Priority status saved");
         }, this));
 
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
@@ -3885,7 +3914,7 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _updateStateLegislator: function (floatingAlertId, floatingAlertText) {
+    _updateStateLegislator: function (floatingAlertText) {
         var stateLegislator = this._getStateLegislator();
 
         var otherPhoneNumber = this.$otherPhoneNumber.val();
@@ -3903,7 +3932,8 @@ CBR.Models.Report.contact = {
             committees: stateLegislator.getCommittees(),
             reports: stateLegislator.getReports(),
             otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
-            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+            isAPriorityTarget: this.$priorityTargetCheckbox.prop("checked"),
+            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked")
         };
 
         new Request({
@@ -3913,7 +3943,7 @@ CBR.Models.Report.contact = {
             url: "/api/state-legislators/",
             data: JSON.stringify(updatedStateLegislator),
             onSuccess: function (responseText, responseXML) {
-                this.showAlert(floatingAlertId, floatingAlertText);
+                this.showAlert(floatingAlertText);
             }.bind(this),
             onFailure: function (xhr) {
                 alert("AJAX fail :(");
@@ -3980,7 +4010,7 @@ CBR.Models.Report.contact = {
         this.$whipCountListItem = jQuery("#whip-count-per-chamber li");
 
         this.$filterSection = jQuery(".table-filter");
-        this.$inputFilters = this.$filterSection.find("input");
+        this.$textFilters = this.$filterSection.find("input[type=text]");
         this.$titleFilter = jQuery("#title-filter");
         this.$nameFilter = jQuery("#name-filter");
         this.$partyFilter = jQuery("#party-filter");
@@ -3990,10 +4020,20 @@ CBR.Models.Report.contact = {
         this.$safiFilter = jQuery("#safi-filter");
         this.$ocuFilter = jQuery("#ocu-filter");
         this.$pvcFilter = jQuery("#pvc-filter");
+        this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
+        this.$isAPriorityTargetFilter = jQuery("#is-a-priority-target-filter");
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$results = jQuery("#search-results > article");
         this.$secondOrSubsequentResultTableHeaders = jQuery(_.rest(jQuery("#search-results thead")));
+
+        this.$clickableTableRows = jQuery("tr.clickable");
+
+        this.$tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
+        this.$tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
+
+        this.$isMissingUrgentReportCheckboxes = this.$tableCellsContainingIsMissingUrgentReportCheckbox.children();
+        this.$isAPriorityTargetCheckboxes = this.$tableCellsContainingIsAPriorityTargetCheckbox.children();
 
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
@@ -4019,18 +4059,28 @@ CBR.Models.Report.contact = {
         this.$whipCountListItem.mouseenter(jQuery.proxy(this._showWhipCountPercentage, this));
         this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
-        this.$inputFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
+        this.$textFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
+        this.$isMissingUrgentReportFilter.change(jQuery.proxy(this._filterResults, this));
+        this.$isAPriorityTargetFilter.change(jQuery.proxy(this._filterResults, this));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
 
-        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
+        this.$clickableTableRows.click(jQuery.proxy(this._onTableRowClick, this));
+
+        this.$tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
+        this.$tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
+        this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
+        this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
+
+        this.$isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
+        this.$isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
 
         Breakpoints.on({
-            name: "STATE_REPORTS_LARGE_SCREEN_BREAKPOINT",
-            matched: jQuery.proxy(this._onLargeScreenBreakpointMatch, this),
-            exit: jQuery.proxy(this._onLargeScreenBreakpointExit, this)
+            name: "STATE_REPORTS_FULL_WIDTH_BREAKPOINT",
+            matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
+            exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
         });
 
         jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
@@ -4193,6 +4243,28 @@ CBR.Models.Report.contact = {
                 }
             }
 
+            // Is missing urgent report
+            if (isResultMatchedByFilter) {
+                if (this.$isMissingUrgentReportFilter.prop("checked")) {
+                    $td = jQuery(tds.get(9));
+                    value = $td.children().prop("checked");
+                    if (!value) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // Is a priority target
+            if (isResultMatchedByFilter) {
+                if (this.$isAPriorityTargetFilter.prop("checked")) {
+                    $td = jQuery(tds.get(10));
+                    value = $td.children().prop("checked");
+                    if (!value) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
             if (isResultMatchedByFilter) {
                 $article.show();
             } else {
@@ -4202,12 +4274,14 @@ CBR.Models.Report.contact = {
     },
 
     _resetFilter: function (e) {
-        this.$inputFilters.val("");
-        this._filterResults();
+        this.$textFilters.val("");
+        this.$isMissingUrgentReportFilter.prop("checked", false);
+        this.$isAPriorityTargetFilter.prop("checked", false);
+        this._filterResults(null);
     },
 
-    _onLargeScreenBreakpointMatch: function () {
-        this.isBrowserLargeScreen = true;
+    _onFullWidthBreakpointMatch: function () {
+        this.isBrowserFullWidth = true;
 
         this.$secondOrSubsequentResultTableHeaders.hide();
         if (!this.$filterSection.visible(true)) {
@@ -4215,8 +4289,8 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _onLargeScreenBreakpointExit: function () {
-        this.isBrowserLargeScreen = false;
+    _onFullWidthBreakpointExit: function () {
+        this.isBrowserFullWidth = false;
 
         this.$stickyTableHeader.hide();
         this.$secondOrSubsequentResultTableHeaders.show();
@@ -4230,18 +4304,92 @@ CBR.Models.Report.contact = {
         }
     },
 
-    _showWhipCountPercentage: function(e) {
+    _showWhipCountPercentage: function (e) {
         var $li = jQuery(e.currentTarget);
         $li.addClass("hover");
         $li.children(".count").hide();
         $li.children(".percentage").show();
     },
 
-    _showWhipCountCount: function(e) {
+    _showWhipCountCount: function (e) {
         var $li = jQuery(e.currentTarget);
         $li.removeClass("hover");
         $li.children(".percentage").hide();
         $li.children(".count").show();
+    },
+
+    _saveNewPriorityTargetStatus: function (e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isAPriorityTarget = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Priority status saved");
+    },
+
+    _saveNewMissingUrgentReportStatus: function(e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isMissingUrgentReport = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+    },
+
+    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
+        var updatedStateLegislator = {
+            id: stateLegislator.getId(),
+            firstName: stateLegislator.getFirstName(),
+            lastName: stateLegislator.getLastName(),
+            title: stateLegislator.getTitle(),
+            politicalParties: stateLegislator.getPoliticalParties(),
+            usState: stateLegislator.getUsState(),
+            district: stateLegislator.getDistrict(),
+            leadershipPosition: stateLegislator.getLeadershipPosition(),
+            offices: stateLegislator.getOffices(),
+            committees: stateLegislator.getCommittees(),
+            reports: stateLegislator.getReports(),
+            otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
+            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
+            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/state-legislators/",
+            data: JSON.stringify(updatedStateLegislator),
+            onSuccess: function (responseText, responseXML) {
+                this.showAlert(floatingAlertText);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).put();
+    },
+
+    _getStateLegislatorOfId: function (id) {
+        return _.find(this._getStateLegislators(), function (legislator) {
+            return legislator.getId() === id;
+        });
+    },
+
+    _disableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget).parent();
+        $tr.removeClass("clickable");
+    },
+
+    _enableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget).parent();
+        $tr.addClass("clickable");
+    },
+
+    _onTableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget);
+        if ($tr.hasClass("clickable")) {
+            this.navigateToStateLegislatorPage(e);
+        }
     }
 });
 ;this["CBR"] = this["CBR"] || {};

@@ -90,6 +90,8 @@
     <input type="text" class="form-control" id="safi-filter" maxlength="1">
     <input type="text" class="form-control" id="ocu-filter" maxlength="1">
     <input type="text" class="form-control" id="pvc-filter" maxlength="1">
+    <input type="checkbox" id="is-missing-urgent-report-filter" />
+    <input type="checkbox" id="is-a-priority-target-filter" />
     <button type="button" class="close">&times;</button>
 </section>
 
@@ -105,6 +107,8 @@
         <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
         <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
         <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+        <th class="is-missing-urgent-report">Report</th>
+        <th class="is-a-priority-target">Target</th>
     </tr>
     </thead>
 </table>
@@ -121,6 +125,8 @@
         <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
         <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
         <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+        <th class="is-missing-urgent-report">Report</th>
+        <th class="is-a-priority-target">Target</th>
     </tr>
     </thead>
 </table>
@@ -140,6 +146,8 @@
                     <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
                     <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
                     <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+                    <th class="is-missing-urgent-report">Report</th>
+                    <th class="is-a-priority-target">Target</th>
                 </tr>
             </thead>
             <tbody>
@@ -162,6 +170,9 @@
                     <td class="ocu">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isOpposingCitizensUnited))</td>
                     <td class="pvc">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.hasPreviouslyVotedForConvention))</td>
                     }
+
+                    <td class="is-missing-urgent-report"><input type="checkbox" @if(legislator.isMissingUrgentReport) { checked } /></td>
+                    <td class="is-a-priority-target"><input type="checkbox" @if(legislator.isAPriorityTarget) { checked } /></td>
                 </tr>
             </tbody>
         </table>
