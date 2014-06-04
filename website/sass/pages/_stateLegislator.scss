@@ -14,7 +14,7 @@
     }
 
     #legislator-data {
-      margin: 0 auto $line-height-computed auto;
+      margin: 0 auto;
 
       > div:first-child {
         > p {
@@ -61,7 +61,7 @@
     $font-size-phone-numbers: 29px;
 
     #phone-numbers {
-      margin-bottom: $line-height-computed/2;
+      margin-bottom: $line-height-computed;
       margin-top: $line-height-computed/2;
 
       @include large-screen {
@@ -113,6 +113,8 @@
 
     #missing-urgent-report-and-priority-target {
       @include clearfix;
+
+      margin-bottom: $line-height-computed;
 
       > article {
         // To space the two items

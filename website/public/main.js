@@ -3786,7 +3786,7 @@ CBR.Models.Report.contact = {
             this._updateStateLegislator("Report status saved");
         }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("Priority status saved");
+            this._updateStateLegislator("Target status saved");
         }, this));
 
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
@@ -4336,7 +4336,7 @@ CBR.Models.Report.contact = {
         var isAPriorityTarget = $checkbox.prop("checked");
         var stateLegislatorId = $checkbox.parent().parent().data("id");
 
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Priority status saved");
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
     },
 
     _saveNewMissingUrgentReportStatus: function(e) {

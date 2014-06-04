@@ -79,7 +79,7 @@ CBR.Controllers.StateLegislator = new Class({
             this._updateStateLegislator("Report status saved");
         }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("Priority status saved");
+            this._updateStateLegislator("Target status saved");
         }, this));
 
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));

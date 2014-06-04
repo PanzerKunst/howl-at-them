@@ -333,7 +333,7 @@ CBR.Controllers.StateReports = new Class({
         var isAPriorityTarget = $checkbox.prop("checked");
         var stateLegislatorId = $checkbox.parent().parent().data("id");
 
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Priority status saved");
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
     },
 
     _saveNewMissingUrgentReportStatus: function(e) {
