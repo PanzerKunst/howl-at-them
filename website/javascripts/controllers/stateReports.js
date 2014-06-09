@@ -34,7 +34,7 @@ CBR.Controllers.StateReports = new Class({
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$results = jQuery("#search-results > article");
-        this.$secondOrSubsequentResultTableHeaders = jQuery(_.rest(jQuery("#search-results thead")));
+        this.$tableHeaders = jQuery(jQuery("#search-results thead"));
 
         this.$clickableTableRows = jQuery("tr.clickable");
 
@@ -292,7 +292,7 @@ CBR.Controllers.StateReports = new Class({
     _onFullWidthBreakpointMatch: function () {
         this.isBrowserFullWidth = true;
 
-        this.$secondOrSubsequentResultTableHeaders.hide();
+        this.$tableHeaders.hide();
         if (!this.$filterSection.visible(true)) {
             this.$stickyTableHeader.show();
         }
@@ -302,7 +302,7 @@ CBR.Controllers.StateReports = new Class({
         this.isBrowserFullWidth = false;
 
         this.$stickyTableHeader.hide();
-        this.$secondOrSubsequentResultTableHeaders.show();
+        this.$tableHeaders.show();
     },
 
     _toggleStickyTableHeader: function () {

@@ -121,6 +121,10 @@
       > article {
         margin-bottom: $line-height-computed;
       }
+
+      thead {
+        display: none;
+      }
     }
 
     table {

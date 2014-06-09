@@ -135,7 +135,8 @@
     @for(legislator <- legislators) {
     <article>
         <table class="table table-striped table-bordered table-condensed">
-            <thead @if(legislator == legislators.head) { style="display: none" }>
+            @if(legislator != legislators.head) {
+            <thead>
                 <tr>
                     <th class="title">Title</th>
                     <th class="name">Name</th>
@@ -150,6 +151,7 @@
                     <th class="is-a-priority-target">Target</th>
                 </tr>
             </thead>
+            }
             <tbody>
                 <tr data-id="@legislator.id" class="clickable">
                     <td class="title">@Html(legislator.getTitleAbbr)</td>
