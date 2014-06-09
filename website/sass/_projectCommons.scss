@@ -16,6 +16,22 @@
   }
 }
 
+.yes-no-answer {
+  text-align: center;
+
+  &.UNKNOWN {
+    color: $gray-light;
+  }
+
+  &.YES {
+    color: $brand-success;
+  }
+
+  &.NO {
+    color: $brand-danger;
+  }
+}
+
 #content {
   th {
     font-weight: normal;

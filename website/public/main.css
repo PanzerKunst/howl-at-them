@@ -307,6 +307,15 @@ tr.clickable {
 .support-level.NOT_SUPPORTIVE {
   color: #d9534f; }
 
+.yes-no-answer {
+  text-align: center; }
+  .yes-no-answer.UNKNOWN {
+    color: #999999; }
+  .yes-no-answer.YES {
+    color: #5cb85c; }
+  .yes-no-answer.NO {
+    color: #d9534f; }
+
 #content th {
   font-weight: normal; }
   #content th > .yes-no-answer {

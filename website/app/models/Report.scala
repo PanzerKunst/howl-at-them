@@ -94,6 +94,11 @@ object Report {
   }
 
   def getSpanForYesNoAnswer(answer: Option[Boolean]): String = {
-    "<span class=\"centered-contents\">" + getLetterForYesNoAnswer(answer) + "</span>"
+    val cssClass = answer match {
+      case Some(bool) => if (bool) "YES" else "NO"
+      case None => "UNKNOWN"
+    }
+
+    "<span class=\"yes-no-answer " + cssClass + "\">" + getLetterForYesNoAnswer(answer) + "</span>"
   }
 }
