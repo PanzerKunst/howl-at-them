@@ -181,23 +181,23 @@ object Application extends Controller {
     // Supportive
     val whipCountSupportive = WhipCount(SupportLevel.SUPPORTIVE,
       nbLegislatorsSupportive,
-      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).round.toInt)
 
     // Needing convincing
     val whipCountNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
       nbLegislatorsNeedingConvincing,
-      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).round.toInt)
 
     // Not supportive
     val whipCountNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
       nbLegislatorsNotSupportive,
-      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).round.toInt)
 
     // Unknown
     val nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive
     val whipCountUnknown = WhipCount(SupportLevel.UNKNOWN,
       nbLegislatorsWhoseSupportLevelIsUnknown,
-      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).round.toInt)
 
     List(whipCountSupportive,
       whipCountNeedingConvincing,
@@ -215,23 +215,23 @@ object Application extends Controller {
     // Supportive
     val whipCountSupportive = WhipCount(SupportLevel.SUPPORTIVE,
       nbLegislatorsSupportive,
-      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).round.toInt)
 
     // Needing convincing
     val whipCountNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
       nbLegislatorsNeedingConvincing,
-      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).round.toInt)
 
     // Not supportive
     val whipCountNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
       nbLegislatorsNotSupportive,
-      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).round.toInt)
 
     // Unknown
     val nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive
     val whipCountUnknown = WhipCount(SupportLevel.UNKNOWN,
       nbLegislatorsWhoseSupportLevelIsUnknown,
-      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).toInt)
+      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).round.toInt)
 
     List(whipCountSupportive,
       whipCountNeedingConvincing,
