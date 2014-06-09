@@ -234,9 +234,8 @@ footer {
   footer > a:hover,
   footer > a:focus {
     display: inline-block;
-    padding: 0.3em 1em;
+    padding: 0.4em 1em 0.6em 1em;
     color: white;
-    text-decoration: underline;
     width: 100%; }
     @media screen and (min-width: 39.5em) {
       footer > a,
@@ -540,9 +539,27 @@ textarea.form-control {
   margin-left: 0;
   margin-right: 0; }
 
+.navbar {
+  min-height: 0; }
+
+.navbar-brand {
+  height: auto; }
+
 .navbar > .container .navbar-brand,
 .navbar > .container-fluid .navbar-brand {
-  margin-left: 0; }
+  margin-left: 0;
+  padding-top: 9px;
+  padding-bottom: 9px; }
+
+.navbar-nav > li > a {
+  padding-top: 9px;
+  padding-bottom: 9px; }
+
+.navbar-toggle {
+  border: none;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-right: 7px; }
 
 /* TODO .navbar-default {
   background-color: $alternate-bg-colour;
