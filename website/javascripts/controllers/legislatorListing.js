@@ -109,7 +109,7 @@ CBR.Controllers.LegislatorListing = new Class({
                 if (filter.length > 0) {
                     $td = jQuery(tds.get(4));
                     value = $td.children().html();
-                    if (value.substring(0, 2).toLowerCase() !== filter.substring(0, 2).toLowerCase()) {
+                    if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                         isResultMatchedByFilter = false;
                     }
                 }
