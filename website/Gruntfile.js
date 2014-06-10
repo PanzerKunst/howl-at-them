@@ -62,7 +62,6 @@ module.exports = function (grunt) {
                     "libs/mootools/mootools-more-1.5.0.js",
                     "libs/bootstrap/js/bootstrap.min.js",
                     "libs/fastclick.js",
-                    "libs/datatables/jquery.dataTables.min.js",
                     "libs/handlebars.runtime-v1.3.0.js",
                     "libs/lodash.min.js",
                     "libs/jquery.visible.min.js",
@@ -88,6 +87,7 @@ module.exports = function (grunt) {
 
                     // Controllers
                     "javascripts/controllers/baseController.js",
+                    "javascripts/controllers/legislatorListing.js",
                     "javascripts/controllers/admin.js",
                     "javascripts/controllers/adminLogin.js",
                     "javascripts/controllers/findYourLegislator.js",
@@ -97,6 +97,7 @@ module.exports = function (grunt) {
                     "javascripts/controllers/stateReports.js",
 
                     // Templates
+                    "javascripts/templates/handlebarsHelpers.js",
                     "public/templates.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
@@ -130,7 +131,6 @@ module.exports = function (grunt) {
                 src: [
                     // Libs
                     'libs/bootstrap/css/bootstrap.css',
-                    'libs/datatables/css/jquery.dataTables.css',
                     'libs/jvectormap/jquery-jvectormap-1.2.2.css',
 
                     // Rest

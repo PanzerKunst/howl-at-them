@@ -63,8 +63,6 @@
   // Wouldn't override declaration was outside #content
   &.legislator-listing {
     > form {
-      margin-bottom: 0;
-
       > div:first-child {
         @include clearfix;
 
@@ -103,7 +101,16 @@
     }
 
     .support-level {
-      width: 8.8em;
+      width: 9em; // 8.8em + 0.2em for "space" to the right
+    }
+
+    table {
+      margin-bottom: 0;
+      width: auto;
+    }
+
+    > #table-header-visible-even-when-no-results th {
+      border-bottom-width: 1px;
     }
 
     th,
@@ -129,6 +136,34 @@
       padding-bottom: 0;
 
       @include transform(rotate(-90deg));
+    }
+
+    th,
+    td {
+      &.title {
+        width: $title-col-width;
+      }
+      &.political-parties {
+        width: $political-parties-col-width;
+      }
+      &.mpp {
+        width: $mpp-col-width;
+      }
+      &.safi {
+        width: $safi-col-width;
+      }
+      &.ocu {
+        width: $ocu-col-width;
+      }
+      &.pvc {
+        width: $pvc-col-width;
+      }
+      &.is-missing-urgent-report {
+        width: $report-col-width;
+      }
+      &.is-a-priority-target {
+        width: $target-col-width;
+      }
     }
   }
 
@@ -235,24 +270,6 @@
   }
 }
 
-// TODO: remove
-.dataTables_filter {
-  .form-control {
-    display: inline-block;
-    width: auto;
-
-    font-weight: normal;
-  }
-}
-
-/* TODO: remove .table-filter {
-  @include clearfix;
-
-  > div {
-    float: right;
-  }
-} */
-
 $table-filter-margin: 0.2em;
 
 .table-filter {
@@ -271,43 +288,31 @@ $table-filter-margin: 0.2em;
   }
 
   > #title-filter {
-    width: 42px;
-  }
-
-  > #name-filter {
-    width: 138px;
+    width: $title-col-width - 2;
   }
 
   > #party-filter {
-    width: 32px;
+    width: $political-parties-col-width - 3;
     text-align: center;
   }
 
-  > #district-filter {
-    width: 107px;
-  }
-
-  > #support-level-filter {
-    width: 133px;
-  }
-
   > #mpp-filter {
-    width: 53px;
+    width: $mpp-col-width - 3;
     text-align: center;
   }
 
   > #safi-filter {
-    width: 60px;
+    width: $safi-col-width - 3;
     text-align: center;
   }
 
   > #ocu-filter {
-    width: 46px;
+    width: $ocu-col-width - 3;
     text-align: center;
   }
 
   > #pvc-filter {
-    width: 56px;
+    width: $pvc-col-width - 3;
     text-align: center;
   }
 

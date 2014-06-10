@@ -173,3 +173,82 @@ function program1(depth0,data) {
   buffer += "\r\n";
   return buffer;
   });
+
+this["CBR"]["Templates"]["searchLegislatorsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n    <tr data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\" class=\"clickable\">\r\n        <td class=\"title\">";
+  if (helper = helpers.getTitleAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getTitleAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"name\">";
+  if (helper = helpers.getLastName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getLastName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + " ";
+  if (helper = helpers.getFirstName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getFirstName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n        <td class=\"political-parties\"><span class=\"centered-contents\">";
+  if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span></td>\r\n        <td class=\"district\">"
+    + escapeExpression((helper = helpers.getUsStateId || (depth0 && depth0.getUsStateId),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getUsStateId", depth0, options)))
+    + " ";
+  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n        <td class=\"support-level\">";
+  stack1 = (helper = helpers.getCurrentSupportLevelSpan || (depth0 && depth0.getCurrentSupportLevelSpan),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getCurrentSupportLevelSpan", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "("
+    + escapeExpression((helper = helpers.getReportCount || (depth0 && depth0.getReportCount),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getReportCount", depth0, options)))
+    + ")</td>\r\n        <td class=\"mpp\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "MPP", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"safi\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "SAFI", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"ocu\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "OCU", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"pvc\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "PVC", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"latest-contact\">"
+    + escapeExpression((helper = helpers.getLatestContact || (depth0 && depth0.getLatestContact),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getLatestContact", depth0, options)))
+    + "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n    </tr>\r\n    ";
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  
+  return " checked ";
+  }
+
+  buffer += "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <tbody>\r\n    ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </tbody>\r\n</table>\r\n";
+  return buffer;
+  });

@@ -4,53 +4,53 @@ CBR.Models.Report = new Class({
     options: {  // Defaults
     },
 
-    getId: function() {
+    getId: function () {
         return this.options.id;
     },
 
-    getCandidateId: function() {
+    getCandidateId: function () {
         return this.options.candidateId;
     },
 
-    getAuthorName: function() {
+    getAuthorName: function () {
         return this.options.authorName;
     },
 
-    getContact: function() {
+    getContact: function () {
         return this.options.contact;
     },
 
-    isMoneyInPoliticsAProblem: function() {
+    isMoneyInPoliticsAProblem: function () {
         return this.options.isMoneyInPoliticsAProblem;
     },
 
-    isSupportingAmendmentToFixIt: function() {
+    isSupportingAmendmentToFixIt: function () {
         return this.options.isSupportingAmendmentToFixIt;
     },
 
-    isOpposingCitizensUnited: function() {
+    isOpposingCitizensUnited: function () {
         return this.options.isOpposingCitizensUnited;
     },
 
-    hasPreviouslyVotedForConvention: function() {
+    hasPreviouslyVotedForConvention: function () {
         return this.options.hasPreviouslyVotedForConvention;
     },
 
-    getSupportLevel: function() {
+    getSupportLevel: function () {
         return this.options.supportLevel ? this.options.supportLevel : "UNKNOWN";
     },
 
-    getNotes: function() {
+    getNotes: function () {
         return this.options.notes;
     },
 
-    getReadableSupportLevel: function() {
+    getReadableSupportLevel: function () {
         var supportLevel = this.options.supportLevel;
         return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : CBR.Models.Report.supportLevel.UNKNOWN;
     },
 
-    getReadableContact: function() {
-        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : "No contact";
+    getReadableContact: function () {
+        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : CBR.Models.Report.contact.NO_CONTACT;
     }
 });
 
@@ -72,5 +72,6 @@ CBR.Models.Report.contact = {
     TALKED_TO_LEGISLATOR: "Talked to legislator",
     CONTACT_WITH_STAFF: "Contact with staff",
     WAITING_FOR_CALLBACK: "Waiting for callback",
-    LEFT_VOICEMAIL: "Left voicemail"
+    LEFT_VOICEMAIL: "Left voicemail",
+    NO_CONTACT: "No contact"
 };

@@ -62,14 +62,6 @@ CBR.Models.StateLegislator = new Class({
         return this.options.isMissingUrgentReport;
     },
 
-    getReportCount: function () {
-        return this.options.reports.length;
-    },
-
-    getLatestReport: function () {
-        return this.options.reports.length > 0 ? new CBR.Models.Report(this.options.reports[0]) : null;
-    },
-
     getTitleAbbr: function () {
         switch (this.getTitle().toLowerCase()) {
             case "representative":

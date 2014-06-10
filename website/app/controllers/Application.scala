@@ -48,51 +48,31 @@ object Application extends Controller {
       val whipCountForSenate = calculateWhipCountForChamber(Chamber.SENATE, detailedLegislatorsForThisState)
       val whipCountForBoth = calculateWhipCountForBothChambers(whipCountForHouse, whipCountForSenate)
 
-      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, detailedLegislatorsForThisState, action)).withSession(
-        newSession
-      )
+      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, detailedLegislatorsForThisState, action))
+        .withSession(newSession)
   }
 
   def searchLegislators = Action {
     implicit request =>
 
-      if (request.queryString.contains("usStateId")) {
+      val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
-
-        val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
-          case Some(positionId) => Some(positionId.toInt)
-          case None => None
-        }
-
-        val committeesInState = CommitteeDto.getInState(selectedUsStateId)
-        val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
-
-        val selectedIsAPriorityTarget = session.get("selectedIsAPriorityTarget") match {
-          case Some(isAPriorityTarget) => isAPriorityTarget.toBoolean
-          case None => false
-        }
-
-        Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), selectedUsStateId, selectedLeadershipPositionId, session.get("selectedCommitteeName"), selectedIsAPriorityTarget)).withSession(
-          session + ("selectedUsStateId" -> selectedUsStateId)
-        )
+        (selectedUsStateId, session + ("selectedUsStateId" -> selectedUsStateId))
       } else {
         val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-
-        val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
-          case Some(positionId) => Some(positionId.toInt)
-          case None => None
-        }
-
-        val committeesInState = CommitteeDto.getInState(selectedUsStateId)
-        val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
-
-        val selectedIsAPriorityTarget = session.get("selectedIsAPriorityTarget") match {
-          case Some(isAPriorityTarget) => isAPriorityTarget.toBoolean
-          case None => false
-        }
-
-        Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), selectedUsStateId, selectedLeadershipPositionId, session.get("selectedCommitteeName"), selectedIsAPriorityTarget))
+        (selectedUsStateId, session)
       }
+
+      val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
+        case Some(positionId) => Some(positionId.toInt)
+        case None => None
+      }
+
+      val committeesInState = CommitteeDto.getInState(selectedUsStateId)
+      val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
+
+      Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), selectedUsStateId, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
+        .withSession(newSession)
   }
 
   def stateLegislator(id: Int) = Action {

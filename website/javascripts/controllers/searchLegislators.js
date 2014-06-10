@@ -1,5 +1,5 @@
 CBR.Controllers.SearchLegislators = new Class({
-    Extends: CBR.Controllers.BaseController,
+    Extends: CBR.Controllers.LegislatorListing,
 
     initialize: function (options) {
         this.parent(options);
@@ -7,44 +7,39 @@ CBR.Controllers.SearchLegislators = new Class({
 
     run: function () {
         this.initElements();
-        this._initEvents();
+        this.initEvents();
 
-        this._doSubmit(null);
+        this.doSubmit(null);
     },
 
     initElements: function () {
         this.parent();
 
-        this.$usStateSelect = jQuery("#us-state");
         this.$advancedSearchFields = jQuery("#advanced-search-fields");
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
-        this.$priorityTargetCheckbox = jQuery("#priority-target");
 
-        this.$tableWrapper = jQuery("#table-wrapper");
-
-        this.$stickyTableHeader = jQuery("#sticky-table-header");
+        this.$latestContactFilter = jQuery("#latest-contact-filter");
     },
 
-    _initEvents: function () {
+    initEvents: function () {
+        this.parent();
+
         jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
         this.$usStateSelect.change(jQuery.proxy(function(e) {
             this._populateLeadershipPositionsSelect(e);
             this._populateCommitteesSelect(e);
         }, this));
 
-        this.$usStateSelect.change(jQuery.proxy(this._doSubmit, this));
-        this.$leadershipPositionSelect.change(jQuery.proxy(this._doSubmit, this));
-        this.$committeeSelect.change(jQuery.proxy(this._doSubmit, this));
-        this.$priorityTargetCheckbox.change(jQuery.proxy(this._doSubmit, this));
+        this.$usStateSelect.change(jQuery.proxy(this.doSubmit, this));
+        this.$leadershipPositionSelect.change(jQuery.proxy(this.doSubmit, this));
+        this.$committeeSelect.change(jQuery.proxy(this.doSubmit, this));
 
         Breakpoints.on({
             name: "SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT",
-            matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
-            exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
+            matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
+            exit: jQuery.proxy(this.onFullWidthBreakpointExit, this)
         });
-
-        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
     },
 
     _toggleAdvancedSearch: function (e) {
@@ -95,8 +90,8 @@ CBR.Controllers.SearchLegislators = new Class({
         }).get();
     },
 
-    _doSubmit: function (e) {
-        this.$tableWrapper.html('<div class="data-loading"></div>');
+    doSubmit: function (e) {
+        this.$searchResultsSection.html('<div class="data-loading"></div>');
 
         var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
         var selectedCommitteeName = this.$committeeSelect.val();
@@ -104,8 +99,7 @@ CBR.Controllers.SearchLegislators = new Class({
         var stateLegislatorSearch = {
             usStateId: this.$usStateSelect.val(),
             leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-            committeeName: selectedCommitteeName ? selectedCommitteeName : null,
-            isAPriorityTarget: this.$priorityTargetCheckbox.is(":checked")
+            committeeName: selectedCommitteeName ? selectedCommitteeName : null
         };
 
         new Request({
@@ -130,192 +124,30 @@ CBR.Controllers.SearchLegislators = new Class({
     },
 
     _createResultsTable: function () {
-        this.$tableWrapper.empty();
-        this.$tableWrapper.append('<table class="table table-striped table-bordered table-condensed"></table>');
+        this.$searchResultsSection.html(
+            CBR.Templates.searchLegislatorsResults({
+                legislators: this.matchingStateLegislators
+            })
+        );
 
-        this.$tableWrapper.children("table").dataTable({
-            "iDisplayLength": 9999,
-            "aaData": this.matchingStateLegislators,
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var $row = jQuery(nRow);
-                $row.attr("data-id", aData.getId());
-                $row.addClass("clickable");
-            },
-            "aoColumns": [
-                {
-                    "mData": function (source, type, val) {
-                        return source.getTitleAbbr();
-                    },
-                    "sTitle": "Title",
-                    "sWidth": "5.9%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return source.getLastName() + " " + source.getFirstName();
-                    },
-                    "sTitle": "Name",
-                    "sWidth": "17.1%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return '<span class="centered-contents">' + source.getPoliticalPartiesAbbr() + '</span>';
-                    },
-                    "sTitle": "Party",
-                    "sWidth": "4%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        return source.getUsState().id + " " + source.getChamber() + " " + source.getDistrict();
-                    },
-                    "sTitle": "District",
-                    "sWidth": "13%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
-                        return latestReport ?
-                            '<span class="support-level ' + latestReport.getSupportLevel() + '">' + latestReport.getReadableSupportLevel() + '</span>(' + source.getReportCount() + ")" :
-                            null;
-                    },
-                    "sTitle": "Support (nb reports)",
-                    "bSortable": false,
-                    "sWidth": "16.5%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
-                        var result = '<span class="centered-contents">';
+        this.toggleStickyTableHeader();
 
-                        if (latestReport) {
-                            var isMoneyInPoliticsAProblem = latestReport.isMoneyInPoliticsAProblem();
-                            if (isMoneyInPoliticsAProblem === true) {
-                                result += "Y";
-                            } else if (isMoneyInPoliticsAProblem === false) {
-                                result += "N";
-                            } else {
-                                result += "?";
-                            }
-                            return result + "</span>";
-                        } else {
-                            return null;
-                        }
-                    },
-                    "sTitle": '<span class="yes-no-answer">Money in<br />politics is<br />a problem</span>',
-                    "sWidth": "7.5%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
-                        var result = '<span class="centered-contents">';
+        this.$results = jQuery("#search-results tr");
 
-                        if (latestReport) {
-                            var isSupportingAmendmentToFixIt = latestReport.isSupportingAmendmentToFixIt();
-                            if (isSupportingAmendmentToFixIt === true) {
-                                result += "Y";
-                            } else if (isSupportingAmendmentToFixIt === false) {
-                                result += "N";
-                            } else {
-                                result += "?";
-                            }
-                            return result + "</span>";
-                        } else {
-                            return null;
-                        }
-                    },
-                    "sTitle": '<span class="yes-no-answer">Supports<br />amendment<br />to fix it</span>',
-                    "sWidth": "8.5%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
-                        var result = '<span class="centered-contents">';
+        jQuery("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
 
-                        if (latestReport) {
-                            var isOpposingCitizensUnited = latestReport.isOpposingCitizensUnited();
-                            if (isOpposingCitizensUnited === true) {
-                                result += "Y";
-                            } else if (isOpposingCitizensUnited === false) {
-                                result += "N";
-                            } else {
-                                result += "?";
-                            }
-                            return result + "</span>";
-                        } else {
-                            return null;
-                        }
-                    },
-                    "sTitle": '<span class="yes-no-answer">Opposes<br />Citizens<br />United</span>',
-                    "sWidth": "6.5%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
+        var $tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
+        var $tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
 
-                        if (latestReport) {
-                            var hasPreviouslyVotedForConvention = latestReport.hasPreviouslyVotedForConvention();
-                            var result = '<span class="centered-contents">';
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
 
-                            if (hasPreviouslyVotedForConvention === true) {
-                                result += "Y";
-                            } else if (hasPreviouslyVotedForConvention === false) {
-                                result += "N";
-                            } else {
-                                result += "?";
-                            }
-                            return result + "</span>";
-                        } else {
-                            return null;
-                        }
-                    },
-                    "sTitle": '<span class="yes-no-answer">Previous<br />vote for<br />convention</span>',
-                    "sWidth": "7.5%"
-                },
-                {
-                    "mData": function (source, type, val) {
-                        var latestReport = source.getLatestReport();
-                        return latestReport ?
-                            latestReport.getReadableContact() :
-                            null;
-                    },
-                    "sTitle": "Last contact",
-                    "sWidth": "13.5%"
-                }
-            ],
-            "oLanguage": {
-                "sEmptyTable": "No matching state legislator",
-                "sSearch": "Filter"
-            }
-        });
+        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
+        var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
 
-        // To make it look like Bootstrap inputs
-        jQuery(".dataTables_filter input").addClass("form-control");
-
-        this.$filterSection = jQuery(".dataTables_filter");
-        this._toggleStickyTableHeader();
-
-        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
-    },
-
-    _onFullWidthBreakpointMatch: function() {
-        this.isBrowserFullWidth = true;
-
-        if (this.$filterSection && !this.$filterSection.visible(true)) {
-            this.$stickyTableHeader.show();
-        }
-    },
-
-    _onFullWidthBreakpointExit: function() {
-        this.isBrowserFullWidth = false;
-        this.$stickyTableHeader.hide();
-    },
-
-    _toggleStickyTableHeader: function () {
-        if (this.isBrowserFullWidth &&
-                this.$filterSection &&
-                !this.$filterSection.visible(true)) {
-            this.$stickyTableHeader.show();
-        } else {
-            this.$stickyTableHeader.hide();
-        }
+        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
+        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
     }
 });

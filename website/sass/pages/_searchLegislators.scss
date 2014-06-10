@@ -42,52 +42,51 @@
         width: $field-width-search-pages;
       }
 
+      // Needs to be nested in #advanced-search-fields in order to be high-enough priority
       #committees-form-group {
-        width: 34em;
+        width: $search-legislator-page-min-width - 2 * $page-side-padding - $field-width-search-pages - $odd-form-groups-margin-right;
+        margin-right: 0;
       }
+    }
 
-      #priority-target-form-group {
-        width: 10em;
-        margin-top: 30px;
+    $name-col-width: 148px;
+    $district-col-width: 114px;
+    $support-level-col-width: 159px;
+    $latest-contact-col-width: 105px;
 
-        label {
-          font-weight: bold;
-        }
-      }
+    #name-filter {
+      width: $name-col-width - 3;
+    }
+
+    #district-filter {
+      width: $district-col-width - 3;
+    }
+
+    #support-level-filter {
+      width: $support-level-col-width - 3;
+    }
+
+    #latest-contact-filter {
+      width: $latest-contact-col-width - 3;
     }
 
     > #sticky-table-header {
       width: $search-legislator-page-min-width - 2 * $page-side-padding;
+    }
 
-      .title {
-        width: 5.3%;
+    th,
+    td {
+      &.name {
+        width: $name-col-width;
       }
-      .name {
-        width: 17.6%;
+      &.district {
+        width: $district-col-width;
       }
-      .political-parties {
-        width: 4.2%;
+      &.support-level {
+        width: $support-level-col-width;
       }
-      .district {
-        width: 13.2%;
-      }
-      .support-level {
-        width: 17%;
-      }
-      .mpp {
-        width: 7%;
-      }
-      .safi {
-        width: 8.2%;
-      }
-      .ocu {
-        width: 6.2%;
-      }
-      .pvc {
-        width: 7.5%;
-      }
-      .last-contact {
-        width: 13.8%;
+      &.latest-contact {
+        width: $latest-contact-col-width;
       }
     }
   }

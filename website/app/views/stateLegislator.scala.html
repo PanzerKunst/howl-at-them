@@ -71,10 +71,10 @@
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isOpposingCitizensUnited))</td>
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.hasPreviouslyVotedForConvention))</td>
                     } else {
-                    <td><span class="centered-contents">?</span></td>
-                    <td><span class="centered-contents">?</span></td>
-                    <td><span class="centered-contents">?</span></td>
-                    <td><span class="centered-contents">?</span></td>
+                    <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
+                    <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
+                    <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
+                    <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
                     }
                 </tr>
             </tbody>
@@ -316,10 +316,10 @@
         </div>
         <div>
             @Html(report.getSupportLevelSpan)
-            <span class="existing-report-yes-no-answers">@Report.getLetterForYesNoAnswer(report.isMoneyInPoliticsAProblem)
-            @Report.getLetterForYesNoAnswer(report.isSupportingAmendmentToFixIt)
-            @Report.getLetterForYesNoAnswer(report.isOpposingCitizensUnited)
-            @Report.getLetterForYesNoAnswer(report.hasPreviouslyVotedForConvention)</span>
+            <span class="existing-report-yes-no-answers">@Html(Report.getSpanForYesNoAnswer(report.isMoneyInPoliticsAProblem))
+            @Html(Report.getSpanForYesNoAnswer(report.isSupportingAmendmentToFixIt))
+            @Html(Report.getSpanForYesNoAnswer(report.isOpposingCitizensUnited))
+            @Html(Report.getSpanForYesNoAnswer(report.hasPreviouslyVotedForConvention))</span>
         </div>
         <p>@Html(report.getNotesForWeb)</p>
     </article>

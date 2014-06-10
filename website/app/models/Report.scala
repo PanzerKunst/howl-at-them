@@ -44,6 +44,7 @@ case class Report(_id: Option[Long] = None,
       case Some("CONTACT_WITH_STAFF") => ContactWithLegislator.CONTACT_WITH_STAFF.getString
       case Some("WAITING_FOR_CALLBACK") => ContactWithLegislator.WAITING_FOR_CALLBACK.getString
       case Some("LEFT_VOICEMAIL") => ContactWithLegislator.LEFT_VOICEMAIL.getString
+      case Some("NO_CONTACT") => ContactWithLegislator.NO_CONTACT.getString
       case Some(otherString) => "No contact"
       case None => "No contact"
     }

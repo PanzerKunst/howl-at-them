@@ -234,7 +234,7 @@ footer {
   footer > a:hover,
   footer > a:focus {
     display: inline-block;
-    padding: 0.4em 1em 0.6em 1em;
+    padding: 0.45em 1em 0.55em 1em;
     color: white;
     width: 100%; }
     @media screen and (min-width: 39.5em) {
@@ -330,18 +330,16 @@ tr.clickable {
   font-size: 13px;
   color: #a94442;
   text-align: center; }
-#content.legislator-listing > form {
-  margin-bottom: 0; }
-  #content.legislator-listing > form > div:first-child {
-    margin: 0 auto; }
-    #content.legislator-listing > form > div:first-child:after {
-      content: "";
-      display: table;
-      clear: both; }
-  #content.legislator-listing > form .form-group {
-    margin-right: 2em;
-    float: left;
-    width: 19em; }
+#content.legislator-listing > form > div:first-child {
+  margin: 0 auto; }
+  #content.legislator-listing > form > div:first-child:after {
+    content: "";
+    display: table;
+    clear: both; }
+#content.legislator-listing > form .form-group {
+  margin-right: 2em;
+  float: left;
+  width: 19em; }
 #content.legislator-listing > #sticky-table-header {
   display: none;
   position: fixed;
@@ -355,7 +353,12 @@ tr.clickable {
   display: inline-block;
   width: 16em; }
 #content.legislator-listing .support-level {
-  width: 8.8em; }
+  width: 9em; }
+#content.legislator-listing table {
+  margin-bottom: 0;
+  width: auto; }
+#content.legislator-listing > #table-header-visible-even-when-no-results th {
+  border-bottom-width: 1px; }
 #content.legislator-listing th.political-parties, #content.legislator-listing th.mpp, #content.legislator-listing th.safi, #content.legislator-listing th.ocu, #content.legislator-listing th.pvc, #content.legislator-listing th.is-a-priority-target, #content.legislator-listing th.is-missing-urgent-report,
 #content.legislator-listing td.political-parties,
 #content.legislator-listing td.mpp,
@@ -377,6 +380,30 @@ tr.clickable {
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg); }
+#content.legislator-listing th.title,
+#content.legislator-listing td.title {
+  width: 45px; }
+#content.legislator-listing th.political-parties,
+#content.legislator-listing td.political-parties {
+  width: 35px; }
+#content.legislator-listing th.mpp,
+#content.legislator-listing td.mpp {
+  width: 56px; }
+#content.legislator-listing th.safi,
+#content.legislator-listing td.safi {
+  width: 66px; }
+#content.legislator-listing th.ocu,
+#content.legislator-listing td.ocu {
+  width: 49px; }
+#content.legislator-listing th.pvc,
+#content.legislator-listing td.pvc {
+  width: 62px; }
+#content.legislator-listing th.is-missing-urgent-report,
+#content.legislator-listing td.is-missing-urgent-report {
+  width: 46px; }
+#content.legislator-listing th.is-a-priority-target,
+#content.legislator-listing td.is-a-priority-target {
+  width: 45px; }
 #content .reports > article {
   border: 1px solid #dddddd;
   border-bottom: none;
@@ -443,18 +470,6 @@ tr.clickable {
     float: left;
     margin-right: 2em; }
 
-.dataTables_filter .form-control {
-  display: inline-block;
-  width: auto;
-  font-weight: normal; }
-
-/* TODO: remove .table-filter {
-  @include clearfix;
-
-  > div {
-    float: right;
-  }
-} */
 .table-filter {
   margin-bottom: 2px; }
   .table-filter:after {
@@ -467,27 +482,21 @@ tr.clickable {
     padding-left: 5px;
     padding-right: 5px; }
   .table-filter > #title-filter {
-    width: 42px; }
-  .table-filter > #name-filter {
-    width: 138px; }
+    width: 43px; }
   .table-filter > #party-filter {
     width: 32px;
     text-align: center; }
-  .table-filter > #district-filter {
-    width: 107px; }
-  .table-filter > #support-level-filter {
-    width: 133px; }
   .table-filter > #mpp-filter {
     width: 53px;
     text-align: center; }
   .table-filter > #safi-filter {
-    width: 60px;
+    width: 63px;
     text-align: center; }
   .table-filter > #ocu-filter {
     width: 46px;
     text-align: center; }
   .table-filter > #pvc-filter {
-    width: 56px;
+    width: 59px;
     text-align: center; }
   .table-filter > #is-missing-urgent-report-filter {
     margin: 10px 0 0 16px; }
@@ -573,22 +582,6 @@ textarea.form-control {
 @media screen and (min-width: 49.5em) {
   .modal-body > p {
     font-size: 16px; } }
-
-.dataTables_length,
-.dataTables_info,
-.dataTables_paginate {
-  display: none; }
-
-table.dataTable thead th {
-  border-bottom: 2px solid #DDDDDD;
-  padding: 5px; }
-table.dataTable tr.clickable.odd:hover td.sorting_1, table.dataTable tr.clickable.even:hover td.sorting_1 {
-  background-color: #428bca;
-  color: white; }
-table.dataTable tr.odd td.sorting_1 {
-  background-color: #F9F9F9; }
-table.dataTable tr.even td.sorting_1 {
-  background-color: #FFF; }
 
 .jvectormap-zoomin,
 .jvectormap-zoomout {
@@ -729,34 +722,30 @@ table.dataTable tr.even td.sorting_1 {
   #search-legislators #content #advanced-search-fields > .form-group {
     width: 16em; }
   #search-legislators #content #advanced-search-fields #committees-form-group {
-    width: 34em; }
-  #search-legislators #content #advanced-search-fields #priority-target-form-group {
-    width: 10em;
-    margin-top: 30px; }
-    #search-legislators #content #advanced-search-fields #priority-target-form-group label {
-      font-weight: bold; }
+    width: 48.5em;
+    margin-right: 0; }
+  #search-legislators #content #name-filter {
+    width: 145px; }
+  #search-legislators #content #district-filter {
+    width: 111px; }
+  #search-legislators #content #support-level-filter {
+    width: 156px; }
+  #search-legislators #content #latest-contact-filter {
+    width: 102px; }
   #search-legislators #content > #sticky-table-header {
     width: 66.5em; }
-    #search-legislators #content > #sticky-table-header .title {
-      width: 5.3%; }
-    #search-legislators #content > #sticky-table-header .name {
-      width: 17.6%; }
-    #search-legislators #content > #sticky-table-header .political-parties {
-      width: 4.2%; }
-    #search-legislators #content > #sticky-table-header .district {
-      width: 13.2%; }
-    #search-legislators #content > #sticky-table-header .support-level {
-      width: 17%; }
-    #search-legislators #content > #sticky-table-header .mpp {
-      width: 7%; }
-    #search-legislators #content > #sticky-table-header .safi {
-      width: 8.2%; }
-    #search-legislators #content > #sticky-table-header .ocu {
-      width: 6.2%; }
-    #search-legislators #content > #sticky-table-header .pvc {
-      width: 7.5%; }
-    #search-legislators #content > #sticky-table-header .last-contact {
-      width: 13.8%; }
+  #search-legislators #content th.name,
+  #search-legislators #content td.name {
+    width: 148px; }
+  #search-legislators #content th.district,
+  #search-legislators #content td.district {
+    width: 114px; }
+  #search-legislators #content th.support-level,
+  #search-legislators #content td.support-level {
+    width: 159px; }
+  #search-legislators #content th.latest-contact,
+  #search-legislators #content td.latest-contact {
+    width: 105px; }
 #search-legislators footer {
   min-width: 59.9375em;
   font-size: 16px; }
@@ -831,50 +820,29 @@ table.dataTable tr.even td.sorting_1 {
       #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.NOT_SUPPORTIVE {
         background-color: #d9534f; }
   #state-reports #content h2 {
-    text-align: left; }
-  #state-reports #content > #sticky-table-header {
+    text-align: left;
+    margin-top: 0; }
+  #state-reports #content #name-filter {
+    width: 134px; }
+  #state-reports #content #district-filter {
+    width: 106px; }
+  #state-reports #content #support-level-filter {
+    width: 134px; }
+  #state-reports #content #sticky-table-header {
     width: 56.3em; }
-  #state-reports #content > #table-header-visible-even-when-no-results th {
-    border-bottom-width: 1px; }
   #state-reports #content > #search-results > article {
     margin-bottom: 20px; }
   #state-reports #content > #search-results thead {
     display: none; }
-  #state-reports #content table {
-    margin-bottom: 0; }
-  #state-reports #content th.title,
-  #state-reports #content td.title {
-    width: 5.5%; }
   #state-reports #content th.name,
   #state-reports #content td.name {
-    width: 17.9%; }
-  #state-reports #content th.political-parties,
-  #state-reports #content td.political-parties {
-    width: 4.5%; }
+    width: 137px; }
   #state-reports #content th.district,
   #state-reports #content td.district {
-    width: 14%; }
+    width: 109px; }
   #state-reports #content th.support-level,
   #state-reports #content td.support-level {
-    width: 17.3%; }
-  #state-reports #content th.mpp,
-  #state-reports #content td.mpp {
-    width: 7%; }
-  #state-reports #content th.safi,
-  #state-reports #content td.safi {
-    width: 8.1%; }
-  #state-reports #content th.ocu,
-  #state-reports #content td.ocu {
-    width: 6.2%; }
-  #state-reports #content th.pvc,
-  #state-reports #content td.pvc {
-    width: 7.5%; }
-  #state-reports #content th.is-missing-urgent-report,
-  #state-reports #content td.is-missing-urgent-report {
-    width: 6%; }
-  #state-reports #content th.is-a-priority-target,
-  #state-reports #content td.is-a-priority-target {
-    width: 6%; }
+    width: 137px; }
 #state-reports footer {
   min-width: 51.0125em;
   font-size: 16px; }
@@ -927,6 +895,8 @@ table.dataTable tr.even td.sorting_1 {
           width: 30%; } }
   #state-legislator #content #legislator-data table {
     margin-bottom: 10px; }
+    #state-legislator #content #legislator-data table td {
+      text-align: center; }
 #state-legislator #content #phone-numbers {
   margin-bottom: 20px;
   margin-top: 10px; }

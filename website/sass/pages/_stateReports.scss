@@ -107,14 +107,27 @@
 
     h2 {
       text-align: left;
+      margin-top: 0;
     }
 
-    > #sticky-table-header {
+    $name-col-width: 137px;
+    $district-col-width: 109px;
+    $support-level-col-width: 137px;
+
+    #name-filter {
+      width: $name-col-width - 3;
+    }
+
+    #district-filter {
+      width: $district-col-width - 3;
+    }
+
+    #support-level-filter {
+      width: $support-level-col-width - 3;
+    }
+
+    #sticky-table-header {
       width: $state-reports-page-min-width - 2 * $page-side-padding;
-    }
-
-    > #table-header-visible-even-when-no-results th {
-      border-bottom-width: 1px;
     }
 
     > #search-results {
@@ -127,44 +140,16 @@
       }
     }
 
-    table {
-      margin-bottom: 0;
-    }
-
     th,
     td {
-      &.title {
-        width: 5.5%;
-      }
       &.name {
-        width: 17.9%;
-      }
-      &.political-parties {
-        width: 4.5%;
+        width: $name-col-width;
       }
       &.district {
-        width: 14%;
+        width: $district-col-width;
       }
       &.support-level {
-        width: 17.3%;
-      }
-      &.mpp {
-        width: 7%;
-      }
-      &.safi {
-        width: 8.1%;
-      }
-      &.ocu {
-        width: 6.2%;
-      }
-      &.pvc {
-        width: 7.5%;
-      }
-      &.is-missing-urgent-report {
-        width: 6%;
-      }
-      &.is-a-priority-target {
-        width: 6%;
+        width: $support-level-col-width;
       }
     }
   }
