@@ -249,10 +249,10 @@ footer {
   position: relative; }
 
 #content {
-  padding-bottom: 14em; }
+  padding-bottom: 17.5em; }
   @media screen and (min-width: 39.5em) {
     #content {
-      padding-bottom: 4em; } }
+      padding-bottom: 5em; } }
 
 #content form .form-group {
   width: 20em; }
@@ -708,7 +708,7 @@ textarea.form-control {
 #search-legislators #content {
   min-width: 68.5em;
   max-width: 68.5em;
-  padding-bottom: 4em; }
+  padding-bottom: 5em; }
   #search-legislators #content form > div:first-child {
     width: 26em; }
   #search-legislators #content #advanced-toggle {
@@ -768,7 +768,7 @@ textarea.form-control {
 #state-reports #content {
   min-width: 58.3em;
   max-width: 58.3em;
-  padding-bottom: 4em; }
+  padding-bottom: 5em; }
   #state-reports #content > form > div:first-child {
     width: 19em; }
   #state-reports #content > #whip-count-per-chamber:after {
