@@ -117,6 +117,10 @@ CBR.Controllers.SearchLegislators = new Class({
         }).get();
     },
 
+    getStateLegislators: function() {
+        return this.matchingStateLegislators;
+    },
+
     _storeMatchingStateLegislators: function (stateLegislators) {
         this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
             return new CBR.Models.StateLegislator(stateLegislator);
@@ -147,7 +151,7 @@ CBR.Controllers.SearchLegislators = new Class({
         var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
         var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
 
-        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
-        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
+        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
     }
 });

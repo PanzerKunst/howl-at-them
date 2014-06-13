@@ -31,7 +31,7 @@ CBR.Controllers.StateReports = new Class({
         this.fadeOutFloatingAlerts();
     },
 
-    _getStateLegislators: function () {
+    getStateLegislators: function () {
         var result = [];
 
         this.options.legislators.forEach(function (item, index) {
@@ -58,8 +58,8 @@ CBR.Controllers.StateReports = new Class({
         this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
         this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
 
-        this.$isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
-        this.$isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
+        this.$isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+        this.$isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
@@ -132,62 +132,5 @@ CBR.Controllers.StateReports = new Class({
         $li.removeClass("hover");
         $li.children(".percentage").hide();
         $li.children(".count").show();
-    },
-
-    _saveNewPriorityTargetStatus: function (e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isAPriorityTarget = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
-    },
-
-    _saveNewMissingUrgentReportStatus: function(e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isMissingUrgentReport = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
-    },
-
-    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
-        var updatedStateLegislator = {
-            id: stateLegislator.getId(),
-            firstName: stateLegislator.getFirstName(),
-            lastName: stateLegislator.getLastName(),
-            title: stateLegislator.getTitle(),
-            politicalParties: stateLegislator.getPoliticalParties(),
-            usState: stateLegislator.getUsState(),
-            district: stateLegislator.getDistrict(),
-            leadershipPosition: stateLegislator.getLeadershipPosition(),
-            offices: stateLegislator.getOffices(),
-            committees: stateLegislator.getCommittees(),
-            reports: stateLegislator.getReports(),
-            otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
-            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
-            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
-        };
-
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/state-legislators/",
-            data: JSON.stringify(updatedStateLegislator),
-            onSuccess: function (responseText, responseXML) {
-                this.showAlert(floatingAlertText);
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).put();
-    },
-
-    _getStateLegislatorOfId: function (id) {
-        return _.find(this._getStateLegislators(), function (legislator) {
-            return legislator.getId() === id;
-        });
     }
 });

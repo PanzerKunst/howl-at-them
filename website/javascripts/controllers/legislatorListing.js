@@ -249,5 +249,62 @@ CBR.Controllers.LegislatorListing = new Class({
         if ($tr.hasClass("clickable")) {
             this.navigateToStateLegislatorPage(e);
         }
+    },
+
+    saveNewPriorityTargetStatus: function (e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isAPriorityTarget = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
+    },
+
+    saveNewMissingUrgentReportStatus: function(e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isMissingUrgentReport = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+    },
+
+    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
+        var updatedStateLegislator = {
+            id: stateLegislator.getId(),
+            firstName: stateLegislator.getFirstName(),
+            lastName: stateLegislator.getLastName(),
+            title: stateLegislator.getTitle(),
+            politicalParties: stateLegislator.getPoliticalParties(),
+            usState: stateLegislator.getUsState(),
+            district: stateLegislator.getDistrict(),
+            leadershipPosition: stateLegislator.getLeadershipPosition(),
+            offices: stateLegislator.getOffices(),
+            committees: stateLegislator.getCommittees(),
+            reports: stateLegislator.getReports(),
+            otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
+            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
+            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/state-legislators/",
+            data: JSON.stringify(updatedStateLegislator),
+            onSuccess: function (responseText, responseXML) {
+                this.showAlert(floatingAlertText);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).put();
+    },
+
+    _getStateLegislatorOfId: function (id) {
+        return _.find(this.getStateLegislators(), function (legislator) {
+            return legislator.getId() === id;
+        });
     }
 });
