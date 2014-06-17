@@ -29,7 +29,8 @@
         <div class="form-group">
             <label for="leadership-position">Leadership position</label><!--
          --><select id="leadership-position" class="form-control">
-                <option value=""></option>
+                <option value="">All leadership positions</option>
+                <option disabled>----</option>
                 @for(leadershipPosition <- leadershipPositionsInState) {
                 <option value="@leadershipPosition.id" @if(selectedLeadershipPositionId.isDefined && selectedLeadershipPositionId.get == leadershipPosition.id) { selected }>@leadershipPosition.name</option>
                 }
@@ -39,7 +40,8 @@
         <div class="form-group" id="committees-form-group">
             <label for="committee">Committee</label><!--
          --><select id="committee" class="form-control">
-                <option value=""></option>
+                <option value="">All committees</option>
+                <option disabled>----</option>
                 @for(committeeName <- committeeNamesInState) {
                 <option value="@committeeName" @if(selectedCommitteeName.isDefined && selectedCommitteeName.get == committeeName) { selected }>@committeeName</option>
                 }
