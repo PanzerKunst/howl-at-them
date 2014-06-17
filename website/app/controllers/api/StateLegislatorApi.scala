@@ -5,6 +5,7 @@ import db.{CommitteeDto, StateLegislatorDto}
 import play.api.libs.json.Json
 import services.JsonUtil
 import models.frontend.DetailedStateLegislator
+import controllers.Application
 
 object StateLegislatorApi extends Controller {
   def search = Action {
@@ -43,7 +44,9 @@ object StateLegislatorApi extends Controller {
 
         val matchingLegislators = StateLegislatorDto.getMatching(usStateId, leadershipPositionId, committees, isAPriorityTarget)
 
-        Ok(Json.toJson(matchingLegislators)).withSession(newSession)
+        Ok(Json.toJson(matchingLegislators))
+          .withSession(newSession)
+          .withHeaders(Application.doNotCachePage: _*)
       } else
         Forbidden
   }

@@ -14,6 +14,8 @@ import models.Account
 
 object Application extends Controller {
 
+  val doNotCachePage = Array((CACHE_CONTROL -> "no-cache, no-store"))
+
   def index = Action {
     implicit request =>
 
@@ -50,6 +52,7 @@ object Application extends Controller {
 
       Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, detailedLegislatorsForThisState, action))
         .withSession(newSession)
+        .withHeaders(doNotCachePage: _*)
   }
 
   def searchLegislators = Action {
