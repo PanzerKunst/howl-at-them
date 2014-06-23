@@ -29,6 +29,10 @@ CBR.Controllers.StateReports = new Class({
 
         this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
+
+        if (jQuery.browser.mobile) {
+            this.$tableHeaders.show();
+        }
     },
 
     getStateLegislators: function () {
@@ -111,13 +115,19 @@ CBR.Controllers.StateReports = new Class({
     },
 
     onFullWidthBreakpointMatch: function () {
-        this.$tableHeaders.hide();
+        if (!jQuery.browser.mobile) {
+            this.$tableHeaders.hide();
+        }
+
         this.parent();
     },
 
     onFullWidthBreakpointExit: function () {
         this.parent();
-        this.$tableHeaders.show();
+
+        if (!jQuery.browser.mobile) {
+            this.$tableHeaders.show();
+        }
     },
 
     _showWhipCountPercentage: function (e) {
