@@ -31,7 +31,7 @@
     Javascript
 -->
 <script type="text/javascript">
-    window.addEvent("domready", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.Admin({
             el: "#content"
         }).run();

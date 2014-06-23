@@ -39,7 +39,7 @@
     Javascript
 -->
 <script type="text/javascript">
-    window.addEvent("domready", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.AdminLogin({
             el: "#content"
         }).run();

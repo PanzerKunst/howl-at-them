@@ -65,7 +65,7 @@ Please find your legislator another way... sorry!</div>
     Javascript
 -->
 <script type="text/javascript">
-    window.addEvent("domready", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.FindYourLegislator({
             el: "#content"
         }).run();

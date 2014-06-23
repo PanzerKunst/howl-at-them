@@ -76,6 +76,7 @@ object Application extends Controller {
 
       Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), selectedUsStateId, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
         .withSession(newSession)
+        .withHeaders(doNotCachePage: _*)
   }
 
   def stateLegislator(id: Int) = Action {

@@ -81,7 +81,7 @@
 </section>
 
 <section class="table-filter">
-    <input type="text" class="form-control" id="title-filter" maxlength="3">
+    <input type="text" class="form-control" id="title-filter" maxlength="1">
     <input type="text" class="form-control" id="name-filter">
     <input type="text" class="form-control" id="party-filter" maxlength="1">
     <input type="text" class="form-control" id="district-filter">
@@ -208,7 +208,7 @@
     Javascript
 -->
 <script type="text/javascript">
-    window.addEvent("domready", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.StateReports({
             el: "#content",
             isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString),

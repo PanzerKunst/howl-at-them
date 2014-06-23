@@ -332,7 +332,7 @@
     Javascript
 -->
 <script type="text/javascript">
-    window.addEvent("domready", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.StateLegislator({
             el: "#content",
             stateLegislator: @Html(play.api.libs.json.Json.toJson(stateLegislator).toString),
