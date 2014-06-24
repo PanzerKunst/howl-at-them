@@ -3342,8 +3342,8 @@ CBR.Models.Report.contact = {
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
 
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
-        var $tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
+        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.children(".is-missing-urgent-report");
+        var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.children(".is-a-priority-target");
 
         $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
         $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
@@ -4272,6 +4272,8 @@ CBR.Models.Report.contact = {
                 );
 
                 $tr = $article.find("tr");
+
+                $tr.click(jQuery.proxy(this.onTableRowClick, this));
 
                 var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
                 var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");

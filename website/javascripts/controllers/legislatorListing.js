@@ -244,8 +244,8 @@ CBR.Controllers.LegislatorListing = new Class({
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
 
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
-        var $tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
+        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.children(".is-missing-urgent-report");
+        var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.children(".is-a-priority-target");
 
         $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
         $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);

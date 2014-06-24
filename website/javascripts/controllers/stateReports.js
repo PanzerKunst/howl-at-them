@@ -76,6 +76,8 @@ CBR.Controllers.StateReports = new Class({
 
                 $tr = $article.find("tr");
 
+                $tr.click(jQuery.proxy(this.onTableRowClick, this));
+
                 var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
                 var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
