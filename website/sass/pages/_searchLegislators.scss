@@ -19,19 +19,10 @@
     // Because the large-screen footer is always displayed
     padding-bottom: $footer-item-height * 2;
 
-    $search-legislator-advanced-toggle-link-width: 5em;
-
-    form {
+    > form {
       > div:first-child {
-        width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right + $search-legislator-advanced-toggle-link-width;
+        width: $label-width-us-state + $field-width-search-pages;
       }
-    }
-
-    #advanced-toggle {
-      float: left;
-
-      width: $search-legislator-advanced-toggle-link-width;
-      padding-top: 5px;
     }
 
     #advanced-search-fields {

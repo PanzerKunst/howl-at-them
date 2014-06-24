@@ -15,7 +15,6 @@ CBR.Controllers.SearchLegislators = new Class({
     initElements: function () {
         this.parent();
 
-        this.$advancedSearchFields = jQuery("#advanced-search-fields");
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
 
@@ -24,8 +23,6 @@ CBR.Controllers.SearchLegislators = new Class({
 
     initEvents: function () {
         this.parent();
-
-        jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
 
         this.$usStateSelect.change(jQuery.proxy(function (e) {
             this._populateLeadershipPositionsSelect(e);
@@ -49,14 +46,6 @@ CBR.Controllers.SearchLegislators = new Class({
             matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
             exit: jQuery.proxy(this.onFullWidthBreakpointExit, this)
         });
-    },
-
-    _toggleAdvancedSearch: function (e) {
-        if (this.$advancedSearchFields.is(":visible")) {
-            this.$advancedSearchFields.slideUpCustom();
-        } else {
-            this.$advancedSearchFields.slideDownCustom();
-        }
     },
 
     _populateLeadershipPositionsSelect: function (e) {

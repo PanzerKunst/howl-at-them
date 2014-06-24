@@ -707,14 +707,7 @@ textarea.form-control {
   min-width: 68.5em; }
 #search-legislators #content {
   min-width: 68.5em;
-  max-width: 68.5em;
-  padding-bottom: 5em; }
-  #search-legislators #content form > div:first-child {
-    width: 26em; }
-  #search-legislators #content #advanced-toggle {
-    float: left;
-    width: 5em;
-    padding-top: 5px; }
+  max-width: 68.5em; }
   #search-legislators #content #advanced-search-fields:after {
     content: "";
     display: table;

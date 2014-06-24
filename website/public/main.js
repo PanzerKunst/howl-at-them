@@ -3777,7 +3777,6 @@ CBR.Models.Report.contact = {
     initElements: function () {
         this.parent();
 
-        this.$advancedSearchFields = jQuery("#advanced-search-fields");
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
 
@@ -3786,8 +3785,6 @@ CBR.Models.Report.contact = {
 
     initEvents: function () {
         this.parent();
-
-        jQuery("#advanced-toggle").click(jQuery.proxy(this._toggleAdvancedSearch, this));
 
         this.$usStateSelect.change(jQuery.proxy(function (e) {
             this._populateLeadershipPositionsSelect(e);
@@ -3811,14 +3808,6 @@ CBR.Models.Report.contact = {
             matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
             exit: jQuery.proxy(this.onFullWidthBreakpointExit, this)
         });
-    },
-
-    _toggleAdvancedSearch: function (e) {
-        if (this.$advancedSearchFields.is(":visible")) {
-            this.$advancedSearchFields.slideUpCustom();
-        } else {
-            this.$advancedSearchFields.slideDownCustom();
-        }
     },
 
     _populateLeadershipPositionsSelect: function (e) {
@@ -4481,7 +4470,7 @@ function program1(depth0,data) {
   return buffer;
   }
 
-  buffer += "<option value=\"\"></option>\r\n";
+  buffer += "<option value=\"\">All committees</option>\r\n<option disabled>----</option>\r\n";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.committeeNames), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
@@ -4631,7 +4620,7 @@ function program1(depth0,data) {
   return buffer;
   }
 
-  buffer += "<option value=\"\"></option>\r\n";
+  buffer += "<option value=\"\">All leadership positions</option>\r\n<option disabled>----</option>\r\n";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.leadershipPositions), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
