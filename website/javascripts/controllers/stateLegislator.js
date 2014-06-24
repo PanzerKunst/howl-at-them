@@ -124,7 +124,7 @@ CBR.Controllers.StateLegislator = new Class({
             var phoneNumber = $span.html();
 
             // Because some browsers like iOS Safari automatically wrap phone number by anchor tags
-            var $childAnchor = $span.children("a").get(0);
+            var $childAnchor = $span.children("a")[0];
             if ($childAnchor) {
                 phoneNumber = jQuery($childAnchor).html();
             }

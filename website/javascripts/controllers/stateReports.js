@@ -9,6 +9,8 @@ CBR.Controllers.StateReports = new Class({
         this.initElements();
         this._initValidation();
         this.initEvents();
+
+        this.parent();
     },
 
     initElements: function () {
@@ -16,33 +18,7 @@ CBR.Controllers.StateReports = new Class({
 
         this.$whipCountListItem = jQuery("#whip-count-per-chamber li");
 
-        this.$results = jQuery("#search-results > article");
-        this.$tableHeaders = jQuery(jQuery("#search-results thead"));
-
-        this.$clickableTableRows = jQuery("tr.clickable");
-
-        this.$tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
-        this.$tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
-
-        this.$isMissingUrgentReportCheckboxes = this.$tableCellsContainingIsMissingUrgentReportCheckbox.children();
-        this.$isAPriorityTargetCheckboxes = this.$tableCellsContainingIsAPriorityTargetCheckbox.children();
-
-        this.addEditAndDeleteReportLinks();
         this.fadeOutFloatingAlerts();
-
-        if (jQuery.browser.mobile) {
-            this.$tableHeaders.show();
-        }
-    },
-
-    getStateLegislators: function () {
-        var result = [];
-
-        this.options.legislators.forEach(function (item, index) {
-            result.push(new CBR.Models.StateLegislator(item));
-        });
-
-        return result;
     },
 
     _initValidation: function () {
@@ -55,19 +31,6 @@ CBR.Controllers.StateReports = new Class({
         this.$whipCountListItem.mouseenter(jQuery.proxy(this._showWhipCountPercentage, this));
         this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
-        this.$clickableTableRows.click(jQuery.proxy(this.onTableRowClick, this));
-
-        this.$tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-        this.$tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-        this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-        this.$tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-
-        this.$isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
-        this.$isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-
-        jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
-        jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
-
         Breakpoints.on({
             name: "STATE_REPORTS_FULL_WIDTH_BREAKPOINT",
             matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
@@ -75,9 +38,180 @@ CBR.Controllers.StateReports = new Class({
         });
     },
 
-    doSubmit: function (e) {
-        this.$searchResultsSection.html('<div class="data-loading"></div>');
-        location.replace("/state-reports?usStateId=" + this.$usStateSelect.val());
+    createResultsTable: function () {
+        this.$searchResultsSection.html(
+            CBR.Templates.stateReportsResults({
+                legislators: this.getStateLegislators()
+            })
+        );
+
+        this.parent();
+
+        this.addEditAndDeleteReportLinks();
+
+        jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
+        jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
+
+        this.$tableHeaders = jQuery("#search-results thead");
+
+        if (jQuery.browser.mobile || !this._isBrowserFullWidth()) {
+            this.$tableHeaders.show();
+        }
+    },
+
+    updateResultsTable: function () {
+        this.$results = this.$searchResultsSection.children();
+
+        this.$results.each(function (index, element) {
+            var $article = jQuery(element);
+            var $tr = $article.find("tr");
+
+            var isDataChanged = false;
+
+            var legislatorWithUpdatedData = this.getStateLegislators()[index];
+            if (legislatorWithUpdatedData) {
+                var latestReport = legislatorWithUpdatedData.getLatestReport();
+
+                if (latestReport) {
+                    // Support level
+                    var oldSupportLevel = $tr.find("span.support-level").html();
+                    var latestSupportLevel = latestReport.getReadableSupportLevel();
+
+                    if (oldSupportLevel !== latestSupportLevel) {
+                        isDataChanged = true;
+                    }
+
+                    var oldYesNoLabel, latestYesNo, oldReportOrTargetStatus, latestReportOrTargetStatus;
+
+                    // MPP
+                    if (!isDataChanged) {
+                        oldYesNoLabel = $tr.children(".mpp").children().html();
+                        latestYesNo = latestReport.isMoneyInPoliticsAProblem();
+
+                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                            isDataChanged = true;
+                        }
+                    }
+
+                    // SAFI
+                    if (!isDataChanged) {
+                        oldYesNoLabel = $tr.children(".safi").children().html();
+                        latestYesNo = latestReport.isSupportingAmendmentToFixIt();
+
+                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                            isDataChanged = true;
+                        }
+                    }
+
+                    // OCU
+                    if (!isDataChanged) {
+                        oldYesNoLabel = $tr.children(".ocu").children().html();
+                        latestYesNo = latestReport.isOpposingCitizensUnited();
+
+                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                            isDataChanged = true;
+                        }
+                    }
+
+                    // PVC
+                    if (!isDataChanged) {
+                        oldYesNoLabel = $tr.children(".pvc").children().html();
+                        latestYesNo = latestReport.hasPreviouslyVotedForConvention();
+
+                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                            isDataChanged = true;
+                        }
+                    }
+
+                    // Missing urgent report
+                    if (!isDataChanged) {
+                        oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
+                        latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
+
+                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                            isDataChanged = true;
+                        }
+                    }
+
+                    // Priority target
+                    if (!isDataChanged) {
+                        oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                        latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+
+                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                            isDataChanged = true;
+                        }
+                    }
+                }
+
+                if (isDataChanged) {
+                    $article.html(
+                        CBR.Templates.stateReportsResultRow({
+                            isFirstRow: index === 0,
+                            legislator: this.getStateLegislators()[index]
+                        })
+                    );
+
+                    $tr = $article.find("tr");
+
+                    var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
+                    var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
+
+                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
+                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
+                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
+                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
+
+                    var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
+                    var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
+
+                    $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
+                    $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+
+                    // Edit and Delete report links
+                    $article.children(".reports").children().each(function (index, element) {
+                        var $reportArticle = jQuery(element);
+                        var idOfCreatedReports = this.getIdOfCreatedReports();
+
+                        var $editLink = jQuery('<a class="edit-report">Edit</a>');
+                        var $deleteLink = jQuery('<a class="delete-report">Delete</a>');
+
+                        $editLink.click(jQuery.proxy(this._showEditReportModal, this));
+                        $deleteLink.click(jQuery.proxy(this._showDeleteReportModal, this));
+
+                        if (this.isAdmin()) {
+                            jQuery($reportArticle.children("div")[0]).append($deleteLink);
+                            jQuery($reportArticle.children("div")[0]).append($editLink);
+                        }
+                        else {
+                            var reportId = parseInt($reportArticle.data("id"), 10);
+
+                            var isCreatedByUser = false;
+
+                            for (var i = 0; i < idOfCreatedReports.length; i++) {
+                                if (idOfCreatedReports[i] === reportId) {
+                                    isCreatedByUser = true;
+                                    break;
+                                }
+                            }
+
+                            if (isCreatedByUser) {
+                                jQuery($reportArticle.children("div")[0]).append($deleteLink);
+                                jQuery($reportArticle.children("div")[0]).append($editLink);
+                            }
+                        }
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
     },
 
     _showEditReportModal: function (e) {
@@ -97,7 +231,7 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _getReportFromId: function (reportId) {
-        var legislators = this._getStateLegislators();
+        var legislators = this.getStateLegislators();
 
         for (var i = 0; i < legislators.length; i++) {
             var reports = legislators[i].getReports();
@@ -115,7 +249,7 @@ CBR.Controllers.StateReports = new Class({
     },
 
     onFullWidthBreakpointMatch: function () {
-        if (!jQuery.browser.mobile) {
+        if (!jQuery.browser.mobile && this.$tableHeaders) {
             this.$tableHeaders.hide();
         }
 
@@ -125,7 +259,7 @@ CBR.Controllers.StateReports = new Class({
     onFullWidthBreakpointExit: function () {
         this.parent();
 
-        if (!jQuery.browser.mobile) {
+        if (!jQuery.browser.mobile && this.$tableHeaders) {
             this.$tableHeaders.show();
         }
     },
@@ -142,5 +276,14 @@ CBR.Controllers.StateReports = new Class({
         $li.removeClass("hover");
         $li.children(".percentage").hide();
         $li.children(".count").show();
+    },
+
+    _isBrowserFullWidth: function () {
+        var content = window.getComputedStyle(
+            document.querySelector("body"), ":after"
+        ).getPropertyValue("content");
+
+        // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
+        return _.contains(content, "STATE_REPORTS_FULL_WIDTH_BREAKPOINT");
     }
 });

@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, whipCountForHouse: List[models.frontend.WhipCount], whipCountForSenate: List[models.frontend.WhipCount], whipCountForBoth: List[models.frontend.WhipCount], legislators: List[models.frontend.DetailedStateLegislator], action: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, whipCountForHouse: List[models.frontend.WhipCount], whipCountForSenate: List[models.frontend.WhipCount], whipCountForBoth: List[models.frontend.WhipCount], action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
@@ -131,77 +131,7 @@
     </thead>
 </table>
 
-<section id="search-results">
-    @for(legislator <- legislators) {
-    <article>
-        <table class="table table-striped table-bordered table-condensed">
-            @if(legislator != legislators.head) {
-            <thead>
-                <tr>
-                    <th class="title">Title</th>
-                    <th class="name">Name</th>
-                    <th class="political-parties">Party</th>
-                    <th class="district">District</th>
-                    <th class="support-level">Support level</th>
-                    <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
-                    <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
-                    <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
-                    <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
-                    <th class="is-missing-urgent-report">Report</th>
-                    <th class="is-a-priority-target">Target</th>
-                </tr>
-            </thead>
-            }
-            <tbody>
-                <tr data-id="@legislator.id" class="clickable">
-                    <td class="title">@Html(legislator.getTitleAbbr)</td>
-                    <td class="name">@legislator.lastName @legislator.firstName</td>
-                    <td class="political-parties"><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
-                    <td class="district">@legislator.usState.id @legislator.getChamber.getAbbr @legislator.district</td>
-
-                    @if(legislator.reports.isEmpty) {
-                    <td class="support-level"><span class="support-level UNKNOWN">Unknown</span></td>
-                    <td class="mpp">@Html(Report.getSpanForYesNoAnswer(None))</td>
-                    <td class="safi">@Html(Report.getSpanForYesNoAnswer(None))</td>
-                    <td class="ocu">@Html(Report.getSpanForYesNoAnswer(None))</td>
-                    <td class="pvc">@Html(Report.getSpanForYesNoAnswer(None))</td>
-                    } else {
-                    <td class="support-level">@Html(legislator.reports.head.getSupportLevelSpan)</td>
-                    <td class="mpp">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isMoneyInPoliticsAProblem))</td>
-                    <td class="safi">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isSupportingAmendmentToFixIt))</td>
-                    <td class="ocu">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.isOpposingCitizensUnited))</td>
-                    <td class="pvc">@Html(Report.getSpanForYesNoAnswer(legislator.reports.head.hasPreviouslyVotedForConvention))</td>
-                    }
-
-                    <td class="is-missing-urgent-report"><input type="checkbox" @if(legislator.isMissingUrgentReport) { checked } /></td>
-                    <td class="is-a-priority-target"><input type="checkbox" @if(legislator.isAPriorityTarget) { checked } /></td>
-                </tr>
-            </tbody>
-        </table>
-        @if(!legislator.reports.isEmpty) {
-        <section class="reports">
-            @for(report <- legislator.reports) {
-            <article data-id="@report.id">
-                <div>
-                    <span class="existing-report-date">@report.getReadableCreationTimestamp</span>
-                    <span class="existing-report-contact">@report.getReadableContact</span>
-                    <span class="existing-report-author-name">@report.authorName</span>
-                </div>
-                <div>
-                    @Html(report.getSupportLevelSpan)
-                    <span class="existing-report-yes-no-answers">@Html(Report.getSpanForYesNoAnswer(report.isMoneyInPoliticsAProblem))
-                    @Html(Report.getSpanForYesNoAnswer(report.isSupportingAmendmentToFixIt))
-                    @Html(Report.getSpanForYesNoAnswer(report.isOpposingCitizensUnited))
-                    @Html(Report.getSpanForYesNoAnswer(report.hasPreviouslyVotedForConvention))</span>
-                </div>
-                <p>@Html(report.getNotesForWeb)</p>
-            </article>
-            }
-        </section>
-        }
-    </article>
-    }
-</section>
+<section id="search-results"></section>
 
 } {
 <!--
@@ -211,8 +141,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         new CBR.Controllers.StateReports({
             el: "#content",
-            isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString),
-            legislators: @Html(play.api.libs.json.Json.toJson(legislators).toString)
+            isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString)
         }).run();
     });
 </script>

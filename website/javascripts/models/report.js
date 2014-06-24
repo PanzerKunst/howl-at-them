@@ -44,13 +44,30 @@ CBR.Models.Report = new Class({
         return this.options.notes;
     },
 
+    getCreationTimestamp: function() {
+        return this.options.creationTimestamp;
+    },
+
     getReadableSupportLevel: function () {
         var supportLevel = this.options.supportLevel;
         return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : CBR.Models.Report.supportLevel.UNKNOWN;
     },
 
+    getSupportLevelSpan: function() {
+        return '<span class="support-level ' + this.getSupportLevel() + '">' + this.getReadableSupportLevel() + '</span>';
+    },
+
     getReadableContact: function () {
         return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : CBR.Models.Report.contact.NO_CONTACT;
+    },
+
+    getReadableCreationTimestamp: function() {
+        return moment(this.getCreationTimestamp()).format("MM/DD/YYYY h:mm A");
+    },
+
+    getNotesForWeb: function() {
+        var notes = this.getNotes();
+        return notes ? notes.replace(/\\n/g, "<br />") : null;
     }
 });
 

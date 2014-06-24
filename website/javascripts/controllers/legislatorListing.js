@@ -5,6 +5,11 @@ CBR.Controllers.LegislatorListing = new Class({
         this.parent(options);
     },
 
+    run: function () {
+        this.doSubmit(null);
+        window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
+    },
+
     initElements: function () {
         this.parent();
 
@@ -60,8 +65,8 @@ CBR.Controllers.LegislatorListing = new Class({
             // Title
             filter = this.$titleFilter.val();
             if (filter.length > 0) {
-                $td = jQuery(tds.get(0));
-                value = jQuery($td.children().get(0)).attr("title");
+                $td = jQuery(tds[0]);
+                value = jQuery($td.children()[0]).attr("title");
                 if (value.substring(0, 1).toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
                     isResultMatchedByFilter = false;
                 }
@@ -71,7 +76,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$nameFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(1));
+                    $td = jQuery(tds[1]);
                     value = $td.html();
                     if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                         isResultMatchedByFilter = false;
@@ -83,7 +88,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$partyFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(2));
+                    $td = jQuery(tds[2]);
                     value = jQuery($td.find("abbr")).html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -95,7 +100,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$districtFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(3));
+                    $td = jQuery(tds[3]);
                     value = $td.html();
                     if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                         isResultMatchedByFilter = false;
@@ -107,7 +112,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$supportLevelFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(4));
+                    $td = jQuery(tds[4]);
                     value = $td.children().html();
                     if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                         isResultMatchedByFilter = false;
@@ -119,7 +124,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$mppFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(5));
+                    $td = jQuery(tds[5]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -131,7 +136,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$safiFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(6));
+                    $td = jQuery(tds[6]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -143,7 +148,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$ocuFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(7));
+                    $td = jQuery(tds[7]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -155,7 +160,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$pvcFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(8));
+                    $td = jQuery(tds[8]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -167,7 +172,7 @@ CBR.Controllers.LegislatorListing = new Class({
             if (isResultMatchedByFilter && this.$latestContactFilter) {
                 filter = this.$latestContactFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds.get(9));
+                    $td = jQuery(tds[9]);
                     value = $td.html();
                     if (value.substring(0, 1).toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -178,7 +183,7 @@ CBR.Controllers.LegislatorListing = new Class({
             // Is missing urgent report
             if (isResultMatchedByFilter) {
                 if (this.$isMissingUrgentReportFilter.prop("checked")) {
-                    $td = jQuery(tds.get(reportColIndex));
+                    $td = jQuery(tds[reportColIndex]);
                     value = $td.children().prop("checked");
                     if (!value) {
                         isResultMatchedByFilter = false;
@@ -189,7 +194,7 @@ CBR.Controllers.LegislatorListing = new Class({
             // Is a priority target
             if (isResultMatchedByFilter) {
                 if (this.$isAPriorityTargetFilter.prop("checked")) {
-                    $td = jQuery(tds.get(targetColIndex));
+                    $td = jQuery(tds[targetColIndex]);
                     value = $td.children().prop("checked");
                     if (!value) {
                         isResultMatchedByFilter = false;
@@ -203,6 +208,87 @@ CBR.Controllers.LegislatorListing = new Class({
                 $row.hide();
             }
         }, this));
+    },
+
+    doSubmit: function (e) {
+        this.$searchResultsSection.html('<div class="data-loading"></div>');
+
+        var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
+        var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
+
+        var stateLegislatorSearch = {
+            usStateId: this.$usStateSelect.val(),
+            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+            committeeName: selectedCommitteeName ? selectedCommitteeName : null
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/state-legislators",
+            data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this._storeMatchingStateLegislators(JSON.parse(responseText));
+                this.createResultsTable();
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
+
+    createResultsTable: function () {
+        this.toggleStickyTableHeader();
+
+        this.$results = this.$searchResultsSection.find("tr");
+
+        this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
+
+        var $tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
+        var $tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
+
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
+
+        var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
+        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
+
+        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
+        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+    },
+
+    _doPeriodicSearch: function () {
+        if (!this.isPeriodicSearchRunning) {
+            this.isPeriodicSearchRunning = true;
+
+            var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
+            var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
+
+            var stateLegislatorSearch = {
+                usStateId: this.$usStateSelect.val(),
+                leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+                committeeName: selectedCommitteeName ? selectedCommitteeName : null
+            };
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/state-legislators",
+                data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
+                onSuccess: function (responseText, responseXML) {
+                    this._storeMatchingStateLegislators(JSON.parse(responseText));
+                    this.updateResultsTable();
+                    this.isPeriodicSearchRunning = false;
+                }.bind(this),
+                onFailure: function (xhr) {
+                    // We do nothing here, because it's quite likely that the user leaves/refreshed the page during one of
+                    // those AJAX calls, in which case it will fail, and we want that failure to be silent
+                    this.isPeriodicSearchRunning = false;
+                }.bind(this)
+            }).get();
+        }
     },
 
     _resetFilter: function (e) {
@@ -267,6 +353,16 @@ CBR.Controllers.LegislatorListing = new Class({
         var stateLegislatorId = $checkbox.parent().parent().data("id");
 
         this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+    },
+
+    getStateLegislators: function () {
+        return this.matchingStateLegislators;
+    },
+
+    _storeMatchingStateLegislators: function (stateLegislators) {
+        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
+            return new CBR.Models.StateLegislator(stateLegislator);
+        });
     },
 
     _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {

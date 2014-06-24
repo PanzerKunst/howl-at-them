@@ -177,9 +177,17 @@ function program1(depth0,data) {
 this["CBR"]["Templates"]["searchLegislatorsResultRow"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program3(depth0,data) {
   
   
   return " checked ";
@@ -201,9 +209,10 @@ function program1(depth0,data) {
   if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</span></td>\r\n<td class=\"district\">"
-    + escapeExpression((helper = helpers.getUsStateId || (depth0 && depth0.getUsStateId),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getUsStateId", depth0, options)))
-    + " ";
+  buffer += "</span></td>\r\n<td class=\"district\">";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
   if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -212,29 +221,34 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
     + "</td>\r\n<td class=\"support-level\">";
-  stack1 = (helper = helpers.getCurrentSupportLevelSpan || (depth0 && depth0.getCurrentSupportLevelSpan),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getCurrentSupportLevelSpan", depth0, options));
+  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "("
-    + escapeExpression((helper = helpers.getReportCount || (depth0 && depth0.getReportCount),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getReportCount", depth0, options)))
+  buffer += "(";
+  if (helper = helpers.getReportCount) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReportCount); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
     + ")</td>\r\n<td class=\"mpp\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "MPP", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n<td class=\"safi\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "SAFI", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n<td class=\"ocu\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "OCU", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n<td class=\"pvc\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "PVC", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"latest-contact\">"
-    + escapeExpression((helper = helpers.getLatestContact || (depth0 && depth0.getLatestContact),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getLatestContact", depth0, options)))
+  buffer += "</td>\r\n<td class=\"latest-contact\">";
+  if (helper = helpers.getLatestContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
     + "</td>\r\n<td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n<td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n";
   return buffer;
@@ -243,7 +257,7 @@ function program1(depth0,data) {
 this["CBR"]["Templates"]["searchLegislatorsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
@@ -268,9 +282,10 @@ function program1(depth0,data) {
   if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</span></td>\r\n        <td class=\"district\">"
-    + escapeExpression((helper = helpers.getUsStateId || (depth0 && depth0.getUsStateId),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getUsStateId", depth0, options)))
-    + " ";
+  buffer += "</span></td>\r\n        <td class=\"district\">";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
   if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -279,34 +294,47 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
     + "</td>\r\n        <td class=\"support-level\">";
-  stack1 = (helper = helpers.getCurrentSupportLevelSpan || (depth0 && depth0.getCurrentSupportLevelSpan),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getCurrentSupportLevelSpan", depth0, options));
+  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "("
-    + escapeExpression((helper = helpers.getReportCount || (depth0 && depth0.getReportCount),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getReportCount", depth0, options)))
+  buffer += "(";
+  if (helper = helpers.getReportCount) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReportCount); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
     + ")</td>\r\n        <td class=\"mpp\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "MPP", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n        <td class=\"safi\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "SAFI", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n        <td class=\"ocu\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "OCU", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n        <td class=\"pvc\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswer || (depth0 && depth0.getSpanForYesNoAnswer),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswer", "PVC", depth0, options));
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"latest-contact\">"
-    + escapeExpression((helper = helpers.getLatestContact || (depth0 && depth0.getLatestContact),options={hash:{},data:data},helper ? helper.call(depth0, depth0, options) : helperMissing.call(depth0, "getLatestContact", depth0, options)))
+  buffer += "</td>\r\n        <td class=\"latest-contact\">";
+  if (helper = helpers.getLatestContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
     + "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n    </tr>\r\n    ";
   return buffer;
   }
 function program2(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program4(depth0,data) {
   
   
   return " checked ";
@@ -316,5 +344,311 @@ function program2(depth0,data) {
   stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    </tbody>\r\n</table>\r\n";
+  return buffer;
+  });
+
+this["CBR"]["Templates"]["stateReportsResultRow"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+
+function program1(depth0,data) {
+  
+  
+  return "\r\n    <thead>\r\n    <tr>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n        <th class=\"is-missing-urgent-report\">Report</th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    ";
+  }
+
+function program3(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n    <tr data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\" class=\"clickable\">\r\n        <td class=\"title\">";
+  if (helper = helpers.getTitleAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getTitleAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"name\">";
+  if (helper = helpers.getLastName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getLastName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + " ";
+  if (helper = helpers.getFirstName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getFirstName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n        <td class=\"political-parties\"><span class=\"centered-contents\">";
+  if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span></td>\r\n        <td class=\"district\">";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n        <td class=\"support-level\">";
+  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"mpp\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"safi\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"ocu\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"pvc\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n    </tr>\r\n    ";
+  return buffer;
+  }
+function program4(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program6(depth0,data) {
+  
+  
+  return " checked ";
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\r\n";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
+  return buffer;
+  }
+function program9(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\r\n<section class=\"reports\">\r\n    ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</section>\r\n";
+  return buffer;
+  }
+function program10(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n    <article data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">\r\n        <div>\r\n            <span class=\"existing-report-date\">";
+  if (helper = helpers.getReadableCreationTimestamp) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReadableCreationTimestamp); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n            <span class=\"existing-report-contact\">";
+  if (helper = helpers.getReadableContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReadableContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n            <span class=\"existing-report-author-name\">";
+  if (helper = helpers.getAuthorName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getAuthorName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n        </div>\r\n        <div>\r\n            ";
+  if (helper = helpers.getSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    <span class=\"existing-report-yes-no-answers\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "MPP", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "SAFI", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "OCU", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "PVC", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span>\r\n        </div>\r\n        <p>";
+  if (helper = helpers.getNotesForWeb) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getNotesForWeb); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</p>\r\n    </article>\r\n    ";
+  return buffer;
+  }
+
+  buffer += "<table class=\"table table-striped table-bordered table-condensed\">\r\n    ";
+  stack1 = helpers.unless.call(depth0, (depth0 && depth0.isFirstRow), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    <tbody>\r\n    ";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </tbody>\r\n</table>\r\n";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
+  return buffer;
+  });
+
+this["CBR"]["Templates"]["stateReportsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n<article>\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        ";
+  stack1 = helpers['if'].call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        <tbody>\r\n        <tr data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\" class=\"clickable\">\r\n            <td class=\"title\">";
+  if (helper = helpers.getTitleAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getTitleAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"name\">";
+  if (helper = helpers.getLastName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getLastName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + " ";
+  if (helper = helpers.getFirstName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getFirstName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n            <td class=\"political-parties\"><span class=\"centered-contents\">";
+  if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span></td>\r\n            <td class=\"district\">";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</td>\r\n            <td class=\"support-level\">";
+  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"mpp\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"safi\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"ocu\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"pvc\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</td>\r\n            <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " /></td>\r\n        </tr>\r\n        </tbody>\r\n    </table>\r\n    ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</article>\r\n";
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  
+  return "\r\n        <thead>\r\n        <tr>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n            <th class=\"is-missing-urgent-report\">Report</th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        ";
+  }
+
+function program4(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program6(depth0,data) {
+  
+  
+  return " checked ";
+  }
+
+function program8(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\r\n    <section class=\"reports\">\r\n        ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    </section>\r\n    ";
+  return buffer;
+  }
+function program9(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n        <article data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">\r\n            <div>\r\n                <span class=\"existing-report-date\">";
+  if (helper = helpers.getReadableCreationTimestamp) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReadableCreationTimestamp); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n                <span class=\"existing-report-contact\">";
+  if (helper = helpers.getReadableContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getReadableContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n                <span class=\"existing-report-author-name\">";
+  if (helper = helpers.getAuthorName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getAuthorName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n            </div>\r\n            <div>\r\n                ";
+  if (helper = helpers.getSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    <span class=\"existing-report-yes-no-answers\">";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "MPP", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "SAFI", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "OCU", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                    ";
+  stack1 = (helper = helpers.getSpanForYesNoAnswerReportLevel || (depth0 && depth0.getSpanForYesNoAnswerReportLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerReportLevel", "PVC", depth0, options));
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span>\r\n            </div>\r\n            <p>";
+  if (helper = helpers.getNotesForWeb) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getNotesForWeb); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</p>\r\n        </article>\r\n        ";
+  return buffer;
+  }
+
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
   return buffer;
   });

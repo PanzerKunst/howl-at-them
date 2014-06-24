@@ -9,9 +9,7 @@ CBR.Controllers.SearchLegislators = new Class({
         this.initElements();
         this.initEvents();
 
-        this.doSubmit(null);
-
-        window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
+        this.parent();
     },
 
     initElements: function () {
@@ -101,104 +99,17 @@ CBR.Controllers.SearchLegislators = new Class({
         }).get();
     },
 
-    doSubmit: function (e) {
-        this.$searchResultsSection.html('<div class="data-loading"></div>');
-
-        var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
-        var selectedCommitteeName = this.$committeeSelect.val();
-
-        var stateLegislatorSearch = {
-            usStateId: this.$usStateSelect.val(),
-            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-            committeeName: selectedCommitteeName ? selectedCommitteeName : null
-        };
-
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            url: "/api/state-legislators",
-            data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
-                this._storeMatchingStateLegislators(JSON.parse(responseText));
-                this._createResultsTable();
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).get();
-    },
-
-    _doPeriodicSearch: function () {
-        if (!this.isPeriodicSearchRunning) {
-            this.isPeriodicSearchRunning = true;
-
-            var selectedLeadershipPositionId = this.$leadershipPositionSelect.val();
-            var selectedCommitteeName = this.$committeeSelect.val();
-
-            var stateLegislatorSearch = {
-                usStateId: this.$usStateSelect.val(),
-                leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-                committeeName: selectedCommitteeName ? selectedCommitteeName : null
-            };
-
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/state-legislators",
-                data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this._updateResultsTable();
-                    this.isPeriodicSearchRunning = false;
-                }.bind(this),
-                onFailure: function (xhr) {
-                    // We do nothing here, because it's quite likely that the user leaves/refreshed the page during one of
-                    // those AJAX calls, in which case it will fail, and we want that failure to be silent
-                    this.isPeriodicSearchRunning = false;
-                }.bind(this)
-            }).get();
-        }
-    },
-
-    getStateLegislators: function () {
-        return this.matchingStateLegislators;
-    },
-
-    _storeMatchingStateLegislators: function (stateLegislators) {
-        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
-            return new CBR.Models.StateLegislator(stateLegislator);
-        });
-    },
-
-    _createResultsTable: function () {
+    createResultsTable: function () {
         this.$searchResultsSection.html(
             CBR.Templates.searchLegislatorsResults({
-                legislators: this.matchingStateLegislators
+                legislators: this.getStateLegislators()
             })
         );
 
-        this.toggleStickyTableHeader();
-
-        this.$results = this.$searchResultsSection.find("tr");
-
-        this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
-
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = jQuery("td.is-missing-urgent-report");
-        var $tableCellsContainingIsAPriorityTargetCheckbox = jQuery("td.is-a-priority-target");
-
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-        $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-        $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-
-        var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
-
-        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+        this.parent();
     },
 
-    _updateResultsTable: function () {
+    updateResultsTable: function () {
         this.$results = this.$searchResultsSection.find("tr");
 
         this.$results.each(function (index, element) {
@@ -206,13 +117,11 @@ CBR.Controllers.SearchLegislators = new Class({
 
             var isDataChanged = false;
 
-            var legislatorWithUpdatedData = this.matchingStateLegislators[index];
+            var legislatorWithUpdatedData = this.getStateLegislators()[index];
             if (legislatorWithUpdatedData) {
-                var reports = legislatorWithUpdatedData.getReports();
+                var latestReport = legislatorWithUpdatedData.getLatestReport();
 
-                if (reports.length > 0) {
-                    var latestReport = reports[0];
-
+                if (latestReport) {
                     // Support level
                     var oldSupportLevel = $tr.find("span.support-level").html();
                     var latestSupportLevel = latestReport.getReadableSupportLevel();
@@ -294,7 +203,7 @@ CBR.Controllers.SearchLegislators = new Class({
 
                 if (isDataChanged) {
                     $tr.html(
-                        CBR.Templates.searchLegislatorsResultRow(this.matchingStateLegislators[index])
+                        CBR.Templates.searchLegislatorsResultRow(this.getStateLegislators()[index])
                     );
 
                     var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");

@@ -36,22 +36,14 @@ object Application extends Controller {
       else
         None
 
-      val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
-        val selectedUsStateId = request.queryString.get("usStateId").get.head
-        (selectedUsStateId, session + ("selectedUsStateId" -> selectedUsStateId))
-      } else {
-        val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-        (selectedUsStateId, session)
-      }
-
+      val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
       val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
       val whipCountForHouse = calculateWhipCountForChamber(Chamber.HOUSE, detailedLegislatorsForThisState)
       val whipCountForSenate = calculateWhipCountForChamber(Chamber.SENATE, detailedLegislatorsForThisState)
       val whipCountForBoth = calculateWhipCountForBothChambers(whipCountForHouse, whipCountForSenate)
 
-      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, detailedLegislatorsForThisState, action))
-        .withSession(newSession)
+      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, action))
         .withHeaders(doNotCachePage: _*)
   }
 
@@ -88,8 +80,11 @@ object Application extends Controller {
         None
 
       StateLegislatorDto.getOfId(id) match {
-        case Some(detailedStateLegislator) => Ok(views.html.stateLegislator(detailedStateLegislator, action, isAdmin(session)))
-        case None => NotFound
+        case Some(detailedStateLegislator) =>
+          Ok(views.html.stateLegislator(detailedStateLegislator, action, isAdmin(session)))
+            .withHeaders(doNotCachePage: _*)
+        case None =>
+          NotFound
       }
   }
 

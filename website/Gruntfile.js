@@ -69,6 +69,7 @@ module.exports = function (grunt) {
                     "libs/jvectormap/jquery-jvectormap-1.2.2.min.js",
                     "libs/jvectormap/jquery-jvectormap-us-aea-en.js",
                     "libs/jquery.browser.mobile.min.js",
+                    "libs/moment.min.js",
 
                     // Global
                     "javascripts/global.js",

@@ -62,6 +62,23 @@ CBR.Models.StateLegislator = new Class({
         return this.options.isMissingUrgentReport;
     },
 
+    getLatestReport: function() {
+        var reports = this.getReports();
+        if (reports.length > 0) {
+            return reports[0];
+        }
+        return null;
+    },
+
+    getLatestContact: function() {
+        var latestReport = this.getLatestReport();
+        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.NO_CONTACT;
+    },
+
+    getReportCount: function() {
+        return this.getReports().length;
+    },
+
     getTitleAbbr: function () {
         switch (this.getTitle().toLowerCase()) {
             case "representative":
@@ -98,5 +115,18 @@ CBR.Models.StateLegislator = new Class({
             return "SD";
         }
         return "HD";
+    },
+
+    getCurrentSupportLevelSpan: function() {
+        var cssClass = "UNKNOWN";
+        var label = CBR.Models.Report.supportLevel.UNKNOWN;
+
+        var latestReport = this.getLatestReport();
+        if (latestReport) {
+            cssClass = latestReport.getSupportLevel();
+            label = latestReport.getReadableSupportLevel();
+        }
+
+        return '<span class="support-level ' + cssClass + '">' + label + '</span>';
     }
 });

@@ -77,7 +77,7 @@ CBR.Controllers.BaseController = new Class({
                     isOpposingCitizensUnited: report.isOpposingCitizensUnited(),
                     hasPreviouslyVotedForConvention: report.hasPreviouslyVotedForConvention(),
                     supportLevel: report.getSupportLevel(),
-                    notes: reportNotes ? reportNotes.replace("\\n", "&#13;&#10;") : null
+                    notes: reportNotes ? reportNotes.replace(/\\n/g, "&#13;&#10;") : null
                 },
                 isContact: {
                     metLegislator: report.getContact() === "MET_LEGISLATOR",
@@ -156,7 +156,7 @@ CBR.Controllers.BaseController = new Class({
             var $article = jQuery(element);
 
             if (this.isAdmin()) {
-                jQuery($article.children("div").get(0)).append(links);
+                jQuery($article.children("div")[0]).append(links);
             }
             else {
                 var reportId = parseInt($article.data("id"), 10);
@@ -171,7 +171,7 @@ CBR.Controllers.BaseController = new Class({
                 }
 
                 if (isCreatedByUser) {
-                    jQuery($article.children("div").get(0)).append(links);
+                    jQuery($article.children("div")[0]).append(links);
                 }
             }
         }.bind(this));
