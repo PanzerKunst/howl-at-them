@@ -3500,6 +3500,80 @@ CBR.Models.Report.contact = {
         return _.find(this.getStateLegislators(), function (legislator) {
             return legislator.getId() === id;
         });
+    },
+
+    isDataChangedForRow: function(index, $tr) {
+        var legislatorWithUpdatedData = this.getStateLegislators()[index];
+        if (legislatorWithUpdatedData) {
+            var latestReport = legislatorWithUpdatedData.getLatestReport();
+
+            if (latestReport) {
+                // Support level
+                var oldSupportLevel = $tr.find("span.support-level").html();
+                var latestSupportLevel = latestReport.getReadableSupportLevel();
+
+                if (oldSupportLevel !== latestSupportLevel) {
+                    return true;
+                }
+
+                // MPP
+                var oldYesNoLabel = $tr.children(".mpp").children().html();
+                var latestYesNo = latestReport.isMoneyInPoliticsAProblem();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // SAFI
+                oldYesNoLabel = $tr.children(".safi").children().html();
+                latestYesNo = latestReport.isSupportingAmendmentToFixIt();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // OCU
+                oldYesNoLabel = $tr.children(".ocu").children().html();
+                latestYesNo = latestReport.isOpposingCitizensUnited();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // PVC
+                oldYesNoLabel = $tr.children(".pvc").children().html();
+                latestYesNo = latestReport.hasPreviouslyVotedForConvention();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // Missing urgent report
+                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
+                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+
+                // Priority target
+                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 });
 ;CBR.Controllers.Admin = new Class({
@@ -3803,111 +3877,24 @@ CBR.Models.Report.contact = {
         this.$results.each(function (index, element) {
             var $tr = jQuery(element);
 
-            var isDataChanged = false;
+            if (this.isDataChangedForRow(index, $tr)) {
+                $tr.html(
+                    CBR.Templates.searchLegislatorsResultRow(this.getStateLegislators()[index])
+                );
 
-            var legislatorWithUpdatedData = this.getStateLegislators()[index];
-            if (legislatorWithUpdatedData) {
-                var latestReport = legislatorWithUpdatedData.getLatestReport();
+                var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
+                var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
-                if (latestReport) {
-                    // Support level
-                    var oldSupportLevel = $tr.find("span.support-level").html();
-                    var latestSupportLevel = latestReport.getReadableSupportLevel();
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
 
-                    if (oldSupportLevel !== latestSupportLevel) {
-                        isDataChanged = true;
-                    }
+                var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
+                var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
-                    var oldYesNoLabel, latestYesNo, oldReportOrTargetStatus, latestReportOrTargetStatus;
-
-                    // MPP
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".mpp").children().html();
-                        latestYesNo = latestReport.isMoneyInPoliticsAProblem();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // SAFI
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".safi").children().html();
-                        latestYesNo = latestReport.isSupportingAmendmentToFixIt();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // OCU
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".ocu").children().html();
-                        latestYesNo = latestReport.isOpposingCitizensUnited();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // PVC
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".pvc").children().html();
-                        latestYesNo = latestReport.hasPreviouslyVotedForConvention();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // Missing urgent report
-                    if (!isDataChanged) {
-                        oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
-                        latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
-
-                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // Priority target
-                    if (!isDataChanged) {
-                        oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
-                        latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
-
-                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                            isDataChanged = true;
-                        }
-                    }
-                }
-
-                if (isDataChanged) {
-                    $tr.html(
-                        CBR.Templates.searchLegislatorsResultRow(this.getStateLegislators()[index])
-                    );
-
-                    var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
-                    var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
-
-                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-
-                    var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-                    var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
-
-                    $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-                    $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
-                }
+                $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
+                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
             }
         }.bind(this));
     }
@@ -4276,150 +4263,63 @@ CBR.Models.Report.contact = {
             var $article = jQuery(element);
             var $tr = $article.find("tr");
 
-            var isDataChanged = false;
+            if (this.isDataChangedForRow(index, $tr)) {
+                $article.html(
+                    CBR.Templates.stateReportsResultRow({
+                        isFirstRow: index === 0,
+                        legislator: this.getStateLegislators()[index]
+                    })
+                );
 
-            var legislatorWithUpdatedData = this.getStateLegislators()[index];
-            if (legislatorWithUpdatedData) {
-                var latestReport = legislatorWithUpdatedData.getLatestReport();
+                $tr = $article.find("tr");
 
-                if (latestReport) {
-                    // Support level
-                    var oldSupportLevel = $tr.find("span.support-level").html();
-                    var latestSupportLevel = latestReport.getReadableSupportLevel();
+                var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
+                var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
-                    if (oldSupportLevel !== latestSupportLevel) {
-                        isDataChanged = true;
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
+
+                var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
+                var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
+
+                $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
+                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+
+                // Edit and Delete report links
+                $article.children(".reports").children().each(function (index, element) {
+                    var $reportArticle = jQuery(element);
+                    var idOfCreatedReports = this.getIdOfCreatedReports();
+
+                    var $editLink = jQuery('<a class="edit-report">Edit</a>');
+                    var $deleteLink = jQuery('<a class="delete-report">Delete</a>');
+
+                    $editLink.click(jQuery.proxy(this._showEditReportModal, this));
+                    $deleteLink.click(jQuery.proxy(this._showDeleteReportModal, this));
+
+                    if (this.isAdmin()) {
+                        jQuery($reportArticle.children("div")[0]).append($deleteLink);
+                        jQuery($reportArticle.children("div")[0]).append($editLink);
                     }
+                    else {
+                        var reportId = parseInt($reportArticle.data("id"), 10);
 
-                    var oldYesNoLabel, latestYesNo, oldReportOrTargetStatus, latestReportOrTargetStatus;
+                        var isCreatedByUser = false;
 
-                    // MPP
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".mpp").children().html();
-                        latestYesNo = latestReport.isMoneyInPoliticsAProblem();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
+                        for (var i = 0; i < idOfCreatedReports.length; i++) {
+                            if (idOfCreatedReports[i] === reportId) {
+                                isCreatedByUser = true;
+                                break;
+                            }
                         }
-                    }
 
-                    // SAFI
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".safi").children().html();
-                        latestYesNo = latestReport.isSupportingAmendmentToFixIt();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // OCU
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".ocu").children().html();
-                        latestYesNo = latestReport.isOpposingCitizensUnited();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // PVC
-                    if (!isDataChanged) {
-                        oldYesNoLabel = $tr.children(".pvc").children().html();
-                        latestYesNo = latestReport.hasPreviouslyVotedForConvention();
-
-                        if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                            (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                            (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // Missing urgent report
-                    if (!isDataChanged) {
-                        oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
-                        latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
-
-                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                            isDataChanged = true;
-                        }
-                    }
-
-                    // Priority target
-                    if (!isDataChanged) {
-                        oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
-                        latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
-
-                        if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                            isDataChanged = true;
-                        }
-                    }
-                }
-
-                if (isDataChanged) {
-                    $article.html(
-                        CBR.Templates.stateReportsResultRow({
-                            isFirstRow: index === 0,
-                            legislator: this.getStateLegislators()[index]
-                        })
-                    );
-
-                    $tr = $article.find("tr");
-
-                    var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
-                    var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
-
-                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-                    $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-                    $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-
-                    var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-                    var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
-
-                    $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-                    $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
-
-                    // Edit and Delete report links
-                    $article.children(".reports").children().each(function (index, element) {
-                        var $reportArticle = jQuery(element);
-                        var idOfCreatedReports = this.getIdOfCreatedReports();
-
-                        var $editLink = jQuery('<a class="edit-report">Edit</a>');
-                        var $deleteLink = jQuery('<a class="delete-report">Delete</a>');
-
-                        $editLink.click(jQuery.proxy(this._showEditReportModal, this));
-                        $deleteLink.click(jQuery.proxy(this._showDeleteReportModal, this));
-
-                        if (this.isAdmin()) {
+                        if (isCreatedByUser) {
                             jQuery($reportArticle.children("div")[0]).append($deleteLink);
                             jQuery($reportArticle.children("div")[0]).append($editLink);
                         }
-                        else {
-                            var reportId = parseInt($reportArticle.data("id"), 10);
-
-                            var isCreatedByUser = false;
-
-                            for (var i = 0; i < idOfCreatedReports.length; i++) {
-                                if (idOfCreatedReports[i] === reportId) {
-                                    isCreatedByUser = true;
-                                    break;
-                                }
-                            }
-
-                            if (isCreatedByUser) {
-                                jQuery($reportArticle.children("div")[0]).append($deleteLink);
-                                jQuery($reportArticle.children("div")[0]).append($editLink);
-                            }
-                        }
-                    }.bind(this));
-                }
+                    }
+                }.bind(this));
             }
         }.bind(this));
     },

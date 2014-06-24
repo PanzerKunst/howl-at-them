@@ -402,5 +402,79 @@ CBR.Controllers.LegislatorListing = new Class({
         return _.find(this.getStateLegislators(), function (legislator) {
             return legislator.getId() === id;
         });
+    },
+
+    isDataChangedForRow: function(index, $tr) {
+        var legislatorWithUpdatedData = this.getStateLegislators()[index];
+        if (legislatorWithUpdatedData) {
+            var latestReport = legislatorWithUpdatedData.getLatestReport();
+
+            if (latestReport) {
+                // Support level
+                var oldSupportLevel = $tr.find("span.support-level").html();
+                var latestSupportLevel = latestReport.getReadableSupportLevel();
+
+                if (oldSupportLevel !== latestSupportLevel) {
+                    return true;
+                }
+
+                // MPP
+                var oldYesNoLabel = $tr.children(".mpp").children().html();
+                var latestYesNo = latestReport.isMoneyInPoliticsAProblem();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // SAFI
+                oldYesNoLabel = $tr.children(".safi").children().html();
+                latestYesNo = latestReport.isSupportingAmendmentToFixIt();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // OCU
+                oldYesNoLabel = $tr.children(".ocu").children().html();
+                latestYesNo = latestReport.isOpposingCitizensUnited();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // PVC
+                oldYesNoLabel = $tr.children(".pvc").children().html();
+                latestYesNo = latestReport.hasPreviouslyVotedForConvention();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // Missing urgent report
+                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
+                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+
+                // Priority target
+                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 });
