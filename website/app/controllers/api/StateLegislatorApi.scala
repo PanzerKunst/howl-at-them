@@ -34,15 +34,11 @@ object StateLegislatorApi extends Controller {
           List()
         }
 
-        val isAPriorityTarget = if (request.queryString.contains("isAPriorityTarget") && request.queryString.get("isAPriorityTarget").get.head.toBoolean) {
-          newSession = newSession + ("selectedIsAPriorityTarget" -> "true")
-          true
+        val matchingLegislators = if (!leadershipPositionId.isDefined && committees.isEmpty) {
+          StateLegislatorDto.getOfStateId(usStateId)
         } else {
-          newSession = newSession - "selectedIsAPriorityTarget"
-          false
+          StateLegislatorDto.getMatching(usStateId, leadershipPositionId, committees)
         }
-
-        val matchingLegislators = StateLegislatorDto.getMatching(usStateId, leadershipPositionId, committees, isAPriorityTarget)
 
         Ok(Json.toJson(matchingLegislators))
           .withSession(newSession)

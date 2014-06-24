@@ -171,7 +171,7 @@ object StateLegislatorDto {
     }
   }
 
-  def getMatching(usStateId: String, leadershipPositionId: Option[Int], committees: List[Committee], isAPriorityTarget: Boolean): List[DetailedStateLegislator] = {
+  def getMatching(usStateId: String, leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
     val leadershipPositionIdClause = leadershipPositionId match {
       case Some(id) =>
         """
@@ -191,13 +191,6 @@ object StateLegislatorDto {
             and committee_id in (""" + ids + """)"""
     }
 
-    val isAPriorityTargetClause = if (isAPriorityTarget) {
-      """
-            and is_a_priority_target is true"""
-    } else {
-      ""
-    }
-
     val query = """
           select distinct l.id, first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
@@ -214,8 +207,7 @@ object StateLegislatorDto {
             and r.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
             leadershipPositionIdClause +
-            committeeIdsClause +
-            isAPriorityTargetClause + """
+            committeeIdsClause + """
           order by title, last_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getMatching():" + query)
