@@ -15,7 +15,7 @@
                         <div class="form-group">
                             <label for="edit-contact">Contact</label><!--
                          --><select id="edit-contact" class="form-control">
-                                <option value=""></option>
+                                <option value="">{{ContactsWithLegislator.noContact.label}}</option>
                                 <option value="{{ContactsWithLegislator.metLegislator.code}}" {{#if isContact.metLegislator}} selected {{/if}}>{{ContactsWithLegislator.metLegislator.label}}</option>
                                 <option value="{{ContactsWithLegislator.talkedToLegislator.code}}" {{#if isContact.talkedToLegislator}} selected {{/if}}>{{ContactsWithLegislator.talkedToLegislator.label}}</option>
                                 <option value="{{ContactsWithLegislator.contactWithStaff.code}}" {{#if isContact.contactWithStaff}} selected {{/if}}>{{ContactsWithLegislator.contactWithStaff.label}}</option>
@@ -127,7 +127,7 @@
                         <div class="form-group">
                             <label for="edit-support-level">Support level</label><!--
                          --><select id="edit-support-level" class="form-control">
-                                <option value="{{SupportLevels.unknown.code}}"></option>
+                                <option value="{{SupportLevels.unknown.code}}">{{SupportLevels.unknown.label}}</option>
     
                                 <option value="{{SupportLevels.supportive.code}}"
                                 {{#if isSupportLevel.supportive}}
