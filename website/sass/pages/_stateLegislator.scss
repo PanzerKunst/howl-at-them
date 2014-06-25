@@ -26,6 +26,8 @@
 
       img {
         margin-bottom: $line-height-computed/2;
+
+        border: 4px solid $thumbnail-border;
       }
 
       @include large-screen {
