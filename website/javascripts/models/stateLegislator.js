@@ -72,7 +72,7 @@ CBR.Models.StateLegislator = new Class({
 
     getLatestContact: function() {
         var latestReport = this.getLatestReport();
-        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.noContact.code;
+        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.noContact.label;
     },
 
     getReportCount: function() {
