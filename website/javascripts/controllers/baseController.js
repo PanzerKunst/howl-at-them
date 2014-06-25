@@ -67,8 +67,8 @@ CBR.Controllers.BaseController = new Class({
 
         this.getEl().append(
             CBR.Templates.editReportModal({
-                ContactWithLegislator: CBR.Models.Report.contact,
-                SupportLevel: CBR.Models.Report.supportLevel,
+                ContactsWithLegislator: CBR.Models.Report.contact,
+                SupportLevels: CBR.Models.Report.supportLevel,
                 report: {
                     authorName: report.getAuthorName(),
                     contact: report.getContact(),
@@ -80,17 +80,17 @@ CBR.Controllers.BaseController = new Class({
                     notes: reportNotes ? reportNotes.replace(/\\n/g, "&#13;&#10;") : null
                 },
                 isContact: {
-                    metLegislator: report.getContact() === "MET_LEGISLATOR",
-                    talkedToLegislator: report.getContact() === "TALKED_TO_LEGISLATOR",
-                    contactWithStaff: report.getContact() === "CONTACT_WITH_STAFF",
-                    waitingForCallback: report.getContact() === "WAITING_FOR_CALLBACK",
-                    leftVoiceMail: report.getContact() === "LEFT_VOICEMAIL",
-                    none: report.getContact() === "NONE"
+                    metLegislator: report.getContact() === CBR.Models.Report.contact.metLegislator.code,
+                    talkedToLegislator: report.getContact() === CBR.Models.Report.contact.talkedToLegislator.code,
+                    contactWithStaff: report.getContact() === CBR.Models.Report.contact.contactWithStaff.code,
+                    waitingForCallback: report.getContact() === CBR.Models.Report.contact.waitingForCallback.code,
+                    leftVoicemail: report.getContact() === CBR.Models.Report.contact.leftVoicemail.code,
+                    none: report.getContact() === CBR.Models.Report.contact.noContact.code
                 },
                 isSupportLevel: {
-                    supportive: report.getSupportLevel() === "SUPPORTIVE",
-                    needsConfincing: report.getSupportLevel() === "NEEDS_CONVINCING",
-                    notSupportive: report.getSupportLevel() === "NOT_SUPPORTIVE"
+                    supportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.supportive.code,
+                    needsConfincing: report.getSupportLevel() === CBR.Models.Report.supportLevel.needsConvincing.code,
+                    notSupportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.notSupportive.code
                 },
                 isYesNoAnwerUndefined: {
                     moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === null,

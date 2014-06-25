@@ -48,6 +48,9 @@
 
         margin-bottom: $line-height-computed / 4;
 
+        // To make sure that the height is respected even when the element is empty (happens on page load)
+        min-height: $line-height-project;
+
         &.hover {
           > .support-level-bar-wrapper {
             background-color: rgba(0, 0, 0, 0.05);
@@ -102,6 +105,11 @@
             background-color: $brand-danger;
           }
         }
+      }
+
+      .data-loading {
+        // To center vertically
+        margin-top: 0.3em;
       }
     }
 

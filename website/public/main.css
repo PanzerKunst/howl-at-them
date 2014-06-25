@@ -213,6 +213,10 @@ body {
   width: 48px;
   height: 48px;
   margin: 0 auto; }
+  .data-loading.small {
+    background-image: url("images/spinner_16x16.gif");
+    width: 16px;
+    height: 16px; }
 
 html,
 body {
@@ -780,7 +784,8 @@ textarea.form-control {
     list-style-type: none;
     padding-left: 0; }
   #state-reports #content > #whip-count-per-chamber li {
-    margin-bottom: 5px; }
+    margin-bottom: 5px;
+    min-height: 1.75em; }
     #state-reports #content > #whip-count-per-chamber li:after {
       content: "";
       display: table;
@@ -815,6 +820,8 @@ textarea.form-control {
         background-color: #f0ad4e; }
       #state-reports #content > #whip-count-per-chamber .support-level-bar-wrapper > div.NOT_SUPPORTIVE {
         background-color: #d9534f; }
+  #state-reports #content > #whip-count-per-chamber .data-loading {
+    margin-top: 0.3em; }
   #state-reports #content h2 {
     text-align: left;
     margin-top: 0; }

@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, whipCountForHouse: List[models.frontend.WhipCount], whipCountForSenate: List[models.frontend.WhipCount], whipCountForBoth: List[models.frontend.WhipCount], action: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String])
 @main("State reports", "state-reports") {
 <!--
     Header
@@ -36,46 +36,28 @@
     <article>
         <h2>House</h2>
         <ul>
-            @for(whipCount <- whipCountForHouse) {
-            <li>
-                <span class="support-level">@whipCount.supportLevel.getString</span>
-                <span class="count">@whipCount.count</span>
-                <span class="percentage">@whipCount.percentage%</span>
-                <div class="support-level-bar-wrapper">
-                    <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
-                </div>
-            </li>
-            }
+            @emptyWhipCountListItem(SupportLevel.SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.NEEDS_CONVINCING)
+            @emptyWhipCountListItem(SupportLevel.NOT_SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.UNKNOWN)
         </ul>
     </article>
     <article>
         <h2>Senate</h2>
         <ul>
-            @for(whipCount <- whipCountForSenate) {
-            <li>
-                <span class="support-level">@whipCount.supportLevel.getString</span>
-                <span class="count">@whipCount.count</span>
-                <span class="percentage">@whipCount.percentage%</span>
-                <div class="support-level-bar-wrapper">
-                    <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
-                </div>
-            </li>
-            }
+            @emptyWhipCountListItem(SupportLevel.SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.NEEDS_CONVINCING)
+            @emptyWhipCountListItem(SupportLevel.NOT_SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.UNKNOWN)
         </ul>
     </article>
     <article>
         <h2>Combined</h2>
         <ul>
-            @for(whipCount <- whipCountForBoth) {
-            <li>
-                <span class="support-level">@whipCount.supportLevel.getString</span>
-                <span class="count">@whipCount.count</span>
-                <span class="percentage">@whipCount.percentage%</span>
-                <div class="support-level-bar-wrapper">
-                    <div class="@whipCount.supportLevel" style="width: @whipCount.percentage%"></div>
-                </div>
-            </li>
-            }
+            @emptyWhipCountListItem(SupportLevel.SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.NEEDS_CONVINCING)
+            @emptyWhipCountListItem(SupportLevel.NOT_SUPPORTIVE)
+            @emptyWhipCountListItem(SupportLevel.UNKNOWN)
         </ul>
     </article>
 </section>

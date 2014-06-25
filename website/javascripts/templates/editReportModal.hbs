@@ -16,11 +16,11 @@
                             <label for="edit-contact">Contact</label><!--
                          --><select id="edit-contact" class="form-control">
                                 <option value=""></option>
-                                <option value="MET_LEGISLATOR" {{#if isContact.metLegislator}} selected {{/if}}>{{ContactWithLegislator.MET_LEGISLATOR}}</option>
-                                <option value="TALKED_TO_LEGISLATOR" {{#if isContact.talkedToLegislator}} selected {{/if}}>{{ContactWithLegislator.TALKED_TO_LEGISLATOR}}</option>
-                                <option value="CONTACT_WITH_STAFF" {{#if isContact.contactWithStaff}} selected {{/if}}>{{ContactWithLegislator.CONTACT_WITH_STAFF}}</option>
-                                <option value="WAITING_FOR_CALLBACK" {{#if isContact.waitingForCallback}} selected {{/if}}>{{ContactWithLegislator.WAITING_FOR_CALLBACK}}</option>
-                                <option value="LEFT_VOICEMAIL" {{#if isContact.leftVoiceMail}} selected {{/if}}>{{ContactWithLegislator.LEFT_VOICEMAIL}}</option>
+                                <option value="{{ContactsWithLegislator.metLegislator.code}}" {{#if isContact.metLegislator}} selected {{/if}}>{{ContactsWithLegislator.metLegislator.label}}</option>
+                                <option value="{{ContactsWithLegislator.talkedToLegislator.code}}" {{#if isContact.talkedToLegislator}} selected {{/if}}>{{ContactsWithLegislator.talkedToLegislator.label}}</option>
+                                <option value="{{ContactsWithLegislator.contactWithStaff.code}}" {{#if isContact.contactWithStaff}} selected {{/if}}>{{ContactsWithLegislator.contactWithStaff.label}}</option>
+                                <option value="{{ContactsWithLegislator.waitingForCallback.code}}" {{#if isContact.waitingForCallback}} selected {{/if}}>{{ContactsWithLegislator.waitingForCallback.label}}</option>
+                                <option value="{{ContactsWithLegislator.leftVoicemail.code}}" {{#if isContact.leftVoicemail}} selected {{/if}}>{{ContactsWithLegislator.leftVoicemail.label}}</option>
                             </select>
                         </div>
 
@@ -127,25 +127,25 @@
                         <div class="form-group">
                             <label for="edit-support-level">Support level</label><!--
                          --><select id="edit-support-level" class="form-control">
-                                <option value="UNKNOWN"></option>
+                                <option value="{{SupportLevels.unknown.code}}"></option>
     
-                                <option value="SUPPORTIVE"
+                                <option value="{{SupportLevels.supportive.code}}"
                                 {{#if isSupportLevel.supportive}}
                                 selected
                                 {{/if}}
-                                >{{SupportLevel.SUPPORTIVE}}</option>
+                                >{{SupportLevels.supportive.label}}</option>
     
-                                <option value="NEEDS_CONVINCING"
+                                <option value="{{SupportLevels.needsConvincing.code}}"
                                 {{#if isSupportLevel.needsConfincing}}
                                 selected
                                 {{/if}}
-                                >{{SupportLevel.NEEDS_CONVINCING}}</option>
+                                >{{SupportLevels.needsConvincing.label}}</option>
     
-                                <option value="NOT_SUPPORTIVE"
+                                <option value="{{SupportLevels.notSupportive.code}}"
                                 {{#if isSupportLevel.notSupportive}}
                                 selected
                                 {{/if}}
-                                >{{SupportLevel.NOT_SUPPORTIVE}}</option>
+                                >{{SupportLevels.notSupportive.label}}</option>
                             </select>
                         </div>
 

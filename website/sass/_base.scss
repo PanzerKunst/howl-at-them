@@ -110,4 +110,10 @@ body {
   height: 48px;
 
   margin: 0 auto;
+
+  &.small {
+    background-image: url("images/spinner_16x16.gif");
+    width: 16px;
+    height: 16px;
+  }
 }

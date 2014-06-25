@@ -86,6 +86,7 @@ module.exports = function (grunt) {
                     "javascripts/models/account.js",
                     "javascripts/models/report.js",
                     "javascripts/models/stateLegislator.js",
+                    "javascripts/models/whipCount.js",
 
                     // Controllers
                     "javascripts/controllers/baseController.js",

@@ -2563,7 +2563,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     },
 
     getSupportLevel: function () {
-        return this.options.supportLevel ? this.options.supportLevel : "UNKNOWN";
+        return this.options.supportLevel;
     },
 
     getNotes: function () {
@@ -2575,8 +2575,16 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     },
 
     getReadableSupportLevel: function () {
-        var supportLevel = this.options.supportLevel;
-        return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : CBR.Models.Report.supportLevel.UNKNOWN;
+        switch (this.getSupportLevel()) {
+            case CBR.Models.Report.supportLevel.supportive.code:
+                return CBR.Models.Report.supportLevel.supportive.label;
+            case CBR.Models.Report.supportLevel.needsConvincing.code:
+                return CBR.Models.Report.supportLevel.needsConvincing.label;
+            case CBR.Models.Report.supportLevel.notSupportive.code:
+                return CBR.Models.Report.supportLevel.notSupportive.label;
+        }
+
+        return CBR.Models.Report.supportLevel.unknown.label;
     },
 
     getSupportLevelSpan: function() {
@@ -2584,7 +2592,20 @@ CBR.JsonUtil.stringifyModel = function (obj) {
     },
 
     getReadableContact: function () {
-        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : CBR.Models.Report.contact.NO_CONTACT;
+        switch (this.getContact()) {
+            case CBR.Models.Report.contact.metLegislator.code:
+                return CBR.Models.Report.contact.metLegislator.label;
+            case CBR.Models.Report.contact.talkedToLegislator.code:
+                return CBR.Models.Report.contact.talkedToLegislator.label;
+            case CBR.Models.Report.contact.contactWithStaff.code:
+                return CBR.Models.Report.contact.contactWithStaff.label;
+            case CBR.Models.Report.contact.waitingForCallback.code:
+                return CBR.Models.Report.contact.waitingForCallback.label;
+            case CBR.Models.Report.contact.leftVoicemail.code:
+                return CBR.Models.Report.contact.leftVoicemail.label;
+        }
+
+        return CBR.Models.Report.contact.noContact.label;
     },
 
     getReadableCreationTimestamp: function() {
@@ -2604,19 +2625,49 @@ CBR.Models.Report.radioAnswer = {
 };
 
 CBR.Models.Report.supportLevel = {
-    SUPPORTIVE: "Supportive",
-    NEEDS_CONVINCING: "Needs convincing",
-    NOT_SUPPORTIVE: "Not supportive",
-    UNKNOWN: "Unknown"
+    supportive: {
+        code: "SUPPORTIVE",
+        label: "Supportive"
+    },
+    needsConvincing: {
+        code: "NEEDS_CONVINCING",
+        label: "Needs convincing"
+    },
+    notSupportive: {
+        code: "NOT_SUPPORTIVE",
+        label: "Not supportive"
+    },
+    unknown: {
+        code: "UNKNOWN",
+        label: "Unknown"
+    }
 };
 
 CBR.Models.Report.contact = {
-    MET_LEGISLATOR: "Met legislator",
-    TALKED_TO_LEGISLATOR: "Talked to legislator",
-    CONTACT_WITH_STAFF: "Contact with staff",
-    WAITING_FOR_CALLBACK: "Waiting for callback",
-    LEFT_VOICEMAIL: "Left voicemail",
-    NO_CONTACT: "No contact"
+    metLegislator: {
+        code: "MET_LEGISLATOR",
+        label: "Met legislator"
+    },
+    talkedToLegislator: {
+        code: "TALKED_TO_LEGISLATOR",
+        label: "Talked to legislator"
+    },
+    contactWithStaff: {
+        code: "CONTACT_WITH_STAFF",
+        label: "Contact with staff"
+    },
+    waitingForCallback: {
+        code: "WAITING_FOR_CALLBACK",
+        label: "Waiting for callback"
+    },
+    leftVoicemail: {
+        code: "LEFT_VOICEMAIL",
+        label: "Left voicemail"
+    },
+    noContact: {
+        code: "NO_CONTACT",
+        label: "No contact"
+    }
 };
 ;CBR.Models.StateLegislator = new Class({
     Extends: CBR.Models.JsonSerializable,
@@ -2692,7 +2743,7 @@ CBR.Models.Report.contact = {
 
     getLatestContact: function() {
         var latestReport = this.getLatestReport();
-        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.NO_CONTACT;
+        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.noContact.code;
     },
 
     getReportCount: function() {
@@ -2732,14 +2783,14 @@ CBR.Models.Report.contact = {
 
     getChamber: function () {
         if (this.getTitle().toLowerCase() == "senator") {
-            return "SD";
+            return CBR.Models.StateLegislator.chamber.SENATE;
         }
-        return "HD";
+        return CBR.Models.StateLegislator.chamber.HOUSE;
     },
 
     getCurrentSupportLevelSpan: function() {
-        var cssClass = "UNKNOWN";
-        var label = CBR.Models.Report.supportLevel.UNKNOWN;
+        var cssClass = CBR.Models.Report.supportLevel.unknown.code;
+        var label = CBR.Models.Report.supportLevel.unknown.label;
 
         var latestReport = this.getLatestReport();
         if (latestReport) {
@@ -2748,6 +2799,29 @@ CBR.Models.Report.contact = {
         }
 
         return '<span class="support-level ' + cssClass + '">' + label + '</span>';
+    }
+});
+
+CBR.Models.StateLegislator.chamber = {
+    HOUSE: "HD",
+    SENATE: "SD"
+};
+;CBR.Models.WhipCount = new Class({
+    Extends: CBR.Models.JsonSerializable,
+
+    options: {  // Defaults
+    },
+
+    getSupportLevel: function() {
+        return this.options.supportLevel;
+    },
+
+    getCount: function() {
+        return this.options.count;
+    },
+
+    getPercentage: function() {
+        return this.options.percentage;
     }
 });
 ;CBR.Controllers.BaseController = new Class({
@@ -2819,8 +2893,8 @@ CBR.Models.Report.contact = {
 
         this.getEl().append(
             CBR.Templates.editReportModal({
-                ContactWithLegislator: CBR.Models.Report.contact,
-                SupportLevel: CBR.Models.Report.supportLevel,
+                ContactsWithLegislator: CBR.Models.Report.contact,
+                SupportLevels: CBR.Models.Report.supportLevel,
                 report: {
                     authorName: report.getAuthorName(),
                     contact: report.getContact(),
@@ -2832,17 +2906,17 @@ CBR.Models.Report.contact = {
                     notes: reportNotes ? reportNotes.replace(/\\n/g, "&#13;&#10;") : null
                 },
                 isContact: {
-                    metLegislator: report.getContact() === "MET_LEGISLATOR",
-                    talkedToLegislator: report.getContact() === "TALKED_TO_LEGISLATOR",
-                    contactWithStaff: report.getContact() === "CONTACT_WITH_STAFF",
-                    waitingForCallback: report.getContact() === "WAITING_FOR_CALLBACK",
-                    leftVoiceMail: report.getContact() === "LEFT_VOICEMAIL",
-                    none: report.getContact() === "NONE"
+                    metLegislator: report.getContact() === CBR.Models.Report.contact.metLegislator.code,
+                    talkedToLegislator: report.getContact() === CBR.Models.Report.contact.talkedToLegislator.code,
+                    contactWithStaff: report.getContact() === CBR.Models.Report.contact.contactWithStaff.code,
+                    waitingForCallback: report.getContact() === CBR.Models.Report.contact.waitingForCallback.code,
+                    leftVoicemail: report.getContact() === CBR.Models.Report.contact.leftVoicemail.code,
+                    none: report.getContact() === CBR.Models.Report.contact.noContact.code
                 },
                 isSupportLevel: {
-                    supportive: report.getSupportLevel() === "SUPPORTIVE",
-                    needsConfincing: report.getSupportLevel() === "NEEDS_CONVINCING",
-                    notSupportive: report.getSupportLevel() === "NOT_SUPPORTIVE"
+                    supportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.supportive.code,
+                    needsConfincing: report.getSupportLevel() === CBR.Models.Report.supportLevel.needsConvincing.code,
+                    notSupportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.notSupportive.code
                 },
                 isYesNoAnwerUndefined: {
                     moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === null,
@@ -4243,9 +4317,13 @@ CBR.Models.Report.contact = {
         if (jQuery.browser.mobile || !this._isBrowserFullWidth()) {
             this.$tableHeaders.show();
         }
+
+        this._updateWhipCounts();
     },
 
     updateResultsTable: function () {
+        var isWhipCountOutdated = false;
+
         this.$results = this.$searchResultsSection.children();
 
         this.$results.each(function (index, element) {
@@ -4253,6 +4331,8 @@ CBR.Models.Report.contact = {
             var $tr = $article.find("tr");
 
             if (this.isDataChangedForRow(index, $tr)) {
+                isWhipCountOutdated = true;
+
                 $article.html(
                     CBR.Templates.stateReportsResultRow({
                         isFirstRow: index === 0,
@@ -4313,6 +4393,10 @@ CBR.Models.Report.contact = {
                 }.bind(this));
             }
         }.bind(this));
+
+        if (isWhipCountOutdated) {
+            this._updateWhipCounts();
+        }
     },
 
     _showEditReportModal: function (e) {
@@ -4386,6 +4470,129 @@ CBR.Models.Report.contact = {
 
         // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
         return _.contains(content, "STATE_REPORTS_FULL_WIDTH_BREAKPOINT");
+    },
+
+    _calculateWhipCountForChamber: function (chamber) {
+        var nbLegislators = 0;
+        var nbLegislatorsSupportive = 0;
+        var nbLegislatorsNeedingConvincing = 0;
+        var nbLegislatorsNotSupportive = 0;
+
+        this.getStateLegislators().forEach(function (legislator) {
+            if (legislator.getChamber() === chamber) {
+                nbLegislators++;
+
+                var latestReport = legislator.getLatestReport();
+                if (latestReport) {
+                    switch (latestReport.getSupportLevel()) {
+                        case CBR.Models.Report.supportLevel.supportive.code:
+                            nbLegislatorsSupportive++;
+                            break;
+                        case CBR.Models.Report.supportLevel.needsConvincing.code:
+                            nbLegislatorsNeedingConvincing++;
+                            break;
+                        case CBR.Models.Report.supportLevel.notSupportive.code:
+                            nbLegislatorsNotSupportive++;
+                    }
+                }
+            }
+        });
+
+        // Supportive
+        var whipCountSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.supportive,
+            count: nbLegislatorsSupportive,
+            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+        });
+
+        // Needing convincing
+        var whipCountNeedingConvincing = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
+            count: nbLegislatorsNeedingConvincing,
+            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+        });
+
+        // Not supportive
+        var whipCountNotSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.notSupportive,
+            count: nbLegislatorsNotSupportive,
+            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+        });
+
+        // Unknown
+        var nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive;
+        var whipCountUnknown = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.unknown,
+            count: nbLegislatorsWhoseSupportLevelIsUnknown,
+            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+        });
+
+        return [whipCountSupportive,
+            whipCountNeedingConvincing,
+            whipCountNotSupportive,
+            whipCountUnknown];
+    },
+    
+    _calculateWhipCountForBothChambers: function(whipCountForHouse, whipCountForSenate) {
+        var nbLegislatorsSupportive = whipCountForHouse[0].getCount() + whipCountForSenate[0].getCount();
+        var nbLegislatorsNeedingConvincing = whipCountForHouse[1].getCount() + whipCountForSenate[1].getCount();
+        var nbLegislatorsNotSupportive = whipCountForHouse[2].getCount() + whipCountForSenate[2].getCount();
+        var nbLegislatorsUnknown = whipCountForHouse[3].getCount() + whipCountForSenate[3].getCount();
+        var nbLegislators = nbLegislatorsSupportive + nbLegislatorsNeedingConvincing + nbLegislatorsNotSupportive + nbLegislatorsUnknown;
+
+        // Supportive
+        var whipCountSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.supportive,
+            count: nbLegislatorsSupportive,
+            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+        });
+
+        // Needing convincing
+        var whipCountNeedingConvincing = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
+            count: nbLegislatorsNeedingConvincing,
+            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+        });
+
+        // Not supportive
+        var whipCountNotSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.notSupportive,
+            count: nbLegislatorsNotSupportive,
+            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+        });
+
+        // Unknown
+        var nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive;
+        var whipCountUnknown = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.unknown,
+            count: nbLegislatorsWhoseSupportLevelIsUnknown,
+            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+        });
+
+        return [whipCountSupportive,
+            whipCountNeedingConvincing,
+            whipCountNotSupportive,
+            whipCountUnknown];
+    },
+
+    _updateWhipCounts: function() {
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.HOUSE);
+        jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
+        jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
+        jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
+        jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
+
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.SENATE);
+        jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
+        jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
+        jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));
+        jQuery(this.$whipCountListItem[7]).html(CBR.Templates.whipCountListItem(whipCountForSenate[3]));
+
+        var whipCountForBoth = this._calculateWhipCountForBothChambers(whipCountForHouse, whipCountForSenate);
+        jQuery(this.$whipCountListItem[8]).html(CBR.Templates.whipCountListItem(whipCountForBoth[0]));
+        jQuery(this.$whipCountListItem[9]).html(CBR.Templates.whipCountListItem(whipCountForBoth[1]));
+        jQuery(this.$whipCountListItem[10]).html(CBR.Templates.whipCountListItem(whipCountForBoth[2]));
+        jQuery(this.$whipCountListItem[11]).html(CBR.Templates.whipCountListItem(whipCountForBoth[3]));
     }
 });
 ;Handlebars.registerHelper("getSpanForYesNoAnswerLegislatorLevel", function(question, legislator) {
@@ -4517,31 +4724,41 @@ function program7(depth0,data) {
 
   buffer += "<div class=\"modal fade\" id=\"edit-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <form>\r\n                    <section class=\"form-groups report\">\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-author-name\">Your name <span>*</span></label><!--\r\n                         --><input type=\"text\" id=\"edit-author-name\" class=\"form-control\" maxlength=\"64\" data-min-length=\"2\" value=\""
     + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.authorName)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"\"></option>\r\n                                <option value=\"MET_LEGISLATOR\" ";
+    + "\" />\r\n\r\n                            <p class=\"field-error\" data-check=\"empty\"></p>\r\n                            <p class=\"field-error\" data-check=\"min-length\">Two characters minimun</p>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-contact\">Contact</label><!--\r\n                         --><select id=\"edit-contact\" class=\"form-control\">\r\n                                <option value=\"\"></option>\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.MET_LEGISLATOR)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"TALKED_TO_LEGISLATOR\" ";
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.metLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.talkedToLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.talkedToLegislator), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.TALKED_TO_LEGISLATOR)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"CONTACT_WITH_STAFF\" ";
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.talkedToLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.contactWithStaff)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.contactWithStaff), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.CONTACT_WITH_STAFF)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"WAITING_FOR_CALLBACK\" ";
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.contactWithStaff)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.waitingForCallback)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.waitingForCallback), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.WAITING_FOR_CALLBACK)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n                                <option value=\"LEFT_VOICEMAIL\" ";
-  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.leftVoiceMail), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.waitingForCallback)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.leftVoicemail)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isContact)),stack1 == null || stack1 === false ? stack1 : stack1.leftVoicemail), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += ">"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.ContactWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.LEFT_VOICEMAIL)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.ContactsWithLegislator)),stack1 == null || stack1 === false ? stack1 : stack1.leftVoicemail)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label>Money in politics is a problem</label>\r\n                            <article class=\"check-or-radio\">\r\n                                <div><input type=\"radio\" name=\"edit-MPP\" value=\"?\" ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isYesNoAnwerUndefined)),stack1 == null || stack1 === false ? stack1 : stack1.moneyInPoliticsIsAProblem), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -4578,21 +4795,29 @@ function program7(depth0,data) {
   buffer += "/>\r\n                                </div>\r\n                                <div><label>Yes</label></div>\r\n                            </article>\r\n                            <article class=\"check-or-radio\">\r\n                                <div>\r\n                                    <input type=\"radio\" name=\"edit-PVC\" value=\"false\"\r\n                                    ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isFalse)),stack1 == null || stack1 === false ? stack1 : stack1.previousVoteForConvention), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-support-level\">Support level</label><!--\r\n                         --><select id=\"edit-support-level\" class=\"form-control\">\r\n                                <option value=\"UNKNOWN\"></option>\r\n    \r\n                                <option value=\"SUPPORTIVE\"\r\n                                ";
+  buffer += "/>\r\n                                </div>\r\n                                <div><label>No</label></div>\r\n                            </article>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-support-level\">Support level</label><!--\r\n                         --><select id=\"edit-support-level\" class=\"form-control\">\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.unknown)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"></option>\r\n    \r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.supportive)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.supportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n                                >"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.SUPPORTIVE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n    \r\n                                <option value=\"NEEDS_CONVINCING\"\r\n                                ";
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.supportive)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n    \r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.needsConvincing)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.needsConfincing), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n                                >"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.NEEDS_CONVINCING)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n    \r\n                                <option value=\"NOT_SUPPORTIVE\"\r\n                                ";
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.needsConvincing)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n    \r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.notSupportive)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.notSupportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n                                >"
-    + escapeExpression(((stack1 = ((stack1 = (depth0 && depth0.SupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.NOT_SUPPORTIVE)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.notSupportive)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "</option>\r\n                            </select>\r\n                        </div>\r\n\r\n                        <div class=\"form-group\">\r\n                            <label for=\"edit-notes\">Notes</label><!--\r\n                         --><textarea id=\"edit-notes\" class=\"form-control\" maxlength=\"512\">";
   stack1 = ((stack1 = ((stack1 = (depth0 && depth0.report)),stack1 == null || stack1 === false ? stack1 : stack1.notes)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1);
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -5103,5 +5328,48 @@ function program9(depth0,data) {
   stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
+  return buffer;
+  });
+
+this["CBR"]["Templates"]["whipCountListItem"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.label) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.label); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program3(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.code) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.code); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+  buffer += "<span class=\"support-level\">";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getSupportLevel), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span>\r\n<span class=\"count\">";
+  if (helper = helpers.getCount) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getCount); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</span>\r\n<span class=\"percentage\">";
+  if (helper = helpers.getPercentage) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getPercentage); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "%</span>\r\n<div class=\"support-level-bar-wrapper\">\r\n    <div class=\"";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getSupportLevel), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\" style=\"width: ";
+  if (helper = helpers.getPercentage) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getPercentage); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "%\"></div>\r\n</div>\r\n";
   return buffer;
   });

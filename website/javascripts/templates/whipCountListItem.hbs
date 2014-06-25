@@ -1,0 +1,6 @@
+<span class="support-level">{{#with getSupportLevel}}{{label}}{{/with}}</span>
+<span class="count">{{getCount}}</span>
+<span class="percentage">{{getPercentage}}%</span>
+<div class="support-level-bar-wrapper">
+    <div class="{{#with getSupportLevel}}{{code}}{{/with}}" style="width: {{getPercentage}}%"></div>
+</div>

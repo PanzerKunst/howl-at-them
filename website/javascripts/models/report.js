@@ -37,7 +37,7 @@ CBR.Models.Report = new Class({
     },
 
     getSupportLevel: function () {
-        return this.options.supportLevel ? this.options.supportLevel : "UNKNOWN";
+        return this.options.supportLevel;
     },
 
     getNotes: function () {
@@ -49,8 +49,16 @@ CBR.Models.Report = new Class({
     },
 
     getReadableSupportLevel: function () {
-        var supportLevel = this.options.supportLevel;
-        return supportLevel ? CBR.Models.Report.supportLevel[this.getSupportLevel()] : CBR.Models.Report.supportLevel.UNKNOWN;
+        switch (this.getSupportLevel()) {
+            case CBR.Models.Report.supportLevel.supportive.code:
+                return CBR.Models.Report.supportLevel.supportive.label;
+            case CBR.Models.Report.supportLevel.needsConvincing.code:
+                return CBR.Models.Report.supportLevel.needsConvincing.label;
+            case CBR.Models.Report.supportLevel.notSupportive.code:
+                return CBR.Models.Report.supportLevel.notSupportive.label;
+        }
+
+        return CBR.Models.Report.supportLevel.unknown.label;
     },
 
     getSupportLevelSpan: function() {
@@ -58,7 +66,20 @@ CBR.Models.Report = new Class({
     },
 
     getReadableContact: function () {
-        return this.getContact() ? CBR.Models.Report.contact[this.getContact()] : CBR.Models.Report.contact.NO_CONTACT;
+        switch (this.getContact()) {
+            case CBR.Models.Report.contact.metLegislator.code:
+                return CBR.Models.Report.contact.metLegislator.label;
+            case CBR.Models.Report.contact.talkedToLegislator.code:
+                return CBR.Models.Report.contact.talkedToLegislator.label;
+            case CBR.Models.Report.contact.contactWithStaff.code:
+                return CBR.Models.Report.contact.contactWithStaff.label;
+            case CBR.Models.Report.contact.waitingForCallback.code:
+                return CBR.Models.Report.contact.waitingForCallback.label;
+            case CBR.Models.Report.contact.leftVoicemail.code:
+                return CBR.Models.Report.contact.leftVoicemail.label;
+        }
+
+        return CBR.Models.Report.contact.noContact.label;
     },
 
     getReadableCreationTimestamp: function() {
@@ -78,17 +99,47 @@ CBR.Models.Report.radioAnswer = {
 };
 
 CBR.Models.Report.supportLevel = {
-    SUPPORTIVE: "Supportive",
-    NEEDS_CONVINCING: "Needs convincing",
-    NOT_SUPPORTIVE: "Not supportive",
-    UNKNOWN: "Unknown"
+    supportive: {
+        code: "SUPPORTIVE",
+        label: "Supportive"
+    },
+    needsConvincing: {
+        code: "NEEDS_CONVINCING",
+        label: "Needs convincing"
+    },
+    notSupportive: {
+        code: "NOT_SUPPORTIVE",
+        label: "Not supportive"
+    },
+    unknown: {
+        code: "UNKNOWN",
+        label: "Unknown"
+    }
 };
 
 CBR.Models.Report.contact = {
-    MET_LEGISLATOR: "Met legislator",
-    TALKED_TO_LEGISLATOR: "Talked to legislator",
-    CONTACT_WITH_STAFF: "Contact with staff",
-    WAITING_FOR_CALLBACK: "Waiting for callback",
-    LEFT_VOICEMAIL: "Left voicemail",
-    NO_CONTACT: "No contact"
+    metLegislator: {
+        code: "MET_LEGISLATOR",
+        label: "Met legislator"
+    },
+    talkedToLegislator: {
+        code: "TALKED_TO_LEGISLATOR",
+        label: "Talked to legislator"
+    },
+    contactWithStaff: {
+        code: "CONTACT_WITH_STAFF",
+        label: "Contact with staff"
+    },
+    waitingForCallback: {
+        code: "WAITING_FOR_CALLBACK",
+        label: "Waiting for callback"
+    },
+    leftVoicemail: {
+        code: "LEFT_VOICEMAIL",
+        label: "Left voicemail"
+    },
+    noContact: {
+        code: "NO_CONTACT",
+        label: "No contact"
+    }
 };

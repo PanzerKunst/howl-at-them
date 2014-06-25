@@ -37,13 +37,8 @@ object Application extends Controller {
         None
 
       val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-      val detailedLegislatorsForThisState = StateLegislatorDto.getOfStateId(selectedUsStateId)
 
-      val whipCountForHouse = calculateWhipCountForChamber(Chamber.HOUSE, detailedLegislatorsForThisState)
-      val whipCountForSenate = calculateWhipCountForChamber(Chamber.SENATE, detailedLegislatorsForThisState)
-      val whipCountForBoth = calculateWhipCountForBothChambers(whipCountForHouse, whipCountForSenate)
-
-      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, whipCountForHouse, whipCountForSenate, whipCountForBoth, action))
+      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, action))
         .withHeaders(doNotCachePage: _*)
   }
 
@@ -131,90 +126,5 @@ object Application extends Controller {
       case Some(accountId) => AccountDto.getOfId(accountId.toLong)
       case None => None
     }
-  }
-
-  private def calculateWhipCountForChamber(chamber: Chamber, detailedLegislatorsForThisState: List[DetailedStateLegislator]): List[WhipCount] = {
-    var nbLegislators: Int = 0
-    var nbLegislatorsSupportive: Int = 0
-    var nbLegislatorsNeedingConvincing: Int = 0
-    var nbLegislatorsNotSupportive: Int = 0
-
-    for (stateLegislator <- detailedLegislatorsForThisState) {
-      if (stateLegislator.getChamber == chamber) {
-        nbLegislators = nbLegislators + 1
-
-        stateLegislator.reports.headOption match {
-          case Some(report) =>
-            report.supportLevel match {
-              case "SUPPORTIVE" => nbLegislatorsSupportive = nbLegislatorsSupportive + 1
-              case "NEEDS_CONVINCING" => nbLegislatorsNeedingConvincing = nbLegislatorsNeedingConvincing + 1
-              case "NOT_SUPPORTIVE" => nbLegislatorsNotSupportive = nbLegislatorsNotSupportive + 1
-              case otherString =>
-            }
-
-          case None =>
-        }
-      }
-    }
-
-    // Supportive
-    val whipCountSupportive = WhipCount(SupportLevel.SUPPORTIVE,
-      nbLegislatorsSupportive,
-      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).round.toInt)
-
-    // Needing convincing
-    val whipCountNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
-      nbLegislatorsNeedingConvincing,
-      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).round.toInt)
-
-    // Not supportive
-    val whipCountNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
-      nbLegislatorsNotSupportive,
-      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).round.toInt)
-
-    // Unknown
-    val nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive
-    val whipCountUnknown = WhipCount(SupportLevel.UNKNOWN,
-      nbLegislatorsWhoseSupportLevelIsUnknown,
-      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).round.toInt)
-
-    List(whipCountSupportive,
-      whipCountNeedingConvincing,
-      whipCountNotSupportive,
-      whipCountUnknown)
-  }
-
-  private def calculateWhipCountForBothChambers(whipCountForHouse: List[WhipCount], whipCountForSenate: List[WhipCount]): List[WhipCount] = {
-    val nbLegislatorsSupportive = whipCountForHouse.apply(0).count + whipCountForSenate.apply(0).count
-    val nbLegislatorsNeedingConvincing = whipCountForHouse.apply(1).count + whipCountForSenate.apply(1).count
-    val nbLegislatorsNotSupportive = whipCountForHouse.apply(2).count + whipCountForSenate.apply(2).count
-    val nbLegislatorsUnknown = whipCountForHouse.apply(3).count + whipCountForSenate.apply(3).count
-    val nbLegislators = nbLegislatorsSupportive + nbLegislatorsNeedingConvincing + nbLegislatorsNotSupportive + nbLegislatorsUnknown
-
-    // Supportive
-    val whipCountSupportive = WhipCount(SupportLevel.SUPPORTIVE,
-      nbLegislatorsSupportive,
-      (nbLegislatorsSupportive.toDouble / nbLegislators * 100).round.toInt)
-
-    // Needing convincing
-    val whipCountNeedingConvincing = WhipCount(SupportLevel.NEEDS_CONVINCING,
-      nbLegislatorsNeedingConvincing,
-      (nbLegislatorsNeedingConvincing.toDouble / nbLegislators * 100).round.toInt)
-
-    // Not supportive
-    val whipCountNotSupportive = WhipCount(SupportLevel.NOT_SUPPORTIVE,
-      nbLegislatorsNotSupportive,
-      (nbLegislatorsNotSupportive.toDouble / nbLegislators * 100).round.toInt)
-
-    // Unknown
-    val nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive
-    val whipCountUnknown = WhipCount(SupportLevel.UNKNOWN,
-      nbLegislatorsWhoseSupportLevelIsUnknown,
-      (nbLegislatorsWhoseSupportLevelIsUnknown.toDouble / nbLegislators * 100).round.toInt)
-
-    List(whipCountSupportive,
-      whipCountNeedingConvincing,
-      whipCountNotSupportive,
-      whipCountUnknown)
   }
 }

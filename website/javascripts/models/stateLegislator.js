@@ -72,7 +72,7 @@ CBR.Models.StateLegislator = new Class({
 
     getLatestContact: function() {
         var latestReport = this.getLatestReport();
-        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.NO_CONTACT;
+        return latestReport ? latestReport.getReadableContact() : CBR.Models.Report.contact.noContact.code;
     },
 
     getReportCount: function() {
@@ -112,14 +112,14 @@ CBR.Models.StateLegislator = new Class({
 
     getChamber: function () {
         if (this.getTitle().toLowerCase() == "senator") {
-            return "SD";
+            return CBR.Models.StateLegislator.chamber.SENATE;
         }
-        return "HD";
+        return CBR.Models.StateLegislator.chamber.HOUSE;
     },
 
     getCurrentSupportLevelSpan: function() {
-        var cssClass = "UNKNOWN";
-        var label = CBR.Models.Report.supportLevel.UNKNOWN;
+        var cssClass = CBR.Models.Report.supportLevel.unknown.code;
+        var label = CBR.Models.Report.supportLevel.unknown.label;
 
         var latestReport = this.getLatestReport();
         if (latestReport) {
@@ -130,3 +130,8 @@ CBR.Models.StateLegislator = new Class({
         return '<span class="support-level ' + cssClass + '">' + label + '</span>';
     }
 });
+
+CBR.Models.StateLegislator.chamber = {
+    HOUSE: "HD",
+    SENATE: "SD"
+};

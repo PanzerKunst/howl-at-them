@@ -57,9 +57,13 @@ CBR.Controllers.StateReports = new Class({
         if (jQuery.browser.mobile || !this._isBrowserFullWidth()) {
             this.$tableHeaders.show();
         }
+
+        this._updateWhipCounts();
     },
 
     updateResultsTable: function () {
+        var isWhipCountOutdated = false;
+
         this.$results = this.$searchResultsSection.children();
 
         this.$results.each(function (index, element) {
@@ -67,6 +71,8 @@ CBR.Controllers.StateReports = new Class({
             var $tr = $article.find("tr");
 
             if (this.isDataChangedForRow(index, $tr)) {
+                isWhipCountOutdated = true;
+
                 $article.html(
                     CBR.Templates.stateReportsResultRow({
                         isFirstRow: index === 0,
@@ -127,6 +133,10 @@ CBR.Controllers.StateReports = new Class({
                 }.bind(this));
             }
         }.bind(this));
+
+        if (isWhipCountOutdated) {
+            this._updateWhipCounts();
+        }
     },
 
     _showEditReportModal: function (e) {
@@ -200,5 +210,128 @@ CBR.Controllers.StateReports = new Class({
 
         // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
         return _.contains(content, "STATE_REPORTS_FULL_WIDTH_BREAKPOINT");
+    },
+
+    _calculateWhipCountForChamber: function (chamber) {
+        var nbLegislators = 0;
+        var nbLegislatorsSupportive = 0;
+        var nbLegislatorsNeedingConvincing = 0;
+        var nbLegislatorsNotSupportive = 0;
+
+        this.getStateLegislators().forEach(function (legislator) {
+            if (legislator.getChamber() === chamber) {
+                nbLegislators++;
+
+                var latestReport = legislator.getLatestReport();
+                if (latestReport) {
+                    switch (latestReport.getSupportLevel()) {
+                        case CBR.Models.Report.supportLevel.supportive.code:
+                            nbLegislatorsSupportive++;
+                            break;
+                        case CBR.Models.Report.supportLevel.needsConvincing.code:
+                            nbLegislatorsNeedingConvincing++;
+                            break;
+                        case CBR.Models.Report.supportLevel.notSupportive.code:
+                            nbLegislatorsNotSupportive++;
+                    }
+                }
+            }
+        });
+
+        // Supportive
+        var whipCountSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.supportive,
+            count: nbLegislatorsSupportive,
+            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+        });
+
+        // Needing convincing
+        var whipCountNeedingConvincing = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
+            count: nbLegislatorsNeedingConvincing,
+            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+        });
+
+        // Not supportive
+        var whipCountNotSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.notSupportive,
+            count: nbLegislatorsNotSupportive,
+            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+        });
+
+        // Unknown
+        var nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive;
+        var whipCountUnknown = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.unknown,
+            count: nbLegislatorsWhoseSupportLevelIsUnknown,
+            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+        });
+
+        return [whipCountSupportive,
+            whipCountNeedingConvincing,
+            whipCountNotSupportive,
+            whipCountUnknown];
+    },
+    
+    _calculateWhipCountForBothChambers: function(whipCountForHouse, whipCountForSenate) {
+        var nbLegislatorsSupportive = whipCountForHouse[0].getCount() + whipCountForSenate[0].getCount();
+        var nbLegislatorsNeedingConvincing = whipCountForHouse[1].getCount() + whipCountForSenate[1].getCount();
+        var nbLegislatorsNotSupportive = whipCountForHouse[2].getCount() + whipCountForSenate[2].getCount();
+        var nbLegislatorsUnknown = whipCountForHouse[3].getCount() + whipCountForSenate[3].getCount();
+        var nbLegislators = nbLegislatorsSupportive + nbLegislatorsNeedingConvincing + nbLegislatorsNotSupportive + nbLegislatorsUnknown;
+
+        // Supportive
+        var whipCountSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.supportive,
+            count: nbLegislatorsSupportive,
+            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+        });
+
+        // Needing convincing
+        var whipCountNeedingConvincing = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
+            count: nbLegislatorsNeedingConvincing,
+            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+        });
+
+        // Not supportive
+        var whipCountNotSupportive = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.notSupportive,
+            count: nbLegislatorsNotSupportive,
+            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+        });
+
+        // Unknown
+        var nbLegislatorsWhoseSupportLevelIsUnknown = nbLegislators - nbLegislatorsSupportive - nbLegislatorsNeedingConvincing - nbLegislatorsNotSupportive;
+        var whipCountUnknown = new CBR.Models.WhipCount({
+            supportLevel: CBR.Models.Report.supportLevel.unknown,
+            count: nbLegislatorsWhoseSupportLevelIsUnknown,
+            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+        });
+
+        return [whipCountSupportive,
+            whipCountNeedingConvincing,
+            whipCountNotSupportive,
+            whipCountUnknown];
+    },
+
+    _updateWhipCounts: function() {
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.HOUSE);
+        jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
+        jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
+        jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
+        jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
+
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.SENATE);
+        jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
+        jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
+        jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));
+        jQuery(this.$whipCountListItem[7]).html(CBR.Templates.whipCountListItem(whipCountForSenate[3]));
+
+        var whipCountForBoth = this._calculateWhipCountForBothChambers(whipCountForHouse, whipCountForSenate);
+        jQuery(this.$whipCountListItem[8]).html(CBR.Templates.whipCountListItem(whipCountForBoth[0]));
+        jQuery(this.$whipCountListItem[9]).html(CBR.Templates.whipCountListItem(whipCountForBoth[1]));
+        jQuery(this.$whipCountListItem[10]).html(CBR.Templates.whipCountListItem(whipCountForBoth[2]));
+        jQuery(this.$whipCountListItem[11]).html(CBR.Templates.whipCountListItem(whipCountForBoth[3]));
     }
 });
