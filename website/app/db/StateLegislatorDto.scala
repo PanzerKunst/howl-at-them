@@ -208,7 +208,7 @@ object StateLegislatorDto {
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
             leadershipPositionIdClause +
             committeeIdsClause + """
-          order by title, last_name, creation_timestamp desc;"""
+          order by title, last_name, first_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getMatching():" + query)
 
@@ -231,7 +231,7 @@ object StateLegislatorDto {
             on r.candidate_id = l.id
             and r.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'
-          order by title, last_name, creation_timestamp desc;"""
+          order by title, last_name, first_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getOfStateId():" + query)
 
@@ -265,7 +265,7 @@ object StateLegislatorDto {
             and r.is_deleted is false
           where us_state_id in (""" + stateIdsForQuery + """)
             and district in (""" + districtsForQuery + """)
-          order by title, last_name, creation_timestamp desc;"""
+          order by title, last_name, first_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getOfDistrict():" + query)
 
@@ -285,9 +285,7 @@ object StateLegislatorDto {
       for (row <- denormalizedStateLegislator) {
         var isInListAlready = false
 
-
         // candidateOffice
-
         row._2 match {
           case Some(candidateOffice) =>
             for (candidateOfficeItem <- candidateOffices) {
@@ -302,9 +300,7 @@ object StateLegislatorDto {
           case None =>
         }
 
-
         // candidateCommittee
-
         row._3 match {
           case Some(candidateCommittee) =>
             isInListAlready = false
@@ -321,9 +317,7 @@ object StateLegislatorDto {
           case None =>
         }
 
-
         // reports
-
         row._4 match {
           case Some(report) =>
             isInListAlready = false

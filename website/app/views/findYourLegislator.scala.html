@@ -45,7 +45,7 @@ Please find your legislator another way... sorry!</div>
     @for(legislator <- stateLegislators) {
         <tr data-id="@legislator.id" class="clickable">
             <td>@Html(legislator.getTitleAbbr)</td>
-            <td>@legislator.firstName @legislator.lastName</td>
+            <td>@legislator.lastName @legislator.firstName</td>
             <td><span class="centered-contents">@Html(legislator.getPoliticalPartiesAbbr)</span></td>
             <td>@legislator.usState.id @legislator.getChamber.getAbbr @legislator.district</td>
             <td>
