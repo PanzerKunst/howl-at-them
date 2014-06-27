@@ -21,7 +21,6 @@ CBR.Controllers.LegislatorListing = new Class({
 
         this.$filterSection = jQuery(".table-filter");
         this.$textFilters = this.$filterSection.find("input[type=text]");
-        this.$titleFilter = jQuery("#title-filter");
         this.$nameFilter = jQuery("#name-filter");
         this.$partyFilter = jQuery("#party-filter");
         this.$districtFilter = jQuery("#district-filter");
@@ -76,25 +75,13 @@ CBR.Controllers.LegislatorListing = new Class({
 
             var $td, value, filter;
 
-            // Title
-            filter = this.$titleFilter.val();
-            if (filter.length > 0) {
-                $td = jQuery(tds[0]);
-                value = jQuery($td.children()[0]).attr("title");
-                if (value.substring(0, 1).toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
-                    isResultMatchedByFilter = false;
-                }
-            }
-
             // Name
-            if (isResultMatchedByFilter) {
-                filter = this.$nameFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[1]);
-                    value = $td.html();
-                    if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
-                        isResultMatchedByFilter = false;
-                    }
+            filter = this.$nameFilter.val();
+            if (filter.length > 0) {
+                $td = jQuery(tds[1]);
+                value = $td.html();
+                if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
+                    isResultMatchedByFilter = false;
                 }
             }
 

@@ -576,13 +576,17 @@ textarea.form-control {
     content: "";
     display: table;
     clear: both; }
+  .table-filter > label {
+    display: block;
+    float: left;
+    width: 45px;
+    text-align: center;
+    margin-top: 0.35em; }
   .table-filter > .form-control {
     float: left;
     margin: 0 2px 0 1px;
     padding-left: 5px;
     padding-right: 5px; }
-  .table-filter > #title-filter {
-    width: 43px; }
   .table-filter > #party-filter {
     width: 32px;
     text-align: center; }
@@ -742,7 +746,7 @@ textarea.form-control {
     width: 48.5em;
     margin-right: 0; }
   #search-legislators #content #name-filter {
-    width: 145px; }
+    width: 146px; }
   #search-legislators #content #district-filter {
     width: 111px; }
   #search-legislators #content #support-level-filter {
@@ -841,7 +845,7 @@ textarea.form-control {
     text-align: left;
     margin-top: 0; }
   #state-reports #content #name-filter {
-    width: 134px; }
+    width: 135px; }
   #state-reports #content #district-filter {
     width: 106px; }
   #state-reports #content #support-level-filter {

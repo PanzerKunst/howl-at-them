@@ -140,6 +140,17 @@ $table-filter-margin: 0.2em;
 
   margin-bottom: 2px;
 
+  > label {
+    display: block;
+    float: left;
+
+    width: $title-col-width;
+
+    text-align: center;
+
+    margin-top: 0.35em;
+  }
+
   > .form-control {
     float: left;
 
@@ -148,10 +159,6 @@ $table-filter-margin: 0.2em;
     // To have more room for the text
     padding-left: 5px;
     padding-right: 5px;
-  }
-
-  > #title-filter {
-    width: $title-col-width - 2;
   }
 
   > #party-filter {
