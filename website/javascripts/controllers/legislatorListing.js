@@ -280,6 +280,8 @@ CBR.Controllers.LegislatorListing = new Class({
             this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
         } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
             this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
+        } else {
+            this.removeFromLocalStorage("selectedChamberFilter", true);
         }
 
         this._filterChamber();

@@ -54,6 +54,21 @@ CBR.Controllers.BaseController = new Class({
         }
     },
 
+    removeFromLocalStorage: function (key, isGlobalScope) {
+        if (Modernizr.localstorage) {
+            if (isGlobalScope) {
+                localStorage.removeItem(key);
+            } else {
+                var pageId = jQuery("body").attr("id");
+
+                var pageDataInLocalStorage = JSON.parse(localStorage.getItem(pageId)) || {};
+                delete pageDataInLocalStorage[key];
+
+                localStorage.setItem(pageId, JSON.stringify(pageDataInLocalStorage));
+            }
+        }
+    },
+
     isAdmin: function () {
         return this.options.isAdmin;
     },
