@@ -2783,9 +2783,9 @@ CBR.Models.Report.contact = {
 
     getChamber: function () {
         if (this.getTitle().toLowerCase() == "senator") {
-            return CBR.Models.StateLegislator.chamber.SENATE;
+            return CBR.Models.StateLegislator.chamber.senate;
         }
-        return CBR.Models.StateLegislator.chamber.HOUSE;
+        return CBR.Models.StateLegislator.chamber.house;
     },
 
     getCurrentSupportLevelSpan: function() {
@@ -2803,8 +2803,14 @@ CBR.Models.Report.contact = {
 });
 
 CBR.Models.StateLegislator.chamber = {
-    HOUSE: "HD",
-    SENATE: "SD"
+    house: {
+        abbr: "HD",
+        label: "House"
+    },
+    senate: {
+        abbr: "SD",
+        label: "Senate"
+    }
 };
 ;CBR.Models.WhipCount = new Class({
     Extends: CBR.Models.JsonSerializable,
@@ -3187,6 +3193,10 @@ CBR.Models.StateLegislator.chamber = {
 
         this.$usStateSelect = jQuery("#us-state");
 
+        this.$chamberFilterRadios = jQuery("[name='chamber-filter']");
+        this.$houseChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
+        this.$senateChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
+
         this.$filterSection = jQuery(".table-filter");
         this.$textFilters = this.$filterSection.find("input[type=text]");
         this.$titleFilter = jQuery("#title-filter");
@@ -3204,10 +3214,20 @@ CBR.Models.StateLegislator.chamber = {
         this.$stickyTableHeader = jQuery("#sticky-table-header");
 
         this.$searchResultsSection = jQuery("#search-results");
+
+        var selectedChamberFilter = this.getFromLocalStorage("selectedChamberFilter", true);
+
+        if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.house)) {
+            this.$houseChamberFilterRadio.prop('checked', true);
+        } else if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.senate)) {
+            this.$senateChamberFilterRadio.prop('checked', true);
+        }
     },
 
     initEvents: function () {
         this.$usStateSelect.change(jQuery.proxy(this.doSubmit, this));
+
+        this.$chamberFilterRadios.change(jQuery.proxy(this._onChamberFilterChanged, this));
 
         this.$textFilters.keyup(_.debounce(jQuery.proxy(this.filterResults, this), 100));
         this.$isMissingUrgentReportFilter.change(jQuery.proxy(this.filterResults, this));
@@ -3410,9 +3430,9 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     createResultsTable: function () {
-        this.toggleStickyTableHeader();
+        this._filterChamber();
 
-        this.$results = this.$searchResultsSection.find("tr");
+        this.toggleStickyTableHeader();
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
 
@@ -3429,6 +3449,42 @@ CBR.Models.StateLegislator.chamber = {
 
         $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
         $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+    },
+
+    _onChamberFilterChanged: function(e) {
+        var selectedValue = e.currentTarget.value;
+
+        if (selectedValue === CBR.Models.StateLegislator.chamber.house.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
+        } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
+        }
+
+        this._filterChamber();
+    },
+
+    _filterChamber: function () {
+        var selectedChamberFilter = null;
+        if (this.$houseChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.house;
+        } else if (this.$senateChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.senate;
+        }
+
+        // Reset: show all
+        this.$results.show();
+
+        if (selectedChamberFilter) {
+            this.$results.each(function (index, element) {
+                var $row = jQuery(element);
+
+                var legislator = this._getStateLegislatorOfId($row.data("id"));
+
+                if (!_.isEqual(legislator.getChamber(), selectedChamberFilter)) {
+                    $row.hide();
+                }
+            }.bind(this));
+        }
     },
 
     _doPeriodicSearch: function () {
@@ -3518,7 +3574,7 @@ CBR.Models.StateLegislator.chamber = {
         this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
     },
 
-    saveNewMissingUrgentReportStatus: function(e) {
+    saveNewMissingUrgentReportStatus: function (e) {
         var $checkbox = jQuery(e.currentTarget);
 
         var isMissingUrgentReport = $checkbox.prop("checked");
@@ -3576,7 +3632,7 @@ CBR.Models.StateLegislator.chamber = {
         });
     },
 
-    isDataChangedForRow: function(index, $tr) {
+    isDataChangedForRow: function (index, $tr) {
         var legislatorWithUpdatedData = this.getStateLegislators()[index];
         if (legislatorWithUpdatedData) {
             var latestReport = legislatorWithUpdatedData.getLatestReport();
@@ -3931,12 +3987,12 @@ CBR.Models.StateLegislator.chamber = {
             })
         );
 
+        this.$results = this.$searchResultsSection.find("tr");
+
         this.parent();
     },
 
     updateResultsTable: function () {
-        this.$results = this.$searchResultsSection.find("tr");
-
         this.$results.each(function (index, element) {
             var $tr = jQuery(element);
 
@@ -4305,6 +4361,8 @@ CBR.Models.StateLegislator.chamber = {
             })
         );
 
+        this.$results = this.$searchResultsSection.children();
+
         this.parent();
 
         this.addEditAndDeleteReportLinks();
@@ -4323,8 +4381,6 @@ CBR.Models.StateLegislator.chamber = {
 
     updateResultsTable: function () {
         var isWhipCountOutdated = false;
-
-        this.$results = this.$searchResultsSection.children();
 
         this.$results.each(function (index, element) {
             var $article = jQuery(element);
@@ -4479,7 +4535,7 @@ CBR.Models.StateLegislator.chamber = {
         var nbLegislatorsNotSupportive = 0;
 
         this.getStateLegislators().forEach(function (legislator) {
-            if (legislator.getChamber() === chamber) {
+            if (_.isEqual(legislator.getChamber(), chamber)) {
                 nbLegislators++;
 
                 var latestReport = legislator.getLatestReport();
@@ -4576,13 +4632,13 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _updateWhipCounts: function() {
-        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.HOUSE);
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
         jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
         jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
 
-        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.SENATE);
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate);
         jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
         jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
         jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));
@@ -4871,6 +4927,14 @@ function program1(depth0,data) {
 
 function program3(depth0,data) {
   
+  var stack1, helper;
+  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program5(depth0,data) {
+  
   
   return " checked ";
   }
@@ -4895,8 +4959,7 @@ function program3(depth0,data) {
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
-  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
   if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -4927,10 +4990,10 @@ function program3(depth0,data) {
   else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
     + "</td>\r\n<td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n<td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n";
   return buffer;
@@ -4968,8 +5031,7 @@ function program1(depth0,data) {
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
-  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
   if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5000,10 +5062,10 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
     + "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n    </tr>\r\n    ";
   return buffer;
@@ -5017,6 +5079,14 @@ function program2(depth0,data) {
   }
 
 function program4(depth0,data) {
+  
+  var stack1, helper;
+  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
+  }
+
+function program6(depth0,data) {
   
   
   return " checked ";
@@ -5067,8 +5137,7 @@ function program3(depth0,data) {
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
-  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
   if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5091,10 +5160,10 @@ function program3(depth0,data) {
   stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n    </tr>\r\n    ";
   return buffer;
@@ -5109,29 +5178,37 @@ function program4(depth0,data) {
 
 function program6(depth0,data) {
   
-  
-  return " checked ";
+  var stack1, helper;
+  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
   }
 
 function program8(depth0,data) {
   
+  
+  return " checked ";
+  }
+
+function program10(depth0,data) {
+  
   var buffer = "", stack1;
   buffer += "\r\n";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
   return buffer;
   }
-function program9(depth0,data) {
+function program11(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\r\n<section class=\"reports\">\r\n    ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n</section>\r\n";
   return buffer;
   }
-function program10(depth0,data) {
+function program12(depth0,data) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n    <article data-id=\"";
@@ -5181,7 +5258,7 @@ function program10(depth0,data) {
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    </tbody>\r\n</table>\r\n";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
   return buffer;
@@ -5195,7 +5272,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper, options;
-  buffer += "\r\n<article>\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        ";
+  buffer += "\r\n<article data-id=\"";
+  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        ";
   stack1 = helpers['if'].call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n        <tbody>\r\n        <tr data-id=\"";
@@ -5222,8 +5303,7 @@ function program1(depth0,data) {
   stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
-  if (helper = helpers.getChamber) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getChamber); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
   if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5246,13 +5326,13 @@ function program1(depth0,data) {
   stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n            <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        </tr>\r\n        </tbody>\r\n    </table>\r\n    ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n</article>\r\n";
   return buffer;
@@ -5273,20 +5353,28 @@ function program4(depth0,data) {
 
 function program6(depth0,data) {
   
-  
-  return " checked ";
+  var stack1, helper;
+  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  return escapeExpression(stack1);
   }
 
 function program8(depth0,data) {
   
+  
+  return " checked ";
+  }
+
+function program10(depth0,data) {
+  
   var buffer = "", stack1;
   buffer += "\r\n    <section class=\"reports\">\r\n        ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(9, program9, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    </section>\r\n    ";
   return buffer;
   }
-function program9(depth0,data) {
+function program11(depth0,data) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n        <article data-id=\"";

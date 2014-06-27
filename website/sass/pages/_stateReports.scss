@@ -19,12 +19,6 @@
     // Because the large-screen footer is always displayed
     padding-bottom: $footer-item-height * 2;
 
-    > form {
-      > div:first-child {
-        width: $label-width-us-state + $field-width-search-pages;
-      }
-    }
-
     > #whip-count-per-chamber {
       @include clearfix;
 

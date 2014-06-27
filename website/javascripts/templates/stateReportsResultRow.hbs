@@ -22,7 +22,7 @@
         <td class="title">{{{getTitleAbbr}}}</td>
         <td class="name">{{getLastName}} {{getFirstName}}</td>
         <td class="political-parties"><span class="centered-contents">{{{getPoliticalPartiesAbbr}}}</span></td>
-        <td class="district">{{#with getUsState}}{{id}}{{/with}} {{{getChamber}}} {{getDistrict}}</td>
+        <td class="district">{{#with getUsState}}{{id}}{{/with}} {{#with getChamber}}{{abbr}}{{/with}} {{getDistrict}}</td>
         <td class="support-level">{{{getCurrentSupportLevelSpan}}}</td>
         <td class="mpp">{{{getSpanForYesNoAnswerLegislatorLevel "MPP" this}}}</td>
         <td class="safi">{{{getSpanForYesNoAnswerLegislatorLevel "SAFI" this}}}</td>

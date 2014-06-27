@@ -95,12 +95,12 @@ CBR.Controllers.SearchLegislators = new Class({
             })
         );
 
+        this.$results = this.$searchResultsSection.find("tr");
+
         this.parent();
     },
 
     updateResultsTable: function () {
-        this.$results = this.$searchResultsSection.find("tr");
-
         this.$results.each(function (index, element) {
             var $tr = jQuery(element);
 

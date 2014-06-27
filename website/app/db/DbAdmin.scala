@@ -164,7 +164,7 @@ object DbAdmin {
             suffix varchar(32),
             title varchar(128) not null,
             ballot_name varchar(64),
-            election_parties varchar(32),
+            election_parties varchar(64),
             election_district_id integer,
             election_district_name varchar(64),
             election_office varchar(64),

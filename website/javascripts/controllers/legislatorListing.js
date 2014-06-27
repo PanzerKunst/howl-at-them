@@ -15,6 +15,10 @@ CBR.Controllers.LegislatorListing = new Class({
 
         this.$usStateSelect = jQuery("#us-state");
 
+        this.$chamberFilterRadios = jQuery("[name='chamber-filter']");
+        this.$houseChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
+        this.$senateChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
+
         this.$filterSection = jQuery(".table-filter");
         this.$textFilters = this.$filterSection.find("input[type=text]");
         this.$titleFilter = jQuery("#title-filter");
@@ -32,10 +36,20 @@ CBR.Controllers.LegislatorListing = new Class({
         this.$stickyTableHeader = jQuery("#sticky-table-header");
 
         this.$searchResultsSection = jQuery("#search-results");
+
+        var selectedChamberFilter = this.getFromLocalStorage("selectedChamberFilter", true);
+
+        if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.house)) {
+            this.$houseChamberFilterRadio.prop('checked', true);
+        } else if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.senate)) {
+            this.$senateChamberFilterRadio.prop('checked', true);
+        }
     },
 
     initEvents: function () {
         this.$usStateSelect.change(jQuery.proxy(this.doSubmit, this));
+
+        this.$chamberFilterRadios.change(jQuery.proxy(this._onChamberFilterChanged, this));
 
         this.$textFilters.keyup(_.debounce(jQuery.proxy(this.filterResults, this), 100));
         this.$isMissingUrgentReportFilter.change(jQuery.proxy(this.filterResults, this));
@@ -238,9 +252,9 @@ CBR.Controllers.LegislatorListing = new Class({
     },
 
     createResultsTable: function () {
-        this.toggleStickyTableHeader();
+        this._filterChamber();
 
-        this.$results = this.$searchResultsSection.find("tr");
+        this.toggleStickyTableHeader();
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
 
@@ -257,6 +271,42 @@ CBR.Controllers.LegislatorListing = new Class({
 
         $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
         $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+    },
+
+    _onChamberFilterChanged: function(e) {
+        var selectedValue = e.currentTarget.value;
+
+        if (selectedValue === CBR.Models.StateLegislator.chamber.house.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
+        } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
+        }
+
+        this._filterChamber();
+    },
+
+    _filterChamber: function () {
+        var selectedChamberFilter = null;
+        if (this.$houseChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.house;
+        } else if (this.$senateChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.senate;
+        }
+
+        // Reset: show all
+        this.$results.show();
+
+        if (selectedChamberFilter) {
+            this.$results.each(function (index, element) {
+                var $row = jQuery(element);
+
+                var legislator = this._getStateLegislatorOfId($row.data("id"));
+
+                if (!_.isEqual(legislator.getChamber(), selectedChamberFilter)) {
+                    $row.hide();
+                }
+            }.bind(this));
+        }
     },
 
     _doPeriodicSearch: function () {
@@ -346,7 +396,7 @@ CBR.Controllers.LegislatorListing = new Class({
         this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
     },
 
-    saveNewMissingUrgentReportStatus: function(e) {
+    saveNewMissingUrgentReportStatus: function (e) {
         var $checkbox = jQuery(e.currentTarget);
 
         var isMissingUrgentReport = $checkbox.prop("checked");
@@ -404,7 +454,7 @@ CBR.Controllers.LegislatorListing = new Class({
         });
     },
 
-    isDataChangedForRow: function(index, $tr) {
+    isDataChangedForRow: function (index, $tr) {
         var legislatorWithUpdatedData = this.getStateLegislators()[index];
         if (legislatorWithUpdatedData) {
             var latestReport = legislatorWithUpdatedData.getLatestReport();

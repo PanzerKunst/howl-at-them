@@ -12,7 +12,7 @@
 <h1>Search legislators</h1>
 
 <form role="form">
-    <div>
+    <div id="primary-search-fields">
         <div class="form-group">
             <label for="us-state">State</label><!--
          --><select id="us-state" class="form-control">
@@ -20,6 +20,25 @@
                 <option value="@usState.id" @if(selectedUsStateId == usState.id) { selected }>@usState.name</option>
                 }
             </select>
+        </div>
+        <div class="form-group" id="chamber-radio-buttons">
+            <article class="check-or-radio">
+                <div><input type="radio" name="chamber-filter" value="@Chamber.HOUSE.getAbbr" />
+                </div>
+                <div><label>@Chamber.HOUSE.getString</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div>
+                    <input type="radio" name="chamber-filter" value="@Chamber.SENATE.getAbbr" />
+                </div>
+                <div><label>@Chamber.SENATE.getString</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div>
+                    <input type="radio" name="chamber-filter" checked />
+                </div>
+                <div><label>Both</label></div>
+            </article>
         </div>
     </div>
 

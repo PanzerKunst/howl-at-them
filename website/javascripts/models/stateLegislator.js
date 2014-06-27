@@ -112,9 +112,9 @@ CBR.Models.StateLegislator = new Class({
 
     getChamber: function () {
         if (this.getTitle().toLowerCase() == "senator") {
-            return CBR.Models.StateLegislator.chamber.SENATE;
+            return CBR.Models.StateLegislator.chamber.senate;
         }
-        return CBR.Models.StateLegislator.chamber.HOUSE;
+        return CBR.Models.StateLegislator.chamber.house;
     },
 
     getCurrentSupportLevelSpan: function() {
@@ -132,6 +132,12 @@ CBR.Models.StateLegislator = new Class({
 });
 
 CBR.Models.StateLegislator.chamber = {
-    HOUSE: "HD",
-    SENATE: "SD"
+    house: {
+        abbr: "HD",
+        label: "House"
+    },
+    senate: {
+        abbr: "SD",
+        label: "Senate"
+    }
 };

@@ -45,6 +45,8 @@ CBR.Controllers.StateReports = new Class({
             })
         );
 
+        this.$results = this.$searchResultsSection.children();
+
         this.parent();
 
         this.addEditAndDeleteReportLinks();
@@ -63,8 +65,6 @@ CBR.Controllers.StateReports = new Class({
 
     updateResultsTable: function () {
         var isWhipCountOutdated = false;
-
-        this.$results = this.$searchResultsSection.children();
 
         this.$results.each(function (index, element) {
             var $article = jQuery(element);
@@ -219,7 +219,7 @@ CBR.Controllers.StateReports = new Class({
         var nbLegislatorsNotSupportive = 0;
 
         this.getStateLegislators().forEach(function (legislator) {
-            if (legislator.getChamber() === chamber) {
+            if (_.isEqual(legislator.getChamber(), chamber)) {
                 nbLegislators++;
 
                 var latestReport = legislator.getLatestReport();
@@ -316,13 +316,13 @@ CBR.Controllers.StateReports = new Class({
     },
 
     _updateWhipCounts: function() {
-        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.HOUSE);
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
         jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
         jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
 
-        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.SENATE);
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate);
         jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
         jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
         jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));

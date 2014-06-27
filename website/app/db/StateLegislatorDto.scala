@@ -210,7 +210,8 @@ object StateLegislatorDto {
             committeeIdsClause + """
           order by title, last_name, first_name, creation_timestamp desc;"""
 
-    Logger.info("StateLegislatorDto.getMatching():" + query)
+    // Level is debug to reduce log spam
+    Logger.debug("StateLegislatorDto.getMatching():" + query)
 
     executeFetchQueryAndReturnListOfLegislators(query)
   }
@@ -233,7 +234,8 @@ object StateLegislatorDto {
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'
           order by title, last_name, first_name, creation_timestamp desc;"""
 
-    Logger.info("StateLegislatorDto.getOfStateId():" + query)
+    // Level is debug to reduce log spam
+    Logger.debug("StateLegislatorDto.getOfStateId():" + query)
 
     executeFetchQueryAndReturnListOfLegislators(query)
   }
