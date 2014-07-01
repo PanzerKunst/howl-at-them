@@ -482,7 +482,7 @@ textarea.form-control {
   float: left; }
 #content.legislator-listing #primary-search-fields {
   margin: 0 auto;
-  width: 40em; }
+  width: 40.5em; }
   #content.legislator-listing #primary-search-fields:after {
     content: "";
     display: table;
@@ -494,7 +494,7 @@ textarea.form-control {
 #content.legislator-listing #chamber-radio-buttons {
   margin-top: 0.45em; }
   #content.legislator-listing #chamber-radio-buttons.form-group {
-    width: 17em;
+    width: 17.5em;
     margin-right: 0; }
   #content.legislator-listing #chamber-radio-buttons:after {
     content: "";

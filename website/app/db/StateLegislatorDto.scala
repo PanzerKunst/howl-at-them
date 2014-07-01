@@ -266,7 +266,7 @@ object StateLegislatorDto {
             on r.candidate_id = l.id
             and r.is_deleted is false
           where us_state_id in (""" + stateIdsForQuery + """)
-            and district in (""" + districtsForQuery + """)
+            and lower(district) in (lower(""" + districtsForQuery + """))
           order by title, last_name, first_name, creation_timestamp desc;"""
 
     Logger.info("StateLegislatorDto.getOfDistrict():" + query)
