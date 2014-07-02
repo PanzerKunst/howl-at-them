@@ -1,5 +1,22 @@
 #index {
   #content {
+    #map-container {
+      display: none;
+
+      margin-bottom: $line-height-computed * 2;
+
+      @include large-screen {
+        display: block;
+      }
+    }
+
+    #map {
+      $map-width: $large-screen-min-width - 2 * $page-side-padding;
+
+      width: $map-width;
+      height: $map-width * 400 / 704;  // The default dimentions are 704px * 400px
+    }
+
     $state-list-item-width: 9em;
 
     tr.spaced {
@@ -29,23 +46,6 @@
     #five-cols,
     #six-cols {
       display: none;
-    }
-
-    #map-container {
-      display: none;
-
-      margin-top: $line-height-computed * 2;
-
-      @include large-screen {
-        display: block;
-      }
-    }
-
-    #map {
-      $map-width: $large-screen-min-width - 2 * $page-side-padding;
-
-      width: $map-width;
-      height: $map-width * 400 / 704;  // The default dimentions are 704px * 400px
     }
 
     $strange-em-difference-for-three-col-breakpoint: 0.6em;

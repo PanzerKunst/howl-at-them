@@ -22,7 +22,7 @@ CBR.Controllers.Index = new Class({
             },
             onRegionClick: function(event, code) {
                 var codePrefix = "US-";
-                location.href = "/state-reports?usStateId=" + code.substring(codePrefix.length);
+                location.href = "/state-legislators?usStateId=" + code.substring(codePrefix.length);
             }
         });
     }

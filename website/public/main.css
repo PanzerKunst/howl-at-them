@@ -615,6 +615,15 @@ textarea.form-control {
 #search-results .table span.support-level {
   font-weight: bold; }
 
+#index #content #map-container {
+  display: none;
+  margin-bottom: 40px; }
+  @media screen and (min-width: 49.5em) {
+    #index #content #map-container {
+      display: block; } }
+#index #content #map {
+  width: 53em;
+  height: 30.11364em; }
 #index #content tr.spaced > td {
   padding-top: 1.72em; }
 #index #content td {
@@ -630,15 +639,6 @@ textarea.form-control {
 #index #content #five-cols,
 #index #content #six-cols {
   display: none; }
-#index #content #map-container {
-  display: none;
-  margin-top: 40px; }
-  @media screen and (min-width: 49.5em) {
-    #index #content #map-container {
-      display: block; } }
-#index #content #map {
-  width: 53em;
-  height: 30.11364em; }
 @media screen and (min-width: 26.4em) {
   #index #content > #two-cols {
     display: none; }
