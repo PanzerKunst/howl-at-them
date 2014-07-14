@@ -224,15 +224,16 @@ CBR.Controllers.StateReports = new Class({
 
                 var latestReport = legislator.getLatestReport();
                 if (latestReport) {
-                    switch (latestReport.getSupportLevel()) {
-                        case CBR.Models.Report.supportLevel.supportive.code:
-                            nbLegislatorsSupportive++;
-                            break;
-                        case CBR.Models.Report.supportLevel.needsConvincing.code:
-                            nbLegislatorsNeedingConvincing++;
-                            break;
-                        case CBR.Models.Report.supportLevel.notSupportive.code:
-                            nbLegislatorsNotSupportive++;
+                    var supportLevel = latestReport.getSupportLevel();
+
+                    if (supportLevel === CBR.Models.Report.supportLevel.primarySponsor.code ||
+                        supportLevel === CBR.Models.Report.supportLevel.coSponsor.code ||
+                        supportLevel === CBR.Models.Report.supportLevel.supportive.code) {
+                        nbLegislatorsSupportive++;
+                    } else if (supportLevel === CBR.Models.Report.supportLevel.needsConvincing.code) {
+                        nbLegislatorsNeedingConvincing++;
+                    } else if (supportLevel === CBR.Models.Report.supportLevel.notSupportive.code) {
+                        nbLegislatorsNotSupportive++;
                     }
                 }
             }
@@ -272,8 +273,8 @@ CBR.Controllers.StateReports = new Class({
             whipCountNotSupportive,
             whipCountUnknown];
     },
-    
-    _calculateWhipCountForBothChambers: function(whipCountForHouse, whipCountForSenate) {
+
+    _calculateWhipCountForBothChambers: function (whipCountForHouse, whipCountForSenate) {
         var nbLegislatorsSupportive = whipCountForHouse[0].getCount() + whipCountForSenate[0].getCount();
         var nbLegislatorsNeedingConvincing = whipCountForHouse[1].getCount() + whipCountForSenate[1].getCount();
         var nbLegislatorsNotSupportive = whipCountForHouse[2].getCount() + whipCountForSenate[2].getCount();
@@ -315,7 +316,7 @@ CBR.Controllers.StateReports = new Class({
             whipCountUnknown];
     },
 
-    _updateWhipCounts: function() {
+    _updateWhipCounts: function () {
         var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));

@@ -264,12 +264,26 @@
              --><select id="support-level" class="form-control">
                     <option value="@SupportLevel.UNKNOWN">@SupportLevel.UNKNOWN.getString</option>
 
+                    <option value="@SupportLevel.PRIMARY_SPONSOR"
+                    @if(!stateLegislator.reports.isEmpty &&
+                    stateLegislator.reports.head.supportLevel == "PRIMARY_SPONSOR") {
+                    selected
+                    }
+                    >@SupportLevel.PRIMARY_SPONSOR.getString</option><!-- comparing with SupportLevel.PRIMARY_SPONSOR doesn't work, strange... -->
+
+                    <option value="@SupportLevel.CO_SPONSOR"
+                    @if(!stateLegislator.reports.isEmpty &&
+                    stateLegislator.reports.head.supportLevel == "CO_SPONSOR") {
+                    selected
+                    }
+                    >@SupportLevel.CO_SPONSOR.getString</option>
+
                     <option value="@SupportLevel.SUPPORTIVE"
                     @if(!stateLegislator.reports.isEmpty &&
                         stateLegislator.reports.head.supportLevel == "SUPPORTIVE") {
                             selected
                     }
-                    >@SupportLevel.SUPPORTIVE.getString</option><!-- comparing with SupportLevel.SUPPORTIVE doesn't work, strange... -->
+                    >@SupportLevel.SUPPORTIVE.getString</option>
 
                     <option value="@SupportLevel.NEEDS_CONVINCING"
                     @if(!stateLegislator.reports.isEmpty &&

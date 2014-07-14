@@ -103,6 +103,8 @@ CBR.Controllers.BaseController = new Class({
                     none: report.getContact() === CBR.Models.Report.contact.noContact.code
                 },
                 isSupportLevel: {
+                    primarySponsor: report.getSupportLevel() === CBR.Models.Report.supportLevel.primarySponsor.code,
+                    coSponsor: report.getSupportLevel() === CBR.Models.Report.supportLevel.coSponsor.code,
                     supportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.supportive.code,
                     needsConfincing: report.getSupportLevel() === CBR.Models.Report.supportLevel.needsConvincing.code,
                     notSupportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.notSupportive.code

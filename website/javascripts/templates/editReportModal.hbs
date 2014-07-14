@@ -128,7 +128,19 @@
                             <label for="edit-support-level">Support level</label><!--
                          --><select id="edit-support-level" class="form-control">
                                 <option value="{{SupportLevels.unknown.code}}">{{SupportLevels.unknown.label}}</option>
-    
+
+                                <option value="{{SupportLevels.primarySponsor.code}}"
+                                {{#if isSupportLevel.primarySponsor}}
+                                selected
+                                {{/if}}
+                                >{{SupportLevels.primarySponsor.label}}</option>
+
+                                <option value="{{SupportLevels.coSponsor.code}}"
+                                {{#if isSupportLevel.coSponsor}}
+                                selected
+                                {{/if}}
+                                >{{SupportLevels.coSponsor.label}}</option>
+
                                 <option value="{{SupportLevels.supportive.code}}"
                                 {{#if isSupportLevel.supportive}}
                                 selected

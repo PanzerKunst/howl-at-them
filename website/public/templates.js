@@ -141,7 +141,21 @@ function program7(depth0,data) {
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.unknown)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\">"
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.unknown)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n    \r\n                                <option value=\""
+    + "</option>\r\n\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n\r\n                                <option value=\""
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.supportive)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\"\r\n                                ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.supportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});

@@ -3,6 +3,8 @@
     color: $gray-light;
   }
 
+  &.PRIMARY_SPONSOR,
+  &.CO_SPONSOR,
   &.SUPPORTIVE {
     color: $brand-success;
   }

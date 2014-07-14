@@ -52,6 +52,8 @@ case class Report(_id: Option[Long] = None,
 
   def getSupportLevelSpan: String = {
     supportLevel match {
+      case "PRIMARY_SPONSOR" => "<span class=\"support-level " + SupportLevel.PRIMARY_SPONSOR + "\">" + SupportLevel.PRIMARY_SPONSOR.getString + "</span>"
+      case "CO_SPONSOR" => "<span class=\"support-level " + SupportLevel.CO_SPONSOR + "\">" + SupportLevel.CO_SPONSOR.getString + "</span>"
       case "SUPPORTIVE" => "<span class=\"support-level " + SupportLevel.SUPPORTIVE + "\">" + SupportLevel.SUPPORTIVE.getString + "</span>"
       case "NEEDS_CONVINCING" => "<span class=\"support-level " + SupportLevel.NEEDS_CONVINCING + "\">" + SupportLevel.NEEDS_CONVINCING.getString + "</span>"
       case "NOT_SUPPORTIVE" => "<span class=\"support-level " + SupportLevel.NOT_SUPPORTIVE + "\">" + SupportLevel.NOT_SUPPORTIVE.getString + "</span>"

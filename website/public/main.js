@@ -2562,6 +2562,10 @@ CBR.isBrowserLargeScreen = function () {
 
     getReadableSupportLevel: function () {
         switch (this.getSupportLevel()) {
+            case CBR.Models.Report.supportLevel.primarySponsor.code:
+                return CBR.Models.Report.supportLevel.primarySponsor.label;
+            case CBR.Models.Report.supportLevel.coSponsor.code:
+                return CBR.Models.Report.supportLevel.coSponsor.label;
             case CBR.Models.Report.supportLevel.supportive.code:
                 return CBR.Models.Report.supportLevel.supportive.label;
             case CBR.Models.Report.supportLevel.needsConvincing.code:
@@ -2611,6 +2615,14 @@ CBR.Models.Report.radioAnswer = {
 };
 
 CBR.Models.Report.supportLevel = {
+    primarySponsor: {
+        code: "PRIMARY_SPONSOR",
+        label: "Primary sponsor"
+    },
+    coSponsor: {
+        code: "CO_SPONSOR",
+        label: "Co-sponsor"
+    },
     supportive: {
         code: "SUPPORTIVE",
         label: "Supportive"
@@ -2921,6 +2933,8 @@ CBR.Models.StateLegislator.chamber = {
                     none: report.getContact() === CBR.Models.Report.contact.noContact.code
                 },
                 isSupportLevel: {
+                    primarySponsor: report.getSupportLevel() === CBR.Models.Report.supportLevel.primarySponsor.code,
+                    coSponsor: report.getSupportLevel() === CBR.Models.Report.supportLevel.coSponsor.code,
                     supportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.supportive.code,
                     needsConfincing: report.getSupportLevel() === CBR.Models.Report.supportLevel.needsConvincing.code,
                     notSupportive: report.getSupportLevel() === CBR.Models.Report.supportLevel.notSupportive.code
@@ -4532,15 +4546,16 @@ CBR.Models.StateLegislator.chamber = {
 
                 var latestReport = legislator.getLatestReport();
                 if (latestReport) {
-                    switch (latestReport.getSupportLevel()) {
-                        case CBR.Models.Report.supportLevel.supportive.code:
-                            nbLegislatorsSupportive++;
-                            break;
-                        case CBR.Models.Report.supportLevel.needsConvincing.code:
-                            nbLegislatorsNeedingConvincing++;
-                            break;
-                        case CBR.Models.Report.supportLevel.notSupportive.code:
-                            nbLegislatorsNotSupportive++;
+                    var supportLevel = latestReport.getSupportLevel();
+
+                    if (supportLevel === CBR.Models.Report.supportLevel.primarySponsor.code ||
+                        supportLevel === CBR.Models.Report.supportLevel.coSponsor.code ||
+                        supportLevel === CBR.Models.Report.supportLevel.supportive.code) {
+                        nbLegislatorsSupportive++;
+                    } else if (supportLevel === CBR.Models.Report.supportLevel.needsConvincing.code) {
+                        nbLegislatorsNeedingConvincing++;
+                    } else if (supportLevel === CBR.Models.Report.supportLevel.notSupportive.code) {
+                        nbLegislatorsNotSupportive++;
                     }
                 }
             }
@@ -4580,8 +4595,8 @@ CBR.Models.StateLegislator.chamber = {
             whipCountNotSupportive,
             whipCountUnknown];
     },
-    
-    _calculateWhipCountForBothChambers: function(whipCountForHouse, whipCountForSenate) {
+
+    _calculateWhipCountForBothChambers: function (whipCountForHouse, whipCountForSenate) {
         var nbLegislatorsSupportive = whipCountForHouse[0].getCount() + whipCountForSenate[0].getCount();
         var nbLegislatorsNeedingConvincing = whipCountForHouse[1].getCount() + whipCountForSenate[1].getCount();
         var nbLegislatorsNotSupportive = whipCountForHouse[2].getCount() + whipCountForSenate[2].getCount();
@@ -4623,7 +4638,7 @@ CBR.Models.StateLegislator.chamber = {
             whipCountUnknown];
     },
 
-    _updateWhipCounts: function() {
+    _updateWhipCounts: function () {
         var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
@@ -4849,7 +4864,21 @@ function program7(depth0,data) {
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.unknown)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\">"
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.unknown)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "</option>\r\n    \r\n                                <option value=\""
+    + "</option>\r\n\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.primarySponsor)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n\r\n                                <option value=\""
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\"\r\n                                ";
+  stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n                                >"
+    + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.coSponsor)),stack1 == null || stack1 === false ? stack1 : stack1.label)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</option>\r\n\r\n                                <option value=\""
     + escapeExpression(((stack1 = ((stack1 = ((stack1 = (depth0 && depth0.SupportLevels)),stack1 == null || stack1 === false ? stack1 : stack1.supportive)),stack1 == null || stack1 === false ? stack1 : stack1.code)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\"\r\n                                ";
   stack1 = helpers['if'].call(depth0, ((stack1 = (depth0 && depth0.isSupportLevel)),stack1 == null || stack1 === false ? stack1 : stack1.supportive), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});

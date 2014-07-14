@@ -303,7 +303,7 @@ tr.clickable {
 
 .support-level.UNKNOWN {
   color: #999999; }
-.support-level.SUPPORTIVE {
+.support-level.PRIMARY_SPONSOR, .support-level.CO_SPONSOR, .support-level.SUPPORTIVE {
   color: #5cb85c; }
 .support-level.NEEDS_CONVINCING {
   color: #f0ad4e; }

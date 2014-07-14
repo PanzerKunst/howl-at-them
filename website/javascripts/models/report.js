@@ -50,6 +50,10 @@ CBR.Models.Report = new Class({
 
     getReadableSupportLevel: function () {
         switch (this.getSupportLevel()) {
+            case CBR.Models.Report.supportLevel.primarySponsor.code:
+                return CBR.Models.Report.supportLevel.primarySponsor.label;
+            case CBR.Models.Report.supportLevel.coSponsor.code:
+                return CBR.Models.Report.supportLevel.coSponsor.label;
             case CBR.Models.Report.supportLevel.supportive.code:
                 return CBR.Models.Report.supportLevel.supportive.label;
             case CBR.Models.Report.supportLevel.needsConvincing.code:
@@ -99,6 +103,14 @@ CBR.Models.Report.radioAnswer = {
 };
 
 CBR.Models.Report.supportLevel = {
+    primarySponsor: {
+        code: "PRIMARY_SPONSOR",
+        label: "Primary sponsor"
+    },
+    coSponsor: {
+        code: "CO_SPONSOR",
+        label: "Co-sponsor"
+    },
     supportive: {
         code: "SUPPORTIVE",
         label: "Supportive"
