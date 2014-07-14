@@ -61,8 +61,11 @@ case class Report(_id: Option[Long] = None,
 
   def getNotesForWeb: String = {
     notes match {
-      case Some(n0tes) => n0tes.replaceAll("\\\\n", "<br />")
-      case None => ""
+      case Some(n0tes) =>
+        n0tes.replaceAll("\n", "<br />")
+
+      case None =>
+        ""
     }
   }
 }

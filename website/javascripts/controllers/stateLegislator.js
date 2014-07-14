@@ -188,6 +188,8 @@ CBR.Controllers.StateLegislator = new Class({
                 hasPreviouslyVotedForConvention = false;
             }
 
+            var notes = jQuery("#notes").val();
+
             var report = {
                 candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
@@ -197,7 +199,7 @@ CBR.Controllers.StateLegislator = new Class({
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#notes").val()
+                notes: notes ? notes : null
             };
 
             this.saveInLocalStorage(this.$authorName.attr("id"), authorName);

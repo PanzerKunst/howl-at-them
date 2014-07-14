@@ -20,10 +20,6 @@ object ReportDto {
         if (report.supportLevel != SupportLevel.UNKNOWN.toString)
           supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel) + "'"
 
-        var notesForQuery = "NULL"
-        if (report.notes.isDefined && report.notes.get != "")
-          notesForQuery = "'" + DbUtil.safetize(report.notes.get) + "'"
-
         val query = """
                insert into report(candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
           is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes, creation_timestamp)
@@ -34,13 +30,16 @@ object ReportDto {
           report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """, """ +
           report.isOpposingCitizensUnited.getOrElse("NULL") + """, """ +
           report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """, """ +
-          supportLevelForQuery + """, """ +
-          notesForQuery + """, """ +
+          supportLevelForQuery + """,
+          {notes}, """ +
           new Date().getTime + """);"""
 
         Logger.info("ReportDto.create():" + query)
 
-        SQL(query).executeInsert()
+        // We use "on" because it's useful to handle carriage returns
+        SQL(query).on(
+          "notes" -> report.notes
+        ).executeInsert()
     }
   }
 
@@ -124,10 +123,6 @@ object ReportDto {
         if (report.supportLevel != SupportLevel.UNKNOWN.toString)
           supportLevelForQuery = "'" + DbUtil.safetize(report.supportLevel) + "'"
 
-        var notesForQuery = "NULL"
-        if (report.notes.isDefined && report.notes.get != "")
-          notesForQuery = "'" + DbUtil.safetize(report.notes.get) + "'"
-
         val query = """
           update report set
           author_name = '""" + DbUtil.safetize(report.authorName) + """',
@@ -137,12 +132,15 @@ object ReportDto {
           is_opposing_citizens_united = """ + report.isOpposingCitizensUnited.getOrElse("NULL") + """,
           has_previously_voted_for_convention = """ + report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """,
           support_level = """ + supportLevelForQuery + """,
-          notes = """ + notesForQuery + """
+          notes = {notes}
           where id = """ + report.id.get + """;"""
 
         Logger.info("ReportDto.update():" + query)
 
-        SQL(query).executeUpdate()
+        // We use "on" because it's useful to handle carriage returns
+        SQL(query).on(
+          "notes" -> report.notes
+        ).executeUpdate()
     }
   }
 

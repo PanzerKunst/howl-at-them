@@ -2132,20 +2132,6 @@ CBR.isBrowserLargeScreen = function () {
         return this.hide();
     };
 })(jQuery);
-;CBR.JsonUtil = {};
-
-CBR.JsonUtil.stringifyModel = function (obj) {
-    var seen = [];
-
-    return JSON.stringify(obj, function (key, val) {
-        if (typeof val === "object") {
-            if (seen.indexOf(val) >= 0)
-                return undefined;
-            seen.push(val);
-        }
-        return val;
-    });
-};
 ;CBR.Services.Validator = new Class({
     checkEmpty: "empty",
     checkEmail: "email",
@@ -2614,7 +2600,7 @@ CBR.JsonUtil.stringifyModel = function (obj) {
 
     getNotesForWeb: function() {
         var notes = this.getNotes();
-        return notes ? notes.replace(/\\n/g, "<br />") : null;
+        return notes ? notes.replace(/\n/g, "<br />") : null;
     }
 });
 
@@ -2924,7 +2910,7 @@ CBR.Models.StateLegislator.chamber = {
                     isOpposingCitizensUnited: report.isOpposingCitizensUnited(),
                     hasPreviouslyVotedForConvention: report.hasPreviouslyVotedForConvention(),
                     supportLevel: report.getSupportLevel(),
-                    notes: reportNotes ? reportNotes.replace(/\\n/g, "&#13;&#10;") : null
+                    notes: reportNotes
                 },
                 isContact: {
                     metLegislator: report.getContact() === CBR.Models.Report.contact.metLegislator.code,
@@ -4212,6 +4198,8 @@ CBR.Models.StateLegislator.chamber = {
                 hasPreviouslyVotedForConvention = false;
             }
 
+            var notes = jQuery("#notes").val();
+
             var report = {
                 candidateId: this._getStateLegislator().getId(),
                 authorName: authorName,
@@ -4221,7 +4209,7 @@ CBR.Models.StateLegislator.chamber = {
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
                 hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
-                notes: jQuery("#notes").val()
+                notes: notes ? notes : null
             };
 
             this.saveInLocalStorage(this.$authorName.attr("id"), authorName);

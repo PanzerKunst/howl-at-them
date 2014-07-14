@@ -97,7 +97,7 @@
         @if(office.street.isDefined) {
         <article class="office-address">
             <label>@office.officeType office</label>
-            <p>@Html(office.street.get.replaceAll("\\\\n", "<br />"))<br />
+            <p>@Html(office.street.get.replaceAll("\n", "<br />"))<br />
             @office.city, @office.usStateId @office.zip</p>
         </article>
         }

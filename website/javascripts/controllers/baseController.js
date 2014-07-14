@@ -92,7 +92,7 @@ CBR.Controllers.BaseController = new Class({
                     isOpposingCitizensUnited: report.isOpposingCitizensUnited(),
                     hasPreviouslyVotedForConvention: report.hasPreviouslyVotedForConvention(),
                     supportLevel: report.getSupportLevel(),
-                    notes: reportNotes ? reportNotes.replace(/\\n/g, "&#13;&#10;") : null
+                    notes: reportNotes
                 },
                 isContact: {
                     metLegislator: report.getContact() === CBR.Models.Report.contact.metLegislator.code,

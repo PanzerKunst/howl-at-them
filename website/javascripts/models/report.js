@@ -88,7 +88,7 @@ CBR.Models.Report = new Class({
 
     getNotesForWeb: function() {
         var notes = this.getNotes();
-        return notes ? notes.replace(/\\n/g, "<br />") : null;
+        return notes ? notes.replace(/\n/g, "<br />") : null;
     }
 });
 

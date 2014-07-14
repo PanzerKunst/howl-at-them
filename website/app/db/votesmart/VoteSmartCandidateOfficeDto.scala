@@ -12,10 +12,6 @@ object VoteSmartCandidateOfficeDto {
     DB.withConnection {
       implicit c =>
 
-        var streetForQuery = "NULL"
-        if (voteSmartCandidateOffice.street.isDefined && voteSmartCandidateOffice.street.get != "")
-          streetForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.street.get) + "'"
-
         var cityForQuery = "NULL"
         if (voteSmartCandidateOffice.city.isDefined && voteSmartCandidateOffice.city.get != "")
           cityForQuery = "'" + DbUtil.safetize(voteSmartCandidateOffice.city.get) + "'"
@@ -43,8 +39,8 @@ object VoteSmartCandidateOfficeDto {
                    phone1)
           values(""" + voteSmartCandidateOffice.candidateId + """, '""" +
           DbUtil.safetize(voteSmartCandidateOffice.officeType) + """', """ +
-          voteSmartCandidateOffice.officeTypeId + """, """ +
-          streetForQuery + """, """ +
+          voteSmartCandidateOffice.officeTypeId + """,
+          {street}, """ +
           cityForQuery + """, """ +
           stateForQuery + """, """ +
           zipForQuery + """, """ +
@@ -52,7 +48,10 @@ object VoteSmartCandidateOfficeDto {
 
         Logger.debug("VoteSmartCandidateOfficeDto.create():" + query)
 
-        SQL(query).executeInsert()
+        // We use "on" because it's useful to handle carriage returns
+        SQL(query).on(
+          "street" -> voteSmartCandidateOffice.street
+        ).executeInsert()
     }
   }
 }

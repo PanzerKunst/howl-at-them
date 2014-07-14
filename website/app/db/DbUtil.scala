@@ -15,7 +15,6 @@ object DbUtil {
 
   def safetize(string: String): String = {
     string.replaceAll("'", "''")
-      .replaceAll("\n", "\\\\n")
   }
 
   def parseToList[T](string: String): List[T] = {
