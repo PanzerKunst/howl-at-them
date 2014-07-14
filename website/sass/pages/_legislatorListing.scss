@@ -2,12 +2,14 @@ $chamber-radio-buttons-width: 17.5em;
 
 // Wouldn't override if declaration was outside #content
 #content.legislator-listing {
-  .form-group {
-    // We want the margin even on small rez
-    margin-right: $odd-form-groups-margin-right;
+  > form {
+    .form-group {
+      // We want the margin even on small rez
+      margin-right: $odd-form-groups-margin-right;
 
-    // To have the inputs on one line even on small screens
-    float: left;
+      // To have the inputs on one line even on small screens
+      float: left;
+    }
   }
 
   // Wouldn't override if declaration was outside #content

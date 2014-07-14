@@ -477,7 +477,7 @@ textarea.form-control {
   width: 16px;
   height: 16px; }
 
-#content.legislator-listing .form-group {
+#content.legislator-listing > form .form-group {
   margin-right: 2em;
   float: left; }
 #content.legislator-listing #primary-search-fields {
