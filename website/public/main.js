@@ -4173,7 +4173,7 @@ CBR.Models.StateLegislator.chamber = {
     _showEditReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
-        var successUrl = "/state-reports?action=savedReport";
+        var successUrl = "/state-legislators?action=savedReport";
 
         this.showEditReportModal(report, successUrl);
     },
@@ -4181,7 +4181,7 @@ CBR.Models.StateLegislator.chamber = {
     _showDeleteReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var reportId = $a.closest("article").data("id");
-        var successUrl = "/state-reports?action=deletedReport";
+        var successUrl = "/state-legislators?action=deletedReport";
 
         this.showDeleteReportModal(reportId, successUrl);
     },
