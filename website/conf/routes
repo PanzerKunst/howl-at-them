@@ -7,9 +7,8 @@ GET     /assets/*file                           controllers.Assets.at(path="/pub
 
 # Pages
 GET     /                                       controllers.Application.index
-GET     /state-reports                          controllers.Application.stateReports
+GET     /state-legislators                      controllers.Application.stateLegislators
 GET     /find-your-legislator                   controllers.Application.findYourLegislator
-GET     /state-legislators                      controllers.Application.searchLegislators
 GET     /state-legislators/:id                  controllers.Application.stateLegislator(id: Int)
 GET     /admin-login                            controllers.Application.adminLogin
 GET     /admin                                  controllers.Application.admin

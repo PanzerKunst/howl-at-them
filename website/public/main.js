@@ -3191,526 +3191,7 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     floatingAlertFadeOutDelay: 1500
-});;CBR.Controllers.LegislatorListing = new Class({
-    Extends: CBR.Controllers.BaseController,
-
-    initialize: function (options) {
-        this.parent(options);
-    },
-
-    run: function () {
-        this.doSubmit(null);
-        window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
-    },
-
-    initElements: function () {
-        this.parent();
-
-        this.$usStateSelect = jQuery("#us-state");
-
-        this.$chamberFilterRadios = jQuery("[name='chamber-filter']");
-        this.$houseChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
-        this.$senateChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
-
-        this.$filterSection = jQuery(".table-filter");
-        this.$textFilters = this.$filterSection.find("input[type=text]");
-        this.$nameFilter = jQuery("#name-filter");
-        this.$partyFilter = jQuery("#party-filter");
-        this.$districtFilter = jQuery("#district-filter");
-        this.$supportLevelFilter = jQuery("#support-level-filter");
-        this.$mppFilter = jQuery("#mpp-filter");
-        this.$safiFilter = jQuery("#safi-filter");
-        this.$ocuFilter = jQuery("#ocu-filter");
-        this.$pvcFilter = jQuery("#pvc-filter");
-        this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
-        this.$isAPriorityTargetFilter = jQuery("#is-a-priority-target-filter");
-
-        this.$stickyTableHeader = jQuery("#sticky-table-header");
-
-        this.$searchResultsSection = jQuery("#search-results");
-
-        var selectedChamberFilter = this.getFromLocalStorage("selectedChamberFilter", true);
-
-        if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.house)) {
-            this.$houseChamberFilterRadio.prop('checked', true);
-        } else if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.senate)) {
-            this.$senateChamberFilterRadio.prop('checked', true);
-        }
-    },
-
-    initEvents: function () {
-        this.$usStateSelect.change(jQuery.proxy(this.doSubmit, this));
-
-        this.$chamberFilterRadios.change(jQuery.proxy(this._onChamberFilterChanged, this));
-
-        this.$textFilters.keyup(_.debounce(jQuery.proxy(this.filterResults, this), 100));
-        this.$isMissingUrgentReportFilter.change(jQuery.proxy(this.filterResults, this));
-        this.$isAPriorityTargetFilter.change(jQuery.proxy(this.filterResults, this));
-        this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
-
-        jQuery(window).scroll(_.debounce(jQuery.proxy(this.toggleStickyTableHeader, this), 15));
-    },
-
-    filterResults: function (e) {
-        var reportColIndex = 9;
-        var targetColIndex = 10;
-
-        if (jQuery("body").attr("id") === "search-legislators") {
-            reportColIndex++;
-            targetColIndex++;
-        }
-
-        this.$results.each(jQuery.proxy(function (index, element) {
-            var isResultMatchedByFilter = true;
-
-            var $row = jQuery(element);
-            var tds = $row.find("td");
-
-            var $td, value, filter;
-
-            // Name
-            filter = this.$nameFilter.val();
-            if (filter.length > 0) {
-                $td = jQuery(tds[1]);
-                value = $td.html();
-                if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
-                    isResultMatchedByFilter = false;
-                }
-            }
-
-            // Party
-            if (isResultMatchedByFilter) {
-                filter = this.$partyFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[2]);
-                    value = jQuery($td.find("abbr")).html();
-                    if (value.toLowerCase() !== filter.toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // District
-            if (isResultMatchedByFilter) {
-                filter = this.$districtFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[3]);
-                    value = $td.html();
-                    if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // Support level
-            if (isResultMatchedByFilter) {
-                filter = this.$supportLevelFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[4]);
-                    value = $td.children().html();
-                    if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // MPP
-            if (isResultMatchedByFilter) {
-                filter = this.$mppFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[5]);
-                    value = $td.children().html();
-                    if (value.toLowerCase() !== filter.toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // SAFI
-            if (isResultMatchedByFilter) {
-                filter = this.$safiFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[6]);
-                    value = $td.children().html();
-                    if (value.toLowerCase() !== filter.toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // OCU
-            if (isResultMatchedByFilter) {
-                filter = this.$ocuFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[7]);
-                    value = $td.children().html();
-                    if (value.toLowerCase() !== filter.toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // PVC
-            if (isResultMatchedByFilter) {
-                filter = this.$pvcFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[8]);
-                    value = $td.children().html();
-                    if (value.toLowerCase() !== filter.toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // Latest contact
-            if (isResultMatchedByFilter && this.$latestContactFilter) {
-                filter = this.$latestContactFilter.val();
-                if (filter.length > 0) {
-                    $td = jQuery(tds[9]);
-                    value = $td.html();
-                    if (value.substring(0, 1).toLowerCase() !== filter.substring(0, 1).toLowerCase()) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // Is missing urgent report
-            if (isResultMatchedByFilter) {
-                if (this.$isMissingUrgentReportFilter.prop("checked")) {
-                    $td = jQuery(tds[reportColIndex]);
-                    value = $td.children().prop("checked");
-                    if (!value) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            // Is a priority target
-            if (isResultMatchedByFilter) {
-                if (this.$isAPriorityTargetFilter.prop("checked")) {
-                    $td = jQuery(tds[targetColIndex]);
-                    value = $td.children().prop("checked");
-                    if (!value) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
-            if (isResultMatchedByFilter) {
-                $row.show();
-            } else {
-                $row.hide();
-            }
-        }, this));
-    },
-
-    doSubmit: function (e) {
-        this.$searchResultsSection.html('<div class="data-loading"></div>');
-
-        var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
-        var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
-
-        var stateLegislatorSearch = {
-            usStateId: this.$usStateSelect.val(),
-            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-            committeeName: selectedCommitteeName ? selectedCommitteeName : null
-        };
-
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            url: "/api/state-legislators",
-            data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
-                this._storeMatchingStateLegislators(JSON.parse(responseText));
-                this.createResultsTable();
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).get();
-    },
-
-    createResultsTable: function () {
-        this._filterChamber();
-
-        this.toggleStickyTableHeader();
-
-        this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this.onTableRowClick, this));
-
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.children(".is-missing-urgent-report");
-        var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.children(".is-a-priority-target");
-
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-        $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-        $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-
-        var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
-
-        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
-    },
-
-    _onChamberFilterChanged: function(e) {
-        var selectedValue = e.currentTarget.value;
-
-        if (selectedValue === CBR.Models.StateLegislator.chamber.house.abbr) {
-            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
-        } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
-            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
-        } else {
-            this.removeFromLocalStorage("selectedChamberFilter", true);
-        }
-
-        this._filterChamber();
-    },
-
-    _filterChamber: function () {
-        var selectedChamberFilter = null;
-        if (this.$houseChamberFilterRadio.prop("checked")) {
-            selectedChamberFilter = CBR.Models.StateLegislator.chamber.house;
-        } else if (this.$senateChamberFilterRadio.prop("checked")) {
-            selectedChamberFilter = CBR.Models.StateLegislator.chamber.senate;
-        }
-
-        // Reset: show all
-        this.$results.show();
-
-        if (selectedChamberFilter) {
-            this.$results.each(function (index, element) {
-                var $row = jQuery(element);
-
-                var legislator = this._getStateLegislatorOfId($row.data("id"));
-
-                if (!_.isEqual(legislator.getChamber(), selectedChamberFilter)) {
-                    $row.hide();
-                }
-            }.bind(this));
-        }
-    },
-
-    _doPeriodicSearch: function () {
-        if (!this.isPeriodicSearchRunning) {
-            this.isPeriodicSearchRunning = true;
-
-            var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
-            var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
-
-            var stateLegislatorSearch = {
-                usStateId: this.$usStateSelect.val(),
-                leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-                committeeName: selectedCommitteeName ? selectedCommitteeName : null
-            };
-
-            new Request({
-                urlEncoded: false,
-                headers: { "Content-Type": "application/json" },
-                url: "/api/state-legislators",
-                data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this.updateResultsTable();
-                    this.isPeriodicSearchRunning = false;
-                }.bind(this),
-                onFailure: function (xhr) {
-                    // We do nothing here, because it's quite likely that the user leaves/refreshed the page during one of
-                    // those AJAX calls, in which case it will fail, and we want that failure to be silent
-                    this.isPeriodicSearchRunning = false;
-                }.bind(this)
-            }).get();
-        }
-    },
-
-    _resetFilter: function (e) {
-        this.$textFilters.val("");
-        this.$isMissingUrgentReportFilter.prop("checked", false);
-        this.$isAPriorityTargetFilter.prop("checked", false);
-        this.filterResults(null);
-    },
-
-    onFullWidthBreakpointMatch: function () {
-        this.isBrowserFullWidth = true;
-
-        if (!this.$filterSection.visible(true)) {
-            this.$stickyTableHeader.show();
-        }
-    },
-
-    onFullWidthBreakpointExit: function () {
-        this.isBrowserFullWidth = false;
-
-        this.$stickyTableHeader.hide();
-    },
-
-    toggleStickyTableHeader: function () {
-        if (this.isBrowserFullWidth && !this.$filterSection.visible(true)) {
-            this.$stickyTableHeader.show();
-        } else {
-            this.$stickyTableHeader.hide();
-        }
-    },
-
-    disableRowClick: function (e) {
-        var $tr = jQuery(e.currentTarget).parent();
-        $tr.removeClass("clickable");
-    },
-
-    enableRowClick: function (e) {
-        var $tr = jQuery(e.currentTarget).parent();
-        $tr.addClass("clickable");
-    },
-
-    onTableRowClick: function (e) {
-        var $tr = jQuery(e.currentTarget);
-        if ($tr.hasClass("clickable")) {
-            this.navigateToStateLegislatorPage(e);
-        }
-    },
-
-    saveNewPriorityTargetStatus: function (e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isAPriorityTarget = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
-    },
-
-    saveNewMissingUrgentReportStatus: function (e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isMissingUrgentReport = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
-    },
-
-    getStateLegislators: function () {
-        return this.matchingStateLegislators;
-    },
-
-    _storeMatchingStateLegislators: function (stateLegislators) {
-        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
-            return new CBR.Models.StateLegislator(stateLegislator);
-        });
-    },
-
-    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
-        var updatedStateLegislator = {
-            id: stateLegislator.getId(),
-            firstName: stateLegislator.getFirstName(),
-            lastName: stateLegislator.getLastName(),
-            title: stateLegislator.getTitle(),
-            politicalParties: stateLegislator.getPoliticalParties(),
-            usState: stateLegislator.getUsState(),
-            district: stateLegislator.getDistrict(),
-            leadershipPosition: stateLegislator.getLeadershipPosition(),
-            offices: stateLegislator.getOffices(),
-            committees: stateLegislator.getCommittees(),
-            reports: stateLegislator.getReports(),
-            otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
-            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
-            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
-        };
-
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/state-legislators/",
-            data: JSON.stringify(updatedStateLegislator),
-            onSuccess: function (responseText, responseXML) {
-                this.showAlert(floatingAlertText);
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).put();
-    },
-
-    _getStateLegislatorOfId: function (id) {
-        return _.find(this.getStateLegislators(), function (legislator) {
-            return legislator.getId() === id;
-        });
-    },
-
-    isDataChangedForRow: function (index, $tr) {
-        var legislatorWithUpdatedData = this.getStateLegislators()[index];
-        if (legislatorWithUpdatedData) {
-            var latestReport = legislatorWithUpdatedData.getLatestReport();
-
-            if (latestReport) {
-                // Support level
-                var oldSupportLevel = $tr.find("span.support-level").html();
-                var latestSupportLevel = latestReport.getReadableSupportLevel();
-
-                if (oldSupportLevel !== latestSupportLevel) {
-                    return true;
-                }
-
-                // MPP
-                var oldYesNoLabel = $tr.children(".mpp").children().html();
-                var latestYesNo = latestReport.isMoneyInPoliticsAProblem();
-
-                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                    return true;
-                }
-
-                // SAFI
-                oldYesNoLabel = $tr.children(".safi").children().html();
-                latestYesNo = latestReport.isSupportingAmendmentToFixIt();
-
-                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                    return true;
-                }
-
-                // OCU
-                oldYesNoLabel = $tr.children(".ocu").children().html();
-                latestYesNo = latestReport.isOpposingCitizensUnited();
-
-                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                    return true;
-                }
-
-                // PVC
-                oldYesNoLabel = $tr.children(".pvc").children().html();
-                latestYesNo = latestReport.hasPreviouslyVotedForConvention();
-
-                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
-                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
-                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
-                    return true;
-                }
-
-                // Missing urgent report
-                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
-                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
-
-                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                    return true;
-                }
-
-                // Priority target
-                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
-                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
-
-                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-});
-;CBR.Controllers.Admin = new Class({
+});;CBR.Controllers.Admin = new Class({
     Extends: CBR.Controllers.BaseController,
 
     initialize: function (options) {
@@ -3892,134 +3373,6 @@ CBR.Models.StateLegislator.chamber = {
                 location.href = "/state-legislators?usStateId=" + code.substring(codePrefix.length);
             }
         });
-    }
-});
-;CBR.Controllers.SearchLegislators = new Class({
-    Extends: CBR.Controllers.LegislatorListing,
-
-    initialize: function (options) {
-        this.parent(options);
-    },
-
-    run: function () {
-        this.initElements();
-        this.initEvents();
-
-        this.parent();
-    },
-
-    initElements: function () {
-        this.parent();
-
-        this.$leadershipPositionSelect = jQuery("#leadership-position");
-        this.$committeeSelect = jQuery("#committee");
-
-        this.$latestContactFilter = jQuery("#latest-contact-filter");
-    },
-
-    initEvents: function () {
-        this.parent();
-
-        this.$usStateSelect.change(jQuery.proxy(function (e) {
-            this._populateLeadershipPositionsSelect(e);
-            this._populateCommitteesSelect(e);
-        }, this));
-
-        this.$usStateSelect.change(jQuery.proxy(this.doSubmit, this));
-
-        this.$leadershipPositionSelect.change(jQuery.proxy(function (e) {
-            this.$committeeSelect[0].selectedIndex = 0;
-            this.doSubmit(null);
-        }, this));
-
-        this.$committeeSelect.change(jQuery.proxy(function (e) {
-            this.$leadershipPositionSelect[0].selectedIndex = 0;
-            this.doSubmit(null);
-        }, this));
-
-        Breakpoints.on({
-            name: "SEARCH_LEGISLATORS_FULL_WIDTH_BREAKPOINT",
-            matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
-            exit: jQuery.proxy(this.onFullWidthBreakpointExit, this)
-        });
-    },
-
-    _populateLeadershipPositionsSelect: function (e) {
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            url: "/api/leadership-positions",
-            data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
-                this.$leadershipPositionSelect.html(
-                    CBR.Templates.leadershipPositionSelect({
-                        leadershipPositions: JSON.parse(responseText)
-                    })
-                );
-                this.$leadershipPositionSelect.prop("disabled", false);
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).get();
-    },
-
-    _populateCommitteesSelect: function (e) {
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            url: "/api/committees",
-            data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
-                this.$committeeSelect.html(
-                    CBR.Templates.committeeSelect({
-                        committeeNames: JSON.parse(responseText)
-                    })
-                );
-                this.$committeeSelect.prop("disabled", false);
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).get();
-    },
-
-    createResultsTable: function () {
-        this.$searchResultsSection.html(
-            CBR.Templates.searchLegislatorsResults({
-                legislators: this.getStateLegislators()
-            })
-        );
-
-        this.$results = this.$searchResultsSection.find("tr");
-
-        this.parent();
-    },
-
-    updateResultsTable: function () {
-        this.$results.each(function (index, element) {
-            var $tr = jQuery(element);
-
-            if (this.isDataChangedForRow(index, $tr)) {
-                $tr.html(
-                    CBR.Templates.searchLegislatorsResultRow(this.getStateLegislators()[index])
-                );
-
-                var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
-                var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
-
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-                $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-                $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
-
-                var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-                var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
-
-                $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
-            }
-        }.bind(this));
     }
 });
 ;CBR.Controllers.StateLegislator = new Class({
@@ -4320,8 +3673,8 @@ CBR.Models.StateLegislator.chamber = {
         return null;
     }
 });
-;CBR.Controllers.StateReports = new Class({
-    Extends: CBR.Controllers.LegislatorListing,
+;CBR.Controllers.StateLegislators = new Class({
+    Extends: CBR.Controllers.BaseController,
 
     initialize: function (options) {
         this.parent(options);
@@ -4330,15 +3683,51 @@ CBR.Models.StateLegislator.chamber = {
     run: function () {
         this.initElements();
         this._initValidation();
-        this.initEvents();
+        this._initEvents();
 
-        this.parent();
+        this._doSubmit(null);
+        window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
     },
 
     initElements: function () {
         this.parent();
 
+        this.$usStateSelect = jQuery("#us-state");
+
+        this.$chamberFilterRadios = jQuery("[name='chamber-filter']");
+        this.$houseChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
+        this.$senateChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
+
+        this.$leadershipPositionSelect = jQuery("#leadership-position");
+        this.$committeeSelect = jQuery("#committee");
+
         this.$whipCountListItem = jQuery("#whip-count-per-chamber li");
+
+        this.$filterSection = jQuery(".table-filter");
+        this.$textFilters = this.$filterSection.find("input[type=text]");
+        this.$nameFilter = jQuery("#name-filter");
+        this.$partyFilter = jQuery("#party-filter");
+        this.$districtFilter = jQuery("#district-filter");
+        this.$supportLevelFilter = jQuery("#support-level-filter");
+        this.$mppFilter = jQuery("#mpp-filter");
+        this.$safiFilter = jQuery("#safi-filter");
+        this.$ocuFilter = jQuery("#ocu-filter");
+        this.$pvcFilter = jQuery("#pvc-filter");
+        this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
+        this.$isAPriorityTargetFilter = jQuery("#is-a-priority-target-filter");
+
+        this.$stickyTableHeader = jQuery("#sticky-table-header");
+        this.$tableHeaderVisibleEvenWhenNoResults = jQuery("#table-header-visible-even-when-no-results");
+
+        this.$searchResultsSection = jQuery("#search-results");
+
+        var selectedChamberFilter = this.getFromLocalStorage("selectedChamberFilter", true);
+
+        if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.house)) {
+            this.$houseChamberFilterRadio.prop('checked', true);
+        } else if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.senate)) {
+            this.$senateChamberFilterRadio.prop('checked', true);
+        }
 
         this.fadeOutFloatingAlerts();
     },
@@ -4347,29 +3736,231 @@ CBR.Models.StateLegislator.chamber = {
         this.initEditReportValidation();
     },
 
-    initEvents: function () {
-        this.parent();
+    _initEvents: function () {
+        jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
+
+        this.$usStateSelect.change(function (e) {
+            this._populateLeadershipPositionsSelect(e);
+            this._populateCommitteesSelect(e);
+            this._doSubmit(e);
+        }.bind(this));
+
+        this.$chamberFilterRadios.change(jQuery.proxy(this._onChamberFilterChanged, this));
+
+        this.$leadershipPositionSelect.change(function (e) {
+            this.$committeeSelect[0].selectedIndex = 0;
+            this._doSubmit(e);
+        }.bind(this));
+
+        this.$committeeSelect.change(function (e) {
+            this.$leadershipPositionSelect[0].selectedIndex = 0;
+            this._doSubmit(e);
+        }.bind(this));
 
         this.$whipCountListItem.mouseenter(jQuery.proxy(this._showWhipCountPercentage, this));
         this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
+        this.$textFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
+        this.$isMissingUrgentReportFilter.change(jQuery.proxy(this._filterResults, this));
+        this.$isAPriorityTargetFilter.change(jQuery.proxy(this._filterResults, this));
+        this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
+
         Breakpoints.on({
-            name: "STATE_REPORTS_FULL_WIDTH_BREAKPOINT",
-            matched: jQuery.proxy(this.onFullWidthBreakpointMatch, this),
-            exit: jQuery.proxy(this.onFullWidthBreakpointExit, this)
+            name: "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT",
+            matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
+            exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
         });
     },
 
-    createResultsTable: function () {
+    _filterResults: function (e) {
+        this.$results.each(jQuery.proxy(function (index, element) {
+            var isResultMatchedByFilter = true;
+
+            var $row = jQuery(element);
+            var tds = $row.find("td");
+
+            var $td, value, filter;
+
+            // Name
+            filter = this.$nameFilter.val();
+            if (filter.length > 0) {
+                $td = jQuery(tds[1]);
+                value = $td.html();
+                if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
+                    isResultMatchedByFilter = false;
+                }
+            }
+
+            // Party
+            if (isResultMatchedByFilter) {
+                filter = this.$partyFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[2]);
+                    value = jQuery($td.find("abbr")).html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // District
+            if (isResultMatchedByFilter) {
+                filter = this.$districtFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[3]);
+                    value = $td.html();
+                    if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // Support level
+            if (isResultMatchedByFilter) {
+                filter = this.$supportLevelFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[4]);
+                    value = $td.children().html();
+                    if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // MPP
+            if (isResultMatchedByFilter) {
+                filter = this.$mppFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[5]);
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // SAFI
+            if (isResultMatchedByFilter) {
+                filter = this.$safiFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[6]);
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // OCU
+            if (isResultMatchedByFilter) {
+                filter = this.$ocuFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[7]);
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // PVC
+            if (isResultMatchedByFilter) {
+                filter = this.$pvcFilter.val();
+                if (filter.length > 0) {
+                    $td = jQuery(tds[8]);
+                    value = $td.children().html();
+                    if (value.toLowerCase() !== filter.toLowerCase()) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // Is missing urgent report
+            if (isResultMatchedByFilter) {
+                if (this.$isMissingUrgentReportFilter.prop("checked")) {
+                    $td = jQuery(tds[9]);
+                    value = $td.children().prop("checked");
+                    if (!value) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            // Is a priority target
+            if (isResultMatchedByFilter) {
+                if (this.$isAPriorityTargetFilter.prop("checked")) {
+                    $td = jQuery(tds[10]);
+                    value = $td.children().prop("checked");
+                    if (!value) {
+                        isResultMatchedByFilter = false;
+                    }
+                }
+            }
+
+            if (isResultMatchedByFilter) {
+                $row.show();
+            } else {
+                $row.hide();
+            }
+        }, this));
+    },
+
+    _doSubmit: function (e) {
+        this.$searchResultsSection.html('<div class="data-loading"></div>');
+
+        var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
+        var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
+
+        var stateLegislatorSearch = {
+            usStateId: this.$usStateSelect.val(),
+            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+            committeeName: selectedCommitteeName ? selectedCommitteeName : null
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/state-legislators",
+            data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this._storeMatchingStateLegislators(JSON.parse(responseText));
+                this._createResultsTable();
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
+
+    _createResultsTable: function () {
         this.$searchResultsSection.html(
-            CBR.Templates.stateReportsResults({
-                legislators: this.getStateLegislators()
+            CBR.Templates.stateLegislatorsResults({
+                legislators: this._getStateLegislators(),
+                isAdmin: this.isAdmin()
             })
         );
 
         this.$results = this.$searchResultsSection.children();
 
-        this.parent();
+        this._filterChamber();
+
+        this._toggleStickyTableHeader();
+
+        this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this._onTableRowClick, this));
+
+        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.find(".is-missing-urgent-report");
+        var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.find(".is-a-priority-target");
+
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
+        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
+        $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
+
+        var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
+        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
+
+        $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
+        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
         this.addEditAndDeleteReportLinks();
 
@@ -4379,46 +3970,124 @@ CBR.Models.StateLegislator.chamber = {
         this.$tableHeaders = jQuery("#search-results thead");
 
         if (jQuery.browser.mobile || !this._isBrowserFullWidth()) {
+            this.$tableHeaderVisibleEvenWhenNoResults.hide();
             this.$tableHeaders.show();
         }
 
         this._updateWhipCounts();
     },
 
-    updateResultsTable: function () {
+    _onChamberFilterChanged: function(e) {
+        var selectedValue = e.currentTarget.value;
+
+        if (selectedValue === CBR.Models.StateLegislator.chamber.house.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
+        } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
+            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
+        } else {
+            this.removeFromLocalStorage("selectedChamberFilter", true);
+        }
+
+        this._filterChamber();
+    },
+
+    _filterChamber: function () {
+        var selectedChamberFilter = null;
+        if (this.$houseChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.house;
+        } else if (this.$senateChamberFilterRadio.prop("checked")) {
+            selectedChamberFilter = CBR.Models.StateLegislator.chamber.senate;
+        }
+
+        // Reset: show all
+        this.$results.show();
+
+        if (selectedChamberFilter) {
+            this.$results.each(function (index, element) {
+                var $row = jQuery(element);
+
+                var legislator = this._getStateLegislatorOfId($row.data("id"));
+
+                if (!_.isEqual(legislator.getChamber(), selectedChamberFilter)) {
+                    $row.hide();
+                }
+            }.bind(this));
+        }
+    },
+
+    _doPeriodicSearch: function () {
+        if (!this.isPeriodicSearchRunning) {
+            this.isPeriodicSearchRunning = true;
+
+            var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
+            var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
+
+            var stateLegislatorSearch = {
+                usStateId: this.$usStateSelect.val(),
+                leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
+                committeeName: selectedCommitteeName ? selectedCommitteeName : null
+            };
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/state-legislators",
+                data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
+                onSuccess: function (responseText, responseXML) {
+                    this._storeMatchingStateLegislators(JSON.parse(responseText));
+                    this._updateResultsTable();
+                    this.isPeriodicSearchRunning = false;
+                }.bind(this),
+                onFailure: function (xhr) {
+                    // We do nothing here, because it's quite likely that the user leaves/refreshed the page during one of
+                    // those AJAX calls, in which case it will fail, and we want that failure to be silent
+                    this.isPeriodicSearchRunning = false;
+                }.bind(this)
+            }).get();
+        }
+    },
+
+    _resetFilter: function (e) {
+        this.$textFilters.val("");
+        this.$isMissingUrgentReportFilter.prop("checked", false);
+        this.$isAPriorityTargetFilter.prop("checked", false);
+        this._filterResults(null);
+    },
+
+    _updateResultsTable: function () {
         var isWhipCountOutdated = false;
 
         this.$results.each(function (index, element) {
             var $article = jQuery(element);
             var $tr = $article.find("tr");
 
-            if (this.isDataChangedForRow(index, $tr)) {
+            if (this._isDataChangedForRow(index, $tr)) {
                 isWhipCountOutdated = true;
 
                 $article.html(
-                    CBR.Templates.stateReportsResultRow({
-                        isFirstRow: index === 0,
-                        legislator: this.getStateLegislators()[index]
+                    CBR.Templates.stateLegislatorsResultRow({
+                        legislator: this._getStateLegislators()[index],
+                        isAdmin: this.isAdmin()
                     })
                 );
 
                 $tr = $article.find("tr");
 
-                $tr.click(jQuery.proxy(this.onTableRowClick, this));
+                $tr.click(jQuery.proxy(this._onTableRowClick, this));
 
                 var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
                 var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this.disableRowClick);
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this.enableRowClick);
-                $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this.disableRowClick);
-                $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this.enableRowClick);
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
+                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
+                $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
 
                 var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
                 var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
-                $isAPriorityTargetCheckboxes.change(jQuery.proxy(this.saveNewPriorityTargetStatus, this));
-                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this.saveNewMissingUrgentReportStatus, this));
+                $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
+                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
                 // Edit and Delete report links
                 $article.children(".reports").children().each(function (index, element) {
@@ -4461,6 +4130,46 @@ CBR.Models.StateLegislator.chamber = {
         }
     },
 
+    _populateLeadershipPositionsSelect: function (e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/leadership-positions",
+            data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$leadershipPositionSelect.html(
+                    CBR.Templates.leadershipPositionSelect({
+                        leadershipPositions: JSON.parse(responseText)
+                    })
+                );
+                this.$leadershipPositionSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
+
+    _populateCommitteesSelect: function (e) {
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            url: "/api/committees",
+            data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
+            onSuccess: function (responseText, responseXML) {
+                this.$committeeSelect.html(
+                    CBR.Templates.committeeSelect({
+                        committeeNames: JSON.parse(responseText)
+                    })
+                );
+                this.$committeeSelect.prop("disabled", false);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).get();
+    },
+
     _showEditReportModal: function (e) {
         var $a = jQuery(e.currentTarget);
         var report = this._getReportFromId($a.closest("article").data("id"));
@@ -4478,7 +4187,7 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _getReportFromId: function (reportId) {
-        var legislators = this.getStateLegislators();
+        var legislators = this._getStateLegislators();
 
         for (var i = 0; i < legislators.length; i++) {
             var reports = legislators[i].getReports();
@@ -4495,18 +4204,192 @@ CBR.Models.StateLegislator.chamber = {
         return null;
     },
 
-    onFullWidthBreakpointMatch: function () {
-        if (!jQuery.browser.mobile && this.$tableHeaders) {
-            this.$tableHeaders.hide();
+    _toggleStickyTableHeader: function () {
+        if (this.isBrowserFullWidth && !this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        } else {
+            this.$stickyTableHeader.hide();
         }
-
-        this.parent();
     },
 
-    onFullWidthBreakpointExit: function () {
-        this.parent();
+    _disableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget).parent();
+        $tr.removeClass("clickable");
+    },
+
+    _enableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget).parent();
+        $tr.addClass("clickable");
+    },
+
+    _onTableRowClick: function (e) {
+        var $tr = jQuery(e.currentTarget);
+        if ($tr.hasClass("clickable")) {
+            this.navigateToStateLegislatorPage(e);
+        }
+    },
+
+    _saveNewPriorityTargetStatus: function (e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isAPriorityTarget = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
+    },
+
+    _saveNewMissingUrgentReportStatus: function (e) {
+        var $checkbox = jQuery(e.currentTarget);
+
+        var isMissingUrgentReport = $checkbox.prop("checked");
+        var stateLegislatorId = $checkbox.parent().parent().data("id");
+
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+    },
+
+    _getStateLegislators: function () {
+        return this.matchingStateLegislators;
+    },
+
+    _storeMatchingStateLegislators: function (stateLegislators) {
+        this.matchingStateLegislators = stateLegislators.map(function (stateLegislator) {
+            return new CBR.Models.StateLegislator(stateLegislator);
+        });
+    },
+
+    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
+        var updatedStateLegislator = {
+            id: stateLegislator.getId(),
+            firstName: stateLegislator.getFirstName(),
+            lastName: stateLegislator.getLastName(),
+            title: stateLegislator.getTitle(),
+            politicalParties: stateLegislator.getPoliticalParties(),
+            usState: stateLegislator.getUsState(),
+            district: stateLegislator.getDistrict(),
+            leadershipPosition: stateLegislator.getLeadershipPosition(),
+            offices: stateLegislator.getOffices(),
+            committees: stateLegislator.getCommittees(),
+            reports: stateLegislator.getReports(),
+            otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
+            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
+            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
+        };
+
+        new Request({
+            urlEncoded: false,
+            headers: { "Content-Type": "application/json" },
+            emulation: false, // Otherwise PUT and DELETE requests are sent as POST
+            url: "/api/state-legislators/",
+            data: JSON.stringify(updatedStateLegislator),
+            onSuccess: function (responseText, responseXML) {
+                this.showAlert(floatingAlertText);
+            }.bind(this),
+            onFailure: function (xhr) {
+                alert("AJAX fail :(");
+            }
+        }).put();
+    },
+
+    _getStateLegislatorOfId: function (id) {
+        return _.find(this._getStateLegislators(), function (legislator) {
+            return legislator.getId() === id;
+        });
+    },
+
+    _isDataChangedForRow: function (index, $tr) {
+        var legislatorWithUpdatedData = this._getStateLegislators()[index];
+        if (legislatorWithUpdatedData) {
+            var latestReport = legislatorWithUpdatedData.getLatestReport();
+
+            if (latestReport) {
+                // Support level
+                var oldSupportLevel = $tr.find("span.support-level").html();
+                var latestSupportLevel = latestReport.getReadableSupportLevel();
+
+                if (oldSupportLevel !== latestSupportLevel) {
+                    return true;
+                }
+
+                // MPP
+                var oldYesNoLabel = $tr.children(".mpp").children().html();
+                var latestYesNo = latestReport.isMoneyInPoliticsAProblem();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // SAFI
+                oldYesNoLabel = $tr.children(".safi").children().html();
+                latestYesNo = latestReport.isSupportingAmendmentToFixIt();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // OCU
+                oldYesNoLabel = $tr.children(".ocu").children().html();
+                latestYesNo = latestReport.isOpposingCitizensUnited();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // PVC
+                oldYesNoLabel = $tr.children(".pvc").children().html();
+                latestYesNo = latestReport.hasPreviouslyVotedForConvention();
+
+                if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
+                    (oldYesNoLabel === "N" && latestYesNo !== false) ||
+                    (oldYesNoLabel === "?" && latestYesNo !== null)) {
+                    return true;
+                }
+
+                // Missing urgent report
+                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
+                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+
+                // Priority target
+                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+
+                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    _onFullWidthBreakpointMatch: function () {
+        if (!jQuery.browser.mobile && this.$tableHeaders) {
+            this.$tableHeaders.hide();
+            this.$tableHeaderVisibleEvenWhenNoResults.show();
+        }
+
+        this.isBrowserFullWidth = true;
+
+        if (!this.$filterSection.visible(true)) {
+            this.$stickyTableHeader.show();
+        }
+    },
+
+    _onFullWidthBreakpointExit: function () {
+        this.isBrowserFullWidth = false;
+
+        this.$stickyTableHeader.hide();
 
         if (!jQuery.browser.mobile && this.$tableHeaders) {
+            this.$tableHeaderVisibleEvenWhenNoResults.hide();
             this.$tableHeaders.show();
         }
     },
@@ -4530,8 +4413,8 @@ CBR.Models.StateLegislator.chamber = {
             document.querySelector("body"), ":after"
         ).getPropertyValue("content");
 
-        // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
-        return _.contains(content, "STATE_REPORTS_FULL_WIDTH_BREAKPOINT");
+        // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT" would be false.
+        return _.contains(content, "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT");
     },
 
     _calculateWhipCountForChamber: function (chamber) {
@@ -4540,7 +4423,7 @@ CBR.Models.StateLegislator.chamber = {
         var nbLegislatorsNeedingConvincing = 0;
         var nbLegislatorsNotSupportive = 0;
 
-        this.getStateLegislators().forEach(function (legislator) {
+        this._getStateLegislators().forEach(function (legislator) {
             if (_.isEqual(legislator.getChamber(), chamber)) {
                 nbLegislators++;
 
@@ -4565,21 +4448,21 @@ CBR.Models.StateLegislator.chamber = {
         var whipCountSupportive = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.supportive,
             count: nbLegislatorsSupportive,
-            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsSupportive / nbLegislators * 100)
         });
 
         // Needing convincing
         var whipCountNeedingConvincing = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
             count: nbLegislatorsNeedingConvincing,
-            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
         });
 
         // Not supportive
         var whipCountNotSupportive = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.notSupportive,
             count: nbLegislatorsNotSupportive,
-            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
         });
 
         // Unknown
@@ -4587,7 +4470,7 @@ CBR.Models.StateLegislator.chamber = {
         var whipCountUnknown = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.unknown,
             count: nbLegislatorsWhoseSupportLevelIsUnknown,
-            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
         });
 
         return [whipCountSupportive,
@@ -4607,21 +4490,21 @@ CBR.Models.StateLegislator.chamber = {
         var whipCountSupportive = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.supportive,
             count: nbLegislatorsSupportive,
-            percentage: Math.round(nbLegislatorsSupportive / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsSupportive / nbLegislators * 100)
         });
 
         // Needing convincing
         var whipCountNeedingConvincing = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.needsConvincing,
             count: nbLegislatorsNeedingConvincing,
-            percentage: Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsNeedingConvincing / nbLegislators * 100)
         });
 
         // Not supportive
         var whipCountNotSupportive = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.notSupportive,
             count: nbLegislatorsNotSupportive,
-            percentage: Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsNotSupportive / nbLegislators * 100)
         });
 
         // Unknown
@@ -4629,7 +4512,7 @@ CBR.Models.StateLegislator.chamber = {
         var whipCountUnknown = new CBR.Models.WhipCount({
             supportLevel: CBR.Models.Report.supportLevel.unknown,
             count: nbLegislatorsWhoseSupportLevelIsUnknown,
-            percentage: Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
+            percentage: nbLegislators === 0 ? 0 : Math.round(nbLegislatorsWhoseSupportLevelIsUnknown / nbLegislators * 100)
         });
 
         return [whipCountSupportive,
@@ -4933,99 +4816,12 @@ function program1(depth0,data) {
   return buffer;
   });
 
-this["CBR"]["Templates"]["searchLegislatorsResultRow"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
-
-function program1(depth0,data) {
-  
-  var stack1, helper;
-  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  return escapeExpression(stack1);
-  }
-
-function program3(depth0,data) {
-  
-  var stack1, helper;
-  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  return escapeExpression(stack1);
-  }
-
-function program5(depth0,data) {
-  
-  
-  return " checked ";
-  }
-
-  buffer += "<td class=\"title\">";
-  if (helper = helpers.getTitleAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getTitleAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"name\">";
-  if (helper = helpers.getLastName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getLastName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + " ";
-  if (helper = helpers.getFirstName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getFirstName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n<td class=\"political-parties\"><span class=\"centered-contents\">";
-  if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</span></td>\r\n<td class=\"district\">";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " ";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " ";
-  if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n<td class=\"support-level\">";
-  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "(";
-  if (helper = helpers.getReportCount) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getReportCount); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + ")</td>\r\n<td class=\"mpp\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"safi\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"ocu\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"pvc\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n<td class=\"latest-contact\">";
-  if (helper = helpers.getLatestContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n<td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " /></td>\r\n<td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " /></td>\r\n";
-  return buffer;
-  });
-
-this["CBR"]["Templates"]["searchLegislatorsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
-function program1(depth0,data) {
+function program1(depth0,data,depth1) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n    <tr data-id=\"";
@@ -5062,11 +4858,7 @@ function program1(depth0,data) {
   if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "(";
-  if (helper = helpers.getReportCount) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getReportCount); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + ")</td>\r\n        <td class=\"mpp\">";
+  buffer += "</td>\r\n        <td class=\"mpp\">";
   stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n        <td class=\"safi\">";
@@ -5078,15 +4870,14 @@ function program1(depth0,data) {
   buffer += "</td>\r\n        <td class=\"pvc\">";
   stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"latest-contact\">";
-  if (helper = helpers.getLatestContact) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getLatestContact); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
+  buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  stack1 = helpers.unless.call(depth0, (depth1 && depth1.isAdmin), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n    </tr>\r\n    ";
   return buffer;
@@ -5113,109 +4904,17 @@ function program6(depth0,data) {
   return " checked ";
   }
 
-  buffer += "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <tbody>\r\n    ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n    </tbody>\r\n</table>\r\n";
-  return buffer;
-  });
-
-this["CBR"]["Templates"]["stateReportsResultRow"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
-
-function program1(depth0,data) {
-  
-  
-  return "\r\n    <thead>\r\n    <tr>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n        <th class=\"is-missing-urgent-report\">Report</th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    ";
-  }
-
-function program3(depth0,data) {
-  
-  var buffer = "", stack1, helper, options;
-  buffer += "\r\n    <tr data-id=\"";
-  if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\" class=\"clickable\">\r\n        <td class=\"title\">";
-  if (helper = helpers.getTitleAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getTitleAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"name\">";
-  if (helper = helpers.getLastName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getLastName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + " ";
-  if (helper = helpers.getFirstName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getFirstName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n        <td class=\"political-parties\"><span class=\"centered-contents\">";
-  if (helper = helpers.getPoliticalPartiesAbbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</span></td>\r\n        <td class=\"district\">";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " ";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " ";
-  if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getDistrict); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "</td>\r\n        <td class=\"support-level\">";
-  if (helper = helpers.getCurrentSupportLevelSpan) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.getCurrentSupportLevelSpan); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"mpp\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "MPP", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "MPP", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"safi\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "SAFI", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "SAFI", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"ocu\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "OCU", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "OCU", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"pvc\">";
-  stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " /></td>\r\n    </tr>\r\n    ";
-  return buffer;
-  }
-function program4(depth0,data) {
-  
-  var stack1, helper;
-  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  return escapeExpression(stack1);
-  }
-
-function program6(depth0,data) {
-  
-  var stack1, helper;
-  if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.abbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  return escapeExpression(stack1);
-  }
-
 function program8(depth0,data) {
   
   
-  return " checked ";
+  return " disabled ";
   }
 
 function program10(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\r\n";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
   return buffer;
@@ -5223,13 +4922,22 @@ function program10(depth0,data) {
 function program11(depth0,data) {
   
   var buffer = "", stack1;
+  buffer += "\r\n";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n";
+  return buffer;
+  }
+function program12(depth0,data) {
+  
+  var buffer = "", stack1;
   buffer += "\r\n<section class=\"reports\">\r\n    ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(13, program13, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n</section>\r\n";
   return buffer;
   }
-function program12(depth0,data) {
+function program13(depth0,data) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n    <article data-id=\"";
@@ -5272,35 +4980,29 @@ function program12(depth0,data) {
   return buffer;
   }
 
-  buffer += "<table class=\"table table-striped table-bordered table-condensed\">\r\n    ";
-  stack1 = helpers.unless.call(depth0, (depth0 && depth0.isFirstRow), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n    <tbody>\r\n    ";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  buffer += "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <thead>\r\n    <tr>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n        <th class=\"is-missing-urgent-report\">Report</th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n    ";
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.programWithDepth(1, program1, data, depth0),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    </tbody>\r\n</table>\r\n";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.legislator), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAdmin), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
   return buffer;
   });
 
-this["CBR"]["Templates"]["stateReportsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
-function program1(depth0,data) {
+function program1(depth0,data,depth1) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n<article data-id=\"";
   if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        ";
-  stack1 = helpers['if'].call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n        <tbody>\r\n        <tr data-id=\"";
+    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        <thead>\r\n        <tr>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n            <th class=\"is-missing-urgent-report\">Report</th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr data-id=\"";
   if (helper = helpers.getId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.getId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
@@ -5321,10 +5023,10 @@ function program1(depth0,data) {
   else { helper = (depth0 && depth0.getPoliticalPartiesAbbr); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</span></td>\r\n            <td class=\"district\">";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getUsState), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
-  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  stack1 = helpers['with'].call(depth0, (depth0 && depth0.getChamber), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " ";
   if (helper = helpers.getDistrict) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5347,24 +5049,21 @@ function program1(depth0,data) {
   stack1 = (helper = helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel),options={hash:{},data:data},helper ? helper.call(depth0, "PVC", depth0, options) : helperMissing.call(depth0, "getSpanForYesNoAnswerLegislatorLevel", "PVC", depth0, options));
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</td>\r\n            <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isMissingUrgentReport), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.isAPriorityTarget), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  stack1 = helpers.unless.call(depth0, (depth1 && depth1.isAdmin), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += " /></td>\r\n        </tr>\r\n        </tbody>\r\n    </table>\r\n    ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth1 && depth1.isAdmin), {hash:{},inverse:self.noop,fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n</article>\r\n";
   return buffer;
   }
 function program2(depth0,data) {
-  
-  
-  return "\r\n        <thead>\r\n        <tr>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"pvc\"><span class=\"yes-no-answer\">Previous<br />vote for<br />convention</span></th>\r\n            <th class=\"is-missing-urgent-report\">Report</th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        ";
-  }
-
-function program4(depth0,data) {
   
   var stack1, helper;
   if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5372,7 +5071,7 @@ function program4(depth0,data) {
   return escapeExpression(stack1);
   }
 
-function program6(depth0,data) {
+function program4(depth0,data) {
   
   var stack1, helper;
   if (helper = helpers.abbr) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -5380,22 +5079,37 @@ function program6(depth0,data) {
   return escapeExpression(stack1);
   }
 
-function program8(depth0,data) {
+function program6(depth0,data) {
   
   
   return " checked ";
   }
 
+function program8(depth0,data) {
+  
+  
+  return " disabled ";
+  }
+
 function program10(depth0,data) {
   
   var buffer = "", stack1;
+  buffer += "\r\n    ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    ";
+  return buffer;
+  }
+function program11(depth0,data) {
+  
+  var buffer = "", stack1;
   buffer += "\r\n    <section class=\"reports\">\r\n        ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(11, program11, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.getReports), {hash:{},inverse:self.noop,fn:self.program(12, program12, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    </section>\r\n    ";
   return buffer;
   }
-function program11(depth0,data) {
+function program12(depth0,data) {
   
   var buffer = "", stack1, helper, options;
   buffer += "\r\n        <article data-id=\"";
@@ -5438,7 +5152,7 @@ function program11(depth0,data) {
   return buffer;
   }
 
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.legislators), {hash:{},inverse:self.noop,fn:self.programWithDepth(1, program1, data, depth0),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n";
   return buffer;

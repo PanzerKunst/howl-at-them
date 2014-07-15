@@ -95,9 +95,8 @@ module.exports = function (grunt) {
                     "javascripts/controllers/adminLogin.js",
                     "javascripts/controllers/findYourLegislator.js",
                     "javascripts/controllers/index.js",
-                    "javascripts/controllers/searchLegislators.js",
                     "javascripts/controllers/stateLegislator.js",
-                    "javascripts/controllers/stateReports.js",
+                    "javascripts/controllers/stateLegislators.js",
 
                     // Templates
                     "javascripts/templates/handlebarsHelpers.js",

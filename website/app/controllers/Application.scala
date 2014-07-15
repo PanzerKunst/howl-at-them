@@ -3,12 +3,9 @@ package controllers
 import api.CommitteeApi
 import play.api.mvc._
 import db._
-import models.{SupportLevel, Chamber}
 import services.{GoogleCivicInformationService, VoteSmartService}
 import concurrent.ExecutionContext.Implicits.global
 import concurrent.Future
-import models.frontend.DetailedStateLegislator
-import models.frontend.WhipCount
 import scala.Some
 import models.Account
 
@@ -28,21 +25,13 @@ object Application extends Controller {
       Redirect(routes.Application.index).withSession(session - "accountId")
   }
 
-  def stateReports = Action {
+  def stateLegislators = Action {
     implicit request =>
 
       val action = if (request.queryString.contains("action"))
         Some(request.queryString.get("action").get.head)
       else
         None
-
-      val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-
-      Ok(views.html.stateReports(UsStateDto.all, isAdmin(session), selectedUsStateId, action))
-  }
-
-  def searchLegislators = Action {
-    implicit request =>
 
       val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
@@ -60,7 +49,7 @@ object Application extends Controller {
       val committeesInState = CommitteeDto.getInState(selectedUsStateId)
       val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
 
-      Ok(views.html.searchLegislators(UsStateDto.all, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, isAdmin(session), selectedUsStateId, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
+      Ok(views.html.stateLegislators(UsStateDto.all, isAdmin(session), selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
         .withSession(newSession)
   }
 

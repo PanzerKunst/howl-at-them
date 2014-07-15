@@ -12,62 +12,6 @@ $chamber-radio-buttons-width: 17.5em;
     }
   }
 
-  // Wouldn't override if declaration was outside #content
-  #primary-search-fields {
-    margin: 0 auto;
-    width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right * 2 + $chamber-radio-buttons-width;
-
-    @include clearfix;
-
-    > .form-group {
-      float: left;
-      margin-right: $odd-form-groups-margin-right * 2;
-      width: $label-width-us-state + $field-width-search-pages;
-    }
-  }
-
-  // Wouldn't override if declaration was outside #content
-  #chamber-radio-buttons {
-    margin-top: 0.45em;
-
-    // Needs to be inside ".form-group" to take precedence
-    &.form-group {
-      width: $chamber-radio-buttons-width;
-      margin-right: 0;
-    }
-
-    @include clearfix;
-
-    > .check-or-radio {
-      float: left;
-      margin-right: 2em;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-
-  > #sticky-table-header {
-    display: none;
-
-    position: fixed;
-    top: 0;
-    z-index: 1;
-
-    background-color: #fff;
-  }
-
-  label[for="us-state"] {
-    display: inline-block;
-    width: $label-width-us-state;
-  }
-
-  #us-state {
-    display: inline-block;
-    width: $field-width-search-pages;
-  }
-
   .support-level {
     width: 9em; // 8.8em + 0.2em for "space" to the right
   }
@@ -75,10 +19,6 @@ $chamber-radio-buttons-width: 17.5em;
   table {
     margin-bottom: 0;
     width: auto;
-  }
-
-  > #table-header-visible-even-when-no-results th {
-    border-bottom-width: 1px;
   }
 
   th,
@@ -104,106 +44,6 @@ $chamber-radio-buttons-width: 17.5em;
     padding-bottom: 0;
 
     @include transform(rotate(-90deg));
-  }
-
-  th,
-  td {
-    &.title {
-      width: $title-col-width;
-    }
-    &.political-parties {
-      width: $political-parties-col-width;
-    }
-    &.mpp {
-      width: $mpp-col-width;
-    }
-    &.safi {
-      width: $safi-col-width;
-    }
-    &.ocu {
-      width: $ocu-col-width;
-    }
-    &.pvc {
-      width: $pvc-col-width;
-    }
-    &.is-missing-urgent-report {
-      width: $report-col-width;
-    }
-    &.is-a-priority-target {
-      width: $target-col-width;
-    }
-  }
-}
-
-$table-filter-margin: 0.2em;
-
-.table-filter {
-  @include clearfix;
-
-  margin-bottom: 2px;
-
-  > label {
-    display: block;
-    float: left;
-
-    width: $title-col-width;
-
-    text-align: center;
-
-    margin-top: 0.35em;
-  }
-
-  > .form-control {
-    float: left;
-
-    margin: 0 2px 0 1px;  // Right margin is 1px more than the left, it's the width of the border of the table column below
-
-    // To have more room for the text
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  > #party-filter {
-    width: $political-parties-col-width - 3;
-    text-align: center;
-  }
-
-  > #mpp-filter {
-    width: $mpp-col-width - 3;
-    text-align: center;
-  }
-
-  > #safi-filter {
-    width: $safi-col-width - 3;
-    text-align: center;
-  }
-
-  > #ocu-filter {
-    width: $ocu-col-width - 3;
-    text-align: center;
-  }
-
-  > #pvc-filter {
-    width: $pvc-col-width - 3;
-    text-align: center;
-  }
-
-  > #is-missing-urgent-report-filter {
-    margin: 10px 0 0 16px;
-  }
-
-  > #is-a-priority-target-filter {
-    margin: 10px 0 0 28px;
-  }
-
-  > .close {
-    position: relative;
-    margin: 5px -15px 0 0;
-
-    // To avoid the button stay dark gray after being clicked
-    &:focus {
-      opacity: 0.2;
-    }
   }
 }
 

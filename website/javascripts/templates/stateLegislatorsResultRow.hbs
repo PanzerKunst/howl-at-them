@@ -1,5 +1,4 @@
 <table class="table table-striped table-bordered table-condensed">
-    {{#unless isFirstRow}}
     <thead>
     <tr>
         <th class="title">Title</th>
@@ -15,7 +14,6 @@
         <th class="is-a-priority-target">Target</th>
     </tr>
     </thead>
-    {{/unless}}
     <tbody>
     {{#with legislator}}
     <tr data-id="{{getId}}" class="clickable">
@@ -29,11 +27,12 @@
         <td class="ocu">{{{getSpanForYesNoAnswerLegislatorLevel "OCU" this}}}</td>
         <td class="pvc">{{{getSpanForYesNoAnswerLegislatorLevel "PVC" this}}}</td>
         <td class="is-missing-urgent-report"><input type="checkbox" {{#if isMissingUrgentReport}} checked {{/if}} /></td>
-        <td class="is-a-priority-target"><input type="checkbox" {{#if isAPriorityTarget}} checked {{/if}} /></td>
+        <td class="is-a-priority-target"><input type="checkbox" {{#if isAPriorityTarget}} checked {{/if}} {{#unless ../isAdmin}} disabled {{/unless}} /></td>
     </tr>
     {{/with}}
     </tbody>
 </table>
+{{#if isAdmin}}
 {{#with legislator}}
 {{#if getReports}}
 <section class="reports">
@@ -57,3 +56,4 @@
 </section>
 {{/if}}
 {{/with}}
+{{/if}}

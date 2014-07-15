@@ -1,9 +1,9 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String])
-@main("State reports", "state-reports") {
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
+@main("State legislators", "state-legislators") {
 <!--
     Header
 -->
-@navbar(isAdmin, "state-reports")
+@navbar(isAdmin, "state-legislators")
 
 } {
 <!--
@@ -17,7 +17,7 @@
 <div id="report-deleted" class="alert alert-success floating">Report deleted</div>
 }
 
-<h1>State reports</h1>
+<h1>State legislators</h1>
 
 <form role="form">
     <div id="primary-search-fields">
@@ -49,8 +49,33 @@
             </article>
         </div>
     </div>
+
+    <div id="advanced-search-fields">
+        <div class="form-group">
+            <label for="leadership-position">Leadership position</label><!--
+         --><select id="leadership-position" class="form-control">
+                <option value="">All leadership positions</option>
+                <option disabled>----</option>
+                @for(leadershipPosition <- leadershipPositionsInState) {
+                <option value="@leadershipPosition.id" @if(selectedLeadershipPositionId.isDefined && selectedLeadershipPositionId.get == leadershipPosition.id) { selected }>@leadershipPosition.name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group" id="committees-form-group">
+            <label for="committee">Committee</label><!--
+         --><select id="committee" class="form-control">
+                <option value="">All committees</option>
+                <option disabled>----</option>
+                @for(committeeName <- committeeNamesInState) {
+                <option value="@committeeName" @if(selectedCommitteeName.isDefined && selectedCommitteeName.get == committeeName) { selected }>@committeeName</option>
+                }
+            </select>
+        </div>
+    </div>
 </form>
 
+@if(isAdmin) {
 <section id="whip-count-per-chamber">
     <article>
         <h2>House</h2>
@@ -80,6 +105,7 @@
         </ul>
     </article>
 </section>
+}
 
 <section class="table-filter">
     <label>Filter</label>
@@ -140,7 +166,7 @@
 -->
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
-        new CBR.Controllers.StateReports({
+        new CBR.Controllers.StateLegislators({
             el: "#content",
             isAdmin: @Html(play.api.libs.json.Json.toJson(isAdmin).toString)
         }).run();

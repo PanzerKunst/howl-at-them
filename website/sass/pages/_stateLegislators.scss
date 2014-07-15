@@ -1,0 +1,351 @@
+#state-legislators {
+  $state-legislators-page-min-width: 58.3em;  // ~816px
+
+  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
+  $state-legislators-page-full-width-mq-breakpoint: $state-legislators-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
+
+  @media screen and (min-width: $state-legislators-page-full-width-mq-breakpoint) {
+    @include defineBreakpoint("STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT");
+  }
+
+  header {
+    min-width: $state-legislators-page-min-width;
+  }
+
+  $title-col-width: 45px;
+  $name-col-width: 137px;
+  $political-parties-col-width: 35px;
+  $district-col-width: 109px;
+  $support-level-col-width: 137px;
+  $mpp-col-width: 56px;
+  $safi-col-width: 66px;
+  $ocu-col-width: 49px;
+  $pvc-col-width: 62px;
+  $report-col-width: 46px;
+  $target-col-width: 45px;
+
+  #content {
+    min-width: $state-legislators-page-min-width;
+    max-width: $state-legislators-page-min-width;
+
+    // Because the large-screen footer is always displayed
+    padding-bottom: $footer-item-height * 2;
+
+    // Wouldn't override if declaration was outside #content
+    #primary-search-fields {
+      margin: 0 auto;
+      width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right * 2 + $chamber-radio-buttons-width;
+
+      @include clearfix;
+
+      > .form-group {
+        float: left;
+        margin-right: $odd-form-groups-margin-right * 2;
+        width: $label-width-us-state + $field-width-search-pages;
+      }
+    }
+
+    #advanced-search-fields {
+      // Floated children
+      @include clearfix;
+
+      > .form-group {
+        width: $field-width-search-pages;
+      }
+
+      // Needs to be nested in #advanced-search-fields in order to be high-enough priority
+      #committees-form-group {
+        width: $state-legislators-page-min-width - 2 * $page-side-padding - $field-width-search-pages - $odd-form-groups-margin-right;
+        margin-right: 0;
+      }
+    }
+
+    // Wouldn't override if declaration was outside #content
+    #chamber-radio-buttons {
+      margin-top: 0.45em;
+
+      // Needs to be inside ".form-group" to take precedence
+      &.form-group {
+        width: $chamber-radio-buttons-width;
+        margin-right: 0;
+      }
+
+      @include clearfix;
+
+      > .check-or-radio {
+        float: left;
+        margin-right: 2em;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    label[for="us-state"] {
+      display: inline-block;
+      width: $label-width-us-state;
+    }
+
+    #us-state {
+      display: inline-block;
+      width: $field-width-search-pages;
+    }
+
+    > #whip-count-per-chamber {
+      @include clearfix;
+
+      > article {
+        float: left;
+
+        margin-right: 1em;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
+      ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      li {
+        @include clearfix;
+
+        margin-bottom: $line-height-computed / 4;
+
+        // To make sure that the height is respected even when the element is empty (happens on page load)
+        min-height: $line-height-project;
+
+        &.hover {
+          > .support-level-bar-wrapper {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+        }
+      }
+
+      .support-level,
+      .count,
+      .percentage,
+      .support-level-bar-wrapper {
+        float: left;
+      }
+
+      .support-level {
+        font-size: 13px;
+        letter-spacing: -0.5px;
+        width: 7.8em;
+      }
+
+      .count,
+      .percentage {
+        font-size: 13px;
+        text-align: center;
+        width: 2.5em;
+      }
+
+      .percentage {
+        display: none;
+      }
+
+      .support-level-bar-wrapper {
+        width: 8.3em;
+
+        > div {
+          // Otherwise empty divs don't take the width
+          min-height: 1.75em;
+
+          &.UNKNOWN {
+            background-color: $gray-light;
+          }
+
+          &.SUPPORTIVE {
+            background-color: $brand-success;
+          }
+
+          &.NEEDS_CONVINCING {
+            background-color: $brand-warning;
+          }
+
+          &.NOT_SUPPORTIVE {
+            background-color: $brand-danger;
+          }
+        }
+      }
+
+      .data-loading {
+        // To center vertically
+        margin-top: 0.3em;
+      }
+    }
+
+    h2 {
+      text-align: left;
+      margin-top: 0;
+    }
+
+    > #sticky-table-header {
+      display: none;
+
+      position: fixed;
+      top: 0;
+      z-index: 1;
+
+      background-color: #fff;
+
+      width: $state-legislators-page-min-width - 2 * $page-side-padding;
+    }
+
+    > #search-results {
+      > article {
+        margin-bottom: $line-height-computed;
+      }
+
+      thead {
+        display: none;
+      }
+    }
+
+    > #table-header-visible-even-when-no-results th {
+      border-bottom-width: 1px;
+    }
+
+    th,
+    td {
+      &.title {
+        width: $title-col-width;
+      }
+      &.name {
+        width: $name-col-width;
+      }
+      &.political-parties {
+        width: $political-parties-col-width;
+      }
+      &.district {
+        width: $district-col-width;
+      }
+      &.support-level {
+        width: $support-level-col-width;
+      }
+      &.mpp {
+        width: $mpp-col-width;
+      }
+      &.safi {
+        width: $safi-col-width;
+      }
+      &.ocu {
+        width: $ocu-col-width;
+      }
+      &.pvc {
+        width: $pvc-col-width;
+      }
+      &.is-missing-urgent-report {
+        width: $report-col-width;
+      }
+      &.is-a-priority-target {
+        width: $target-col-width;
+      }
+    }
+  }
+
+  $table-filter-margin: 0.2em;
+
+  .table-filter {
+    @include clearfix;
+
+    margin-bottom: 2px;
+
+    > label {
+      display: block;
+      float: left;
+
+      width: $title-col-width;
+
+      text-align: center;
+
+      margin-top: 0.35em;
+    }
+
+    > .form-control {
+      float: left;
+
+      // Right margin is 1px more than the left, it's the width of the border of the table column below
+      margin: 0 2px 0 1px;
+
+      // To have more room for the text
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    > #name-filter {
+      width: $name-col-width - 2;
+    }
+
+    > #party-filter {
+      width: $political-parties-col-width - 3;
+      text-align: center;
+    }
+
+    > #district-filter {
+      width: $district-col-width - 3;
+    }
+
+    > #support-level-filter {
+      width: $support-level-col-width - 3;
+    }
+
+    > #mpp-filter {
+      width: $mpp-col-width - 3;
+      text-align: center;
+    }
+
+    > #safi-filter {
+      width: $safi-col-width - 3;
+      text-align: center;
+    }
+
+    > #ocu-filter {
+      width: $ocu-col-width - 3;
+      text-align: center;
+    }
+
+    > #pvc-filter {
+      width: $pvc-col-width - 3;
+      text-align: center;
+    }
+
+    > #is-missing-urgent-report-filter {
+      margin: 10px 0 0 16px;
+    }
+
+    > #is-a-priority-target-filter {
+      margin: 10px 0 0 28px;
+    }
+
+    > .close {
+      position: relative;
+      margin: 5px -15px 0 0;
+
+      // To avoid the button stay dark gray after being clicked
+      &:focus {
+        opacity: 0.2;
+      }
+    }
+  }
+
+  footer {
+    min-width: $state-legislators-page-min-width * $font-size-base / $font-size-body-large-screen;
+
+    // We always want the large font size
+    font-size: $font-size-body-large-screen;
+
+    // We always want the large screen version
+    > a,
+    > a:visited,
+    > a:hover,
+    > a:focus {
+      width: auto;
+    }
+  }
+}
