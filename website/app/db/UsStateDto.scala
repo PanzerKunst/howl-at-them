@@ -30,7 +30,7 @@ object UsStateDto {
         val query = """
           select id, name
           from us_state
-          order by id;"""
+          order by name;"""
 
         Logger.info("UsStateDto.getAll():" + query)
 
