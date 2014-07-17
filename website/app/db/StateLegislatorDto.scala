@@ -8,6 +8,7 @@ import play.api.Play.current
 import frontend.DetailedStateLegislator
 import scala.Some
 import anorm.SqlParser._
+import models.votesmart.VoteSmartCandidateWebAddress
 
 object StateLegislatorDto {
   def getOfId(id: Int): Option[DetailedStateLegislator] = {
@@ -18,9 +19,10 @@ object StateLegislatorDto {
           select first_name, last_name, title, political_parties, us_state_id, district,
             leadership_position_id, leadership_position_name,
             office_type, office_street, office_city, office_zip, office_us_state_id, office_phone_number,
+            web_address_type_id, web_address_type, web_address,
             committee_membership_id, committee_position,
             committee_id, committee_us_state_id, committee_name,
-            other_phone_number, is_a_priority_target, is_missing_urgent_report,
+            other_phone_number, is_a_priority_target, is_missing_urgent_report, staff_name, staff_number, point_of_contact,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
@@ -65,7 +67,10 @@ object StateLegislatorDto {
               leadershipPosition,
               row[Option[String]]("other_phone_number"),
               row[Option[Boolean]]("is_a_priority_target").getOrElse(false),
-              row[Option[Boolean]]("is_missing_urgent_report").getOrElse(false))
+              row[Option[Boolean]]("is_missing_urgent_report").getOrElse(false),
+              row[Option[String]]("staff_name"),
+              row[Option[String]]("staff_number"),
+              row[Option[String]]("point_of_contact"))
 
             val candidateOffice = row[Option[String]]("office_type") match {
               case Some(officeType) => Some(CandidateOffice(officeType,
@@ -106,7 +111,33 @@ object StateLegislatorDto {
               case None => None
             }
 
-            (stateLegislator, candidateOffice, candidateCommittee, report)
+            val webAddressTypeId = row[Option[Int]]("web_address_type_id")
+
+            val emailAddress = if (webAddressTypeId.isDefined && webAddressTypeId.get == VoteSmartCandidateWebAddress.emailTypeId) {
+              Some(row[String]("web_address"))
+            } else {
+              None
+            }
+
+            val websiteUrl = if (webAddressTypeId.isDefined && webAddressTypeId.get == VoteSmartCandidateWebAddress.websiteTypeId) {
+              Some(row[String]("web_address"))
+            } else {
+              None
+            }
+
+            val facebookUrl = if (webAddressTypeId.isDefined && webAddressTypeId.get == VoteSmartCandidateWebAddress.facebookTypeId) {
+              Some(row[String]("web_address"))
+            } else {
+              None
+            }
+
+            val twitterUrl = if (webAddressTypeId.isDefined && webAddressTypeId.get == VoteSmartCandidateWebAddress.twitterTypeId) {
+              Some(row[String]("web_address"))
+            } else {
+              None
+            }
+
+            (stateLegislator, candidateOffice, candidateCommittee, report, emailAddress, websiteUrl, facebookUrl, twitterUrl)
         }
 
         normalizeStateLegislator(denormalizedStateLegislator)
@@ -158,11 +189,26 @@ object StateLegislatorDto {
         if (detailedStateLegislator.otherPhoneNumber.isDefined && detailedStateLegislator.otherPhoneNumber.get != "")
           otherPhoneNumberForQuery = "'" + DbUtil.safetize(detailedStateLegislator.otherPhoneNumber.get) + "'"
 
+        var staffNameForQuery = "NULL"
+        if (detailedStateLegislator.staffName.isDefined && detailedStateLegislator.staffName.get != "")
+          staffNameForQuery = "'" + DbUtil.safetize(detailedStateLegislator.staffName.get) + "'"
+
+        var staffNumberForQuery = "NULL"
+        if (detailedStateLegislator.staffNumber.isDefined && detailedStateLegislator.staffNumber.get != "")
+          staffNumberForQuery = "'" + DbUtil.safetize(detailedStateLegislator.staffNumber.get) + "'"
+
+        var pointOfContactForQuery = "NULL"
+        if (detailedStateLegislator.pointOfContact.isDefined && detailedStateLegislator.pointOfContact.get != "")
+          pointOfContactForQuery = "'" + DbUtil.safetize(detailedStateLegislator.pointOfContact.get) + "'"
+
         val query = """
           update state_legislator_extra set
-          other_phone_number = """ + otherPhoneNumberForQuery + """,
-          is_a_priority_target = """ + detailedStateLegislator.isAPriorityTarget + """,
-          is_missing_urgent_report = """ + detailedStateLegislator.isMissingUrgentReport + """
+            other_phone_number = """ + otherPhoneNumberForQuery + """,
+            is_a_priority_target = """ + detailedStateLegislator.isAPriorityTarget + """,
+            is_missing_urgent_report = """ + detailedStateLegislator.isMissingUrgentReport + """,
+            staff_name = """ + staffNameForQuery + """,
+            staff_number = """ + staffNumberForQuery + """,
+            point_of_contact = """ + pointOfContactForQuery + """
           where candidate_id = """ + detailedStateLegislator.id + """;"""
 
         Logger.info("StateLegislatorDto.updateExtras():" + query)
@@ -274,7 +320,7 @@ object StateLegislatorDto {
     executeFetchQueryAndReturnListOfLegislators(query)
   }
 
-  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], Option[CandidateCommittee], Option[Report])]): Option[DetailedStateLegislator] = {
+  private def normalizeStateLegislator(denormalizedStateLegislator: Stream[(StateLegislator, Option[CandidateOffice], Option[CandidateCommittee], Option[Report], Option[String], Option[String], Option[String], Option[String])]): Option[DetailedStateLegislator] = {
     if (denormalizedStateLegislator.isEmpty)
       None
     else {
@@ -283,6 +329,11 @@ object StateLegislatorDto {
       var candidateOffices: List[CandidateOffice] = List()
       var candidateCommittees: List[CandidateCommittee] = List()
       var reports: List[Report] = List()
+
+      var emailAddress: Option[String] = None
+      var websiteUrl: Option[String] = None
+      var facebookUrl: Option[String] = None
+      var twitterUrl: Option[String] = None
 
       for (row <- denormalizedStateLegislator) {
         var isInListAlready = false
@@ -335,6 +386,30 @@ object StateLegislatorDto {
             }
           case None =>
         }
+
+        // Email address
+        row._5 match {
+          case Some(email) => emailAddress = Some(email)
+          case None =>
+        }
+
+        // Website URL
+        row._6 match {
+          case Some(url) => websiteUrl = Some(url)
+          case None =>
+        }
+
+        // Facebook URL
+        row._7 match {
+          case Some(url) => facebookUrl = Some(url)
+          case None =>
+        }
+
+        // Twitter URL
+        row._8 match {
+          case Some(url) => twitterUrl = Some(url)
+          case None =>
+        }
       }
 
       Some(
@@ -349,10 +424,19 @@ object StateLegislatorDto {
           stateLegislator.otherPhoneNumber,
           stateLegislator.isAPriorityTarget,
           stateLegislator.isMissingUrgentReport,
+          stateLegislator.staffName,
+          stateLegislator.staffNumber,
+          stateLegislator.pointOfContact,
 
           candidateOffices,
           candidateCommittees,
-          reports)
+          reports,
+
+          emailAddress,
+          websiteUrl,
+          facebookUrl,
+          twitterUrl
+        )
       )
     }
   }
@@ -460,6 +544,9 @@ object StateLegislatorDto {
               stateLegislator.otherPhoneNumber,
               stateLegislator.isAPriorityTarget,
               stateLegislator.isMissingUrgentReport,
+              None,
+              None,
+              None,
 
               List(),
               List(),

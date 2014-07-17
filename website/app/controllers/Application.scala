@@ -33,6 +33,12 @@ object Application extends Controller {
       else
         None
 
+      val isAdministrator = if(request.queryString.contains("role") && request.queryString.get("role").get.head == "admin") {
+        true
+      } else {
+        isAdmin(session)
+      }
+
       val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
         val selectedUsStateId = request.queryString.get("usStateId").get.head
         (selectedUsStateId, session + ("selectedUsStateId" -> selectedUsStateId))
@@ -49,7 +55,7 @@ object Application extends Controller {
       val committeesInState = CommitteeDto.getInState(selectedUsStateId)
       val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
 
-      Ok(views.html.stateLegislators(UsStateDto.all, isAdmin(session), selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
+      Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
         .withSession(newSession)
   }
 

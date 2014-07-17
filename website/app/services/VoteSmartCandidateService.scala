@@ -4,16 +4,16 @@ import db.UsStateDto
 import play.api.libs.ws.WS
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
-import models.votesmart.{VoteSmartCandidateOffice, VoteSmartCandidate}
+import models.votesmart.{VoteSmartCandidateWebAddress, VoteSmartCandidateOffice, VoteSmartCandidate}
 import models.UsState
-import db.votesmart.{VoteSmartCandidateOfficeDto, VoteSmartCandidateDto}
+import db.votesmart.{VoteSmartCandidateWebAddressDto, VoteSmartCandidateOfficeDto, VoteSmartCandidateDto}
 import play.Play
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object VoteSmartCandidateService {
-  var isCandidatesWebServiceCallRunning = false
-  var isCandidateBioWebServiceCallRunning = false
-  var isCandidateOfficesWebServiceCallRunning = false
+  private var isCandidatesWebServiceCallRunning = false
+  private var isCandidateOfficesWebServiceCallRunning = false
+  private var isCandidateCampaignWebAddressesWebServiceCallRunning = false
 
   def fetchCandidates() {
     if (!VoteSmartService.isRunning) {
@@ -67,6 +67,13 @@ object VoteSmartCandidateService {
       }
 
       fetchCandidateOffices(candidateId)
+
+      while (isCandidateCampaignWebAddressesWebServiceCallRunning) {
+        //Pause for 100 ms
+        Thread.sleep(100)
+      }
+
+      fetchCandidateCampaignWebAddresses(candidateId)
     }
 
     isCandidatesWebServiceCallRunning = false
@@ -240,6 +247,61 @@ object VoteSmartCandidateService {
         state = state,
         zip = zip,
         phone1 = phone1)
+    )
+  }
+
+  private def fetchCandidateCampaignWebAddresses(candidateId: Int) {
+    isCandidateCampaignWebAddressesWebServiceCallRunning = true
+
+    WS.url("http://api.votesmart.org/Address.getCampaignWebAddress")
+      .withQueryString("key" -> VoteSmartService.voteSmartApiKey)
+      .withQueryString("o" -> "JSON")
+      .withQueryString("candidateId" -> candidateId.toString)
+      .get()
+      .map {
+      response =>
+        try {
+          processJsonFromVoteSmartCandidateWebAddresses(response.json, candidateId)
+        }
+        catch {
+          case e: Exception => Logger.error(e.getStackTraceString)
+        }
+    }
+  }
+
+  private def processJsonFromVoteSmartCandidateWebAddresses(json: JsValue, candidateId: Int) {
+    (json \ "error").asOpt[JsObject] match {
+      case None =>
+        val voteSmartWebAddressesJsValue = (json \ "webaddress" \ "address")
+
+        val voteSmartWebAddressJsonList = voteSmartWebAddressesJsValue.asOpt[List[JsObject]] match {
+          case Some(jsonList) => jsonList
+          case None => List(voteSmartWebAddressesJsValue.as[JsObject])
+        }
+
+        Logger.debug("Trying to process webaddress/address\n" + voteSmartWebAddressJsonList)
+
+        for (voteSmartWebAddressJson <- voteSmartWebAddressJsonList) {
+          storeVoteSmartCandidateWebAddress(voteSmartWebAddressJson, candidateId)
+        }
+      case Some(error) =>
+    }
+
+    isCandidateCampaignWebAddressesWebServiceCallRunning = false
+  }
+
+  private def storeVoteSmartCandidateWebAddress(voteSmartWebAddressJson: JsObject, candidateId: Int) {
+    val webAddressTypeId = (voteSmartWebAddressJson \ "webAddressTypeId").as[String].toInt
+
+    val webAddressType = (voteSmartWebAddressJson \ "webAddressType").as[String]
+
+    val webAddress = (voteSmartWebAddressJson \ "webAddress").as[String]
+
+    VoteSmartCandidateWebAddressDto.create(
+      VoteSmartCandidateWebAddress(candidateId = candidateId,
+        webAddressTypeId = webAddressTypeId,
+        webAddressType = webAddressType,
+        webAddress = webAddress)
     )
   }
 }

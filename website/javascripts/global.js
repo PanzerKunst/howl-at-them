@@ -12,15 +12,6 @@ CBR.Models = CBR.Models || {};
 CBR.Controllers = CBR.Controllers || {};
 CBR.Services = CBR.Services || {};
 
-CBR.isEmptyObject = function (obj) {
-    for (var prop in obj) {
-        if (obj.hasOwnProperty(prop))
-            return false;
-    }
-
-    return true;
-};
-
 CBR.isBrowserSmallScreen = function () {
     return window.getComputedStyle(
         document.querySelector("html"), ":after"

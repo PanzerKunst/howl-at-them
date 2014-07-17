@@ -35,7 +35,7 @@
             @for(office <- stateLegislator.offices) {
             <article>
                 <label>@office.officeType</label><!--
-             --><a href="tel:+1@office.phoneNumber">@office.phoneNumber</a>
+             --><span>@office.phoneNumber</span>
             </article>
             }
 
@@ -93,15 +93,55 @@
     </div>
 
     <div>
-        @for(office <- stateLegislator.offices) {
-        @if(office.street.isDefined) {
-        <article class="office-address">
-            <label>@office.officeType office</label>
-            <p>@Html(office.street.get.replaceAll("\n", "<br />"))<br />
-            @office.city, @office.usStateId @office.zip</p>
-        </article>
-        }
-        }
+        <form role="form">
+            <div class="form-group">
+                <label for="staff-name">Staff name</label><!--
+             --><input type="text" id="staff-name" class="form-control" maxlength="64" @if(stateLegislator.staffName.isDefined) { value="@stateLegislator.staffName.get" } />
+            </div>
+
+            <div class="form-group">
+                <label for="staff-number">Staff number</label><!--
+             --><input type="text" id="staff-number" class="form-control" maxlength="16" @if(stateLegislator.staffNumber.isDefined) { value="@stateLegislator.staffNumber.get" } />
+            </div>
+
+            <div class="form-group">
+                <label for="point-of-contact">Point of contact</label><!--
+             --><input type="text" id="point-of-contact" class="form-control" maxlength="64" @if(stateLegislator.pointOfContact.isDefined) { value="@stateLegislator.pointOfContact.get" } />
+            </div>
+        </form>
+
+        <section id="additional-contact-info">
+            <a>Additional contact info</a>
+
+            <div>
+                @if(stateLegislator.emailAddress.isDefined) {
+                <a href="mailto:@stateLegislator.emailAddress">@stateLegislator.emailAddress</a>
+                }
+                @if(stateLegislator.websiteUrl.isDefined) {
+                <a href="@stateLegislator.websiteUrl" target="_blank">@stateLegislator.websiteUrl</a>
+                }
+
+                @if(stateLegislator.facebookUrl.isDefined || stateLegislator.twitterUrl.isDefined) {
+                <section id="social-media">
+                    @if(stateLegislator.facebookUrl.isDefined) {
+                    <a href="@stateLegislator.facebookUrl.get" class="facebook" target="_blank"></a>
+                    }
+                    @if(stateLegislator.twitterUrl.isDefined) {
+                    <a href="@stateLegislator.twitterUrl.get" class="twitter" target="_blank"></a>
+                    }
+                </section>
+                }
+
+                @for(office <- stateLegislator.offices) {
+                @if(office.street.isDefined) {
+                <article class="office-address">
+                    <label>@office.officeType office</label>
+                    <p>@Html(office.street.get.replaceAll("\n", "<br />"))<br />
+                        @office.city, @office.usStateId @office.zip</p>
+                </article>
+                }}
+            </div>
+        </section>
     </div>
 </section>
 

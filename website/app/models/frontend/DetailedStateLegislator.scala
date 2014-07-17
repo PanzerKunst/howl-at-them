@@ -14,11 +14,19 @@ case class DetailedStateLegislator(_id: Int,
                                    _otherPhoneNumber: Option[String] = None,
                                    _isAPriorityTarget: Boolean = false,
                                    _isMissingUrgentReport: Boolean = false,
+                                   _staffName: Option[String] = None,
+                                   _staffNumber: Option[String] = None,
+                                   _pointOfContact: Option[String] = None,
 
                                    _offices: List[CandidateOffice] = List(),
                                    _committees: List[CandidateCommittee] = List(),
 
-                                   _reports: List[Report] = List())
+                                   _reports: List[Report] = List(),
+
+                                   _emailAddress: Option[String] = None,
+                                   _websiteUrl: Option[String] = None,
+                                   _facebookUrl: Option[String] = None,
+                                   _twitterUrl: Option[String] = None)
   extends StateLegislator(_id,
     _firstName,
     _lastName,
@@ -29,12 +37,20 @@ case class DetailedStateLegislator(_id: Int,
     _leadershipPosition,
     _otherPhoneNumber,
     _isAPriorityTarget,
-    _isMissingUrgentReport) {
+    _isMissingUrgentReport,
+    _staffName,
+    _staffNumber,
+    _pointOfContact) {
 
   var offices: List[CandidateOffice] = _offices
   var committees: List[CandidateCommittee] = _committees
 
   var reports: List[Report] = _reports
+
+  var emailAddress: Option[String] = _emailAddress
+  var websiteUrl: Option[String] = _websiteUrl
+  var facebookUrl: Option[String] = _facebookUrl
+  var twitterUrl: Option[String] = _twitterUrl
 
   def getTitleAbbr: String = {
     this.title.toLowerCase match {
@@ -98,7 +114,12 @@ object DetailedStateLegislator {
         "offices" -> detailedStateLegislator.offices,
         "committees" -> detailedStateLegislator.committees,
 
-        "reports" -> detailedStateLegislator.reports
+        "reports" -> detailedStateLegislator.reports,
+
+        "emailAddress" -> detailedStateLegislator.emailAddress,
+        "websiteUrl" -> detailedStateLegislator.websiteUrl,
+        "facebookUrl" -> detailedStateLegislator.facebookUrl,
+        "twitterUrl" -> detailedStateLegislator.twitterUrl
       )
     }
   }

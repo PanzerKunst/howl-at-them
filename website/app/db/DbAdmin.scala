@@ -32,6 +32,7 @@ object DbAdmin {
 
     renameTable("temp_vote_smart_candidate", "vote_smart_candidate")
     renameTable("temp_vote_smart_candidate_office", "vote_smart_candidate_office")
+    renameTable("temp_vote_smart_candidate_web_address", "vote_smart_candidate_web_address")
     renameTable("temp_vote_smart_leadership_position", "vote_smart_leadership_position")
     renameTable("temp_vote_smart_leading_official", "vote_smart_leading_official")
     renameTable("temp_vote_smart_committee", "vote_smart_committee")
@@ -43,6 +44,7 @@ object DbAdmin {
   private def createTempVoteSmartTables() {
     createTableVoteSmartCandidate()
     createTableVoteSmartCandidateOffice()
+    createTableVoteSmartCandidateWebAddress()
     createTableVoteSmartLeadershipPosition()
     createTableVoteSmartLeadingOfficial()
     createTableVoteSmartCommittee()
@@ -55,6 +57,7 @@ object DbAdmin {
     dropTableVoteSmartCommittee()
     dropTableVoteSmartLeadingOfficial()
     dropTableVoteSmartLeadershipPosition()
+    dropTableVoteSmartCandidateWebAddress()
     dropTableVoteSmartCandidateOffice()
     dropTableVoteSmartCandidate()
   }
@@ -140,7 +143,10 @@ object DbAdmin {
             candidate_id integer not null primary key/* Can't have that reference because we want to be able to drop the table - references vote_smart_candidate(candidate_id) */,
             other_phone_number varchar(16),
             is_a_priority_target boolean not null default false,
-            is_missing_urgent_report boolean not null default false
+            is_missing_urgent_report boolean not null default false,
+            staff_name varchar(64),
+            staff_number varchar(16),
+            point_of_contact varchar(64)
             );"""
 
         Logger.info("DbAdmin.createTableStateLegislatorExtra():" + query)
@@ -205,6 +211,25 @@ object DbAdmin {
             );"""
 
         Logger.info("DbAdmin.createTableVoteSmartCandidateOffice():" + query)
+
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def createTableVoteSmartCandidateWebAddress() {
+    DB.withConnection {
+      implicit c =>
+
+        val query = """
+          create table temp_vote_smart_candidate_web_address (
+            id bigserial primary key,
+            candidate_id integer not null references temp_vote_smart_candidate(candidate_id),
+            web_address_type_id integer not null,
+            web_address_type varchar(64) not null,
+            web_address varchar(512) not null
+            );"""
+
+        Logger.info("DbAdmin.createTableVoteSmartCandidateWebAddress():" + query)
 
         SQL(query).executeUpdate()
     }
@@ -303,6 +328,9 @@ object DbAdmin {
             o.state as office_us_state_id,
             o.zip as office_zip,
             o.phone1 as office_phone_number,
+            wa.web_address_type_id,
+            wa.web_address_type,
+            wa.web_address,
             cm.id as committee_membership_id,
             cm.position as committee_position,
             com.committee_id,
@@ -310,10 +338,14 @@ object DbAdmin {
             com.committee_name,
             sle.other_phone_number,
             sle.is_a_priority_target,
-            sle.is_missing_urgent_report
+            sle.is_missing_urgent_report,
+            sle.staff_name,
+            sle.staff_number,
+            sle.point_of_contact
             from vote_smart_candidate c
             left join vote_smart_leading_official lo on lo.candidate_id = c.candidate_id
             left join vote_smart_candidate_office o on o.candidate_id = c.candidate_id
+            left join vote_smart_candidate_web_address wa on wa.candidate_id = c.candidate_id
             left join vote_smart_committee_membership cm on cm.candidate_id = c.candidate_id
             left join vote_smart_committee com on com.committee_id = cm.committee_id
             left join state_legislator_extra sle on sle.candidate_id = c.candidate_id
@@ -355,6 +387,18 @@ object DbAdmin {
 
         val query = "drop table if exists " + tableNamePrefix + "vote_smart_candidate_office;"
         Logger.info("DbAdmin.dropTableVoteSmartCandidateOffice(): " + query)
+        SQL(query).executeUpdate()
+    }
+  }
+
+  private def dropTableVoteSmartCandidateWebAddress(isTemp: Boolean = false) {
+    DB.withConnection {
+      implicit c =>
+
+        val tableNamePrefix = if (isTemp) "temp_" else ""
+
+        val query = "drop table if exists " + tableNamePrefix + "vote_smart_candidate_web_address;"
+        Logger.info("DbAdmin.dropTableVoteSmartCandidateWebAddress(): " + query)
         SQL(query).executeUpdate()
     }
   }

@@ -1,8 +1,4 @@
 #state-legislator {
-  @include medium-screen {
-    @include defineBreakpoint("STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT");
-  }
-
   #content {
     #legislator-data,
     #committees {
@@ -60,6 +56,16 @@
 
         td {
           text-align: center;
+        }
+      }
+
+      form {
+        @include clearfix;
+
+        margin-bottom: 0;
+
+        > .form-group {
+          max-width: 100%;
         }
       }
     }
@@ -134,7 +140,53 @@
       }
     }
 
+    #additional-contact-info {
+      text-align: center;
+
+      > a {
+        margin-bottom: $line-height-computed / 2;
+      }
+
+      > div {
+        display: none;
+
+        > a {
+          display: block;
+          font-size: 12px;
+          letter-spacing: -0.5px;
+        }
+      }
+    }
+
+    #social-media {
+      margin: $line-height-computed / 2 0 $line-height-computed 0;
+    }
+
+    .facebook,
+    .twitter {
+      background: transparent url($sprite-url) no-repeat scroll 0 0;
+
+      $social-media-icon-size: 48px;
+      width: $social-media-icon-size;
+      height: $social-media-icon-size;
+
+      @include hdpi-sprite;
+    }
+
+    .twitter {
+      margin-left: $odd-form-groups-margin-right / 2;
+
+      background-position: -200px 0;
+
+      @include hidpi {
+        background-position: half-pos(-200px, 0);
+      }
+    }
+
     .office-address {
+      // Reset
+      text-align: left;
+
       span {
         @include large-screen {
           font-size: $font-size-base;
@@ -149,6 +201,10 @@
           letter-spacing: -0.5px;
         }
       }
+    }
+
+    #committees-toggle {
+      margin-bottom: $line-height-computed / 2;
     }
 
     #committees {
@@ -167,10 +223,6 @@
 
         width: 100%;
         text-align: left;
-      }
-
-      li {
-        font-size: $font-size-base;
       }
 
       span {

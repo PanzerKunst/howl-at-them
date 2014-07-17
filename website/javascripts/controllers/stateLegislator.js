@@ -20,6 +20,12 @@ CBR.Controllers.StateLegislator = new Class({
         this.$missingUrgentReportCheckbox = jQuery("#missing-urgent-report");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
+        this.$staffName = jQuery("#staff-name");
+        this.$staffNumber = jQuery("#staff-number");
+        this.$pointOfContact = jQuery("#point-of-contact");
+
+        this.$additionalContactInfo = jQuery("#additional-contact-info > div");
+
         this.$committeesList = jQuery("#committees > ul");
 
         this.$authorName = jQuery("#author-name");
@@ -40,9 +46,10 @@ CBR.Controllers.StateLegislator = new Class({
         this.$yesPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
         this.$noPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
-        this.$form = jQuery("form");
+        this.$form = jQuery("#new-report > form");
         this.$submitBtn = jQuery("[type=submit]");
 
+        this._wrapPhoneNumbersInAnchorsIfMobileBrowser();
         this._initForm();
 
         this.addEditAndDeleteReportLinks();
@@ -75,6 +82,7 @@ CBR.Controllers.StateLegislator = new Class({
         this.$otherPhoneNumber.blur(jQuery.proxy(function () {
             this._updateStateLegislator("Phone number saved");
         }, this));
+
         this.$missingUrgentReportCheckbox.change(jQuery.proxy(function () {
             this._updateStateLegislator("Report status saved");
         }, this));
@@ -82,6 +90,28 @@ CBR.Controllers.StateLegislator = new Class({
             this._updateStateLegislator("Target status saved");
         }, this));
 
+        this.$staffName.keyup(_.debounce(jQuery.proxy(function () {
+            this._updateStateLegislator("Staff name saved");
+        }, this), 1000));
+        this.$staffName.blur(jQuery.proxy(function () {
+            this._updateStateLegislator("Staff name saved");
+        }, this));
+
+        this.$staffNumber.keyup(_.debounce(jQuery.proxy(function () {
+            this._updateStateLegislator("Staff number saved");
+        }, this), 1000));
+        this.$staffNumber.blur(jQuery.proxy(function () {
+            this._updateStateLegislator("Staff number saved");
+        }, this));
+
+        this.$pointOfContact.keyup(_.debounce(jQuery.proxy(function () {
+            this._updateStateLegislator("Point of contact saved");
+        }, this), 1000));
+        this.$pointOfContact.blur(jQuery.proxy(function () {
+            this._updateStateLegislator("Point of contact saved");
+        }, this));
+
+        jQuery("#additional-contact-info > a").click(jQuery.proxy(this._toggleAdditionalContactInfo, this));
         jQuery("#committees-toggle").click(jQuery.proxy(this._toggleCommittees, this));
         jQuery("#new-report-toggle").click(jQuery.proxy(this._toggleNewReport, this));
 
@@ -89,12 +119,6 @@ CBR.Controllers.StateLegislator = new Class({
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
-
-        Breakpoints.on({
-            name: "STATE_LEGISLATOR_MEDIUM_SCREEN_BREAKPOINT",
-            matched: jQuery.proxy(this._onMediumScreenBreakpointMatch, this),
-            exit: jQuery.proxy(this._onMediumScreenBreakpointExit, this)
-        });
     },
 
     _initForm: function () {
@@ -107,30 +131,30 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _onMediumScreenBreakpointMatch: function() {
-        this.$phoneNumbersSection.find("a").each(function (index, element) {
-            var $a = jQuery(element);
+    _wrapPhoneNumbersInAnchorsIfMobileBrowser: function() {
+        if(jQuery.browser.mobile) {
+            this.$phoneNumbersSection.find("span").each(function (index, element) {
+                var $span = jQuery(element);
 
-            var phoneNumber = $a.html();
+                var phoneNumber = $span.html();
 
-            $a.replaceWith('<span>' + phoneNumber + '</span>');
-        });
+                // Because some browsers like iOS Safari automatically wrap phone number by anchor tags
+                var $childAnchor = $span.children("a")[0];
+                if ($childAnchor) {
+                    phoneNumber = jQuery($childAnchor).html();
+                }
+
+                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+            });
+        }
     },
 
-    _onMediumScreenBreakpointExit: function() {
-        this.$phoneNumbersSection.find("span").each(function (index, element) {
-            var $span = jQuery(element);
-
-            var phoneNumber = $span.html();
-
-            // Because some browsers like iOS Safari automatically wrap phone number by anchor tags
-            var $childAnchor = $span.children("a")[0];
-            if ($childAnchor) {
-                phoneNumber = jQuery($childAnchor).html();
-            }
-
-            $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
-        });
+    _toggleAdditionalContactInfo: function (e) {
+        if (this.$additionalContactInfo.is(":visible")) {
+            this.$additionalContactInfo.slideUpCustom();
+        } else {
+            this.$additionalContactInfo.slideDownCustom();
+        }
     },
 
     _toggleCommittees: function (e) {
@@ -225,6 +249,9 @@ CBR.Controllers.StateLegislator = new Class({
         var stateLegislator = this._getStateLegislator();
 
         var otherPhoneNumber = this.$otherPhoneNumber.val();
+        var staffName = this.$staffName.val();
+        var staffNumber = this.$staffNumber.val();
+        var pointOfContact = this.$pointOfContact.val();
 
         var updatedStateLegislator = {
             id: stateLegislator.getId(),
@@ -240,7 +267,10 @@ CBR.Controllers.StateLegislator = new Class({
             reports: stateLegislator.getReports(),
             otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
             isAPriorityTarget: this.$priorityTargetCheckbox.prop("checked"),
-            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked")
+            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked"),
+            staffName: staffName ? staffName : null,
+            staffNumber: staffNumber ? staffNumber : null,
+            pointOfContact: pointOfContact ? pointOfContact : null
         };
 
         new Request({

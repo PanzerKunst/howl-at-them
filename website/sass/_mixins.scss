@@ -20,11 +20,11 @@
 // Retina sprite mixin and function inspired by Paul Stamatiou (http://paulstamatiou.com/responsive-retina-blog-development-part-2)
 
 @mixin hdpi-sprite {
-  @include retina-image($sprite-url, 500px 50px);  // Sprite dimensions, halved
+  @include retina-image($sprite-url, 500px 100px);  // Sprite dimensions, halved
 }
 // silly function to divide the width and height to save me 2 seconds
 // whenever I need to calculate the halved retina background position
-@function halfPos($w, $h) {
+@function half-pos($w, $h) {
   @return $w/2 $h/2;
 }
 

@@ -21,8 +21,6 @@
                 <li><a href="https://docs.google.com/a/wolf-pac.com/document/d/1gBwusEsdUgrrqYA1i_bfUqtu1BhPqGiKjfFViQsOJOg/edit" target="_blank">Toolbox</a></li>
                 @if(isAdmin) {
                 <li><a href="/logout">Log out</a></li>
-                } else {
-                <li @if(pageId == "admin-login") { class="active" }><a href="/admin">Admin</a></li>
                 }
             </ul>
         </div><!-- /.navbar-collapse -->
