@@ -33,18 +33,23 @@ object Application extends Controller {
       else
         None
 
-      val isAdministrator = if(request.queryString.contains("role") && request.queryString.get("role").get.head == "admin") {
-        true
+      var isAdministrator = false
+      var newSession = session
+
+      if(request.queryString.contains("role") && request.queryString.get("role").get.head == "admin") {
+        isAdministrator = true
+        newSession = session + ("accountId" -> "1")
       } else {
-        isAdmin(session)
+        isAdministrator = isAdmin(session)
       }
 
-      val (selectedUsStateId, newSession) = if (request.queryString.contains("usStateId")) {
-        val selectedUsStateId = request.queryString.get("usStateId").get.head
-        (selectedUsStateId, session + ("selectedUsStateId" -> selectedUsStateId))
+      var selectedUsStateId = ""
+
+      if (request.queryString.contains("usStateId")) {
+        selectedUsStateId = request.queryString.get("usStateId").get.head
+        newSession = newSession + ("selectedUsStateId" -> selectedUsStateId)
       } else {
-        val selectedUsStateId = session.get("selectedUsStateId").getOrElse("AK")
-        (selectedUsStateId, session)
+        selectedUsStateId = session.get("selectedUsStateId").getOrElse("AL")
       }
 
       val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {

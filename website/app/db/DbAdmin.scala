@@ -4,6 +4,7 @@ import play.api.db.DB
 import anorm._
 import play.api.Play.current
 import play.api.Logger
+import models.Account
 
 object DbAdmin {
   def reCreateNonVoteSmartTables() {
@@ -20,6 +21,7 @@ object DbAdmin {
 
   def initData() {
     initDataUsState()
+    addFakeAdminAccount()
   }
 
   def reCreateTempVoteSmartTables() {
@@ -372,7 +374,7 @@ object DbAdmin {
       implicit c =>
 
         val tableNamePrefix = if (isTemp) "temp_" else ""
-        
+
         val query = "drop table if exists " + tableNamePrefix + "vote_smart_candidate;"
         Logger.info("DbAdmin.dropTableVoteSmartCandidate(): " + query)
         SQL(query).executeUpdate()
@@ -517,6 +519,15 @@ object DbAdmin {
         SQL("insert into us_state(id, name) values('WI', 'Wisconsin');").execute()
         SQL("insert into us_state(id, name) values('WY', 'Wyoming');").execute()
     }
+  }
+
+  private def addFakeAdminAccount() {
+    val fakeAdminAccount = Account(
+      username = "fakeAdmin",
+      password = Some("lowSec")
+    )
+
+    AccountDto.create(fakeAdminAccount)
   }
 
   private def renameTable(from: String, to: String) {
