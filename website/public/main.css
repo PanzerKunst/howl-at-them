@@ -777,8 +777,8 @@ textarea.form-control {
   #state-legislators #content td.is-a-priority-target {
     width: 45px; }
   #state-legislators #content td.profile-pic {
-    padding: 0;
-    text-align: center; }
+    padding-top: 0;
+    padding-bottom: 0; }
     #state-legislators #content td.profile-pic > img {
       max-width: 42px; }
 #state-legislators .table-filter {

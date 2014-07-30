@@ -253,8 +253,8 @@
     }
 
     td.profile-pic {
-      padding: 0;
-      text-align: center;
+      padding-top: 0;
+      padding-bottom: 0;
 
       > img {
         max-width: $profile-pic-col-width - 1;
