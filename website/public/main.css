@@ -485,7 +485,9 @@ textarea.form-control {
 #content.legislator-listing table {
   margin-bottom: 0;
   width: auto; }
-#content.legislator-listing th.political-parties, #content.legislator-listing th.mpp, #content.legislator-listing th.safi, #content.legislator-listing th.ocu, #content.legislator-listing th.pvc, #content.legislator-listing th.is-a-priority-target, #content.legislator-listing th.is-missing-urgent-report,
+#content.legislator-listing th.profile-pic, #content.legislator-listing th.title, #content.legislator-listing th.political-parties, #content.legislator-listing th.mpp, #content.legislator-listing th.safi, #content.legislator-listing th.ocu, #content.legislator-listing th.pvc, #content.legislator-listing th.is-a-priority-target, #content.legislator-listing th.is-missing-urgent-report,
+#content.legislator-listing td.profile-pic,
+#content.legislator-listing td.title,
 #content.legislator-listing td.political-parties,
 #content.legislator-listing td.mpp,
 #content.legislator-listing td.safi,
@@ -617,7 +619,7 @@ textarea.form-control {
 #find-your-legislator footer {
   min-width: 34em; }
 
-@media screen and (min-width: 52.3em) {
+@media screen and (min-width: 55.3em) {
   #state-legislators:after {
     content: "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT";
     visibility: hidden;
@@ -626,10 +628,10 @@ textarea.form-control {
   #state-legislators .js-breakpoints-STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT {
     position: absolute; } }
 #state-legislators header {
-  min-width: 58.3em; }
+  min-width: 61.3em; }
 #state-legislators #content {
-  min-width: 58.3em;
-  max-width: 58.3em;
+  min-width: 61.3em;
+  max-width: 61.3em;
   padding-bottom: 5em; }
   #state-legislators #content #primary-search-fields {
     margin: 0 auto;
@@ -649,7 +651,7 @@ textarea.form-control {
   #state-legislators #content #advanced-search-fields > .form-group {
     width: 16em; }
   #state-legislators #content #advanced-search-fields #committees-form-group {
-    width: 38.3em;
+    width: 41.3em;
     margin-right: 0; }
   #state-legislators #content #chamber-radio-buttons {
     margin-top: 0.45em; }
@@ -709,7 +711,7 @@ textarea.form-control {
   #state-legislators #content > #whip-count-per-chamber .percentage {
     display: none; }
   #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper {
-    width: 8.3em; }
+    width: 9.5em; }
     #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div {
       min-height: 1.75em; }
       #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div.UNKNOWN {
@@ -731,13 +733,16 @@ textarea.form-control {
     top: 0;
     z-index: 1;
     background-color: #fff;
-    width: 56.3em; }
+    width: 59.3em; }
   #state-legislators #content > #search-results > article {
     margin-bottom: 20px; }
   #state-legislators #content > #search-results thead {
     display: none; }
   #state-legislators #content > #table-header-visible-even-when-no-results th {
     border-bottom-width: 1px; }
+  #state-legislators #content th.profile-pic,
+  #state-legislators #content td.profile-pic {
+    width: 43px; }
   #state-legislators #content th.title,
   #state-legislators #content td.title {
     width: 45px; }
@@ -771,6 +776,11 @@ textarea.form-control {
   #state-legislators #content th.is-a-priority-target,
   #state-legislators #content td.is-a-priority-target {
     width: 45px; }
+  #state-legislators #content td.profile-pic {
+    padding: 0;
+    text-align: center; }
+    #state-legislators #content td.profile-pic > img {
+      max-width: 42px; }
 #state-legislators .table-filter {
   margin-bottom: 2px; }
   #state-legislators .table-filter:after {
@@ -780,7 +790,7 @@ textarea.form-control {
   #state-legislators .table-filter > label {
     display: block;
     float: left;
-    width: 45px;
+    width: 88px;
     text-align: center;
     margin-top: 0.35em; }
   #state-legislators .table-filter > .form-control {
@@ -819,7 +829,7 @@ textarea.form-control {
     #state-legislators .table-filter > .close:focus {
       opacity: 0.2; }
 #state-legislators footer {
-  min-width: 51.0125em;
+  min-width: 53.6375em;
   font-size: 16px; }
   #state-legislators footer > a,
   #state-legislators footer > a:visited,

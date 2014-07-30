@@ -1,5 +1,5 @@
 #state-legislators {
-  $state-legislators-page-min-width: 58.3em;  // ~816px
+  $state-legislators-page-min-width: 61.3em;  // ~858px
 
   $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
   $state-legislators-page-full-width-mq-breakpoint: $state-legislators-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
@@ -12,6 +12,7 @@
     min-width: $state-legislators-page-min-width;
   }
 
+  $profile-pic-col-width: 43px;
   $title-col-width: 45px;
   $name-col-width: 137px;
   $political-parties-col-width: 35px;
@@ -150,7 +151,7 @@
       }
 
       .support-level-bar-wrapper {
-        width: 8.3em;
+        width: 9.5em;
 
         > div {
           // Otherwise empty divs don't take the width
@@ -213,6 +214,9 @@
 
     th,
     td {
+      &.profile-pic {
+        width: $profile-pic-col-width;
+      }
       &.title {
         width: $title-col-width;
       }
@@ -247,6 +251,15 @@
         width: $target-col-width;
       }
     }
+
+    td.profile-pic {
+      padding: 0;
+      text-align: center;
+
+      > img {
+        max-width: $profile-pic-col-width - 1;
+      }
+    }
   }
 
   $table-filter-margin: 0.2em;
@@ -260,7 +273,7 @@
       display: block;
       float: left;
 
-      width: $title-col-width;
+      width: $profile-pic-col-width + $title-col-width;
 
       text-align: center;
 
