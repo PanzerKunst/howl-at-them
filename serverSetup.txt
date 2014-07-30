@@ -48,6 +48,24 @@ $ sudo -u postgres createdb howlatthem
 $ sudo -u postgres psql howlatthem < /home/play/howl-at-them/dbDump.sql
 
 
+##############################
+# Open DB access from Internet
+##############################
+$ sudo vi /etc/postgresql/9.1/main/postgresql.conf
+
+Replace line:
+#listen_addresses = 'localhost'
+By:
+listen_addresses = '*'
+
+$ sudo vi /etc/postgresql/9.1/main/pg_hba.conf
+
+Add line:
+host    howlatthem      postgres        all                     md5
+
+$ sudo service postgresql restart
+
+
 ############
 # Web server
 ############
