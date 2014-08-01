@@ -96,17 +96,17 @@
         <form role="form">
             <div class="form-group">
                 <label for="staff-name">Staff name</label><!--
-             --><input type="text" id="staff-name" class="form-control" maxlength="64" @if(stateLegislator.staffName.isDefined) { value="@stateLegislator.staffName.get" } />
+             --><input type="text" id="staff-name" class="form-control" maxlength="64" @if(stateLegislator.staffName.isDefined) { value="@stateLegislator.staffName.get" } @if(!isAdmin) { disabled } />
             </div>
 
             <div class="form-group">
                 <label for="staff-number">Staff number</label><!--
-             --><input type="text" id="staff-number" class="form-control" maxlength="16" @if(stateLegislator.staffNumber.isDefined) { value="@stateLegislator.staffNumber.get" } />
+             --><input type="text" id="staff-number" class="form-control" maxlength="16" @if(stateLegislator.staffNumber.isDefined) { value="@stateLegislator.staffNumber.get" } @if(!isAdmin) { disabled } />
             </div>
 
             <div class="form-group">
                 <label for="point-of-contact">Point of contact</label><!--
-             --><input type="text" id="point-of-contact" class="form-control" maxlength="64" @if(stateLegislator.pointOfContact.isDefined) { value="@stateLegislator.pointOfContact.get" } />
+             --><input type="text" id="point-of-contact" class="form-control" maxlength="64" @if(stateLegislator.pointOfContact.isDefined) { value="@stateLegislator.pointOfContact.get" } @if(!isAdmin) { disabled } />
             </div>
         </form>
 
