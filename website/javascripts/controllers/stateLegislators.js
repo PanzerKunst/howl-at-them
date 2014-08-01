@@ -109,7 +109,7 @@ CBR.Controllers.StateLegislators = new Class({
             // Name
             filter = this.$nameFilter.val();
             if (filter.length > 0) {
-                $td = jQuery(tds[1]);
+                $td = jQuery(tds[2]);
                 value = $td.html();
                 if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                     isResultMatchedByFilter = false;
@@ -120,7 +120,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$partyFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[2]);
+                    $td = jQuery(tds[3]);
                     value = jQuery($td.find("abbr")).html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -132,7 +132,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$districtFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[3]);
+                    $td = jQuery(tds[4]);
                     value = $td.html();
                     if (value.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                         isResultMatchedByFilter = false;
@@ -144,7 +144,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$supportLevelFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[4]);
+                    $td = jQuery(tds[5]);
                     value = $td.children().html();
                     if (!value.toLowerCase().startsWith(filter.toLowerCase())) {
                         isResultMatchedByFilter = false;
@@ -156,7 +156,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$mppFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[5]);
+                    $td = jQuery(tds[6]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -168,7 +168,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$safiFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[6]);
+                    $td = jQuery(tds[7]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -180,7 +180,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$ocuFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[7]);
+                    $td = jQuery(tds[8]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -192,7 +192,7 @@ CBR.Controllers.StateLegislators = new Class({
             if (isResultMatchedByFilter) {
                 filter = this.$pvcFilter.val();
                 if (filter.length > 0) {
-                    $td = jQuery(tds[8]);
+                    $td = jQuery(tds[9]);
                     value = $td.children().html();
                     if (value.toLowerCase() !== filter.toLowerCase()) {
                         isResultMatchedByFilter = false;
@@ -203,7 +203,7 @@ CBR.Controllers.StateLegislators = new Class({
             // Is missing urgent report
             if (isResultMatchedByFilter) {
                 if (this.$isMissingUrgentReportFilter.prop("checked")) {
-                    $td = jQuery(tds[9]);
+                    $td = jQuery(tds[10]);
                     value = $td.children().prop("checked");
                     if (!value) {
                         isResultMatchedByFilter = false;
@@ -214,7 +214,7 @@ CBR.Controllers.StateLegislators = new Class({
             // Is a priority target
             if (isResultMatchedByFilter) {
                 if (this.$isAPriorityTargetFilter.prop("checked")) {
-                    $td = jQuery(tds[10]);
+                    $td = jQuery(tds[11]);
                     value = $td.children().prop("checked");
                     if (!value) {
                         isResultMatchedByFilter = false;
