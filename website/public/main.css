@@ -936,7 +936,7 @@ textarea.form-control {
       font-size: 12px;
       letter-spacing: -0.5px; }
 #state-legislator #content #social-media {
-  margin: 10px 0 20px 0; }
+  margin-top: 10px; }
 #state-legislator #content .facebook,
 #state-legislator #content .twitter {
   background: transparent url("images/sprite") no-repeat scroll 0 0;
@@ -955,12 +955,14 @@ textarea.form-control {
     #state-legislator #content .twitter {
       background-position: -100px 0; } }
 #state-legislator #content .office-address {
-  text-align: left; }
+  text-align: left;
+  margin-top: 20px; }
   @media screen and (min-width: 49.5em) {
     #state-legislator #content .office-address span {
       font-size: 14px; } }
   #state-legislator #content .office-address p {
-    text-align: left; }
+    text-align: left;
+    margin-bottom: 0; }
     @media screen and (min-width: 49.5em) {
       #state-legislator #content .office-address p {
         font-size: 13px;

@@ -159,7 +159,7 @@
     }
 
     #social-media {
-      margin: $line-height-computed / 2 0 $line-height-computed 0;
+      margin-top: $line-height-computed / 2;
     }
 
     .facebook,
@@ -187,6 +187,8 @@
       // Reset
       text-align: left;
 
+      margin-top: $line-height-computed;
+
       span {
         @include large-screen {
           font-size: $font-size-base;
@@ -195,6 +197,8 @@
 
       p {
         text-align: left; // Default is justify
+
+        margin-bottom: 0;
 
         @include large-screen {
           font-size: 13px;
