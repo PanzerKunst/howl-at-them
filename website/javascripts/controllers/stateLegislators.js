@@ -19,9 +19,10 @@ CBR.Controllers.StateLegislators = new Class({
 
         this.$usStateSelect = jQuery("#us-state");
 
-        this.$chamberFilterRadios = jQuery("[name='chamber-filter']");
-        this.$houseChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
-        this.$senateChamberFilterRadio = this.$chamberFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
+        this.$chamberOrTargetFilterRadios = jQuery("[name='chamber-or-target-filter']");
+        this.$houseChamberFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
+        this.$senateChamberFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.senate.abbr + "']");
+        this.$priorityTargetFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='priorityTarget']");
 
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
@@ -39,20 +40,11 @@ CBR.Controllers.StateLegislators = new Class({
         this.$ocuFilter = jQuery("#ocu-filter");
         this.$pvcFilter = jQuery("#pvc-filter");
         this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
-        this.$isAPriorityTargetFilter = jQuery("#is-a-priority-target-filter");
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$tableHeaderVisibleEvenWhenNoResults = jQuery("#table-header-visible-even-when-no-results");
 
         this.$searchResultsSection = jQuery("#search-results");
-
-        var selectedChamberFilter = this.getFromLocalStorage("selectedChamberFilter", true);
-
-        if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.house)) {
-            this.$houseChamberFilterRadio.prop('checked', true);
-        } else if (_.isEqual(selectedChamberFilter, CBR.Models.StateLegislator.chamber.senate)) {
-            this.$senateChamberFilterRadio.prop('checked', true);
-        }
 
         this.fadeOutFloatingAlerts();
     },
@@ -70,7 +62,7 @@ CBR.Controllers.StateLegislators = new Class({
             this._doSubmit(e);
         }.bind(this));
 
-        this.$chamberFilterRadios.change(jQuery.proxy(this._onChamberFilterChanged, this));
+        this.$chamberOrTargetFilterRadios.change(jQuery.proxy(this._doSubmit, this));
 
         this.$leadershipPositionSelect.change(function (e) {
             this.$committeeSelect[0].selectedIndex = 0;
@@ -87,7 +79,6 @@ CBR.Controllers.StateLegislators = new Class({
 
         this.$textFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
         this.$isMissingUrgentReportFilter.change(jQuery.proxy(this._filterResults, this));
-        this.$isAPriorityTargetFilter.change(jQuery.proxy(this._filterResults, this));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
 
         Breakpoints.on({
@@ -211,17 +202,6 @@ CBR.Controllers.StateLegislators = new Class({
                 }
             }
 
-            // Is a priority target
-            if (isResultMatchedByFilter) {
-                if (this.$isAPriorityTargetFilter.prop("checked")) {
-                    $td = jQuery(tds[11]);
-                    value = $td.children().prop("checked");
-                    if (!value) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
             if (isResultMatchedByFilter) {
                 $row.show();
             } else {
@@ -233,13 +213,11 @@ CBR.Controllers.StateLegislators = new Class({
     _doSubmit: function (e) {
         this.$searchResultsSection.html('<div class="data-loading"></div>');
 
-        var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
-        var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
-
         var stateLegislatorSearch = {
             usStateId: this.$usStateSelect.val(),
-            leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-            committeeName: selectedCommitteeName ? selectedCommitteeName : null
+            chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
+            leadershipPositionId: this._getSelectedLeadershipPositionId(),
+            committeeName: this._getSelectedCommitteeName()
         };
 
         new Request({
@@ -266,8 +244,6 @@ CBR.Controllers.StateLegislators = new Class({
         );
 
         this.$results = this.$searchResultsSection.children();
-
-        this._filterChamber();
 
         this._toggleStickyTableHeader();
 
@@ -302,55 +278,15 @@ CBR.Controllers.StateLegislators = new Class({
         this._updateWhipCounts();
     },
 
-    _onChamberFilterChanged: function(e) {
-        var selectedValue = e.currentTarget.value;
-
-        if (selectedValue === CBR.Models.StateLegislator.chamber.house.abbr) {
-            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.house, true);
-        } else if (selectedValue === CBR.Models.StateLegislator.chamber.senate.abbr) {
-            this.saveInLocalStorage("selectedChamberFilter", CBR.Models.StateLegislator.chamber.senate, true);
-        } else {
-            this.removeFromLocalStorage("selectedChamberFilter", true);
-        }
-
-        this._filterChamber();
-    },
-
-    _filterChamber: function () {
-        var selectedChamberFilter = null;
-        if (this.$houseChamberFilterRadio.prop("checked")) {
-            selectedChamberFilter = CBR.Models.StateLegislator.chamber.house;
-        } else if (this.$senateChamberFilterRadio.prop("checked")) {
-            selectedChamberFilter = CBR.Models.StateLegislator.chamber.senate;
-        }
-
-        // Reset: show all
-        this.$results.show();
-
-        if (selectedChamberFilter) {
-            this.$results.each(function (index, element) {
-                var $row = jQuery(element);
-
-                var legislator = this._getStateLegislatorOfId($row.data("id"));
-
-                if (!_.isEqual(legislator.getChamber(), selectedChamberFilter)) {
-                    $row.hide();
-                }
-            }.bind(this));
-        }
-    },
-
     _doPeriodicSearch: function () {
         if (!this.isPeriodicSearchRunning) {
             this.isPeriodicSearchRunning = true;
 
-            var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
-            var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
-
             var stateLegislatorSearch = {
                 usStateId: this.$usStateSelect.val(),
-                leadershipPositionId: selectedLeadershipPositionId ? selectedLeadershipPositionId : null,
-                committeeName: selectedCommitteeName ? selectedCommitteeName : null
+                chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
+                leadershipPositionId: this._getSelectedLeadershipPositionId(),
+                committeeName: this._getSelectedCommitteeName()
             };
 
             new Request({
@@ -375,7 +311,6 @@ CBR.Controllers.StateLegislators = new Class({
     _resetFilter: function (e) {
         this.$textFilters.val("");
         this.$isMissingUrgentReportFilter.prop("checked", false);
-        this.$isAPriorityTargetFilter.prop("checked", false);
         this._filterResults(null);
     },
 
@@ -864,5 +799,27 @@ CBR.Controllers.StateLegislators = new Class({
         jQuery(this.$whipCountListItem[9]).html(CBR.Templates.whipCountListItem(whipCountForBoth[1]));
         jQuery(this.$whipCountListItem[10]).html(CBR.Templates.whipCountListItem(whipCountForBoth[2]));
         jQuery(this.$whipCountListItem[11]).html(CBR.Templates.whipCountListItem(whipCountForBoth[3]));
+    },
+
+    _getSelectedChamberAbbrOrPriorityTarget: function () {
+        if (this.$houseChamberFilterRadio.prop("checked")) {
+            return CBR.Models.StateLegislator.chamber.house.abbr;
+        } else if (this.$senateChamberFilterRadio.prop("checked")) {
+            return CBR.Models.StateLegislator.chamber.senate.abbr;
+        } else if (this.$priorityTargetFilterRadio.prop("checked")) {
+            return "priorityTarget";
+        }
+
+        return null;
+    },
+
+    _getSelectedLeadershipPositionId: function () {
+        var selectedLeadershipPositionId = this.$leadershipPositionSelect ? this.$leadershipPositionSelect.val() : null;
+        return selectedLeadershipPositionId ? selectedLeadershipPositionId : null;
+    },
+
+    _getSelectedCommitteeName: function () {
+        var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
+        return selectedCommitteeName ? selectedCommitteeName : null;
     }
 });

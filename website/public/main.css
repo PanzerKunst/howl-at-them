@@ -635,7 +635,7 @@ textarea.form-control {
   padding-bottom: 5em; }
   #state-legislators #content #primary-search-fields {
     margin: 0 auto;
-    width: 40.5em; }
+    width: 45.5em; }
     #state-legislators #content #primary-search-fields:after {
       content: "";
       display: table;
@@ -653,19 +653,19 @@ textarea.form-control {
   #state-legislators #content #advanced-search-fields #committees-form-group {
     width: 41.3em;
     margin-right: 0; }
-  #state-legislators #content #chamber-radio-buttons {
+  #state-legislators #content #chamber-or-target-radio-buttons {
     margin-top: 0.45em; }
-    #state-legislators #content #chamber-radio-buttons.form-group {
-      width: 17.5em;
+    #state-legislators #content #chamber-or-target-radio-buttons.form-group {
+      width: 22.5em;
       margin-right: 0; }
-    #state-legislators #content #chamber-radio-buttons:after {
+    #state-legislators #content #chamber-or-target-radio-buttons:after {
       content: "";
       display: table;
       clear: both; }
-    #state-legislators #content #chamber-radio-buttons > .check-or-radio {
+    #state-legislators #content #chamber-or-target-radio-buttons > .check-or-radio {
       float: left;
       margin-right: 2em; }
-      #state-legislators #content #chamber-radio-buttons > .check-or-radio:last-child {
+      #state-legislators #content #chamber-or-target-radio-buttons > .check-or-radio:last-child {
         margin-right: 0; }
   #state-legislators #content label[for="us-state"] {
     display: inline-block;

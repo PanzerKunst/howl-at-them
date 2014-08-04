@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], selectedChamberOrTargetSearchCriteria: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
 @main("State legislators", "state-legislators") {
 <!--
     Header
@@ -29,23 +29,30 @@
                 }
             </select>
         </div>
-        <div class="form-group" id="chamber-radio-buttons">
+        <div class="form-group" id="chamber-or-target-radio-buttons">
             <article class="check-or-radio">
-                <div><input type="radio" name="chamber-filter" value="@Chamber.HOUSE.getAbbr" />
+                <div>
+                    <input type="radio" name="chamber-or-target-filter" @if(!selectedChamberOrTargetSearchCriteria.isDefined) { checked } />
+                </div>
+                <div><label>All</label></div>
+            </article>
+            <article class="check-or-radio">
+                <div>
+                    <input type="radio" name="chamber-or-target-filter" value="@Chamber.HOUSE.getAbbr" @if(selectedChamberOrTargetSearchCriteria.isDefined && selectedChamberOrTargetSearchCriteria.get == Chamber.HOUSE.getAbbr) { checked } />
                 </div>
                 <div><label>@Chamber.HOUSE.getString</label></div>
             </article>
             <article class="check-or-radio">
                 <div>
-                    <input type="radio" name="chamber-filter" value="@Chamber.SENATE.getAbbr" />
+                    <input type="radio" name="chamber-or-target-filter" value="@Chamber.SENATE.getAbbr" @if(selectedChamberOrTargetSearchCriteria.isDefined && selectedChamberOrTargetSearchCriteria.get == Chamber.SENATE.getAbbr) { checked } />
                 </div>
                 <div><label>@Chamber.SENATE.getString</label></div>
             </article>
             <article class="check-or-radio">
                 <div>
-                    <input type="radio" name="chamber-filter" checked />
+                    <input type="radio" name="chamber-or-target-filter" value="priorityTarget" @if(selectedChamberOrTargetSearchCriteria.isDefined && selectedChamberOrTargetSearchCriteria.get == "priorityTarget") { checked } />
                 </div>
-                <div><label>Both</label></div>
+                <div><label>Target</label></div>
             </article>
         </div>
     </div>
@@ -118,7 +125,6 @@
     <input type="text" class="form-control" id="ocu-filter" maxlength="1">
     <input type="text" class="form-control" id="pvc-filter" maxlength="1">
     <input type="checkbox" id="is-missing-urgent-report-filter" />
-    <input type="checkbox" id="is-a-priority-target-filter" />
     <button type="button" class="close">&times;</button>
 </section>
 

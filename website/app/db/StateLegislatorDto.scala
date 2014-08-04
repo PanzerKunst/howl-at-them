@@ -217,7 +217,27 @@ object StateLegislatorDto {
     }
   }
 
-  def getMatching(usStateId: String, leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
+  def getMatching(usStateId: String, chamberAbbrOrPriorityTarget: Option[String], leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
+    val (titleClause, priorityTargetClause) = chamberAbbrOrPriorityTarget match {
+      case Some(chamberOrTarget) =>
+        if (chamberOrTarget == Chamber.HOUSE.getAbbr) {
+          ("""
+          and title = 'Representative'""",
+            "")
+        } else if (chamberOrTarget == Chamber.SENATE.getAbbr) {
+          ("""
+          and title = 'Senator'""",
+            "")
+        } else if (chamberOrTarget == "priorityTarget") {
+          ("",
+            """
+          and is_a_priority_target = true""")
+        }
+
+      case None =>
+        ("", "")
+    }
+
     val leadershipPositionIdClause = leadershipPositionId match {
       case Some(id) =>
         """
@@ -252,8 +272,10 @@ object StateLegislatorDto {
             on r.candidate_id = l.id
             and r.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
-            leadershipPositionIdClause +
-            committeeIdsClause + """
+      titleClause +
+      priorityTargetClause +
+      leadershipPositionIdClause +
+      committeeIdsClause + """
           order by title, last_name, first_name, creation_timestamp desc;"""
 
     // Level is debug to reduce log spam

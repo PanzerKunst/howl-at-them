@@ -60,7 +60,7 @@ object Application extends Controller {
       val committeesInState = CommitteeDto.getInState(selectedUsStateId)
       val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
 
-      Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, selectedLeadershipPositionId, session.get("selectedCommitteeName")))
+      Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, session.get("selectedChamberOrTargetSearchCriteria"), selectedLeadershipPositionId, session.get("selectedCommitteeName")))
         .withSession(newSession)
   }
 

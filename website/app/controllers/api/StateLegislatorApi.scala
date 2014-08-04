@@ -16,6 +16,15 @@ object StateLegislatorApi extends Controller {
 
         var newSession = session + ("selectedUsStateId" -> usStateId)
 
+        val chamberAbbrOrPriorityTarget = if (request.queryString.contains("chamberAbbrOrPriorityTarget")) {
+          val chamberOrTarget = request.queryString.get("chamberAbbrOrPriorityTarget").get.head
+          newSession = newSession + ("selectedChamberOrTargetSearchCriteria" -> chamberOrTarget)
+          Some(chamberOrTarget)
+        } else {
+          newSession = newSession - "selectedChamberOrTargetSearchCriteria"
+          None
+        }
+
         val leadershipPositionId = if (request.queryString.contains("leadershipPositionId")) {
           val id = request.queryString.get("leadershipPositionId").get.head
           newSession = newSession + ("selectedLeadershipPositionId" -> id)
@@ -34,10 +43,10 @@ object StateLegislatorApi extends Controller {
           List()
         }
 
-        val matchingLegislators = if (!leadershipPositionId.isDefined && committees.isEmpty) {
+        val matchingLegislators = if (!chamberAbbrOrPriorityTarget.isDefined && !leadershipPositionId.isDefined && committees.isEmpty) {
           StateLegislatorDto.getOfStateId(usStateId)
         } else {
-          StateLegislatorDto.getMatching(usStateId, leadershipPositionId, committees)
+          StateLegislatorDto.getMatching(usStateId, chamberAbbrOrPriorityTarget, leadershipPositionId, committees)
         }
 
         Ok(Json.toJson(matchingLegislators))
