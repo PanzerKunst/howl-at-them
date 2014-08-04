@@ -25,6 +25,10 @@ CBR.Controllers.BaseController = new Class({
         this._initFloatingAlerts();
     },
 
+    initEvents: function() {
+        this._listenToCheckboxesAndRadiosClicks();
+    },
+
     saveInLocalStorage: function (key, value, isGlobalScope) {
         if (Modernizr.localstorage) {
             if (isGlobalScope) {
@@ -352,6 +356,13 @@ CBR.Controllers.BaseController = new Class({
 
             // Now that the floating alert is centered, we can show it
             $floatingAlert.show();
+        });
+    },
+
+    _listenToCheckboxesAndRadiosClicks: function() {
+        jQuery(".check-or-radio").find("label").click(function(e) {
+            var $checkboxOrRadio = jQuery(e.currentTarget).parent().parent().find("input");
+            $checkboxOrRadio.click();
         });
     },
 

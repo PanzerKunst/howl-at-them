@@ -7,8 +7,8 @@ CBR.Controllers.AdminLogin = new Class({
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -19,6 +19,12 @@ CBR.Controllers.AdminLogin = new Class({
         this.$submitBtn = jQuery("[type=submit]");
     },
 
+    initEvents: function () {
+        this.parent();
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+    },
+
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
@@ -26,10 +32,6 @@ CBR.Controllers.AdminLogin = new Class({
                 "password"
             ]
         });
-    },
-
-    _initEvents: function () {
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
 
     _doSubmit:function (e) {

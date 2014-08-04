@@ -2846,6 +2846,10 @@ CBR.Models.StateLegislator.chamber = {
         this._initFloatingAlerts();
     },
 
+    initEvents: function() {
+        this._listenToCheckboxesAndRadiosClicks();
+    },
+
     saveInLocalStorage: function (key, value, isGlobalScope) {
         if (Modernizr.localstorage) {
             if (isGlobalScope) {
@@ -3176,6 +3180,13 @@ CBR.Models.StateLegislator.chamber = {
         });
     },
 
+    _listenToCheckboxesAndRadiosClicks: function() {
+        jQuery(".check-or-radio").find("label").click(function(e) {
+            var $checkboxOrRadio = jQuery(e.currentTarget).parent().parent().find("input");
+            $checkboxOrRadio.click();
+        });
+    },
+
     httpStatusCode: {
         noContent: 204,
         unauthorized: 401
@@ -3191,7 +3202,7 @@ CBR.Models.StateLegislator.chamber = {
 
     run: function () {
         this.initElements();
-        this._initEvents();
+        this.initEvents();
     },
 
     initElements: function () {
@@ -3200,7 +3211,9 @@ CBR.Models.StateLegislator.chamber = {
         this.$updateDataBtn = jQuery("#update-data");
     },
 
-    _initEvents: function () {
+    initEvents: function () {
+        this.parent();
+
         this.$updateDataBtn.click(jQuery.proxy(this._doUpdateData, this));
     },
 
@@ -3231,8 +3244,8 @@ CBR.Models.StateLegislator.chamber = {
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -3243,6 +3256,12 @@ CBR.Models.StateLegislator.chamber = {
         this.$submitBtn = jQuery("[type=submit]");
     },
 
+    initEvents: function () {
+        this.parent();
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+    },
+
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
@@ -3250,10 +3269,6 @@ CBR.Models.StateLegislator.chamber = {
                 "password"
             ]
         });
-    },
-
-    _initEvents: function () {
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
     },
 
     _doSubmit:function (e) {
@@ -3304,8 +3319,8 @@ CBR.Models.StateLegislator.chamber = {
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -3315,17 +3330,19 @@ CBR.Models.StateLegislator.chamber = {
         this.$submitBtn = jQuery("[type=submit]");
     },
 
+    initEvents: function () {
+        this.parent();
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
+    },
+
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
                 "address"
             ]
         });
-    },
-
-    _initEvents: function () {
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
-        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
     },
 
     _doSubmit: function (e) {
@@ -3375,8 +3392,8 @@ CBR.Models.StateLegislator.chamber = {
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -3424,26 +3441,9 @@ CBR.Models.StateLegislator.chamber = {
         this.fadeOutFloatingAlerts();
     },
 
-    _getStateLegislator: function () {
-        return new CBR.Models.StateLegislator(this.options.stateLegislator);
-    },
+    initEvents: function () {
+        this.parent();
 
-    _getAction: function () {
-        return this.options.action;
-    },
-
-    _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "author-name",
-                "notes"
-            ]
-        });
-
-        this.initEditReportValidation();
-    },
-
-    _initEvents: function () {
         this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
             this._updateStateLegislator("Phone number saved");
         }, this), 1000));
@@ -3487,6 +3487,25 @@ CBR.Models.StateLegislator.chamber = {
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
+    },
+
+    _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "author-name",
+                "notes"
+            ]
+        });
+
+        this.initEditReportValidation();
+    },
+
+    _getStateLegislator: function () {
+        return new CBR.Models.StateLegislator(this.options.stateLegislator);
+    },
+
+    _getAction: function () {
+        return this.options.action;
     },
 
     _initForm: function () {
@@ -3703,8 +3722,8 @@ CBR.Models.StateLegislator.chamber = {
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
 
         this._doSubmit(null);
         window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
@@ -3745,11 +3764,9 @@ CBR.Models.StateLegislator.chamber = {
         this.fadeOutFloatingAlerts();
     },
 
-    _initValidation: function () {
-        this.initEditReportValidation();
-    },
+    initEvents: function () {
+        this.parent();
 
-    _initEvents: function () {
         jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
 
         this.$usStateSelect.change(function (e) {
@@ -3782,6 +3799,10 @@ CBR.Models.StateLegislator.chamber = {
             matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
             exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
         });
+    },
+
+    _initValidation: function () {
+        this.initEditReportValidation();
     },
 
     _filterResults: function (e) {

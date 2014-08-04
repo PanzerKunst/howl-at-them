@@ -291,7 +291,8 @@ footer {
       margin-right: 0.5em; }
     #content .check-or-radio > div > label {
       margin: 0;
-      font-weight: normal; }
+      font-weight: normal;
+      cursor: pointer; }
 #content .submit-wrapper {
   padding-top: 20px; }
   #content .submit-wrapper > [type=submit] {
@@ -845,7 +846,7 @@ textarea.form-control {
     #state-legislator #content #committees {
       width: 42em; } }
 #state-legislator #content #legislator-data {
-  margin: 0 auto; }
+  margin: 0 auto 20px auto; }
   #state-legislator #content #legislator-data > div:first-child > p {
     text-align: center;
     margin-bottom: 0; }
@@ -859,18 +860,13 @@ textarea.form-control {
         content: "";
         display: table;
         clear: both; }
-      #state-legislator #content #legislator-data > div {
+      #state-legislator #content #legislator-data > div,
+      #state-legislator #content #legislator-data > #additional-contact-info {
         float: left;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box; }
-        #state-legislator #content #legislator-data > div:first-child {
-          width: 30%; }
-        #state-legislator #content #legislator-data > div:nth-child(2) {
-          width: 40%;
-          padding-right: 1em; }
-        #state-legislator #content #legislator-data > div:last-child {
-          width: 30%; } }
+        width: 30%; }
+      #state-legislator #content #legislator-data > div:nth-child(2) {
+        width: 40%;
+        padding-right: 1em; } }
   #state-legislator #content #legislator-data table {
     margin-bottom: 10px; }
     #state-legislator #content #legislator-data table td {
@@ -883,6 +879,8 @@ textarea.form-control {
       clear: both; }
     #state-legislator #content #legislator-data form > .form-group {
       max-width: 100%; }
+      #state-legislator #content #legislator-data form > .form-group:last-child {
+        margin-bottom: 0; }
 #state-legislator #content #phone-numbers {
   margin-bottom: 20px;
   margin-top: 10px; }
@@ -909,34 +907,29 @@ textarea.form-control {
   font-size: 29px;
   width: 7.4em;
   height: 41px; }
-#state-legislator #content #current-support-level {
-  text-align: center;
-  margin-bottom: 10px; }
-  #state-legislator #content #current-support-level > .support-level {
-    font-weight: bold; }
-#state-legislator #content #missing-urgent-report-and-priority-target {
-  margin-bottom: 20px; }
-  #state-legislator #content #missing-urgent-report-and-priority-target:after {
-    content: "";
-    display: table;
-    clear: both; }
-  #state-legislator #content #missing-urgent-report-and-priority-target > article {
-    letter-spacing: -0.5px;
-    float: left; }
-    #state-legislator #content #missing-urgent-report-and-priority-target > article:last-child {
-      float: right; }
+#state-legislator #content #support-level-and-priority-target:after {
+  content: "";
+  display: table;
+  clear: both; }
+#state-legislator #content #support-level-and-priority-target > .support-level {
+  display: block;
+  float: left;
+  font-weight: bold;
+  margin: 0 0 10px 1em; }
+#state-legislator #content #support-level-and-priority-target > .check-or-radio {
+  float: right;
+  margin-right: 1em;
+  letter-spacing: -0.5px; }
 #state-legislator #content #additional-contact-info {
   text-align: center; }
   #state-legislator #content #additional-contact-info > a {
     margin-bottom: 10px; }
   #state-legislator #content #additional-contact-info > div {
     display: none; }
-    #state-legislator #content #additional-contact-info > div > a {
-      display: block;
-      font-size: 12px;
-      letter-spacing: -0.5px; }
+  #state-legislator #content #additional-contact-info form {
+    text-align: justify; }
 #state-legislator #content #social-media {
-  margin-top: 10px; }
+  margin-top: 20px; }
 #state-legislator #content .facebook,
 #state-legislator #content .twitter {
   background: transparent url("images/sprite") no-repeat scroll 0 0;

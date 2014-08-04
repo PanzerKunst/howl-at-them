@@ -7,7 +7,7 @@ CBR.Controllers.Admin = new Class({
 
     run: function () {
         this.initElements();
-        this._initEvents();
+        this.initEvents();
     },
 
     initElements: function () {
@@ -16,7 +16,9 @@ CBR.Controllers.Admin = new Class({
         this.$updateDataBtn = jQuery("#update-data");
     },
 
-    _initEvents: function () {
+    initEvents: function () {
+        this.parent();
+
         this.$updateDataBtn.click(jQuery.proxy(this._doUpdateData, this));
     },
 

@@ -7,8 +7,8 @@ CBR.Controllers.FindYourLegislator = new Class({
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -18,17 +18,19 @@ CBR.Controllers.FindYourLegislator = new Class({
         this.$submitBtn = jQuery("[type=submit]");
     },
 
+    initEvents: function () {
+        this.parent();
+
+        this.$form.submit(jQuery.proxy(this._doSubmit, this));
+        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
+    },
+
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
                 "address"
             ]
         });
-    },
-
-    _initEvents: function () {
-        this.$form.submit(jQuery.proxy(this._doSubmit, this));
-        jQuery("tr.clickable").click(jQuery.proxy(this.navigateToStateLegislatorPage, this));
     },
 
     _doSubmit: function (e) {

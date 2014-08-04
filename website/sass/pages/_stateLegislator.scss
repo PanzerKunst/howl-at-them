@@ -10,7 +10,7 @@
     }
 
     #legislator-data {
-      margin: 0 auto;
+      margin: 0 auto $line-height-computed auto;
 
       > div:first-child {
         > p {
@@ -31,22 +31,16 @@
 
         @include clearfix;
 
-        > div {
+        > div,
+        > #additional-contact-info {
           float: left;
+          width: 30%;
+        }
 
-          @include box-sizing(border-box);
-
-          &:first-child {
-            width: 30%;
-          }
-
+        > div {
           &:nth-child(2) {
             width: 40%;
             padding-right: 1em;
-          }
-
-          &:last-child {
-            width: 30%;
           }
         }
       }
@@ -66,6 +60,10 @@
 
         > .form-group {
           max-width: 100%;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
         }
       }
     }
@@ -114,29 +112,22 @@
       height: 41px;
     }
 
-    #current-support-level {
-      text-align: center;
-      margin-bottom: $line-height-computed/2;
-
-      > .support-level {
-        font-weight: bold;
-      }
-    }
-
-    #missing-urgent-report-and-priority-target {
+    #support-level-and-priority-target {
       @include clearfix;
 
-      margin-bottom: $line-height-computed;
-
-      > article {
-        // To space the two items
-        letter-spacing: -0.5px;
-
+      > .support-level {
+        display: block;
         float: left;
 
-        &:last-child {
-          float: right;
-        }
+        font-weight: bold;
+        margin: 0 0 $line-height-computed/2 1em;
+      }
+
+      > .check-or-radio {
+        float: right;
+        margin-right: 1em;
+
+        letter-spacing: -0.5px;
       }
     }
 
@@ -149,17 +140,15 @@
 
       > div {
         display: none;
+      }
 
-        > a {
-          display: block;
-          font-size: 12px;
-          letter-spacing: -0.5px;
-        }
+      form {
+        text-align: justify;  // Reset
       }
     }
 
     #social-media {
-      margin-top: $line-height-computed / 2;
+      margin-top: $line-height-computed;
     }
 
     .facebook,

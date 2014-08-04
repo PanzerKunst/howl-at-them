@@ -46,13 +46,16 @@
             </div>
         </section>
 
-        <section id="current-support-level">
-            <span>Support level:</span>
+        <section id="support-level-and-priority-target">
             @if(!stateLegislator.reports.isEmpty) {
                 @Html(stateLegislator.reports.head.getSupportLevelSpan)
             } else {
             <span class="support-level UNKNOWN">Unknown</span>
             }
+            <article class="check-or-radio">
+                <div><input type="checkbox" id="priority-target" @if(stateLegislator.isAPriorityTarget) { checked } @if(!isAdmin) { disabled } /></div>
+                <div><label>Priority target</label></div>
+            </article>
         </section>
 
         <table class="table table-striped table-bordered table-condensed">
@@ -80,70 +83,50 @@
                 </tr>
             </tbody>
         </table>
-
-        <section id="missing-urgent-report-and-priority-target">
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="missing-urgent-report" @if(stateLegislator.isMissingUrgentReport) { checked } /></div>
-                <div><label>Missing urgent report</label></div>
-            </article>
-            <article class="check-or-radio">
-                <div><input type="checkbox" id="priority-target" @if(stateLegislator.isAPriorityTarget) { checked } /></div>
-                <div><label>Priority target</label></div>
-            </article>
-        </section>
     </div>
 
-    <div>
-        <form role="form">
-            <div class="form-group">
-                <label for="staff-name">Staff name</label><!--
-             --><input type="text" id="staff-name" class="form-control" maxlength="64" @if(stateLegislator.staffName.isDefined) { value="@stateLegislator.staffName.get" } @if(!isAdmin) { disabled } />
-            </div>
+    <section id="additional-contact-info">
+        <a>Additional contact info</a>
 
-            <div class="form-group">
-                <label for="staff-number">Staff number</label><!--
-             --><input type="text" id="staff-number" class="form-control" maxlength="16" @if(stateLegislator.staffNumber.isDefined) { value="@stateLegislator.staffNumber.get" } @if(!isAdmin) { disabled } />
-            </div>
+        <div>
+            <form role="form">
+                <div class="form-group">
+                    <label for="staff-name">Staff name</label><!--
+                 --><input type="text" id="staff-name" class="form-control" maxlength="64" @if(stateLegislator.staffName.isDefined) { value="@stateLegislator.staffName.get" } @if(!isAdmin) { disabled } />
+                </div>
 
-            <div class="form-group">
-                <label for="point-of-contact">Point of contact</label><!--
-             --><input type="text" id="point-of-contact" class="form-control" maxlength="64" @if(stateLegislator.pointOfContact.isDefined) { value="@stateLegislator.pointOfContact.get" } @if(!isAdmin) { disabled } />
-            </div>
-        </form>
+                <div class="form-group">
+                    <label for="staff-number">Staff number</label><!--
+                 --><input type="text" id="staff-number" class="form-control" maxlength="16" @if(stateLegislator.staffNumber.isDefined) { value="@stateLegislator.staffNumber.get" } @if(!isAdmin) { disabled } />
+                </div>
 
-        <section id="additional-contact-info">
-            <a>Additional contact info</a>
+                <div class="form-group">
+                    <label for="point-of-contact">Point of contact</label><!--
+                 --><input type="text" id="point-of-contact" class="form-control" maxlength="64" @if(stateLegislator.pointOfContact.isDefined) { value="@stateLegislator.pointOfContact.get" } @if(!isAdmin) { disabled } />
+                </div>
+            </form>
 
-            <div>
-                @if(stateLegislator.emailAddress.isDefined) {
-                <a href="mailto:@stateLegislator.emailAddress">@stateLegislator.emailAddress</a>
+            @for(office <- stateLegislator.offices) {
+            @if(office.street.isDefined) {
+            <article class="office-address">
+                <label>@office.officeType office</label>
+                <p>@Html(office.street.get.replaceAll("\n", "<br />"))<br />
+                    @office.city, @office.usStateId @office.zip</p>
+            </article>
+            }}
+
+            @if(stateLegislator.facebookUrl.isDefined || stateLegislator.twitterUrl.isDefined) {
+            <section id="social-media">
+                @if(stateLegislator.facebookUrl.isDefined) {
+                <a href="@stateLegislator.facebookUrl.get" class="facebook" target="_blank"></a>
                 }
-                @if(stateLegislator.websiteUrl.isDefined) {
-                <a href="@stateLegislator.websiteUrl" target="_blank">@stateLegislator.websiteUrl</a>
+                @if(stateLegislator.twitterUrl.isDefined) {
+                <a href="@stateLegislator.twitterUrl.get" class="twitter" target="_blank"></a>
                 }
-
-                @if(stateLegislator.facebookUrl.isDefined || stateLegislator.twitterUrl.isDefined) {
-                <section id="social-media">
-                    @if(stateLegislator.facebookUrl.isDefined) {
-                    <a href="@stateLegislator.facebookUrl.get" class="facebook" target="_blank"></a>
-                    }
-                    @if(stateLegislator.twitterUrl.isDefined) {
-                    <a href="@stateLegislator.twitterUrl.get" class="twitter" target="_blank"></a>
-                    }
-                </section>
-                }
-
-                @for(office <- stateLegislator.offices) {
-                @if(office.street.isDefined) {
-                <article class="office-address">
-                    <label>@office.officeType office</label>
-                    <p>@Html(office.street.get.replaceAll("\n", "<br />"))<br />
-                        @office.city, @office.usStateId @office.zip</p>
-                </article>
-                }}
-            </div>
-        </section>
-    </div>
+            </section>
+            }
+        </div>
+    </section>
 </section>
 
 @if(!stateLegislator.committees.isEmpty) {

@@ -7,8 +7,8 @@ CBR.Controllers.StateLegislators = new Class({
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
 
         this._doSubmit(null);
         window.setInterval(jQuery.proxy(this._doPeriodicSearch, this), 1000);
@@ -49,11 +49,9 @@ CBR.Controllers.StateLegislators = new Class({
         this.fadeOutFloatingAlerts();
     },
 
-    _initValidation: function () {
-        this.initEditReportValidation();
-    },
+    initEvents: function () {
+        this.parent();
 
-    _initEvents: function () {
         jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
 
         this.$usStateSelect.change(function (e) {
@@ -86,6 +84,10 @@ CBR.Controllers.StateLegislators = new Class({
             matched: jQuery.proxy(this._onFullWidthBreakpointMatch, this),
             exit: jQuery.proxy(this._onFullWidthBreakpointExit, this)
         });
+    },
+
+    _initValidation: function () {
+        this.initEditReportValidation();
     },
 
     _filterResults: function (e) {

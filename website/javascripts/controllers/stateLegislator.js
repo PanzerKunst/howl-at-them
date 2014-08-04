@@ -7,8 +7,8 @@ CBR.Controllers.StateLegislator = new Class({
 
     run: function () {
         this.initElements();
+        this.initEvents();
         this._initValidation();
-        this._initEvents();
     },
 
     initElements: function () {
@@ -56,26 +56,9 @@ CBR.Controllers.StateLegislator = new Class({
         this.fadeOutFloatingAlerts();
     },
 
-    _getStateLegislator: function () {
-        return new CBR.Models.StateLegislator(this.options.stateLegislator);
-    },
+    initEvents: function () {
+        this.parent();
 
-    _getAction: function () {
-        return this.options.action;
-    },
-
-    _initValidation: function () {
-        this.validator = new CBR.Services.Validator({
-            fieldIds: [
-                "author-name",
-                "notes"
-            ]
-        });
-
-        this.initEditReportValidation();
-    },
-
-    _initEvents: function () {
         this.$otherPhoneNumber.keyup(_.debounce(jQuery.proxy(function () {
             this._updateStateLegislator("Phone number saved");
         }, this), 1000));
@@ -119,6 +102,25 @@ CBR.Controllers.StateLegislator = new Class({
 
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
+    },
+
+    _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "author-name",
+                "notes"
+            ]
+        });
+
+        this.initEditReportValidation();
+    },
+
+    _getStateLegislator: function () {
+        return new CBR.Models.StateLegislator(this.options.stateLegislator);
+    },
+
+    _getAction: function () {
+        return this.options.action;
     },
 
     _initForm: function () {
