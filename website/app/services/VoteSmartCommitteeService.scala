@@ -8,6 +8,7 @@ import db.votesmart.{VoteSmartCommitteeMembershipDto, VoteSmartCommitteeDto}
 import scala.concurrent.ExecutionContext.Implicits.global
 import db.UsStateDto
 import models.UsState
+import play.api.Play.current
 
 object VoteSmartCommitteeService {
   var isCommitteesWebServiceCallRunning = false

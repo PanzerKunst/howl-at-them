@@ -6,9 +6,7 @@ import play.api.mvc.{Action, Controller}
 import db.AccountDto
 
 object AccountApi extends Controller {
-  def create = Action(parse.json) {
-    implicit request =>
-
+  def create = Action(parse.json) { request =>
       val account = JsonUtil.deserialize[Account](request.body.toString())
       AccountDto.create(account) match {
         case Some(id) => Ok(id.toString)
@@ -16,9 +14,7 @@ object AccountApi extends Controller {
       }
   }
 
-  def delete(username: String) = Action {
-    implicit request =>
-
+  def delete(username: String) = Action { request =>
       AccountDto.getOfUsername(username) match {
         case None =>
           BadRequest("No account found for username '" + username + "'")

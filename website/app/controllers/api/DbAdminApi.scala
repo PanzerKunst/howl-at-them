@@ -6,9 +6,7 @@ import play.Play
 import services.{VoteSmartCommitteeService, VoteSmartCandidateService, VoteSmartService, VoteSmartLeadershipService}
 
 object DbAdminApi extends Controller {
-  def reCreateNonVoteSmartTables = Action {
-    implicit request =>
-
+  def reCreateNonVoteSmartTables = Action { request =>
       if (request.queryString.contains("key") &&
         request.queryString.get("key").get.head == Play.application().configuration().getString("application.secret")) {
         DbAdmin.reCreateNonVoteSmartTables()
@@ -19,8 +17,7 @@ object DbAdminApi extends Controller {
         Forbidden
   }
 
-  def updateVoteSmartData() = Action {
-    implicit request =>
+  def updateVoteSmartData() = Action { request =>
       DbAdmin.reCreateTempVoteSmartTables()
 
       VoteSmartCandidateService.fetchCandidates()

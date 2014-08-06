@@ -8,13 +8,11 @@ import models.frontend.DetailedStateLegislator
 import controllers.Application
 
 object StateLegislatorApi extends Controller {
-  def search = Action {
-    implicit request =>
-
+  def search = Action { request =>
       if (request.queryString.contains("usStateId")) {
         val usStateId = request.queryString.get("usStateId").get.head
 
-        var newSession = session + ("selectedUsStateId" -> usStateId)
+        var newSession = request.session + ("selectedUsStateId" -> usStateId)
 
         val chamberAbbrOrPriorityTarget = if (request.queryString.contains("chamberAbbrOrPriorityTarget")) {
           val chamberOrTarget = request.queryString.get("chamberAbbrOrPriorityTarget").get.head
@@ -56,9 +54,7 @@ object StateLegislatorApi extends Controller {
         Forbidden
   }
 
-  def update = Action(parse.json) {
-    implicit request =>
-
+  def update = Action(parse.json) { request =>
       val stateLegislator = JsonUtil.deserialize[DetailedStateLegislator](request.body.toString())
 
       StateLegislatorDto.getOfId(stateLegislator.id) match {

@@ -1,46 +1,40 @@
 package controllers
 
-import api.CommitteeApi
-import play.api.mvc._
+import controllers.api.CommitteeApi
 import db._
-import services.{GoogleCivicInformationService, VoteSmartService}
-import concurrent.ExecutionContext.Implicits.global
-import concurrent.Future
-import scala.Some
 import models.Account
+import play.api.mvc._
+import services.{GoogleCivicInformationService, VoteSmartService}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object Application extends Controller {
 
   val doNotCachePage = Array((CACHE_CONTROL -> "no-cache, no-store"))
 
-  def index = Action {
-    implicit request =>
-
+  def index = Action { request =>
       Ok(views.html.index())
   }
 
-  def logOut = Action {
-    implicit request =>
-
-      Redirect(routes.Application.index).withSession(session - "accountId")
+  def logOut = Action { request =>
+      Redirect(routes.Application.index).withSession(request.session - "accountId")
   }
 
-  def stateLegislators = Action {
-    implicit request =>
-
+  def stateLegislators = Action { request =>
       val action = if (request.queryString.contains("action"))
         Some(request.queryString.get("action").get.head)
       else
         None
 
       var isAdministrator = false
-      var newSession = session
+      var newSession = request.session
 
       if(request.queryString.contains("role") && request.queryString.get("role").get.head == "admin") {
         isAdministrator = true
-        newSession = session + ("accountId" -> "1")
+        newSession = request.session + ("accountId" -> "1")
       } else {
-        isAdministrator = isAdmin(session)
+        isAdministrator = isAdmin(request.session)
       }
 
       var selectedUsStateId = ""
@@ -49,10 +43,10 @@ object Application extends Controller {
         selectedUsStateId = request.queryString.get("usStateId").get.head
         newSession = newSession + ("selectedUsStateId" -> selectedUsStateId)
       } else {
-        selectedUsStateId = session.get("selectedUsStateId").getOrElse("AL")
+        selectedUsStateId = request.session.get("selectedUsStateId").getOrElse("AL")
       }
 
-      val selectedLeadershipPositionId = session.get("selectedLeadershipPositionId") match {
+      val selectedLeadershipPositionId = request.session.get("selectedLeadershipPositionId") match {
         case Some(positionId) => Some(positionId.toInt)
         case None => None
       }
@@ -60,13 +54,11 @@ object Application extends Controller {
       val committeesInState = CommitteeDto.getInState(selectedUsStateId)
       val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
 
-      Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, session.get("selectedChamberOrTargetSearchCriteria"), selectedLeadershipPositionId, session.get("selectedCommitteeName")))
+      Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, request.session.get("selectedChamberOrTargetSearchCriteria"), selectedLeadershipPositionId, request.session.get("selectedCommitteeName")))
         .withSession(newSession)
   }
 
-  def stateLegislator(id: Int) = Action {
-    implicit request =>
-
+  def stateLegislator(id: Int) = Action { request =>
       val action = if (request.queryString.contains("action"))
         Some(request.queryString.get("action").get.head)
       else
@@ -74,43 +66,37 @@ object Application extends Controller {
 
       StateLegislatorDto.getOfId(id) match {
         case Some(detailedStateLegislator) =>
-          Ok(views.html.stateLegislator(detailedStateLegislator, action, isAdmin(session)))
+          Ok(views.html.stateLegislator(detailedStateLegislator, action, isAdmin(request.session)))
             .withHeaders(doNotCachePage: _*)
         case None =>
           NotFound
       }
   }
 
-  def adminLogin = Action {
-    implicit request =>
-
-      loggedInUser(session) match {
+  def adminLogin = Action { request =>
+      loggedInUser(request.session) match {
         case Some(loggedInAccount) => Redirect(routes.Application.admin)
         case None => Ok(views.html.adminLogin())
       }
   }
 
-  def admin = Action {
-    implicit request =>
-
-      loggedInUser(session) match {
+  def admin = Action { request =>
+      loggedInUser(request.session) match {
         case Some(loggedInAccount) => Ok(views.html.admin(VoteSmartService.isRunning))
         case None => Redirect(routes.Application.adminLogin)
       }
   }
 
-  def findYourLegislator = Action.async {
-    implicit request =>
-
+  def findYourLegislator = Action.async { request =>
       if (request.queryString.contains("address")) {
         val address = request.queryString.get("address").get.head
         GoogleCivicInformationService.fetchStateLegislatorsForAddress(address).map {
           yourLegislators =>
-            Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.all, Some(address), yourLegislators))
+            Ok(views.html.findYourLegislator(isAdmin(request.session), UsStateDto.all, Some(address), yourLegislators))
         }
       } else {
         Future {
-          Ok(views.html.findYourLegislator(isAdmin(session), UsStateDto.all, None, List()))
+          Ok(views.html.findYourLegislator(isAdmin(request.session), UsStateDto.all, None, List()))
         }
       }
   }

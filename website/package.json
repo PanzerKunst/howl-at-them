@@ -3,7 +3,7 @@
     "private" : true,
 
     "devDependencies" : {
-        "grunt" :                       "~0.4.0",
+        "grunt" :                       "~0.4.5",
         "grunt-cssc":                   "*",
         "grunt-contrib-jshint":         "*",
         "grunt-contrib-concat":         "*",

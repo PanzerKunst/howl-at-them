@@ -7,6 +7,7 @@ import models.votesmart.{VoteSmartLeadingOfficial, VoteSmartLeadershipPosition}
 import db.votesmart.{VoteSmartLeadingOfficialDto, VoteSmartLeadershipPositionDto}
 import scala.concurrent.ExecutionContext.Implicits.global
 import db.UsStateDto
+import play.api.Play.current
 
 object VoteSmartLeadershipService {
   var isOfficialsWithLeadershipPositionWebServiceCallRunning = false

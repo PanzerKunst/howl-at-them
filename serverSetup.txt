@@ -92,13 +92,16 @@ $ sudo ln -s /etc/nginx/sites-available/hat /etc/nginx/sites-enabled/hat
 
 $ sudo service nginx restart
 
+$ cd ~/howl-at-them/website
+$ dos2unix activator
+$ chmod u+x activator
 
 ##################
 # Start web server
 ##################
 
 Inside app dir, run:
-$ play
+$ ./activator
 $ start -Dhttp.port=9001
 
 ("run" for auto reload, "start" for better perf)

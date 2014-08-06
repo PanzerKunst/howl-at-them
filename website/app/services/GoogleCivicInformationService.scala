@@ -9,6 +9,7 @@ import play.api.Logger
 import db.{StateLegislatorDto, UsStateDto}
 import models.frontend.DetailedStateLegislator
 import concurrent.ExecutionContext.Implicits.global
+import play.api.Play.current
 
 object GoogleCivicInformationService {
   val gciApiKey = Play.application().configuration().getString("google.civicinformation.apikey")

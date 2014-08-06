@@ -7,9 +7,7 @@ import db.ReportDto
 import controllers.Application
 
 object ReportApi extends Controller {
-  def create = Action(parse.json) {
-    implicit request =>
-
+  def create = Action(parse.json) { request =>
       val report = JsonUtil.deserialize[Report](request.body.toString())
       ReportDto.create(report) match {
         case Some(id) => Ok(id.toString)
@@ -17,9 +15,7 @@ object ReportApi extends Controller {
       }
   }
 
-  def update = Action(parse.json) {
-    implicit request =>
-
+  def update = Action(parse.json) { request =>
       val report = JsonUtil.deserialize[Report](request.body.toString())
 
       report.id match {
@@ -36,9 +32,7 @@ object ReportApi extends Controller {
       }
   }
 
-  def delete(id: Long) = Action {
-    implicit request =>
-
+  def delete(id: Long) = Action { request =>
       ReportDto.getOfId(id) match {
         case None =>
           BadRequest("No report found for id '" + id + "'")

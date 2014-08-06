@@ -1,14 +1,14 @@
 package services
 
 import db.UsStateDto
-import play.api.libs.ws.WS
+import db.votesmart.{VoteSmartCandidateDto, VoteSmartCandidateOfficeDto, VoteSmartCandidateWebAddressDto}
+import models.UsState
+import models.votesmart.{VoteSmartCandidate, VoteSmartCandidateOffice, VoteSmartCandidateWebAddress}
 import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
-import models.votesmart.{VoteSmartCandidateWebAddress, VoteSmartCandidateOffice, VoteSmartCandidate}
-import models.UsState
-import db.votesmart.{VoteSmartCandidateWebAddressDto, VoteSmartCandidateOfficeDto, VoteSmartCandidateDto}
-import play.Play
+import play.api.libs.ws.WS
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.Play.current
 
 object VoteSmartCandidateService {
   private var isCandidatesWebServiceCallRunning = false
