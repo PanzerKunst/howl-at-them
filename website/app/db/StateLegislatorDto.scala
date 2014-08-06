@@ -25,7 +25,7 @@ object StateLegislatorDto {
             other_phone_number, is_a_priority_target, is_missing_urgent_report, staff_name, staff_number, point_of_contact,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
-            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.is_opposing_citizens_united, r.is_supporting_convention_process, r.contact, r.creation_timestamp,
             r.notes
           from state_legislator l
           inner join us_state s
@@ -103,7 +103,7 @@ object StateLegislatorDto {
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
-                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[Boolean]]("is_supporting_convention_process"),
                 row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp")
@@ -263,7 +263,7 @@ object StateLegislatorDto {
             other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
-            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.is_opposing_citizens_united, r.is_supporting_convention_process, r.contact, r.creation_timestamp,
             r.notes
           from state_legislator l
           inner join us_state s
@@ -291,7 +291,7 @@ object StateLegislatorDto {
             other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
-            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.is_opposing_citizens_united, r.is_supporting_convention_process, r.contact, r.creation_timestamp,
             r.notes
           from state_legislator l
           inner join us_state s
@@ -325,7 +325,7 @@ object StateLegislatorDto {
             other_phone_number, is_a_priority_target, is_missing_urgent_report,
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
-            r.is_opposing_citizens_united, r.has_previously_voted_for_convention, r.contact, r.creation_timestamp,
+            r.is_opposing_citizens_united, r.is_supporting_convention_process, r.contact, r.creation_timestamp,
             r.notes
           from state_legislator l
           inner join us_state s
@@ -509,7 +509,7 @@ object StateLegislatorDto {
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
-                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[Boolean]]("is_supporting_convention_process"),
                 row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp")

@@ -105,7 +105,7 @@ object DbAdmin {
             is_money_in_politics_a_problem boolean,
             is_supporting_amendment_to_fix_it boolean,
             is_opposing_citizens_united boolean,
-            has_previously_voted_for_convention boolean,
+            is_supporting_convention_process boolean,
             support_level varchar(32),
             notes varchar(512),
             creation_timestamp bigint not null,

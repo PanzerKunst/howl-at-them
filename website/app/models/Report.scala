@@ -12,7 +12,7 @@ case class Report(_id: Option[Long] = None,
                   _isMoneyInPoliticsAProblem: Option[Boolean] = None,
                   _isSupportingAmendmentToFixIt: Option[Boolean] = None,
                   _isOpposingCitizensUnited: Option[Boolean] = None,
-                  _hasPreviouslyVotedForConvention: Option[Boolean] = None,
+                  _isSupportingConventionProcess: Option[Boolean] = None,
                   _supportLevel: String,
                   _notes: Option[String],
                   _creationTimestamp: Option[Long] = None,
@@ -27,7 +27,7 @@ case class Report(_id: Option[Long] = None,
   val isMoneyInPoliticsAProblem: Option[Boolean] = _isMoneyInPoliticsAProblem
   val isSupportingAmendmentToFixIt: Option[Boolean] = _isSupportingAmendmentToFixIt
   val isOpposingCitizensUnited: Option[Boolean] = _isOpposingCitizensUnited
-  val hasPreviouslyVotedForConvention: Option[Boolean] = _hasPreviouslyVotedForConvention
+  val isSupportingConventionProcess: Option[Boolean] = _isSupportingConventionProcess
   val supportLevel: String = _supportLevel
   val notes: Option[String] = _notes
   val creationTimestamp: Option[Long] = _creationTimestamp
@@ -83,7 +83,7 @@ object Report {
         "isMoneyInPoliticsAProblem" -> report.isMoneyInPoliticsAProblem,
         "isSupportingAmendmentToFixIt" -> report.isSupportingAmendmentToFixIt,
         "isOpposingCitizensUnited" -> report.isOpposingCitizensUnited,
-        "hasPreviouslyVotedForConvention" -> report.hasPreviouslyVotedForConvention,
+        "isSupportingConventionProcess" -> report.isSupportingConventionProcess,
         "supportLevel" -> report.supportLevel,
         "notes" -> report.notes,
         "creationTimestamp" -> report.creationTimestamp,

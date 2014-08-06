@@ -32,8 +32,8 @@ CBR.Models.Report = new Class({
         return this.options.isOpposingCitizensUnited;
     },
 
-    hasPreviouslyVotedForConvention: function () {
-        return this.options.hasPreviouslyVotedForConvention;
+    isSupportingConventionProcess: function () {
+        return this.options.isSupportingConventionProcess;
     },
 
     getSupportLevel: function () {

@@ -16,8 +16,8 @@ Handlebars.registerHelper("getSpanForYesNoAnswerLegislatorLevel", function(quest
             case "OCU":
                 answer = latestReport.isOpposingCitizensUnited();
                 break;
-            case "PVC":
-                answer = latestReport.hasPreviouslyVotedForConvention();
+            case "SCP":
+                answer = latestReport.isSupportingConventionProcess();
         }
 
         if (answer === true) {
@@ -47,8 +47,8 @@ Handlebars.registerHelper("getSpanForYesNoAnswerReportLevel", function(question,
         case "OCU":
             answer = report.isOpposingCitizensUnited();
             break;
-        case "PVC":
-            answer = report.hasPreviouslyVotedForConvention();
+        case "SCP":
+            answer = report.isSupportingConventionProcess();
     }
 
     if (answer === true) {

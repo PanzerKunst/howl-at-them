@@ -38,7 +38,7 @@ CBR.Controllers.StateLegislators = new Class({
         this.$mppFilter = jQuery("#mpp-filter");
         this.$safiFilter = jQuery("#safi-filter");
         this.$ocuFilter = jQuery("#ocu-filter");
-        this.$pvcFilter = jQuery("#pvc-filter");
+        this.$scpFilter = jQuery("#scp-filter");
         this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
@@ -181,9 +181,9 @@ CBR.Controllers.StateLegislators = new Class({
                 }
             }
 
-            // PVC
+            // SCP
             if (isResultMatchedByFilter) {
-                filter = this.$pvcFilter.val();
+                filter = this.$scpFilter.val();
                 if (filter.length > 0) {
                     $td = jQuery(tds[9]);
                     value = $td.children().html();
@@ -602,9 +602,9 @@ CBR.Controllers.StateLegislators = new Class({
                     return true;
                 }
 
-                // PVC
-                oldYesNoLabel = $tr.children(".pvc").children().html();
-                latestYesNo = latestReport.hasPreviouslyVotedForConvention();
+                // SCP
+                oldYesNoLabel = $tr.children(".scp").children().html();
+                latestYesNo = latestReport.isSupportingConventionProcess();
 
                 if ((oldYesNoLabel === "Y" && latestYesNo !== true) ||
                     (oldYesNoLabel === "N" && latestYesNo !== false) ||

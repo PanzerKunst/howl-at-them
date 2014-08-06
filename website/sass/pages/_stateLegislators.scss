@@ -1,5 +1,5 @@
 #state-legislators {
-  $state-legislators-page-min-width: 61.3em;  // ~858px
+  $state-legislators-page-min-width: 61.15em;  // ~856px
 
   $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
   $state-legislators-page-full-width-mq-breakpoint: $state-legislators-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
@@ -21,7 +21,7 @@
   $mpp-col-width: 56px;
   $safi-col-width: 66px;
   $ocu-col-width: 49px;
-  $pvc-col-width: 62px;
+  $scp-col-width: 60px;
   $report-col-width: 46px;
   $target-col-width: 45px;
 
@@ -153,7 +153,7 @@
       }
 
       .support-level-bar-wrapper {
-        width: 9.5em;
+        width: 9.4em;
 
         > div {
           // Otherwise empty divs don't take the width
@@ -243,8 +243,8 @@
       &.ocu {
         width: $ocu-col-width;
       }
-      &.pvc {
-        width: $pvc-col-width;
+      &.scp {
+        width: $scp-col-width;
       }
       &.is-missing-urgent-report {
         width: $report-col-width;
@@ -325,8 +325,8 @@
       text-align: center;
     }
 
-    > #pvc-filter {
-      width: $pvc-col-width - 3;
+    > #scp-filter {
+      width: $scp-col-width - 3;
       text-align: center;
     }
 

@@ -64,7 +64,7 @@
                     <th><span class="yes-no-answer">Money in politics is a problem</span></th>
                     <th><span class="yes-no-answer">Supports amendment to fix it</span></th>
                     <th><span class="yes-no-answer">Opposes Citizens United</span></th>
-                    <th><span class="yes-no-answer">Previous vote for convention</span></th>
+                    <th><span class="yes-no-answer">Supports convention process</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -73,7 +73,7 @@
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isMoneyInPoliticsAProblem))</td>
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isSupportingAmendmentToFixIt))</td>
                     <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isOpposingCitizensUnited))</td>
-                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.hasPreviouslyVotedForConvention))</td>
+                    <td>@Html(Report.getSpanForYesNoAnswer(stateLegislator.reports.head.isSupportingConventionProcess))</td>
                     } else {
                     <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
                     <td><span class="centered-contents">@Html(Report.getSpanForYesNoAnswer(None))</span></td>
@@ -254,17 +254,17 @@
             </div>
 
             <div class="form-group">
-                <label>Previous vote for convention</label>
+                <label>Supports convention process</label>
                 <article class="check-or-radio">
-                    <div><input type="radio" name="PVC" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined) { checked } /></div>
+                    <div><input type="radio" name="SCP" value="?" @if(stateLegislator.reports.isEmpty || !stateLegislator.reports.head.isSupportingConventionProcess.isDefined) { checked } /></div>
                     <div><label>?</label></div>
                 </article>
                 <article class="check-or-radio">
                     <div>
-                        <input type="radio" name="PVC" value="true"
+                        <input type="radio" name="SCP" value="true"
                         @if(!stateLegislator.reports.isEmpty &&
-                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined &&
-                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.get) {
+                            stateLegislator.reports.head.isSupportingConventionProcess.isDefined &&
+                            stateLegislator.reports.head.isSupportingConventionProcess.get) {
                                 checked
                         }/>
                     </div>
@@ -272,10 +272,10 @@
                 </article>
                 <article class="check-or-radio">
                     <div>
-                        <input type="radio" name="PVC" value="false"
+                        <input type="radio" name="SCP" value="false"
                         @if(!stateLegislator.reports.isEmpty &&
-                            stateLegislator.reports.head.hasPreviouslyVotedForConvention.isDefined &&
-                            !stateLegislator.reports.head.hasPreviouslyVotedForConvention.get) {
+                            stateLegislator.reports.head.isSupportingConventionProcess.isDefined &&
+                            !stateLegislator.reports.head.isSupportingConventionProcess.get) {
                                 checked
                         }/>
                     </div>
@@ -357,7 +357,7 @@
             <span class="existing-report-yes-no-answers">@Html(Report.getSpanForYesNoAnswer(report.isMoneyInPoliticsAProblem))
             @Html(Report.getSpanForYesNoAnswer(report.isSupportingAmendmentToFixIt))
             @Html(Report.getSpanForYesNoAnswer(report.isOpposingCitizensUnited))
-            @Html(Report.getSpanForYesNoAnswer(report.hasPreviouslyVotedForConvention))</span>
+            @Html(Report.getSpanForYesNoAnswer(report.isSupportingConventionProcess))</span>
         </div>
         <p>@Html(report.getNotesForWeb)</p>
     </article>

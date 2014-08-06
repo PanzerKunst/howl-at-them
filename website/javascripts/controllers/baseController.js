@@ -94,7 +94,7 @@ CBR.Controllers.BaseController = new Class({
                     isMoneyInPoliticsAProblem: report.isMoneyInPoliticsAProblem(),
                     isSupportingAmendmentToFixIt: report.isSupportingAmendmentToFixIt(),
                     isOpposingCitizensUnited: report.isOpposingCitizensUnited(),
-                    hasPreviouslyVotedForConvention: report.hasPreviouslyVotedForConvention(),
+                    isSupportingConventionProcess: report.isSupportingConventionProcess(),
                     supportLevel: report.getSupportLevel(),
                     notes: reportNotes
                 },
@@ -117,13 +117,13 @@ CBR.Controllers.BaseController = new Class({
                     moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === null,
                     supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === null,
                     opposesCitizensUnited: report.isOpposingCitizensUnited() === null,
-                    previousVoteForConvention: report.hasPreviouslyVotedForConvention() === null
+                    supportsConventionProcess: report.isSupportingConventionProcess() === null
                 },
                 isFalse: {
                     moneyInPoliticsIsAProblem: report.isMoneyInPoliticsAProblem() === false,
                     supportsAmendmentToFixIt: report.isSupportingAmendmentToFixIt() === false,
                     opposesCitizensUnited: report.isOpposingCitizensUnited() === false,
-                    previousVoteForConvention: report.hasPreviouslyVotedForConvention() === false
+                    supportsConventionProcess: report.isSupportingConventionProcess() === false
                 }
             })
         );
@@ -251,9 +251,9 @@ CBR.Controllers.BaseController = new Class({
             var $yesOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
             var $noOcuRadio = $ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
-            var $pvcRadios = jQuery("[name='edit-PVC']");
-            var $yesPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
-            var $noPvcRadio = $pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+            var $scpRadios = jQuery("[name='edit-SCP']");
+            var $yesScpRadio = $scpRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+            var $noScpRadio = $scpRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
             var authorName = jQuery("#edit-author-name").val();
             var selectedContact = jQuery("#edit-contact").val();
@@ -280,11 +280,11 @@ CBR.Controllers.BaseController = new Class({
                 isOpposingCitizensUnited = false;
             }
 
-            var hasPreviouslyVotedForConvention = null;
-            if ($yesPvcRadio.prop("checked")) {
-                hasPreviouslyVotedForConvention = true;
-            } else if ($noPvcRadio.prop("checked")) {
-                hasPreviouslyVotedForConvention = false;
+            var isSupportingConventionProcess = null;
+            if ($yesScpRadio.prop("checked")) {
+                isSupportingConventionProcess = true;
+            } else if ($noScpRadio.prop("checked")) {
+                isSupportingConventionProcess = false;
             }
 
             var notes = jQuery("#edit-notes").val();
@@ -297,7 +297,7 @@ CBR.Controllers.BaseController = new Class({
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
-                hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
+                isSupportingConventionProcess: isSupportingConventionProcess,
                 supportLevel: selectedSupportLevel,
                 notes: notes ? notes : null
             };

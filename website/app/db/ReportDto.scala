@@ -22,14 +22,14 @@ object ReportDto {
 
         val query = """
                insert into report(candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
-          is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes, creation_timestamp)
+          is_opposing_citizens_united, is_supporting_convention_process, support_level, notes, creation_timestamp)
           values(""" + report.candidateId + """, '""" +
           DbUtil.safetize(report.authorName) + """', """ +
           contactForQuery + """, """ +
           report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """, """ +
           report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """, """ +
           report.isOpposingCitizensUnited.getOrElse("NULL") + """, """ +
-          report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """, """ +
+          report.isSupportingConventionProcess.getOrElse("NULL") + """, """ +
           supportLevelForQuery + """,
           {notes}, """ +
           new Date().getTime + """);"""
@@ -49,7 +49,7 @@ object ReportDto {
 
         val query = """
           select candidate_id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
-            is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes,
+            is_opposing_citizens_united, is_supporting_convention_process, support_level, notes,
             creation_timestamp, is_deleted
           from report
           where id = """ + id + """;"""
@@ -67,7 +67,7 @@ object ReportDto {
                 row[Option[Boolean]]("is_money_in_politics_a_problem"),
                 row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
                 row[Option[Boolean]]("is_opposing_citizens_united"),
-                row[Option[Boolean]]("has_previously_voted_for_convention"),
+                row[Option[Boolean]]("is_supporting_convention_process"),
                 row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
                 row[Option[String]]("notes"),
                 row[Option[Long]]("creation_timestamp"),
@@ -85,7 +85,7 @@ object ReportDto {
 
         val query = """
           select id, author_name, contact, is_money_in_politics_a_problem, is_supporting_amendment_to_fix_it,
-            is_opposing_citizens_united, has_previously_voted_for_convention, support_level, notes,
+            is_opposing_citizens_united, is_supporting_convention_process, support_level, notes,
             creation_timestamp
           from report
           where candidate_id = """ + candidateId + """
@@ -103,7 +103,7 @@ object ReportDto {
               row[Option[Boolean]]("is_money_in_politics_a_problem"),
               row[Option[Boolean]]("is_supporting_amendment_to_fix_it"),
               row[Option[Boolean]]("is_opposing_citizens_united"),
-              row[Option[Boolean]]("has_previously_voted_for_convention"),
+              row[Option[Boolean]]("is_supporting_convention_process"),
               row[Option[String]]("support_level").getOrElse(SupportLevel.UNKNOWN.toString),
               row[Option[String]]("notes"),
               row[Option[Long]]("creation_timestamp"))
@@ -130,7 +130,7 @@ object ReportDto {
           is_money_in_politics_a_problem = """ + report.isMoneyInPoliticsAProblem.getOrElse("NULL") + """,
           is_supporting_amendment_to_fix_it = """ + report.isSupportingAmendmentToFixIt.getOrElse("NULL") + """,
           is_opposing_citizens_united = """ + report.isOpposingCitizensUnited.getOrElse("NULL") + """,
-          has_previously_voted_for_convention = """ + report.hasPreviouslyVotedForConvention.getOrElse("NULL") + """,
+          is_supporting_convention_process = """ + report.isSupportingConventionProcess.getOrElse("NULL") + """,
           support_level = """ + supportLevelForQuery + """,
           notes = {notes}
           where id = """ + report.id.get + """;"""

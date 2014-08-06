@@ -42,9 +42,9 @@ CBR.Controllers.StateLegislator = new Class({
         this.$yesOcuRadio = this.$ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
         this.$noOcuRadio = this.$ocuRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
-        this.$pvcRadios = jQuery("[name='PVC']");
-        this.$yesPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
-        this.$noPvcRadio = this.$pvcRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
+        this.$scpRadios = jQuery("[name='SCP']");
+        this.$yesScpRadio = this.$scpRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
+        this.$noScpRadio = this.$scpRadios.filter("[value='" + CBR.Models.Report.radioAnswer.no + "']");
 
         this.$form = jQuery("#new-report > form");
         this.$submitBtn = jQuery("[type=submit]");
@@ -207,11 +207,11 @@ CBR.Controllers.StateLegislator = new Class({
                 isOpposingCitizensUnited = false;
             }
 
-            var hasPreviouslyVotedForConvention = null;
-            if (this.$yesPvcRadio.prop("checked")) {
-                hasPreviouslyVotedForConvention = true;
-            } else if (this.$noPvcRadio.prop("checked")) {
-                hasPreviouslyVotedForConvention = false;
+            var isSupportingConventionProcess = null;
+            if (this.$yesScpRadio.prop("checked")) {
+                isSupportingConventionProcess = true;
+            } else if (this.$noScpRadio.prop("checked")) {
+                isSupportingConventionProcess = false;
             }
 
             var notes = jQuery("#notes").val();
@@ -223,7 +223,7 @@ CBR.Controllers.StateLegislator = new Class({
                 isMoneyInPoliticsAProblem: isMoneyInPoliticsAProblem,
                 isSupportingAmendmentToFixIt: isSupportingAmendmentToFixIt,
                 isOpposingCitizensUnited: isOpposingCitizensUnited,
-                hasPreviouslyVotedForConvention: hasPreviouslyVotedForConvention,
+                isSupportingConventionProcess: isSupportingConventionProcess,
                 supportLevel: selectedSupportLevel ? selectedSupportLevel : null,
                 notes: notes ? notes : null
             };

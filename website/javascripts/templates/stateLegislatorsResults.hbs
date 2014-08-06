@@ -12,7 +12,7 @@
             <th class="mpp"><span class="yes-no-answer">Money in<br />politics is<br />a problem</span></th>
             <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
             <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
-            <th class="pvc"><span class="yes-no-answer">Previous<br />vote for<br />convention</span></th>
+            <th class="scp"><span class="yes-no-answer">Supports<br />convention<br />process</span></th>
             <th class="is-missing-urgent-report">Report</th>
             <th class="is-a-priority-target">Target</th>
         </tr>
@@ -28,7 +28,7 @@
             <td class="mpp">{{{getSpanForYesNoAnswerLegislatorLevel "MPP" this}}}</td>
             <td class="safi">{{{getSpanForYesNoAnswerLegislatorLevel "SAFI" this}}}</td>
             <td class="ocu">{{{getSpanForYesNoAnswerLegislatorLevel "OCU" this}}}</td>
-            <td class="pvc">{{{getSpanForYesNoAnswerLegislatorLevel "PVC" this}}}</td>
+            <td class="scp">{{{getSpanForYesNoAnswerLegislatorLevel "SCP" this}}}</td>
             <td class="is-missing-urgent-report"><input type="checkbox" {{#if isMissingUrgentReport}} checked {{/if}} /></td>
             <td class="is-a-priority-target"><input type="checkbox" {{#if isAPriorityTarget}} checked {{/if}} {{#unless ../isAdmin}} disabled {{/unless}} /></td>
         </tr>
@@ -49,7 +49,7 @@
                     <span class="existing-report-yes-no-answers">{{{getSpanForYesNoAnswerReportLevel "MPP" this}}}
                     {{{getSpanForYesNoAnswerReportLevel "SAFI" this}}}
                     {{{getSpanForYesNoAnswerReportLevel "OCU" this}}}
-                    {{{getSpanForYesNoAnswerReportLevel "PVC" this}}}</span>
+                    {{{getSpanForYesNoAnswerReportLevel "SCP" this}}}</span>
             </div>
             <p>{{{getNotesForWeb}}}</p>
         </article>
