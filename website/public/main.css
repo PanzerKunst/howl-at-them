@@ -636,7 +636,7 @@ textarea.form-control {
   padding-bottom: 5em; }
   #state-legislators #content #primary-search-fields {
     margin: 0 auto;
-    width: 45.5em; }
+    width: 46.5em; }
     #state-legislators #content #primary-search-fields:after {
       content: "";
       display: table;
@@ -657,7 +657,7 @@ textarea.form-control {
   #state-legislators #content #chamber-or-target-radio-buttons {
     margin-top: 0.45em; }
     #state-legislators #content #chamber-or-target-radio-buttons.form-group {
-      width: 22.5em;
+      width: 23.5em;
       margin-right: 0; }
     #state-legislators #content #chamber-or-target-radio-buttons:after {
       content: "";

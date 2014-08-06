@@ -222,7 +222,7 @@ object StateLegislatorDto {
       case Some(chamberOrTarget) =>
         if (chamberOrTarget == Chamber.HOUSE.getAbbr) {
           ("""
-          and title = 'Representative'""",
+          and title in ('Representative', 'Assembly Member')""",
             "")
         } else if (chamberOrTarget == Chamber.SENATE.getAbbr) {
           ("""
