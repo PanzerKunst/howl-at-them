@@ -3943,8 +3943,9 @@ CBR.Models.StateLegislator.chamber = {
             url: "/api/state-legislators",
             data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
             onSuccess: function (responseText, responseXML) {
-                this._storeMatchingStateLegislators(JSON.parse(responseText));
-                this._createResultsTable();
+                var jsonResponse = JSON.parse(responseText);
+                this._storeMatchingStateLegislators(jsonResponse.stateLegislators);
+                this._createResultsTable(jsonResponse.allLegislatorsInState);
             }.bind(this),
             onFailure: function (xhr) {
                 alert("AJAX fail :(");
@@ -3952,7 +3953,7 @@ CBR.Models.StateLegislator.chamber = {
         }).get();
     },
 
-    _createResultsTable: function () {
+    _createResultsTable: function (allLegislatorsInState) {
         this.$searchResultsSection.html(
             CBR.Templates.stateLegislatorsResults({
                 legislators: this._getStateLegislators(),
@@ -3985,14 +3986,14 @@ CBR.Models.StateLegislator.chamber = {
         jQuery(".edit-report").click(jQuery.proxy(this._showEditReportModal, this));
         jQuery(".delete-report").click(jQuery.proxy(this._showDeleteReportModal, this));
 
-        this.$tableHeaders = jQuery("#search-results thead");
+        this.$tableHeaders = jQuery("#search-results").find("thead");
 
         if (jQuery.browser.mobile || !this._isBrowserFullWidth()) {
             this.$tableHeaderVisibleEvenWhenNoResults.hide();
             this.$tableHeaders.show();
         }
 
-        this._updateWhipCounts();
+        this._updateWhipCounts(allLegislatorsInState);
     },
 
     _doPeriodicSearch: function () {
@@ -4012,8 +4013,9 @@ CBR.Models.StateLegislator.chamber = {
                 url: "/api/state-legislators",
                 data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
                 onSuccess: function (responseText, responseXML) {
-                    this._storeMatchingStateLegislators(JSON.parse(responseText));
-                    this._updateResultsTable();
+                    var jsonResponse = JSON.parse(responseText);
+                    this._storeMatchingStateLegislators(jsonResponse.stateLegislators);
+                    this._updateResultsTable(jsonResponse.allLegislatorsInState);
                     this.isPeriodicSearchRunning = false;
                 }.bind(this),
                 onFailure: function (xhr) {
@@ -4031,7 +4033,7 @@ CBR.Models.StateLegislator.chamber = {
         this._filterResults(null);
     },
 
-    _updateResultsTable: function () {
+    _updateResultsTable: function (allLegislatorsInState) {
         var isWhipCountOutdated = false;
 
         this.$results.each(function (index, element) {
@@ -4103,7 +4105,7 @@ CBR.Models.StateLegislator.chamber = {
         }.bind(this));
 
         if (isWhipCountOutdated) {
-            this._updateWhipCounts();
+            this._updateWhipCounts(allLegislatorsInState);
         }
     },
 
@@ -4394,13 +4396,13 @@ CBR.Models.StateLegislator.chamber = {
         return _.contains(content, "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT");
     },
 
-    _calculateWhipCountForChamber: function (chamber) {
+    _calculateWhipCountForChamber: function (chamber, allLegislatorsInState) {
         var nbLegislators = 0;
         var nbLegislatorsSupportive = 0;
         var nbLegislatorsNeedingConvincing = 0;
         var nbLegislatorsNotSupportive = 0;
 
-        this._getStateLegislators().forEach(function (legislator) {
+        allLegislatorsInState.forEach(function (legislator) {
             if (_.isEqual(legislator.getChamber(), chamber)) {
                 nbLegislators++;
 
@@ -4498,14 +4500,18 @@ CBR.Models.StateLegislator.chamber = {
             whipCountUnknown];
     },
 
-    _updateWhipCounts: function () {
-        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
+    _updateWhipCounts: function (allLegislatorsInState) {
+        var allLegislators = allLegislatorsInState.map(function (stateLegislator) {
+            return new CBR.Models.StateLegislator(stateLegislator);
+        });
+
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house, allLegislators);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
         jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
         jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
 
-        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate);
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate, allLegislators);
         jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
         jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
         jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));

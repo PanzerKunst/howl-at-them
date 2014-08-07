@@ -1,7 +1,7 @@
 #state-legislators {
   $state-legislators-page-min-width: 61.15em;  // ~856px
 
-  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
+  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6.5em;
   $state-legislators-page-full-width-mq-breakpoint: $state-legislators-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
 
   @media screen and (min-width: $state-legislators-page-full-width-mq-breakpoint) {
