@@ -1,12 +1,11 @@
 package controllers.api
 
-import models.{SupportLevel, Chamber}
-import play.api.mvc.{Session, Action, Controller}
-import db.{CommitteeDto, StateLegislatorDto}
-import play.api.libs.json.Json
-import services.JsonUtil
-import models.frontend.{WhipCount, DetailedStateLegislator}
 import controllers.Application
+import db.{CommitteeDto, StateLegislatorDto}
+import models.frontend.DetailedStateLegislator
+import play.api.libs.json.Json
+import play.api.mvc.{Action, Controller}
+import services.JsonUtil
 
 object StateLegislatorApi extends Controller {
   def search = Action { request =>
@@ -42,18 +41,14 @@ object StateLegislatorApi extends Controller {
         List()
       }
 
-      val allLegislatorsInState = StateLegislatorDto.getOfStateId(usStateId)
-
       val matchingLegislators = if (!chamberAbbrOrPriorityTarget.isDefined && !leadershipPositionId.isDefined && committees.isEmpty) {
-        allLegislatorsInState
+        StateLegislatorDto.getOfStateId(usStateId)
       } else {
         StateLegislatorDto.getMatching(usStateId, chamberAbbrOrPriorityTarget, leadershipPositionId, committees)
       }
 
-      Ok(Json.obj(
-        "stateLegislators" -> matchingLegislators,
-        "allLegislatorsInState" -> allLegislatorsInState
-      )).withSession(newSession)
+      Ok(Json.toJson(matchingLegislators))
+        .withSession(newSession)
         .withHeaders(Application.doNotCachePage: _*)
     } else
       Forbidden

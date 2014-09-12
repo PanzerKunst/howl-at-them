@@ -228,9 +228,8 @@ CBR.Controllers.StateLegislators = new Class({
             url: "/api/state-legislators",
             data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
             onSuccess: function (responseText, responseXML) {
-                var jsonResponse = JSON.parse(responseText);
-                this._storeMatchingStateLegislators(jsonResponse.stateLegislators);
-                this._createResultsTable(jsonResponse.allLegislatorsInState);
+                this._storeMatchingStateLegislators(JSON.parse(responseText));
+                this._createResultsTable();
             }.bind(this),
             onFailure: function (xhr) {
                 alert("AJAX fail :(");
@@ -238,7 +237,7 @@ CBR.Controllers.StateLegislators = new Class({
         }).get();
     },
 
-    _createResultsTable: function (allLegislatorsInState) {
+    _createResultsTable: function () {
         this.$searchResultsSection.html(
             CBR.Templates.stateLegislatorsResults({
                 legislators: this._getStateLegislators(),
@@ -278,7 +277,7 @@ CBR.Controllers.StateLegislators = new Class({
             this.$tableHeaders.show();
         }
 
-        this._updateWhipCounts(allLegislatorsInState);
+        this._updateWhipCounts();
     },
 
     _doPeriodicSearch: function () {
@@ -298,9 +297,8 @@ CBR.Controllers.StateLegislators = new Class({
                 url: "/api/state-legislators",
                 data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
                 onSuccess: function (responseText, responseXML) {
-                    var jsonResponse = JSON.parse(responseText);
-                    this._storeMatchingStateLegislators(jsonResponse.stateLegislators);
-                    this._updateResultsTable(jsonResponse.allLegislatorsInState);
+                    this._storeMatchingStateLegislators(JSON.parse(responseText));
+                    this._updateResultsTable();
                     this.isPeriodicSearchRunning = false;
                 }.bind(this),
                 onFailure: function (xhr) {
@@ -318,7 +316,7 @@ CBR.Controllers.StateLegislators = new Class({
         this._filterResults(null);
     },
 
-    _updateResultsTable: function (allLegislatorsInState) {
+    _updateResultsTable: function () {
         var isWhipCountOutdated = false;
 
         this.$results.each(function (index, element) {
@@ -390,7 +388,7 @@ CBR.Controllers.StateLegislators = new Class({
         }.bind(this));
 
         if (isWhipCountOutdated) {
-            this._updateWhipCounts(allLegislatorsInState);
+            this._updateWhipCounts();
         }
     },
 
@@ -681,13 +679,13 @@ CBR.Controllers.StateLegislators = new Class({
         return _.contains(content, "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT");
     },
 
-    _calculateWhipCountForChamber: function (chamber, allLegislatorsInState) {
+    _calculateWhipCountForChamber: function (chamber) {
         var nbLegislators = 0;
         var nbLegislatorsSupportive = 0;
         var nbLegislatorsNeedingConvincing = 0;
         var nbLegislatorsNotSupportive = 0;
 
-        allLegislatorsInState.forEach(function (legislator) {
+        this._getStateLegislators().forEach(function (legislator) {
             if (_.isEqual(legislator.getChamber(), chamber)) {
                 nbLegislators++;
 
@@ -785,18 +783,14 @@ CBR.Controllers.StateLegislators = new Class({
             whipCountUnknown];
     },
 
-    _updateWhipCounts: function (allLegislatorsInState) {
-        var allLegislators = allLegislatorsInState.map(function (stateLegislator) {
-            return new CBR.Models.StateLegislator(stateLegislator);
-        });
-
-        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house, allLegislators);
+    _updateWhipCounts: function () {
+        var whipCountForHouse = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.house);
         jQuery(this.$whipCountListItem[0]).html(CBR.Templates.whipCountListItem(whipCountForHouse[0]));
         jQuery(this.$whipCountListItem[1]).html(CBR.Templates.whipCountListItem(whipCountForHouse[1]));
         jQuery(this.$whipCountListItem[2]).html(CBR.Templates.whipCountListItem(whipCountForHouse[2]));
         jQuery(this.$whipCountListItem[3]).html(CBR.Templates.whipCountListItem(whipCountForHouse[3]));
 
-        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate, allLegislators);
+        var whipCountForSenate = this._calculateWhipCountForChamber(CBR.Models.StateLegislator.chamber.senate);
         jQuery(this.$whipCountListItem[4]).html(CBR.Templates.whipCountListItem(whipCountForSenate[0]));
         jQuery(this.$whipCountListItem[5]).html(CBR.Templates.whipCountListItem(whipCountForSenate[1]));
         jQuery(this.$whipCountListItem[6]).html(CBR.Templates.whipCountListItem(whipCountForSenate[2]));
