@@ -1,15 +1,16 @@
 package services
 
-import play.api.libs.json.{JsObject, Json}
-import play.Play
-import play.api.libs.ws.WS
-import concurrent.Future
-import models.{UsState, Chamber, StateAndDistrict}
-import play.api.Logger
 import db.{StateLegislatorDto, UsStateDto}
 import models.frontend.DetailedStateLegislator
-import concurrent.ExecutionContext.Implicits.global
+import models.{Chamber, StateAndDistrict, UsState}
+import play.Play
+import play.api.Logger
 import play.api.Play.current
+import play.api.libs.json.{JsObject, Json}
+import play.api.libs.ws.WS
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object GoogleCivicInformationService {
   val gciApiKey = Play.application().configuration().getString("google.civicinformation.apikey")
@@ -35,7 +36,7 @@ object GoogleCivicInformationService {
             for (division <- divisions.values) {
               (division \ "scope").asOpt[String] match {
                 case Some(divisionScope) =>
-                  if (divisionScope == divisionScopeHouse || divisionScope == divisionScopeSenate) {
+                  if (divisionScope == divisionScopeHouse) {
                     val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
 
                     UsStateDto.getOfId(usStateId) match {
@@ -50,12 +51,41 @@ object GoogleCivicInformationService {
                         )
 
                         for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
-                          if ((stateLegislator.getChamber == Chamber.SENATE && divisionScope == divisionScopeSenate) ||
-                            (stateLegislator.getChamber == Chamber.HOUSE && divisionScope == divisionScopeHouse)) {
+                          if (stateLegislator.getChamber == Chamber.HOUSE && divisionScope == divisionScopeHouse) {
                             stateLegislators = stateLegislators :+ stateLegislator
                           }
                         }
 
+                      case None =>
+                    }
+                  }
+                  else if (divisionScope == divisionScopeSenate) {
+                    val usStateId = (response.json \ "normalizedInput" \ "state").as[String]
+
+                    UsStateDto.getOfId(usStateId) match {
+                      case Some(usState) =>
+                        val stateAndDistrict = StateAndDistrict(
+                          usState,
+                          voteSmartDistrictFromWebServiceResult(
+                            (division \ "name").as[String],
+                            usState,
+                            divisionScope
+                          )
+                        )
+
+                        for (stateLegislator <- StateLegislatorDto.getOfDistricts(List(stateAndDistrict))) {
+                          if (stateLegislator.getChamber == Chamber.SENATE) {
+                            stateLegislators = stateLegislators :+ stateLegislator
+                          }
+
+                          // For some states (Arizona, Idaho, Nebraska, New Jersey, North Dakota, South Dakota, Washington),
+                          // representatives are elected within senate districts.
+                          if (stateLegislator.getChamber == Chamber.HOUSE && (
+                            usStateId == "AZ" || usStateId == "ID" || usStateId == "NE" || usStateId == "NJ" || usStateId == "ND" || usStateId == "SD" || usStateId == "WA"
+                            )) {
+                            stateLegislators = stateLegislators :+ stateLegislator
+                          }
+                        }
                       case None =>
                     }
                   }
@@ -126,8 +156,8 @@ object GoogleCivicInformationService {
       districtFromWS.replaceAll("^New\\sHampshire\\sState\\sHouse\\sdistrict\\s(\\w+)\\sCounty\\sNo\\.\\s(\\d+)$", "$1 $2")
     } else if (usState.id == "SC" && divisionScope == divisionScopeHouse) {
       districtFromWS.replaceAll("^South\\sCarolina\\sState\\sHouse\\sdistrict\\sHD-(\\d+)$", "$1")
-      .toInt  // To get rid of the heading zero
-      .toString
+        .toInt // To get rid of the heading zero
+        .toString
     } else if (usState.id == "VT") {
       districtFromWS.replaceAll("^Vermont\\s((\\w|-)+)\\sState\\s(House|Senate)\\sdistrict$", "$1")
     } else {
