@@ -306,7 +306,7 @@ CBR.Controllers.BaseController = new Class({
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-                url: "/api/reports/",
+                url: "/api/reports",
                 data: JSON.stringify(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);

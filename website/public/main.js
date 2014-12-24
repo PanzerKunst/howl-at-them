@@ -3127,7 +3127,7 @@ CBR.Models.StateLegislator.chamber = {
                 urlEncoded: false,
                 headers: { "Content-Type": "application/json" },
                 emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-                url: "/api/reports/",
+                url: "/api/reports",
                 data: JSON.stringify(updatedReport),
                 onSuccess: function (responseText, responseXML) {
                     location.replace(successUrl);
@@ -3664,7 +3664,7 @@ CBR.Models.StateLegislator.chamber = {
             urlEncoded: false,
             headers: { "Content-Type": "application/json" },
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/state-legislators/",
+            url: "/api/state-legislators",
             data: JSON.stringify(updatedStateLegislator),
             onSuccess: function (responseText, responseXML) {
                 this.showAlert(floatingAlertText);
@@ -4256,7 +4256,7 @@ CBR.Models.StateLegislator.chamber = {
             urlEncoded: false,
             headers: { "Content-Type": "application/json" },
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/state-legislators/",
+            url: "/api/state-legislators",
             data: JSON.stringify(updatedStateLegislator),
             onSuccess: function (responseText, responseXML) {
                 this.showAlert(floatingAlertText);

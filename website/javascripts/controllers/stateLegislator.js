@@ -279,7 +279,7 @@ CBR.Controllers.StateLegislator = new Class({
             urlEncoded: false,
             headers: { "Content-Type": "application/json" },
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
-            url: "/api/state-legislators/",
+            url: "/api/state-legislators",
             data: JSON.stringify(updatedStateLegislator),
             onSuccess: function (responseText, responseXML) {
                 this.showAlert(floatingAlertText);
