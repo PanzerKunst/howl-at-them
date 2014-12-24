@@ -62,7 +62,7 @@ module.exports = function (grunt) {
                     "libs/mootools/mootools-more-1.5.0.js",
                     "libs/bootstrap/js/bootstrap.min.js",
                     "libs/fastclick.js",
-                    "libs/handlebars.runtime-v1.3.0.js",
+                    "libs/handlebars.runtime-v2.0.0.js",
                     "libs/lodash.min.js",
                     "libs/jquery.visible.min.js",
                     "libs/js-breakpoints/breakpoints.js",
