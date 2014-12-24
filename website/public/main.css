@@ -27,86 +27,6 @@ html:after {
   src: url("fonts/open-sans/OpenSans-BoldItalic.ttf");
   font-weight: bold;
   font-style: italic; }
-@font-face {
-  font-family: 'Source-Sans-Pro';
-  src: url("fonts/source-sans-pro/SourceSansPro-Regular.otf"); }
-@font-face {
-  font-family: 'Source-Sans-Pro';
-  src: url("fonts/source-sans-pro/SourceSansPro-Bold.otf");
-  font-weight: bold; }
-@font-face {
-  font-family: "Source-Sans-Pro";
-  src: url("fonts/source-sans-pro/SourceSansPro-It.otf");
-  font-style: italic; }
-@font-face {
-  font-family: "Source-Sans-Pro";
-  src: url("fonts/source-sans-pro/SourceSansPro-BoldIt.otf");
-  font-weight: bold;
-  font-style: italic; }
-@font-face {
-  font-family: 'Clear-Sans';
-  src: url("fonts/clear-sans/ClearSans-Regular.ttf"); }
-@font-face {
-  font-family: 'Clear-Sans';
-  src: url("fonts/clear-sans/ClearSans-Bold.ttf");
-  font-weight: bold; }
-@font-face {
-  font-family: "Clear-Sans";
-  src: url("fonts/clear-sans/ClearSans-Italic.ttf");
-  font-style: italic; }
-@font-face {
-  font-family: "Clear-Sans";
-  src: url("fonts/clear-sans/ClearSans-BoldItalic.ttf");
-  font-weight: bold;
-  font-style: italic; }
-@font-face {
-  font-family: 'Fira-sans';
-  src: url("fonts/fira-sans/FiraSansOT-Regular.otf"); }
-@font-face {
-  font-family: 'Fira-sans';
-  src: url("fonts/fira-sans/FiraSansOT-Bold.otf");
-  font-weight: bold; }
-@font-face {
-  font-family: "Fira-sans";
-  src: url("fonts/fira-sans/FiraSansOT-RegularItalic.otf");
-  font-style: italic; }
-@font-face {
-  font-family: "Fira-sans";
-  src: url("fonts/fira-sans/FiraSansOT-BoldItalic.otf");
-  font-weight: bold;
-  font-style: italic; }
-@font-face {
-  font-family: 'Karla';
-  src: url("fonts/karla/Karla-Regular.otf"); }
-@font-face {
-  font-family: 'Karla';
-  src: url("fonts/karla/Karla-Bold.otf");
-  font-weight: bold; }
-@font-face {
-  font-family: "Karla";
-  src: url("fonts/karla/Karla-Italic.otf");
-  font-style: italic; }
-@font-face {
-  font-family: "Karla";
-  src: url("fonts/karla/Karla-BoldItalic.otf");
-  font-weight: bold;
-  font-style: italic; }
-@font-face {
-  font-family: 'Roboto';
-  src: url("fonts/roboto/Roboto-Regular.otf"); }
-@font-face {
-  font-family: 'Roboto';
-  src: url("fonts/roboto/Roboto-Bold.otf");
-  font-weight: bold; }
-@font-face {
-  font-family: "Roboto";
-  src: url("fonts/roboto/Roboto-Italic.otf");
-  font-style: italic; }
-@font-face {
-  font-family: "Roboto";
-  src: url("fonts/roboto/Roboto-BoldItalic.otf");
-  font-weight: bold;
-  font-style: italic; }
 #content {
   width: 100%;
   margin: 0 auto;
@@ -336,13 +256,13 @@ tr.clickable {
   color: #a94442;
   text-align: center; }
 #content .reports > article {
-  border: 1px solid #dddddd;
+  border: 1px solid #ddd;
   border-bottom: none;
   padding: 5px; }
   #content .reports > article:nth-child(even) {
     background-color: #f9f9f9; }
   #content .reports > article:last-child {
-    border-bottom: 1px solid #dddddd; }
+    border-bottom: 1px solid #ddd; }
 #content .reports span,
 #content .reports a,
 #content .reports p {
@@ -852,7 +772,7 @@ textarea.form-control {
     margin-bottom: 0; }
   #state-legislator #content #legislator-data img {
     margin-bottom: 10px;
-    border: 4px solid #dddddd; }
+    border: 4px solid #ddd; }
   @media screen and (min-width: 49.5em) {
     #state-legislator #content #legislator-data {
       width: 100%; }
@@ -979,3 +899,5 @@ textarea.form-control {
   padding-top: 0; }
 #state-legislator #content .reports > .alert-info {
   text-align: center; }
+
+/*# sourceMappingURL=main.css.map */
