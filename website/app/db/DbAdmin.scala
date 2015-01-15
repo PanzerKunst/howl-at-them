@@ -71,6 +71,7 @@ object DbAdmin {
     dropTableVoteSmartCommittee(isTemp)
     dropTableVoteSmartLeadingOfficial(isTemp)
     dropTableVoteSmartLeadershipPosition(isTemp)
+    dropTableVoteSmartCandidateWebAddress(isTemp)
     dropTableVoteSmartCandidateOffice(isTemp)
     dropTableVoteSmartCandidate(isTemp)
   }
