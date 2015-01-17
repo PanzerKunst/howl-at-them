@@ -11,6 +11,6 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
-  "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+  "org.postgresql" % "postgresql" % "9.3-1102-jdbc41",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "[2.4,)"
 )

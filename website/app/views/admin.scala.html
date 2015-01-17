@@ -16,7 +16,18 @@
 <p>If you notice that Howl At Them displays outdated information, you can fetch the latest data from Vote Smart. The
     current data will be replaced by the new one only if the whole process completes successfully.</p>
 
-<p>You will be able to follow the advancement of this data update. It will take several minutes.</p>
+<p>Once an admin launches an <em>Update Data</em>, the feature will be blocked until it completes. This is a long process: it takes an hour or two.</p>
+
+<div class="alert alert-warning" role="alert">
+    <p>A minute after clicking on the <em>Update Data</em> button, you may see a popup window with the text "AJAX fail :(".
+        This is most likely because the web service call timed out (it took longer than 60s). It doesn’t mean in any way that the script failed.</p>
+
+    <p>The easiest way to know that the <em>Update Data</em> script completed successfully, is for the <em>Update Data</em> button to appear again and be clickable.</p>
+
+    <p>If you want to be sure, check the log file (<code>howl-at-them/website/target/</code> <code>universal/stage/logs/application.log</code>).
+        The last task of <em>Update Data</em> is the re-creation of the <code>state_legislator</code> view. This means that if you see "DbAdmin.createViewStateLegislator():"
+        in the log file, it's a very good sign that the process completed successfully.</p>
+</div>
 
 @if(isServiceRunning) {
 <div class="alert alert-info">Already running!!!</div>
