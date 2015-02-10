@@ -121,7 +121,7 @@ object VoteSmartCandidateService {
     val electionOfficeId = if (electionOfficeIdJson != "") Some(electionOfficeIdJson.toInt) else None
 
     val electionStateIdJson = (voteSmartCandidateJson \ "electionStateId").as[String]
-    val electionStateId = if (electionStateIdJson != "") Some(electionStateIdJson) else None
+    val electionStateId = if (electionStateIdJson != "" && electionStateIdJson != "NA") Some(electionStateIdJson) else None
 
     val electionOfficeTypeIdJson = (voteSmartCandidateJson \ "electionOfficeTypeId").as[String]
     val electionOfficeTypeId = if (electionOfficeTypeIdJson != "") Some(electionOfficeTypeIdJson) else None
