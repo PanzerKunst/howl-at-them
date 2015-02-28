@@ -1,5 +1,7 @@
 package db
 
+import java.util.Date
+
 import anorm._
 import play.api.db.DB
 import play.api.Logger
@@ -217,7 +219,16 @@ object StateLegislatorDto {
     }
   }
 
-  def getMatching(usStateId: String, chamberAbbrOrPriorityTarget: Option[String], leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
+  def getMatching(usStateId: String, nbDaysSinceLastReport: Option[Int], chamberAbbrOrPriorityTarget: Option[String], leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
+    val nbDaysSinceLastReportClause = nbDaysSinceLastReport match {
+      case Some(nbDays) =>
+        val minTimestamp = new Date().getTime - nbDays * 24 * 3600 * 1000
+
+        """
+          and max_creation_timestamp > """ + minTimestamp
+      case None => ""
+    }
+
     val (titleClause, priorityTargetClause) = chamberAbbrOrPriorityTarget match {
       case Some(chamberOrTarget) =>
         if (chamberOrTarget == Chamber.HOUSE.getAbbr) {
@@ -264,18 +275,27 @@ object StateLegislatorDto {
             s.name,
             r.id as report_id, r.author_name, r.support_level, r.is_money_in_politics_a_problem, r.is_supporting_amendment_to_fix_it,
             r.is_opposing_citizens_united, r.is_supporting_convention_process, r.contact, r.creation_timestamp,
-            r.notes
+            r.notes,
+            lr.max_creation_timestamp
           from state_legislator l
           inner join us_state s
             on s.id = l.us_state_id
           left join report r
             on r.candidate_id = l.id
             and r.is_deleted is false
+          left join (
+            select candidate_id, is_deleted, max(creation_timestamp) max_creation_timestamp
+            from report
+            group by candidate_id, is_deleted
+          ) lr
+            on lr.candidate_id = l.id
+            and lr.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
-      titleClause +
-      priorityTargetClause +
-      leadershipPositionIdClause +
-      committeeIdsClause + """
+            nbDaysSinceLastReportClause +
+            titleClause +
+            priorityTargetClause +
+            leadershipPositionIdClause +
+            committeeIdsClause + """
           order by title, last_name, first_name, creation_timestamp desc;"""
 
     // Level is debug to reduce log spam

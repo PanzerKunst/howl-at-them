@@ -3863,6 +3863,7 @@ CBR.Models.StateLegislator.chamber = {
         this.parent();
 
         this.$usStateSelect = jQuery("#us-state");
+        this.$nbDaysSinceLastReport = jQuery("#nb-days-since-last-report");
 
         this.$chamberOrTargetFilterRadios = jQuery("[name='chamber-or-target-filter']");
         this.$houseChamberFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
@@ -3872,7 +3873,7 @@ CBR.Models.StateLegislator.chamber = {
         this.$leadershipPositionSelect = jQuery("#leadership-position");
         this.$committeeSelect = jQuery("#committee");
 
-        this.$whipCountListItem = jQuery("#whip-count-per-chamber li");
+        this.$whipCountListItem = jQuery("#whip-count-per-chamber").find("li");
 
         this.$filterSection = jQuery(".table-filter");
         this.$textFilters = this.$filterSection.find("input[type=text]");
@@ -3905,6 +3906,10 @@ CBR.Models.StateLegislator.chamber = {
             this._doSubmit(e);
         }.bind(this));
 
+        this.$nbDaysSinceLastReport.change(function (e) {
+            this._doSubmit(e);
+        }.bind(this));
+
         this.$chamberOrTargetFilterRadios.change(jQuery.proxy(this._doSubmit, this));
 
         this.$leadershipPositionSelect.change(function (e) {
@@ -3932,6 +3937,12 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _initValidation: function () {
+        this.validator = new CBR.Services.Validator({
+            fieldIds: [
+                "nb-days-since-last-update"
+            ]
+        });
+
         this.initEditReportValidation();
     },
 
@@ -4058,28 +4069,35 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _doSubmit: function (e) {
-        this.$searchResultsSection.html('<div class="data-loading"></div>');
+        if (e) {
+            e.preventDefault();
+        }
 
-        var stateLegislatorSearch = {
-            usStateId: this.$usStateSelect.val(),
-            chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
-            leadershipPositionId: this._getSelectedLeadershipPositionId(),
-            committeeName: this._getSelectedCommitteeName()
-        };
+        if (this.validator.isValid()) {
+            this.$searchResultsSection.html('<div class="data-loading"></div>');
 
-        new Request({
-            urlEncoded: false,
-            headers: { "Content-Type": "application/json" },
-            url: "/api/state-legislators",
-            data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
-                this._storeMatchingStateLegislators(JSON.parse(responseText));
-                this._createResultsTable();
-            }.bind(this),
-            onFailure: function (xhr) {
-                alert("AJAX fail :(");
-            }
-        }).get();
+            var stateLegislatorSearch = {
+                usStateId: this.$usStateSelect.val(),
+                nbDaysSinceLastReport: this._getSelectedNbDaysSinceLastReport(),
+                chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
+                leadershipPositionId: this._getSelectedLeadershipPositionId(),
+                committeeName: this._getSelectedCommitteeName()
+            };
+
+            new Request({
+                urlEncoded: false,
+                headers: { "Content-Type": "application/json" },
+                url: "/api/state-legislators",
+                data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
+                onSuccess: function (responseText, responseXML) {
+                    this._storeMatchingStateLegislators(JSON.parse(responseText));
+                    this._createResultsTable();
+                }.bind(this),
+                onFailure: function (xhr) {
+                    alert("AJAX fail :(");
+                }
+            }).get();
+        }
     },
 
     _createResultsTable: function () {
@@ -4126,11 +4144,12 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _doPeriodicSearch: function () {
-        if (!this.isPeriodicSearchRunning) {
+        if (!this.isPeriodicSearchRunning && this.validator.isValid()) {
             this.isPeriodicSearchRunning = true;
 
             var stateLegislatorSearch = {
                 usStateId: this.$usStateSelect.val(),
+                nbDaysSinceLastReport: this._getSelectedNbDaysSinceLastReport(),
                 chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
                 leadershipPositionId: this._getSelectedLeadershipPositionId(),
                 committeeName: this._getSelectedCommitteeName()
@@ -4668,6 +4687,11 @@ CBR.Models.StateLegislator.chamber = {
     _getSelectedCommitteeName: function () {
         var selectedCommitteeName = this.$committeeSelect ? this.$committeeSelect.val() : null;
         return selectedCommitteeName ? selectedCommitteeName : null;
+    },
+
+    _getSelectedNbDaysSinceLastReport: function () {
+        var selectedNbDaysSinceLastReport = this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
+        return selectedNbDaysSinceLastReport ? selectedNbDaysSinceLastReport : null;
     }
 });
 ;Handlebars.registerHelper("getSpanForYesNoAnswerLegislatorLevel", function(question, legislator) {

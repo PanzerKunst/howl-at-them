@@ -14,6 +14,15 @@ object StateLegislatorApi extends Controller {
 
       var newSession = request.session + ("selectedUsStateId" -> usStateId)
 
+      val nbDaysSinceLastReport = if (request.queryString.contains("nbDaysSinceLastReport")) {
+        val nbDays = request.queryString.get("nbDaysSinceLastReport").get.head
+        newSession = newSession + ("selectedNbDaysSinceLastReport" -> nbDays)
+        Some(nbDays.toInt)
+      } else {
+        newSession = newSession - "selectedNbDaysSinceLastReport"
+        None
+      }
+
       val chamberAbbrOrPriorityTarget = if (request.queryString.contains("chamberAbbrOrPriorityTarget")) {
         val chamberOrTarget = request.queryString.get("chamberAbbrOrPriorityTarget").get.head
         newSession = newSession + ("selectedChamberOrTargetSearchCriteria" -> chamberOrTarget)
@@ -41,10 +50,10 @@ object StateLegislatorApi extends Controller {
         List()
       }
 
-      val matchingLegislators = if (!chamberAbbrOrPriorityTarget.isDefined && !leadershipPositionId.isDefined && committees.isEmpty) {
+      val matchingLegislators = if (nbDaysSinceLastReport.isEmpty && chamberAbbrOrPriorityTarget.isEmpty && leadershipPositionId.isEmpty && committees.isEmpty) {
         StateLegislatorDto.getOfStateId(usStateId)
       } else {
-        StateLegislatorDto.getMatching(usStateId, chamberAbbrOrPriorityTarget, leadershipPositionId, committees)
+        StateLegislatorDto.getMatching(usStateId, nbDaysSinceLastReport, chamberAbbrOrPriorityTarget, leadershipPositionId, committees)
       }
 
       Ok(Json.toJson(matchingLegislators))

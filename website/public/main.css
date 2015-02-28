@@ -555,27 +555,30 @@ textarea.form-control {
   max-width: 61.15em;
   padding-bottom: 5em; }
   #state-legislators #content #primary-search-fields {
-    margin: 0 auto;
-    width: 46.5em; }
+    margin: 0 auto; }
     #state-legislators #content #primary-search-fields:after {
       content: "";
       display: table;
       clear: both; }
-    #state-legislators #content #primary-search-fields > .form-group {
-      float: left;
-      margin-right: 4em;
-      width: 19em; }
-  #state-legislators #content #advanced-search-fields:after {
-    content: "";
-    display: table;
-    clear: both; }
-  #state-legislators #content #advanced-search-fields > .form-group {
+  #state-legislators #content #state-form-group {
     width: 16em; }
-  #state-legislators #content #advanced-search-fields #committees-form-group {
-    width: 41.15em;
-    margin-right: 0; }
+    #state-legislators #content #state-form-group > label,
+    #state-legislators #content #state-form-group > #us-state {
+      width: 16em; }
+  #state-legislators #content #last-updated-form-group {
+    margin-right: 4em;
+    width: 10em; }
+    #state-legislators #content #last-updated-form-group > label {
+      width: 10em; }
+    #state-legislators #content #last-updated-form-group > .form-control,
+    #state-legislators #content #last-updated-form-group > span {
+      display: inline-block; }
+    #state-legislators #content #last-updated-form-group > .form-control {
+      width: 2.5em;
+      text-align: center;
+      margin: 0 0.5em; }
   #state-legislators #content #chamber-or-target-radio-buttons {
-    margin-top: 0.45em; }
+    margin-top: 2.15em; }
     #state-legislators #content #chamber-or-target-radio-buttons.form-group {
       width: 23.5em;
       margin-right: 0; }
@@ -588,12 +591,15 @@ textarea.form-control {
       margin-right: 2em; }
       #state-legislators #content #chamber-or-target-radio-buttons > .check-or-radio:last-child {
         margin-right: 0; }
-  #state-legislators #content label[for="us-state"] {
-    display: inline-block;
-    width: 3em; }
-  #state-legislators #content #us-state {
-    display: inline-block;
+  #state-legislators #content #advanced-search-fields:after {
+    content: "";
+    display: table;
+    clear: both; }
+  #state-legislators #content #advanced-search-fields > .form-group {
     width: 16em; }
+  #state-legislators #content #advanced-search-fields #committees-form-group {
+    width: 41.15em;
+    margin-right: 0; }
   #state-legislators #content > #whip-count-per-chamber:after {
     content: "";
     display: table;

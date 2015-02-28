@@ -36,36 +36,47 @@
 
     // Wouldn't override if declaration was outside #content
     #primary-search-fields {
-      margin: 0 auto;
-      width: $label-width-us-state + $field-width-search-pages + $odd-form-groups-margin-right * 2 + $chamber-or-target-radio-buttons-width;
-
-      @include clearfix;
-
-      > .form-group {
-        float: left;
-        margin-right: $odd-form-groups-margin-right * 2;
-        width: $label-width-us-state + $field-width-search-pages;
-      }
-    }
-
-    #advanced-search-fields {
       // Floated children
       @include clearfix;
 
-      > .form-group {
+      margin: 0 auto;
+    }
+
+    #state-form-group {
+      width: $field-width-search-pages;
+
+      > label,
+      > #us-state {
         width: $field-width-search-pages;
       }
+    }
 
-      // Needs to be nested in #advanced-search-fields in order to be high-enough priority
-      #committees-form-group {
-        width: $state-legislators-page-min-width - 2 * $page-side-padding - $field-width-search-pages - $odd-form-groups-margin-right;
-        margin-right: 0;
+    #last-updated-form-group {
+      margin-right: 4em;
+
+      $field-width-last-updated: 10em;
+
+      width: $field-width-last-updated;
+
+      > label {
+        width: $field-width-last-updated;
+      }
+
+      > .form-control,
+      > span {
+        display: inline-block;
+      }
+
+      > .form-control {
+        width: 2.5em;
+        text-align: center;
+        margin: 0 0.5em;
       }
     }
 
     // Wouldn't override if declaration was outside #content
     #chamber-or-target-radio-buttons {
-      margin-top: 0.45em;
+      margin-top: 2.15em;
 
       // Needs to be inside ".form-group" to take precedence
       &.form-group {
@@ -85,14 +96,19 @@
       }
     }
 
-    label[for="us-state"] {
-      display: inline-block;
-      width: $label-width-us-state;
-    }
+    #advanced-search-fields {
+      // Floated children
+      @include clearfix;
 
-    #us-state {
-      display: inline-block;
-      width: $field-width-search-pages;
+      > .form-group {
+        width: $field-width-search-pages;
+      }
+
+      // Needs to be nested in #advanced-search-fields in order to be high-enough priority
+      #committees-form-group {
+        width: $state-legislators-page-min-width - 2 * $page-side-padding - $field-width-search-pages - $odd-form-groups-margin-right;
+        margin-right: 0;
+      }
     }
 
     > #whip-count-per-chamber {
