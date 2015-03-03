@@ -3906,7 +3906,7 @@ CBR.Models.StateLegislator.chamber = {
             this._doSubmit(e);
         }.bind(this));
 
-        this.$nbDaysSinceLastReport.change(function (e) {
+        this.$nbDaysSinceLastReport.keyup(function (e) {
             this._doSubmit(e);
         }.bind(this));
 
@@ -3939,7 +3939,7 @@ CBR.Models.StateLegislator.chamber = {
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
-                "nb-days-since-last-update"
+                "nb-days-since-last-report"
             ]
         });
 
@@ -4144,7 +4144,7 @@ CBR.Models.StateLegislator.chamber = {
     },
 
     _doPeriodicSearch: function () {
-        if (!this.isPeriodicSearchRunning && this.validator.isValid()) {
+        if (!this.isPeriodicSearchRunning && this.validator.isValid() && !this.$nbDaysSinceLastReport.is(":focus")) {
             this.isPeriodicSearchRunning = true;
 
             var stateLegislatorSearch = {

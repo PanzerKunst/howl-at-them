@@ -61,7 +61,7 @@ CBR.Controllers.StateLegislators = new Class({
             this._doSubmit(e);
         }.bind(this));
 
-        this.$nbDaysSinceLastReport.change(function (e) {
+        this.$nbDaysSinceLastReport.keyup(function (e) {
             this._doSubmit(e);
         }.bind(this));
 
@@ -94,7 +94,7 @@ CBR.Controllers.StateLegislators = new Class({
     _initValidation: function () {
         this.validator = new CBR.Services.Validator({
             fieldIds: [
-                "nb-days-since-last-update"
+                "nb-days-since-last-report"
             ]
         });
 
@@ -299,7 +299,7 @@ CBR.Controllers.StateLegislators = new Class({
     },
 
     _doPeriodicSearch: function () {
-        if (!this.isPeriodicSearchRunning && this.validator.isValid()) {
+        if (!this.isPeriodicSearchRunning && this.validator.isValid() && !this.$nbDaysSinceLastReport.is(":focus")) {
             this.isPeriodicSearchRunning = true;
 
             var stateLegislatorSearch = {
