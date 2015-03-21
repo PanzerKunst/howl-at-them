@@ -2,7 +2,10 @@ html:after {
   content: "js-breakpoints-getComputedStyleTest";
   visibility: hidden;
   position: absolute;
-  clip: rect(0 0 0 0); }
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  width: 0;
+  height: 0; }
 
 @font-face {
   font-family: 'Oxygen';
@@ -52,7 +55,10 @@ html {
       content: "GLOBAL_MEDIUM_SCREEN_BREAKPOINT";
       visibility: hidden;
       position: absolute;
-      clip: rect(0 0 0 0); }
+      clip: rect(0 0 0 0);
+      overflow: hidden;
+      width: 0;
+      height: 0; }
     html .js-breakpoints-GLOBAL_MEDIUM_SCREEN_BREAKPOINT {
       position: absolute; } }
   @media screen and (min-width: 49.5em) {
@@ -60,7 +66,10 @@ html {
       content: "GLOBAL_LARGE_SCREEN_BREAKPOINT";
       visibility: hidden;
       position: absolute;
-      clip: rect(0 0 0 0); }
+      clip: rect(0 0 0 0);
+      overflow: hidden;
+      width: 0;
+      height: 0; }
     html .js-breakpoints-GLOBAL_LARGE_SCREEN_BREAKPOINT {
       position: absolute; } }
 
@@ -223,7 +232,7 @@ tr.clickable {
   cursor: pointer; }
 
 .support-level.UNKNOWN {
-  color: #999999; }
+  color: #777777; }
 .support-level.PRIMARY_SPONSOR, .support-level.CO_SPONSOR, .support-level.SUPPORTIVE {
   color: #5cb85c; }
 .support-level.NEEDS_CONVINCING {
@@ -234,7 +243,7 @@ tr.clickable {
 .yes-no-answer {
   text-align: center; }
   .yes-no-answer.UNKNOWN {
-    color: #999999; }
+    color: #777777; }
   .yes-no-answer.YES {
     color: #5cb85c; }
   .yes-no-answer.NO {
@@ -306,17 +315,17 @@ tr.clickable {
 .form-groups.report {
   width: 20em;
   margin: auto; }
-  .form-groups.report:after {
+  .form-groups.report::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   @media screen and (min-width: 39.5em) {
     .form-groups.report {
       width: 42em; } }
-  .form-groups.report > .form-group:after {
+  .form-groups.report > .form-group::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   .form-groups.report > .form-group > .check-or-radio {
     float: left;
     margin-right: 2em; }
@@ -346,7 +355,7 @@ textarea.form-control {
 .table > thead > tr > th {
   vertical-align: middle; }
 .table > tbody > tr.clickable:hover td {
-  background-color: #428bca;
+  background-color: #337ab7;
   color: white; }
 .table > tbody > tr > td {
   vertical-align: middle; }
@@ -496,10 +505,10 @@ textarea.form-control {
 #admin-login #content .form-groups {
   width: 20em;
   margin: auto; }
-  #admin-login #content .form-groups:after {
+  #admin-login #content .form-groups::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
 #admin-login #content .submit-wrapper {
   padding-top: 0; }
 #admin-login #content .other-form-error {
@@ -510,10 +519,10 @@ textarea.form-control {
 #find-your-legislator #content {
   min-width: 34em;
   max-width: 34em; }
-  #find-your-legislator #content > form > div:after {
+  #find-your-legislator #content > form > div::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   #find-your-legislator #content > form .form-group {
     width: 23em; }
   #find-your-legislator #content .submit-wrapper {
@@ -545,7 +554,10 @@ textarea.form-control {
     content: "STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT";
     visibility: hidden;
     position: absolute;
-    clip: rect(0 0 0 0); }
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+    width: 0;
+    height: 0; }
   #state-legislators .js-breakpoints-STATE_LEGISLATORS_FULL_WIDTH_BREAKPOINT {
     position: absolute; } }
 #state-legislators header {
@@ -556,10 +568,10 @@ textarea.form-control {
   padding-bottom: 5em; }
   #state-legislators #content #primary-search-fields {
     margin: 0 auto; }
-    #state-legislators #content #primary-search-fields:after {
+    #state-legislators #content #primary-search-fields::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
   #state-legislators #content #state-form-group {
     width: 16em; }
     #state-legislators #content #state-form-group > label,
@@ -582,28 +594,28 @@ textarea.form-control {
     #state-legislators #content #chamber-or-target-radio-buttons.form-group {
       width: 23.5em;
       margin-right: 0; }
-    #state-legislators #content #chamber-or-target-radio-buttons:after {
+    #state-legislators #content #chamber-or-target-radio-buttons::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
     #state-legislators #content #chamber-or-target-radio-buttons > .check-or-radio {
       float: left;
       margin-right: 2em; }
       #state-legislators #content #chamber-or-target-radio-buttons > .check-or-radio:last-child {
         margin-right: 0; }
-  #state-legislators #content #advanced-search-fields:after {
+  #state-legislators #content #advanced-search-fields::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   #state-legislators #content #advanced-search-fields > .form-group {
     width: 16em; }
   #state-legislators #content #advanced-search-fields #committees-form-group {
     width: 41.15em;
     margin-right: 0; }
-  #state-legislators #content > #whip-count-per-chamber:after {
+  #state-legislators #content > #whip-count-per-chamber::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   #state-legislators #content > #whip-count-per-chamber > article {
     float: left;
     margin-right: 1em; }
@@ -615,10 +627,10 @@ textarea.form-control {
   #state-legislators #content > #whip-count-per-chamber li {
     margin-bottom: 5px;
     min-height: 1.75em; }
-    #state-legislators #content > #whip-count-per-chamber li:after {
+    #state-legislators #content > #whip-count-per-chamber li::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
     #state-legislators #content > #whip-count-per-chamber li.hover > .support-level-bar-wrapper {
       background-color: rgba(0, 0, 0, 0.05); }
   #state-legislators #content > #whip-count-per-chamber .support-level,
@@ -642,7 +654,7 @@ textarea.form-control {
     #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div {
       min-height: 1.75em; }
       #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div.UNKNOWN {
-        background-color: #999999; }
+        background-color: #777777; }
       #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div.SUPPORTIVE {
         background-color: #5cb85c; }
       #state-legislators #content > #whip-count-per-chamber .support-level-bar-wrapper > div.NEEDS_CONVINCING {
@@ -710,10 +722,10 @@ textarea.form-control {
       max-width: 42px; }
 #state-legislators .table-filter {
   margin-bottom: 2px; }
-  #state-legislators .table-filter:after {
+  #state-legislators .table-filter::after {
+    clear: both;
     content: "";
-    display: table;
-    clear: both; }
+    display: table; }
   #state-legislators .table-filter > label {
     display: block;
     float: left;
@@ -782,10 +794,10 @@ textarea.form-control {
   @media screen and (min-width: 49.5em) {
     #state-legislator #content #legislator-data {
       width: 100%; }
-      #state-legislator #content #legislator-data:after {
+      #state-legislator #content #legislator-data::after {
+        clear: both;
         content: "";
-        display: table;
-        clear: both; }
+        display: table; }
       #state-legislator #content #legislator-data > div,
       #state-legislator #content #legislator-data > #additional-contact-info {
         float: left;
@@ -799,10 +811,10 @@ textarea.form-control {
       text-align: center; }
   #state-legislator #content #legislator-data form {
     margin-bottom: 0; }
-    #state-legislator #content #legislator-data form:after {
+    #state-legislator #content #legislator-data form::after {
+      clear: both;
       content: "";
-      display: table;
-      clear: both; }
+      display: table; }
     #state-legislator #content #legislator-data form > .form-group {
       max-width: 100%; }
       #state-legislator #content #legislator-data form > .form-group:last-child {
@@ -833,10 +845,10 @@ textarea.form-control {
   font-size: 29px;
   width: 7.4em;
   height: 41px; }
-#state-legislator #content #support-level-and-priority-target:after {
+#state-legislator #content #support-level-and-priority-target::after {
+  clear: both;
   content: "";
-  display: table;
-  clear: both; }
+  display: table; }
 #state-legislator #content #support-level-and-priority-target > .support-level {
   display: block;
   float: left;

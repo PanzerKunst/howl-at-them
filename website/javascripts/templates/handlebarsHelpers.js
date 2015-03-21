@@ -29,7 +29,7 @@ Handlebars.registerHelper("getSpanForYesNoAnswerLegislatorLevel", function(quest
         }
     }
 
-    return '<span class="yes-no-answer ' + cssClass + '">' + letter + '</span>';
+    return "<span class=\"yes-no-answer " + cssClass + "\">" + letter + "</span>";
 });
 
 Handlebars.registerHelper("getSpanForYesNoAnswerReportLevel", function(question, report) {
@@ -59,5 +59,5 @@ Handlebars.registerHelper("getSpanForYesNoAnswerReportLevel", function(question,
         letter = "N";
     }
 
-    return '<span class="yes-no-answer ' + cssClass + '">' + letter + '</span>';
+    return "<span class=\"yes-no-answer " + cssClass + "\">" + letter + "</span>";
 });

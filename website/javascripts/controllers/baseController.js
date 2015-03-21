@@ -25,7 +25,7 @@ CBR.Controllers.BaseController = new Class({
         this._initFloatingAlerts();
     },
 
-    initEvents: function() {
+    initEvents: function () {
         this._listenToCheckboxesAndRadiosClicks();
     },
 
@@ -171,7 +171,7 @@ CBR.Controllers.BaseController = new Class({
     addEditAndDeleteReportLinks: function () {
         var idOfCreatedReports = this.getIdOfCreatedReports();
 
-        var links = '<a class="delete-report">Delete</a><a class="edit-report">Edit</a>';
+        var links = "<a class=\"delete-report\">Delete</a><a class=\"edit-report\">Edit</a>";
 
         jQuery(".reports > article").each(function (index, element) {
             var $article = jQuery(element);
@@ -218,12 +218,12 @@ CBR.Controllers.BaseController = new Class({
         // In case another alert is displayed, we delete it
         jQuery(".alert.floating").remove();
 
-        var $floatingAlert = jQuery('<div class="alert alert-success floating">' + text + '</div>');
+        var $floatingAlert = jQuery("<div class=\"alert alert-success floating\">" + text + "</div>");
 
         this.getEl().prepend($floatingAlert);
 
         // Center the alert
-        $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+        $floatingAlert.css("margin-left", -$floatingAlert.width() / 2);
 
         // Now that the floating alert is centered, we can show it
         $floatingAlert.show();
@@ -237,7 +237,7 @@ CBR.Controllers.BaseController = new Class({
 
     _doEditReport: function (initialReport, successUrl) {
         if (this.editReportValidator.isValid()) {
-            this.$confirmEditBtn.button('loading');
+            this.$confirmEditBtn.button("loading");
 
             var $mppRadios = jQuery("[name='edit-MPP']");
             var $yesMppRadio = $mppRadios.filter("[value='" + CBR.Models.Report.radioAnswer.yes + "']");
@@ -308,11 +308,11 @@ CBR.Controllers.BaseController = new Class({
                 emulation: false, // Otherwise PUT and DELETE requests are sent as POST
                 url: "/api/reports",
                 data: JSON.stringify(updatedReport),
-                onSuccess: function (responseText, responseXML) {
+                onSuccess: function () {
                     location.replace(successUrl);
                 },
-                onFailure: function (xhr) {
-                    this.$confirmEditBtn.button('reset');
+                onFailure: function () {
+                    this.$confirmEditBtn.button("reset");
                     alert("AJAX fail :(");
                 }.bind(this)
             }).put();
@@ -324,18 +324,18 @@ CBR.Controllers.BaseController = new Class({
     },
 
     _doDeleteReport: function (reportId, successUrl) {
-        this.$confirmDeleteBtn.button('loading');
+        this.$confirmDeleteBtn.button("loading");
 
         new Request({
             urlEncoded: false,
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
             url: "/api/reports/" + reportId,
             headers: {"Content-Type": null},    // Work-around to prevent bug https://github.com/mootools/mootools-core/issues/2608
-            onSuccess: function (responseText, responseXML) {
+            onSuccess: function () {
                 location.replace(successUrl);
             },
-            onFailure: function (xhr) {
-                this.$confirmDeleteBtn.button('reset');
+            onFailure: function () {
+                this.$confirmDeleteBtn.button("reset");
                 alert("AJAX fail :(");
             }.bind(this)
         }).delete();
@@ -347,20 +347,20 @@ CBR.Controllers.BaseController = new Class({
         }
     },
 
-    _initFloatingAlerts: function() {
+    _initFloatingAlerts: function () {
         jQuery(".alert.floating").each(function (index, element) {
             var $floatingAlert = jQuery(element);
 
             // Centering
-            $floatingAlert.css("margin-left", -$floatingAlert.width()/2);
+            $floatingAlert.css("margin-left", -$floatingAlert.width() / 2);
 
             // Now that the floating alert is centered, we can show it
             $floatingAlert.show();
         });
     },
 
-    _listenToCheckboxesAndRadiosClicks: function() {
-        jQuery(".check-or-radio").find("label").click(function(e) {
+    _listenToCheckboxesAndRadiosClicks: function () {
+        jQuery(".check-or-radio").find("label").click(function (e) {
             var $checkboxOrRadio = jQuery(e.currentTarget).parent().parent().find("input");
             $checkboxOrRadio.click();
         });

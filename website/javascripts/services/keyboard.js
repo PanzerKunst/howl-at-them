@@ -1,5 +1,5 @@
 CBR.Services.Keyboard = {
-    keyCode : {
+    keyCode: {
         backspace: 8,
         tab: 9,
         enter: 13,

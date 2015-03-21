@@ -13,11 +13,11 @@ CBR.Controllers.Index = new Class({
         this.parent();
 
         jQuery("#map").vectorMap({
-            map: 'us_aea_en',
+            map: "us_aea_en",
             backgroundColor: "#fff",
             regionStyle: {
                 initial: {
-                    fill: '#999' // this adds color too all regions (Bootstrap's $gray-light)
+                    fill: "#999" // this adds color too all regions (Bootstrap's $gray-light)
                 }
             },
             onRegionClick: function(event, code) {

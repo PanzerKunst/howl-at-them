@@ -111,7 +111,7 @@ CBR.Models.StateLegislator = new Class({
     },
 
     getChamber: function () {
-        if (this.getTitle().toLowerCase() == "senator") {
+        if (this.getTitle().toLowerCase() === "senator") {
             return CBR.Models.StateLegislator.chamber.senate;
         }
         return CBR.Models.StateLegislator.chamber.house;
@@ -127,7 +127,7 @@ CBR.Models.StateLegislator = new Class({
             label = latestReport.getReadableSupportLevel();
         }
 
-        return '<span class="support-level ' + cssClass + '">' + label + '</span>';
+        return "<span class=\"support-level " + cssClass + "\">" + label + "</span>";
     }
 });
 

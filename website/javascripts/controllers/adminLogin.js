@@ -34,13 +34,13 @@ CBR.Controllers.AdminLogin = new Class({
         });
     },
 
-    _doSubmit:function (e) {
+    _doSubmit: function (e) {
         e.preventDefault();
 
         this.$authFailed.slideUpCustom();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var account = {
                 username: jQuery("#username").val(),
@@ -54,10 +54,12 @@ CBR.Controllers.AdminLogin = new Class({
                 headers: { "Content-Type": "application/json" },
                 url: "/api/authenticate",
                 data: JSON.stringify(account),
-                onSuccess: function (responseText, responseXML) {
+                onSuccess: function () {
                     if (this.status === _this.httpStatusCode.noContent) {
                         // We delay because seeing the loading state a bit longer looks better
-                        _.delay(function() { _this.$submitBtn.button('reset'); }, 500);
+                        _.delay(function () {
+                            _this.$submitBtn.button("reset");
+                        }, 500);
 
                         _this.$authFailed.slideDownCustom();
                     }
@@ -65,8 +67,8 @@ CBR.Controllers.AdminLogin = new Class({
                         location.replace("/admin");
                     }
                 },
-                onFailure: function (xhr) {
-                    this.$submitBtn.button('reset');
+                onFailure: function () {
+                    this.$submitBtn.button("reset");
                     alert("AJAX fail :(");
                 }.bind(this)
             }).post();

@@ -25,16 +25,16 @@ CBR.Controllers.Admin = new Class({
     _doUpdateData: function (e) {
         e.preventDefault();
 
-        this.$updateDataBtn.button('loading');
+        this.$updateDataBtn.button("loading");
 
         new Request({
             urlEncoded: false,
             url: "/api/db/update-vote-smart-data",
-            onSuccess: function (responseText, responseXML) {
-                this.$updateDataBtn.button('reset');
+            onSuccess: function () {
+                this.$updateDataBtn.button("reset");
             }.bind(this),
-            onFailure: function (xhr) {
-                this.$updateDataBtn.button('reset');
+            onFailure: function () {
+                this.$updateDataBtn.button("reset");
                 alert("AJAX fail :(");
             }.bind(this)
         }).post();

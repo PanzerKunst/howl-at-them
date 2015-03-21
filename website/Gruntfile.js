@@ -5,32 +5,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        jshint: {
-            dist: [
-                'Gruntfile.js',
-                'javascripts/**/*.js'
+        eslint: {
+            target: [
+                "javascripts/**/*.js"
             ],
             options: {
-                globals: {
-                    debug: true,
-                    forin: true,
-                    eqnul: true,
-                    noarg: true,
-                    noempty: true,
-                    eqeqeq: true,
-                    boss: true,
-                    loopfunc: true,
-                    evil: true,
-                    laxbreak: true,
-                    bitwise: true,
-                    undef: true,
-                    curly: true,
-                    nonew: true,
-                    browser: true,
-                    devel: true,
-                    jquery: true,
-                    mootools: true
-                }
+                configFile: "eslint.json"
             }
         },
 
@@ -48,28 +28,28 @@ module.exports = function (grunt) {
             }
         },
 
+        react: {
+            site: {
+                files: {
+                    "public/react.js": [
+                        "javascripts/controllers/**/*.react.js"
+                    ]
+                }
+            }
+        },
+
         concat: {
             options: {
                 separator:';'
             },
             dist: {
                 src: [
-                    // Libs
-                    "libs/h5bp/modernizr-custom.js",
-                    "libs/jquery-2.1.0.min.js",
-                    "javascripts/common/jquery.noConflict.js",
-                    "libs/mootools/mootools-core-1.5.0-full-nocompat-yc.js",
-                    "libs/mootools/mootools-more-1.5.0.js",
-                    "libs/bootstrap/js/bootstrap.min.js",
-                    "libs/fastclick.js",
-                    "libs/handlebars.runtime-v2.0.0.js",
-                    "libs/lodash.min.js",
+                    // Non-CDN libs
                     "libs/jquery.visible.min.js",
                     "libs/js-breakpoints/breakpoints.js",
                     "libs/jvectormap/jquery-jvectormap-1.2.2.min.js",
                     "libs/jvectormap/jquery-jvectormap-us-aea-en.js",
                     "libs/jquery.browser.mobile.min.js",
-                    "libs/moment.min.js",
 
                     // Global
                     "javascripts/global.js",
@@ -80,6 +60,7 @@ module.exports = function (grunt) {
 
                     // Services
                     "javascripts/services/validator.js",
+                    "javascripts/services/string.js",
 
                     // Models
                     "javascripts/models/jsonSerializable.js",
@@ -98,6 +79,9 @@ module.exports = function (grunt) {
                     "javascripts/controllers/stateLegislator.js",
                     "javascripts/controllers/stateLegislators.js",
 
+                    // React
+                    "public/react.js",
+
                     // Templates
                     "javascripts/templates/handlebarsHelpers.js",
                     "public/templates.js"
@@ -114,25 +98,11 @@ module.exports = function (grunt) {
             }
         },
 
-        /* Task fails
-        cssc: {
-            build: {
-                options: {
-                    consolidateViaDeclarations: true,
-                    consolidateViaSelectors: true,
-                    consolidateMediaQueries: true
-                },
-                files: {
-                    'public/<%= pkg.name %>.css': 'public/<%= pkg.name %>.css'
-                }
-            }
-        }, */
-
         cssmin: {
             build: {
                 src: [
                     // Libs
-                    'libs/bootstrap/css/bootstrap.css',
+                    "libs/h5bp/normalize.css",
                     'libs/jvectormap/jquery-jvectormap-1.2.2.css',
 
                     // Rest
@@ -144,7 +114,10 @@ module.exports = function (grunt) {
 
         watch: {
             js: {
-                files: ['<%= concat.dist.src %>'],
+                files: [
+                    '<%= concat.dist.src %>',
+                    "javascripts/controllers/**/*.react.js"
+                ],
                 tasks: ['buildjs']
             },
 
@@ -156,6 +129,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['buildjs', 'buildcss']);
-    grunt.registerTask('buildjs',  ['jshint', 'handlebars', 'concat']);
+    grunt.registerTask('buildjs',  ['eslint', 'handlebars', 'react', 'concat']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };

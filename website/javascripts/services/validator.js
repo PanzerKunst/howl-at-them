@@ -15,9 +15,9 @@ CBR.Services.Validator = new Class({
         for (var i = 0; i < this._getFieldIds().length; i++) {
             var $field = jQuery("#" + this._getFieldIds()[i]);
 
-            if ($field.hasClass("pills"))
+            if ($field.hasClass("pills")) {
                 this._addClickEvents($field);
-            else {
+            } else {
                 this._addBlurEvent($field);
                 this._addValueChangedEvent($field);
             }
@@ -143,8 +143,9 @@ CBR.Services.Validator = new Class({
     },
 
     _isValidEmail: function (email) {
-        if (email === "")
+        if (email === "") {
             return true;
+        }
 
         var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
         return reg.test(email);
@@ -187,14 +188,18 @@ CBR.Services.Validator = new Class({
     },
 
     _isMinLength: function(value, minLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length >= minLength;
     },
 
     _isMaxLength: function(value, maxLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length <= maxLength;
     },
 

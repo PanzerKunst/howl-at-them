@@ -101,7 +101,7 @@ CBR.Controllers.StateLegislators = new Class({
         this.initEditReportValidation();
     },
 
-    _filterResults: function (e) {
+    _filterResults: function () {
         this.$results.each(jQuery.proxy(function (index, element) {
             var isResultMatchedByFilter = true;
 
@@ -229,7 +229,7 @@ CBR.Controllers.StateLegislators = new Class({
         }
 
         if (this.validator.isValid()) {
-            this.$searchResultsSection.html('<div class="data-loading"></div>');
+            this.$searchResultsSection.html("<div class=\"data-loading\"></div>");
 
             var stateLegislatorSearch = {
                 usStateId: this.$usStateSelect.val(),
@@ -244,11 +244,11 @@ CBR.Controllers.StateLegislators = new Class({
                 headers: { "Content-Type": "application/json" },
                 url: "/api/state-legislators",
                 data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
+                onSuccess: function (responseText) {
                     this._storeMatchingStateLegislators(JSON.parse(responseText));
                     this._createResultsTable();
                 }.bind(this),
-                onFailure: function (xhr) {
+                onFailure: function () {
                     alert("AJAX fail :(");
                 }
             }).get();
@@ -315,12 +315,12 @@ CBR.Controllers.StateLegislators = new Class({
                 headers: { "Content-Type": "application/json" },
                 url: "/api/state-legislators",
                 data: stateLegislatorSearch, // GET request doesn't require JSON.stringify()
-                onSuccess: function (responseText, responseXML) {
+                onSuccess: function (responseText) {
                     this._storeMatchingStateLegislators(JSON.parse(responseText));
                     this._updateResultsTable();
                     this.isPeriodicSearchRunning = false;
                 }.bind(this),
-                onFailure: function (xhr) {
+                onFailure: function () {
                     // We do nothing here, because it's quite likely that the user leaves/refreshed the page during one of
                     // those AJAX calls, in which case it will fail, and we want that failure to be silent
                     this.isPeriodicSearchRunning = false;
@@ -329,7 +329,7 @@ CBR.Controllers.StateLegislators = new Class({
         }
     },
 
-    _resetFilter: function (e) {
+    _resetFilter: function () {
         this.$textFilters.val("");
         this.$isMissingUrgentReportFilter.prop("checked", false);
         this._filterResults(null);
@@ -371,12 +371,12 @@ CBR.Controllers.StateLegislators = new Class({
                 $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
                 // Edit and Delete report links
-                $article.children(".reports").children().each(function (index, element) {
-                    var $reportArticle = jQuery(element);
+                $article.children(".reports").children().each(function (ind3x, elem3nt) {
+                    var $reportArticle = jQuery(elem3nt);
                     var idOfCreatedReports = this.getIdOfCreatedReports();
 
-                    var $editLink = jQuery('<a class="edit-report">Edit</a>');
-                    var $deleteLink = jQuery('<a class="delete-report">Delete</a>');
+                    var $editLink = jQuery("<a class=\"edit-report\">Edit</a>");
+                    var $deleteLink = jQuery("<a class=\"delete-report\">Delete</a>");
 
                     $editLink.click(jQuery.proxy(this._showEditReportModal, this));
                     $deleteLink.click(jQuery.proxy(this._showDeleteReportModal, this));
@@ -411,13 +411,13 @@ CBR.Controllers.StateLegislators = new Class({
         }
     },
 
-    _populateLeadershipPositionsSelect: function (e) {
+    _populateLeadershipPositionsSelect: function () {
         new Request({
             urlEncoded: false,
             headers: { "Content-Type": "application/json" },
             url: "/api/leadership-positions",
             data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
+            onSuccess: function (responseText) {
                 this.$leadershipPositionSelect.html(
                     CBR.Templates.leadershipPositionSelect({
                         leadershipPositions: JSON.parse(responseText)
@@ -425,19 +425,19 @@ CBR.Controllers.StateLegislators = new Class({
                 );
                 this.$leadershipPositionSelect.prop("disabled", false);
             }.bind(this),
-            onFailure: function (xhr) {
+            onFailure: function () {
                 alert("AJAX fail :(");
             }
         }).get();
     },
 
-    _populateCommitteesSelect: function (e) {
+    _populateCommitteesSelect: function () {
         new Request({
             urlEncoded: false,
             headers: { "Content-Type": "application/json" },
             url: "/api/committees",
             data: {usStateId: this.$usStateSelect.val()}, // GET request doesn't require JSON.stringify()
-            onSuccess: function (responseText, responseXML) {
+            onSuccess: function (responseText) {
                 this.$committeeSelect.html(
                     CBR.Templates.committeeSelect({
                         committeeNames: JSON.parse(responseText)
@@ -445,7 +445,7 @@ CBR.Controllers.StateLegislators = new Class({
                 );
                 this.$committeeSelect.prop("disabled", false);
             }.bind(this),
-            onFailure: function (xhr) {
+            onFailure: function () {
                 alert("AJAX fail :(");
             }
         }).get();
@@ -562,10 +562,10 @@ CBR.Controllers.StateLegislators = new Class({
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
             url: "/api/state-legislators",
             data: JSON.stringify(updatedStateLegislator),
-            onSuccess: function (responseText, responseXML) {
+            onSuccess: function () {
                 this.showAlert(floatingAlertText);
             }.bind(this),
-            onFailure: function (xhr) {
+            onFailure: function () {
                 alert("AJAX fail :(");
             }
         }).put();

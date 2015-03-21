@@ -146,12 +146,12 @@ CBR.Controllers.StateLegislator = new Class({
                     phoneNumber = jQuery($childAnchor).html();
                 }
 
-                $span.replaceWith('<a href="tel:+1' + phoneNumber + '">' + phoneNumber + '</a>');
+                $span.replaceWith("<a href=\"tel:+1" + phoneNumber + "\">" + phoneNumber + "</a>");
             });
         }
     },
 
-    _toggleAdditionalContactInfo: function (e) {
+    _toggleAdditionalContactInfo: function () {
         if (this.$additionalContactInfo.is(":visible")) {
             this.$additionalContactInfo.slideUpCustom();
         } else {
@@ -159,7 +159,7 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _toggleCommittees: function (e) {
+    _toggleCommittees: function () {
         if (this.$committeesList.is(":visible")) {
             this.$committeesList.slideUpCustom();
         } else {
@@ -167,7 +167,7 @@ CBR.Controllers.StateLegislator = new Class({
         }
     },
 
-    _toggleNewReport: function (e) {
+    _toggleNewReport: function () {
         if (this.$form.is(":visible")) {
             this.$form.slideUpCustom();
         } else {
@@ -176,11 +176,12 @@ CBR.Controllers.StateLegislator = new Class({
     },
 
     _doSubmit: function (e) {
-        if (e)
+        if (e) {
             e.preventDefault();
+        }
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var authorName = this.$authorName.val();
             var selectedContact = jQuery("#contact").val();
@@ -235,12 +236,12 @@ CBR.Controllers.StateLegislator = new Class({
                 headers: { "Content-Type": "application/json" },
                 url: "/api/reports",
                 data: JSON.stringify(report),
-                onSuccess: function (responseText, responseXML) {
+                onSuccess: function (responseText) {
                     this._addReportIdToLocalStorage(parseInt(responseText, 10));
                     location.replace("/state-legislators/" + report.candidateId + "?action=savedReport");
                 }.bind(this),
-                onFailure: function (xhr) {
-                    this.$submitBtn.button('reset');
+                onFailure: function () {
+                    this.$submitBtn.button("reset");
                     alert("AJAX fail :(");
                 }.bind(this)
             }).post();
@@ -281,10 +282,10 @@ CBR.Controllers.StateLegislator = new Class({
             emulation: false, // Otherwise PUT and DELETE requests are sent as POST
             url: "/api/state-legislators",
             data: JSON.stringify(updatedStateLegislator),
-            onSuccess: function (responseText, responseXML) {
+            onSuccess: function () {
                 this.showAlert(floatingAlertText);
             }.bind(this),
-            onFailure: function (xhr) {
+            onFailure: function () {
                 alert("AJAX fail :(");
             }
         }).put();

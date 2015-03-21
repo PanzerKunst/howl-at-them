@@ -66,7 +66,7 @@ CBR.Models.Report = new Class({
     },
 
     getSupportLevelSpan: function() {
-        return '<span class="support-level ' + this.getSupportLevel() + '">' + this.getReadableSupportLevel() + '</span>';
+        return "<span class=\"support-level " + this.getSupportLevel() + "\">" + this.getReadableSupportLevel() + "</span>";
     },
 
     getReadableContact: function () {

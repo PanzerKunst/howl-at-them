@@ -37,7 +37,7 @@ CBR.Controllers.FindYourLegislator = new Class({
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
             location.replace("/find-your-legislator?address=" + encodeURIComponent(jQuery("#address").val()));
         }
     }
