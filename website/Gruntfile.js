@@ -116,6 +116,7 @@ module.exports = function (grunt) {
             js: {
                 files: [
                     '<%= concat.dist.src %>',
+                    "javascripts/templates/**/*.hbs",
                     "javascripts/controllers/**/*.react.js"
                 ],
                 tasks: ['buildjs']

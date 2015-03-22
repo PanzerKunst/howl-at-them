@@ -2750,13 +2750,9 @@ this["CBR"]["Templates"]["committeeSelect"] = Handlebars.template({"1":function(
   return buffer;
 },"useData":true});
 
-
-
 this["CBR"]["Templates"]["deleteReportModal"] = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<div class=\"modal fade\" id=\"delete-report-modal\" tabindex=\"-1\" role=\"dialog\" aria-hidden=\"true\">\r\n    <div class=\"modal-dialog modal-sm\">\r\n        <div class=\"modal-content\">\r\n            <div class=\"modal-body\">\r\n                <p>Delete this report?</p>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Deleting report...\" id=\"confirm-delete\">Delete report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
   },"useData":true});
-
-
 
 this["CBR"]["Templates"]["editReportModal"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   return " selected ";
@@ -2887,8 +2883,6 @@ this["CBR"]["Templates"]["editReportModal"] = Handlebars.template({"1":function(
   return buffer + "</textarea>\r\n\r\n                            <p class=\"field-error\" data-check=\"max-length\">512 characters maximum</p>\r\n                        </div>\r\n                    </section>\r\n                </form>\r\n            </div>\r\n            <div class=\"modal-footer\">\r\n                <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Cancel</button>\r\n                <button type=\"button\" class=\"btn btn-primary\" data-loading-text=\"Saving report...\" id=\"confirm-edit\">Save report</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
 },"useData":true});
 
-
-
 this["CBR"]["Templates"]["leadershipPositionSelect"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
   return "<option value=\""
@@ -2902,8 +2896,6 @@ this["CBR"]["Templates"]["leadershipPositionSelect"] = Handlebars.template({"1":
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true});
-
-
 
 this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1":function(depth0,helpers,partials,data,depths) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "    <tr data-id=\""
@@ -3016,8 +3008,6 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
   return buffer;
 },"useData":true,"useDepths":true});
 
-
-
 this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":function(depth0,helpers,partials,data,depths) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<article data-id=\""
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
@@ -3125,8 +3115,6 @@ this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":f
   if (stack1 != null) { buffer += stack1; }
   return buffer;
 },"useData":true,"useDepths":true});
-
-
 
 this["CBR"]["Templates"]["whipCountListItem"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
