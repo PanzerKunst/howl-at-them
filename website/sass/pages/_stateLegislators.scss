@@ -1,7 +1,7 @@
 #state-legislators {
-  $state-legislators-page-min-width: 61.15em;  // ~856px
+  $state-legislators-page-min-width: 57.93em;  // ~811px (783 + 2*14)
 
-  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6.5em;
+  $strange-em-difference-for-state-reports-page-mq-breakpoint: 6em;
   $state-legislators-page-full-width-mq-breakpoint: $state-legislators-page-min-width - $strange-em-difference-for-state-reports-page-mq-breakpoint;
 
   @media screen and (min-width: $state-legislators-page-full-width-mq-breakpoint) {
@@ -22,7 +22,6 @@
   $safi-col-width: 66px;
   $ocu-col-width: 49px;
   $scp-col-width: 60px;
-  $report-col-width: 46px;
   $target-col-width: 45px;
 
   #content {
@@ -52,7 +51,7 @@
     }
 
     #last-updated-form-group {
-      margin-right: 4em;
+      margin-right: 4.4em;
 
       $field-width-last-updated: 10em;
 
@@ -169,7 +168,7 @@
       }
 
       .support-level-bar-wrapper {
-        width: 9.4em;
+        width: 8.4em;
 
         > div {
           // Otherwise empty divs don't take the width
@@ -212,8 +211,6 @@
       z-index: 1;
 
       background-color: #fff;
-
-      width: $state-legislators-page-min-width - 2 * $page-side-padding;
     }
 
     > #search-results {
@@ -261,9 +258,6 @@
       }
       &.scp {
         width: $scp-col-width;
-      }
-      &.is-missing-urgent-report {
-        width: $report-col-width;
       }
       &.is-a-priority-target {
         width: $target-col-width;

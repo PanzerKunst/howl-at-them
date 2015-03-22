@@ -40,7 +40,6 @@ CBR.Controllers.StateLegislators = new Class({
         this.$safiFilter = jQuery("#safi-filter");
         this.$ocuFilter = jQuery("#ocu-filter");
         this.$scpFilter = jQuery("#scp-filter");
-        this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$tableHeaderVisibleEvenWhenNoResults = jQuery("#table-header-visible-even-when-no-results");
@@ -81,7 +80,6 @@ CBR.Controllers.StateLegislators = new Class({
         this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
         this.$textFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
-        this.$isMissingUrgentReportFilter.change(jQuery.proxy(this._filterResults, this));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
 
         Breakpoints.on({
@@ -204,17 +202,6 @@ CBR.Controllers.StateLegislators = new Class({
                 }
             }
 
-            // Is missing urgent report
-            if (isResultMatchedByFilter) {
-                if (this.$isMissingUrgentReportFilter.prop("checked")) {
-                    $td = jQuery(tds[10]);
-                    value = $td.children().prop("checked");
-                    if (!value) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
             if (isResultMatchedByFilter) {
                 $row.show();
             } else {
@@ -269,19 +256,14 @@ CBR.Controllers.StateLegislators = new Class({
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this._onTableRowClick, this));
 
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.find(".is-missing-urgent-report");
         var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.find(".is-a-priority-target");
 
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
         $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
         $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
 
         var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
         $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
-        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
         this.addEditAndDeleteReportLinks();
 
@@ -331,7 +313,6 @@ CBR.Controllers.StateLegislators = new Class({
 
     _resetFilter: function () {
         this.$textFilters.val("");
-        this.$isMissingUrgentReportFilter.prop("checked", false);
         this._filterResults(null);
     },
 
@@ -356,19 +337,14 @@ CBR.Controllers.StateLegislators = new Class({
 
                 $tr.click(jQuery.proxy(this._onTableRowClick, this));
 
-                var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
                 var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
                 $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
                 $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
 
                 var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-                var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
                 $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
-                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
                 // Edit and Delete report links
                 $article.children(".reports").children().each(function (ind3x, elem3nt) {
@@ -516,16 +492,7 @@ CBR.Controllers.StateLegislators = new Class({
         var isAPriorityTarget = $checkbox.prop("checked");
         var stateLegislatorId = $checkbox.parent().parent().data("id");
 
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
-    },
-
-    _saveNewMissingUrgentReportStatus: function (e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isMissingUrgentReport = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, "Target status saved");
     },
 
     _getStateLegislators: function () {
@@ -538,7 +505,7 @@ CBR.Controllers.StateLegislators = new Class({
         });
     },
 
-    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
+    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, floatingAlertText) {
         var updatedStateLegislator = {
             id: stateLegislator.getId(),
             firstName: stateLegislator.getFirstName(),
@@ -552,8 +519,7 @@ CBR.Controllers.StateLegislators = new Class({
             committees: stateLegislator.getCommittees(),
             reports: stateLegislator.getReports(),
             otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
-            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
-            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
+            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget()
         };
 
         new Request({
@@ -631,17 +597,9 @@ CBR.Controllers.StateLegislators = new Class({
                     return true;
                 }
 
-                // Missing urgent report
-                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
-                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
-
-                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                    return true;
-                }
-
                 // Priority target
-                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
-                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+                var oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                var latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
 
                 if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
                     return true;

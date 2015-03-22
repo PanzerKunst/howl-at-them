@@ -820,10 +820,6 @@ CBR.Models.Report.contact = {
         return this.options.isAPriorityTarget;
     },
 
-    isMissingUrgentReport: function () {
-        return this.options.isMissingUrgentReport;
-    },
-
     getLatestReport: function() {
         var reports = this.getReports();
         if (reports.length > 0) {
@@ -1507,7 +1503,6 @@ CBR.Models.StateLegislator.chamber = {
         this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
 
-        this.$missingUrgentReportCheckbox = jQuery("#missing-urgent-report");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
         this.$staffName = jQuery("#staff-name");
@@ -1556,9 +1551,6 @@ CBR.Models.StateLegislator.chamber = {
             this._updateStateLegislator("Phone number saved");
         }, this));
 
-        this.$missingUrgentReportCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("Report status saved");
-        }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
             this._updateStateLegislator("Target status saved");
         }, this));
@@ -1760,7 +1752,6 @@ CBR.Models.StateLegislator.chamber = {
             reports: stateLegislator.getReports(),
             otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
             isAPriorityTarget: this.$priorityTargetCheckbox.prop("checked"),
-            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked"),
             staffName: staffName ? staffName : null,
             staffNumber: staffNumber ? staffNumber : null,
             pointOfContact: pointOfContact ? pointOfContact : null
@@ -1861,7 +1852,6 @@ CBR.Models.StateLegislator.chamber = {
         this.$safiFilter = jQuery("#safi-filter");
         this.$ocuFilter = jQuery("#ocu-filter");
         this.$scpFilter = jQuery("#scp-filter");
-        this.$isMissingUrgentReportFilter = jQuery("#is-missing-urgent-report-filter");
 
         this.$stickyTableHeader = jQuery("#sticky-table-header");
         this.$tableHeaderVisibleEvenWhenNoResults = jQuery("#table-header-visible-even-when-no-results");
@@ -1902,7 +1892,6 @@ CBR.Models.StateLegislator.chamber = {
         this.$whipCountListItem.mouseleave(jQuery.proxy(this._showWhipCountCount, this));
 
         this.$textFilters.keyup(_.debounce(jQuery.proxy(this._filterResults, this), 100));
-        this.$isMissingUrgentReportFilter.change(jQuery.proxy(this._filterResults, this));
         this.$filterSection.find(".close").click(jQuery.proxy(this._resetFilter, this));
 
         Breakpoints.on({
@@ -2025,17 +2014,6 @@ CBR.Models.StateLegislator.chamber = {
                 }
             }
 
-            // Is missing urgent report
-            if (isResultMatchedByFilter) {
-                if (this.$isMissingUrgentReportFilter.prop("checked")) {
-                    $td = jQuery(tds[10]);
-                    value = $td.children().prop("checked");
-                    if (!value) {
-                        isResultMatchedByFilter = false;
-                    }
-                }
-            }
-
             if (isResultMatchedByFilter) {
                 $row.show();
             } else {
@@ -2090,19 +2068,14 @@ CBR.Models.StateLegislator.chamber = {
 
         this.$searchResultsSection.find("tr.clickable").click(jQuery.proxy(this._onTableRowClick, this));
 
-        var $tableCellsContainingIsMissingUrgentReportCheckbox = this.$results.find(".is-missing-urgent-report");
         var $tableCellsContainingIsAPriorityTargetCheckbox = this.$results.find(".is-a-priority-target");
 
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
-        $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
         $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
         $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
 
         var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-        var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
         $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
-        $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
         this.addEditAndDeleteReportLinks();
 
@@ -2152,7 +2125,6 @@ CBR.Models.StateLegislator.chamber = {
 
     _resetFilter: function () {
         this.$textFilters.val("");
-        this.$isMissingUrgentReportFilter.prop("checked", false);
         this._filterResults(null);
     },
 
@@ -2177,19 +2149,14 @@ CBR.Models.StateLegislator.chamber = {
 
                 $tr.click(jQuery.proxy(this._onTableRowClick, this));
 
-                var $tableCellsContainingIsMissingUrgentReportCheckbox = $tr.children(".is-missing-urgent-report");
                 var $tableCellsContainingIsAPriorityTargetCheckbox = $tr.children(".is-a-priority-target");
 
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseenter(this._disableRowClick);
-                $tableCellsContainingIsMissingUrgentReportCheckbox.mouseleave(this._enableRowClick);
                 $tableCellsContainingIsAPriorityTargetCheckbox.mouseenter(this._disableRowClick);
                 $tableCellsContainingIsAPriorityTargetCheckbox.mouseleave(this._enableRowClick);
 
                 var $isAPriorityTargetCheckboxes = $tableCellsContainingIsAPriorityTargetCheckbox.children();
-                var $isMissingUrgentReportCheckboxes = $tableCellsContainingIsMissingUrgentReportCheckbox.children();
 
                 $isAPriorityTargetCheckboxes.change(jQuery.proxy(this._saveNewPriorityTargetStatus, this));
-                $isMissingUrgentReportCheckboxes.change(jQuery.proxy(this._saveNewMissingUrgentReportStatus, this));
 
                 // Edit and Delete report links
                 $article.children(".reports").children().each(function (ind3x, elem3nt) {
@@ -2337,16 +2304,7 @@ CBR.Models.StateLegislator.chamber = {
         var isAPriorityTarget = $checkbox.prop("checked");
         var stateLegislatorId = $checkbox.parent().parent().data("id");
 
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, null, "Target status saved");
-    },
-
-    _saveNewMissingUrgentReportStatus: function (e) {
-        var $checkbox = jQuery(e.currentTarget);
-
-        var isMissingUrgentReport = $checkbox.prop("checked");
-        var stateLegislatorId = $checkbox.parent().parent().data("id");
-
-        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), null, isMissingUrgentReport, "Report status saved");
+        this._updateStateLegislator(this._getStateLegislatorOfId(stateLegislatorId), isAPriorityTarget, "Target status saved");
     },
 
     _getStateLegislators: function () {
@@ -2359,7 +2317,7 @@ CBR.Models.StateLegislator.chamber = {
         });
     },
 
-    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, isMissingUrgentReport, floatingAlertText) {
+    _updateStateLegislator: function (stateLegislator, isAPriorityTarget, floatingAlertText) {
         var updatedStateLegislator = {
             id: stateLegislator.getId(),
             firstName: stateLegislator.getFirstName(),
@@ -2373,8 +2331,7 @@ CBR.Models.StateLegislator.chamber = {
             committees: stateLegislator.getCommittees(),
             reports: stateLegislator.getReports(),
             otherPhoneNumber: stateLegislator.getOtherPhoneNumber(),
-            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget(),
-            isMissingUrgentReport: isMissingUrgentReport !== null ? isMissingUrgentReport : stateLegislator.isMissingUrgentReport()
+            isAPriorityTarget: isAPriorityTarget !== null ? isAPriorityTarget : stateLegislator.isAPriorityTarget()
         };
 
         new Request({
@@ -2452,17 +2409,9 @@ CBR.Models.StateLegislator.chamber = {
                     return true;
                 }
 
-                // Missing urgent report
-                var oldReportOrTargetStatus = $tr.children(".is-missing-urgent-report").children().prop("checked");
-                var latestReportOrTargetStatus = legislatorWithUpdatedData.isMissingUrgentReport();
-
-                if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
-                    return true;
-                }
-
                 // Priority target
-                oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
-                latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
+                var oldReportOrTargetStatus = $tr.children(".is-a-priority-target").children().prop("checked");
+                var latestReportOrTargetStatus = legislatorWithUpdatedData.isAPriorityTarget();
 
                 if (oldReportOrTargetStatus !== latestReportOrTargetStatus) {
                     return true;
@@ -2935,10 +2884,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
   buffer += "</td>\r\n        <td class=\"scp\">";
   stack1 = ((helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel) || helperMissing).call(depth0, "SCP", depth0, {"name":"getSpanForYesNoAnswerLegislatorLevel","hash":{},"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isMissingUrgentReport : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  buffer += "</td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isAPriorityTarget : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += " ";
@@ -2999,7 +2945,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</p>\r\n    </article>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data,depths) {
-  var stack1, buffer = "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <thead>\r\n    <tr>\r\n        <th class=\"profile-pic\"></th>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n        <th class=\"is-missing-urgent-report\">Report</th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n";
+  var stack1, buffer = "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <thead>\r\n    <tr>\r\n        <th class=\"profile-pic\"></th>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n";
   stack1 = helpers['with'].call(depth0, (depth0 != null ? depth0.legislator : depth0), {"name":"with","hash":{},"fn":this.program(1, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "    </tbody>\r\n</table>\r\n";
@@ -3011,7 +2957,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
 this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":function(depth0,helpers,partials,data,depths) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<article data-id=\""
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
-    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        <thead>\r\n        <tr>\r\n            <th class=\"profile-pic\"></th>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n            <th class=\"is-missing-urgent-report\">Report</th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr data-id=\""
+    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        <thead>\r\n        <tr>\r\n            <th class=\"profile-pic\"></th>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr data-id=\""
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
     + "\" class=\"clickable\">\r\n            <td class=\"profile-pic\"><img src=\"http://static.votesmart.org/canphoto/"
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
@@ -3048,10 +2994,7 @@ this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":f
   buffer += "</td>\r\n            <td class=\"scp\">";
   stack1 = ((helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel) || helperMissing).call(depth0, "SCP", depth0, {"name":"getSpanForYesNoAnswerLegislatorLevel","hash":{},"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</td>\r\n            <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isMissingUrgentReport : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += " /></td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  buffer += "</td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isAPriorityTarget : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += " ";

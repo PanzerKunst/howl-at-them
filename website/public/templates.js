@@ -200,10 +200,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
   buffer += "</td>\r\n        <td class=\"scp\">";
   stack1 = ((helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel) || helperMissing).call(depth0, "SCP", depth0, {"name":"getSpanForYesNoAnswerLegislatorLevel","hash":{},"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</td>\r\n        <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isMissingUrgentReport : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += " /></td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  buffer += "</td>\r\n        <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isAPriorityTarget : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += " ";
@@ -264,7 +261,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</p>\r\n    </article>\r\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data,depths) {
-  var stack1, buffer = "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <thead>\r\n    <tr>\r\n        <th class=\"profile-pic\"></th>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n        <th class=\"is-missing-urgent-report\">Report</th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n";
+  var stack1, buffer = "<table class=\"table table-striped table-bordered table-condensed\">\r\n    <thead>\r\n    <tr>\r\n        <th class=\"profile-pic\"></th>\r\n        <th class=\"title\">Title</th>\r\n        <th class=\"name\">Name</th>\r\n        <th class=\"political-parties\">Party</th>\r\n        <th class=\"district\">District</th>\r\n        <th class=\"support-level\">Support level</th>\r\n        <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n        <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n        <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n        <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n        <th class=\"is-a-priority-target\">Target</th>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n";
   stack1 = helpers['with'].call(depth0, (depth0 != null ? depth0.legislator : depth0), {"name":"with","hash":{},"fn":this.program(1, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += "    </tbody>\r\n</table>\r\n";
@@ -276,7 +273,7 @@ this["CBR"]["Templates"]["stateLegislatorsResultRow"] = Handlebars.template({"1"
 this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":function(depth0,helpers,partials,data,depths) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<article data-id=\""
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
-    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        <thead>\r\n        <tr>\r\n            <th class=\"profile-pic\"></th>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n            <th class=\"is-missing-urgent-report\">Report</th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr data-id=\""
+    + "\">\r\n    <table class=\"table table-striped table-bordered table-condensed\">\r\n        <thead>\r\n        <tr>\r\n            <th class=\"profile-pic\"></th>\r\n            <th class=\"title\">Title</th>\r\n            <th class=\"name\">Name</th>\r\n            <th class=\"political-parties\">Party</th>\r\n            <th class=\"district\">District</th>\r\n            <th class=\"support-level\">Support level</th>\r\n            <th class=\"mpp\"><span class=\"yes-no-answer\">Money in<br />politics is<br />a problem</span></th>\r\n            <th class=\"safi\"><span class=\"yes-no-answer\">Supports<br />amendment<br />to fix it</span></th>\r\n            <th class=\"ocu\"><span class=\"yes-no-answer\">Opposes<br />Citizens<br />United</span></th>\r\n            <th class=\"scp\"><span class=\"yes-no-answer\">Supports<br />convention<br />process</span></th>\r\n            <th class=\"is-a-priority-target\">Target</th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr data-id=\""
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
     + "\" class=\"clickable\">\r\n            <td class=\"profile-pic\"><img src=\"http://static.votesmart.org/canphoto/"
     + escapeExpression(((helper = (helper = helpers.getId || (depth0 != null ? depth0.getId : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"getId","hash":{},"data":data}) : helper)))
@@ -313,10 +310,7 @@ this["CBR"]["Templates"]["stateLegislatorsResults"] = Handlebars.template({"1":f
   buffer += "</td>\r\n            <td class=\"scp\">";
   stack1 = ((helpers.getSpanForYesNoAnswerLegislatorLevel || (depth0 && depth0.getSpanForYesNoAnswerLegislatorLevel) || helperMissing).call(depth0, "SCP", depth0, {"name":"getSpanForYesNoAnswerLegislatorLevel","hash":{},"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += "</td>\r\n            <td class=\"is-missing-urgent-report\"><input type=\"checkbox\" ";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isMissingUrgentReport : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += " /></td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
+  buffer += "</td>\r\n            <td class=\"is-a-priority-target\"><input type=\"checkbox\" ";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.isAPriorityTarget : depth0), {"name":"if","hash":{},"fn":this.program(6, data, depths),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   buffer += " ";

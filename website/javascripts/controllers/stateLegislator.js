@@ -17,7 +17,6 @@ CBR.Controllers.StateLegislator = new Class({
         this.$phoneNumbersSection = jQuery("#phone-numbers");
         this.$otherPhoneNumber = jQuery("#other-phone-number");
 
-        this.$missingUrgentReportCheckbox = jQuery("#missing-urgent-report");
         this.$priorityTargetCheckbox = jQuery("#priority-target");
 
         this.$staffName = jQuery("#staff-name");
@@ -66,9 +65,6 @@ CBR.Controllers.StateLegislator = new Class({
             this._updateStateLegislator("Phone number saved");
         }, this));
 
-        this.$missingUrgentReportCheckbox.change(jQuery.proxy(function () {
-            this._updateStateLegislator("Report status saved");
-        }, this));
         this.$priorityTargetCheckbox.change(jQuery.proxy(function () {
             this._updateStateLegislator("Target status saved");
         }, this));
@@ -270,7 +266,6 @@ CBR.Controllers.StateLegislator = new Class({
             reports: stateLegislator.getReports(),
             otherPhoneNumber: otherPhoneNumber ? otherPhoneNumber : null,
             isAPriorityTarget: this.$priorityTargetCheckbox.prop("checked"),
-            isMissingUrgentReport: this.$missingUrgentReportCheckbox.prop("checked"),
             staffName: staffName ? staffName : null,
             staffNumber: staffNumber ? staffNumber : null,
             pointOfContact: pointOfContact ? pointOfContact : null

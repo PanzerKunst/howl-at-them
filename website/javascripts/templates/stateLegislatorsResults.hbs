@@ -13,7 +13,6 @@
             <th class="safi"><span class="yes-no-answer">Supports<br />amendment<br />to fix it</span></th>
             <th class="ocu"><span class="yes-no-answer">Opposes<br />Citizens<br />United</span></th>
             <th class="scp"><span class="yes-no-answer">Supports<br />convention<br />process</span></th>
-            <th class="is-missing-urgent-report">Report</th>
             <th class="is-a-priority-target">Target</th>
         </tr>
         </thead>
@@ -29,7 +28,6 @@
             <td class="safi">{{{getSpanForYesNoAnswerLegislatorLevel "SAFI" this}}}</td>
             <td class="ocu">{{{getSpanForYesNoAnswerLegislatorLevel "OCU" this}}}</td>
             <td class="scp">{{{getSpanForYesNoAnswerLegislatorLevel "SCP" this}}}</td>
-            <td class="is-missing-urgent-report"><input type="checkbox" {{#if isMissingUrgentReport}} checked {{/if}} /></td>
             <td class="is-a-priority-target"><input type="checkbox" {{#if isAPriorityTarget}} checked {{/if}} {{#unless ../isAdmin}} disabled {{/unless}} /></td>
         </tr>
         </tbody>
