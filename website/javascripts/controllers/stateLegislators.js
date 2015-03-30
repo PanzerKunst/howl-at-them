@@ -17,8 +17,14 @@ CBR.Controllers.StateLegislators = new Class({
     initElements: function () {
         this.parent();
 
+        this.$form = jQuery("#primary-search-fields").parent();
+
         this.$usStateSelect = jQuery("#us-state");
         this.$nbDaysSinceLastReport = jQuery("#nb-days-since-last-report");
+
+        this.$lastUpdateLinks = jQuery("#last-updated-form-group").find("a");
+        this.$updatedWithinLink = this.$lastUpdateLinks.filter("#updated-within-link");
+        this.$notUpdatedWithinLink = this.$lastUpdateLinks.filter("#not-updated-within-link");
 
         this.$chamberOrTargetFilterRadios = jQuery("[name='chamber-or-target-filter']");
         this.$houseChamberFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
@@ -54,6 +60,10 @@ CBR.Controllers.StateLegislators = new Class({
 
         jQuery(window).scroll(_.debounce(jQuery.proxy(this._toggleStickyTableHeader, this), 15));
 
+        this.$form.submit(function(e) {
+            e.preventDefault();
+        });
+
         this.$usStateSelect.change(function (e) {
             this._populateLeadershipPositionsSelect(e);
             this._populateCommitteesSelect(e);
@@ -63,6 +73,8 @@ CBR.Controllers.StateLegislators = new Class({
         this.$nbDaysSinceLastReport.keyup(function (e) {
             this._doSubmit(e);
         }.bind(this));
+
+        this.$lastUpdateLinks.click(jQuery.proxy(this._toggleLastUpdateLinkAndSubmit, this));
 
         this.$chamberOrTargetFilterRadios.change(jQuery.proxy(this._doSubmit, this));
 
@@ -97,6 +109,20 @@ CBR.Controllers.StateLegislators = new Class({
         });
 
         this.initEditReportValidation();
+    },
+
+    _toggleLastUpdateLinkAndSubmit: function () {
+        var isToShowNotUpdated = this.$updatedWithinLink.is(":visible");
+
+        this.$lastUpdateLinks.hide();
+
+        if (isToShowNotUpdated) {
+            this.$notUpdatedWithinLink.show();
+        } else {
+            this.$updatedWithinLink.show();
+        }
+
+        this._doSubmit(null);
     },
 
     _filterResults: function () {
@@ -220,7 +246,8 @@ CBR.Controllers.StateLegislators = new Class({
 
             var stateLegislatorSearch = {
                 usStateId: this.$usStateSelect.val(),
-                nbDaysSinceLastReport: this._getSelectedNbDaysSinceLastReport(),
+                nbDaysSinceLastReport: this._getInputNbDaysSinceLastReport(),
+                nbDaysWithoutReport: this._getInputNbDaysWithoutReport(),
                 chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
                 leadershipPositionId: this._getSelectedLeadershipPositionId(),
                 committeeName: this._getSelectedCommitteeName()
@@ -286,7 +313,8 @@ CBR.Controllers.StateLegislators = new Class({
 
             var stateLegislatorSearch = {
                 usStateId: this.$usStateSelect.val(),
-                nbDaysSinceLastReport: this._getSelectedNbDaysSinceLastReport(),
+                nbDaysSinceLastReport: this._getInputNbDaysSinceLastReport(),
+                nbDaysWithoutReport: this._getInputNbDaysWithoutReport(),
                 chamberAbbrOrPriorityTarget: this._getSelectedChamberAbbrOrPriorityTarget(),
                 leadershipPositionId: this._getSelectedLeadershipPositionId(),
                 committeeName: this._getSelectedCommitteeName()
@@ -462,10 +490,12 @@ CBR.Controllers.StateLegislators = new Class({
     },
 
     _toggleStickyTableHeader: function () {
-        if (this.isBrowserFullWidth && !this.$filterSection.visible(true)) {
-            this.$stickyTableHeader.show();
-        } else {
-            this.$stickyTableHeader.hide();
+        if (!jQuery.browser.mobile) {
+            if (this.isBrowserFullWidth && !this.$filterSection.visible(true)) {
+                this.$stickyTableHeader.show();
+            } else {
+                this.$stickyTableHeader.hide();
+            }
         }
     },
 
@@ -802,8 +832,13 @@ CBR.Controllers.StateLegislators = new Class({
         return selectedCommitteeName ? selectedCommitteeName : null;
     },
 
-    _getSelectedNbDaysSinceLastReport: function () {
-        var selectedNbDaysSinceLastReport = this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
-        return selectedNbDaysSinceLastReport ? selectedNbDaysSinceLastReport : null;
+    _getInputNbDaysSinceLastReport: function () {
+        var inputNbDaysSinceLastReport = this.$updatedWithinLink.is(":visible") && this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
+        return inputNbDaysSinceLastReport ? inputNbDaysSinceLastReport : null;
+    },
+
+    _getInputNbDaysWithoutReport: function () {
+        var inputNbDaysWithoutReport = this.$notUpdatedWithinLink.is(":visible") && this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
+        return inputNbDaysWithoutReport ? inputNbDaysWithoutReport : null;
     }
 });

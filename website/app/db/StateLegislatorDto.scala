@@ -219,13 +219,23 @@ object StateLegislatorDto {
     }
   }
 
-  def getMatching(usStateId: String, nbDaysSinceLastReport: Option[Int], chamberAbbrOrPriorityTarget: Option[String], leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
+  def getMatching(usStateId: String, nbDaysSinceLastReport: Option[Int], nbDaysWithoutReport: Option[Int], chamberAbbrOrPriorityTarget: Option[String], leadershipPositionId: Option[Int], committees: List[Committee]): List[DetailedStateLegislator] = {
     val nbDaysSinceLastReportClause = nbDaysSinceLastReport match {
       case Some(nbDays) =>
         val minTimestamp = new Date().getTime - nbDays * 24 * 3600 * 1000
 
         """
           and max_creation_timestamp > """ + minTimestamp
+      case None => ""
+    }
+
+    val nbDaysWithoutReportClause = nbDaysWithoutReport match {
+      case Some(nbDays) =>
+        val maxTimestamp = new Date().getTime - nbDays * 24 * 3600 * 1000
+
+        """
+          and (max_creation_timestamp <= """ + maxTimestamp + """ or
+            max_creation_timestamp is null)"""
       case None => ""
     }
 

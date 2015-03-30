@@ -6215,6 +6215,8 @@ textarea.form-control {
       width: 2.5em;
       text-align: center;
       margin: 0 0.5em; }
+  #state-legislators #content #not-updated-within-link {
+    display: none; }
   #state-legislators #content #chamber-or-target-radio-buttons {
     margin-top: 2.15em; }
     #state-legislators #content #chamber-or-target-radio-buttons.form-group {

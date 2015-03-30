@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], selectedNbDaysSinceLastReport: Option[Int], selectedChamberOrTargetSearchCriteria: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], inputNbDaysSinceLastReport: Option[Int], selectedChamberOrTargetSearchCriteria: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
 @main("State legislators", "state-legislators") {
 <!--
     Header
@@ -31,8 +31,8 @@
         </div>
 
         <div class="form-group" id="last-updated-form-group">
-            <label for="nb-days-since-last-report">Updated within</label><!--
-         --><span>the last</span><input type="text" class="form-control" id="nb-days-since-last-report" maxlength="1" @if(selectedNbDaysSinceLastReport) { value="@selectedNbDaysSinceLastReport.get"} /><span>days</span>
+            <label for="nb-days-since-last-report"><a id="updated-within-link">Updated</a><a id="not-updated-within-link">Not updated</a> within</label><!--
+         --><span>the last</span><input type="text" class="form-control" id="nb-days-since-last-report" maxlength="1" @if(inputNbDaysSinceLastReport) { value="@inputNbDaysSinceLastReport.get"} /><span>days</span>
 
             <p class="field-error" data-check="integer">Must be 1 digit</p>
         </div>

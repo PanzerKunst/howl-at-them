@@ -61,6 +61,7 @@ module.exports = function (grunt) {
                     // Services
                     "javascripts/services/validator.js",
                     "javascripts/services/string.js",
+                    "javascripts/services/keyboard.js",
 
                     // Models
                     "javascripts/models/jsonSerializable.js",

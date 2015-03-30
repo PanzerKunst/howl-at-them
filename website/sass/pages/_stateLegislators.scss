@@ -73,6 +73,10 @@
       }
     }
 
+    #not-updated-within-link {
+      display: none;
+    }
+
     // Wouldn't override if declaration was outside #content
     #chamber-or-target-radio-buttons {
       margin-top: 2.15em;
