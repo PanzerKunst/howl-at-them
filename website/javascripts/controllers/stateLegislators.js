@@ -20,11 +20,14 @@ CBR.Controllers.StateLegislators = new Class({
         this.$form = jQuery("#primary-search-fields").parent();
 
         this.$usStateSelect = jQuery("#us-state");
-        this.$nbDaysSinceLastReport = jQuery("#nb-days-since-last-report");
 
-        this.$lastUpdateLinks = jQuery("#last-updated-form-group").find("a");
-        this.$updatedWithinLink = this.$lastUpdateLinks.filter("#updated-within-link");
-        this.$notUpdatedWithinLink = this.$lastUpdateLinks.filter("#not-updated-within-link");
+        this.$lastUpdatedFormGroup = jQuery("#last-updated-form-group");
+        this.$updatedWithinLink = this.$lastUpdatedFormGroup.find("a");
+        this.$nbDaysSinceLastReport = this.$lastUpdatedFormGroup.children("#nb-days-since-last-report");
+
+        this.$notUpdatedFormGroup = jQuery("#not-updated-form-group");
+        this.$notUpdatedWithinLink = this.$notUpdatedFormGroup.find("a");
+        this.$nbDaysWithoutReport = this.$notUpdatedFormGroup.children("#nb-days-without-report");
 
         this.$chamberOrTargetFilterRadios = jQuery("[name='chamber-or-target-filter']");
         this.$houseChamberFilterRadio = this.$chamberOrTargetFilterRadios.filter("[value='" + CBR.Models.StateLegislator.chamber.house.abbr + "']");
@@ -70,11 +73,11 @@ CBR.Controllers.StateLegislators = new Class({
             this._doSubmit(e);
         }.bind(this));
 
-        this.$nbDaysSinceLastReport.keyup(function (e) {
-            this._doSubmit(e);
-        }.bind(this));
+        this.$nbDaysSinceLastReport.keyup(jQuery.proxy(this._doSubmit, this));
+        this.$nbDaysWithoutReport.keyup(jQuery.proxy(this._doSubmit, this));
 
-        this.$lastUpdateLinks.click(jQuery.proxy(this._toggleLastUpdateLinkAndSubmit, this));
+        this.$updatedWithinLink.click(jQuery.proxy(this._toggleLastUpdatedFormGroupAndSubmit, this));
+        this.$notUpdatedWithinLink.click(jQuery.proxy(this._toggleLastUpdatedFormGroupAndSubmit, this));
 
         this.$chamberOrTargetFilterRadios.change(jQuery.proxy(this._doSubmit, this));
 
@@ -111,15 +114,16 @@ CBR.Controllers.StateLegislators = new Class({
         this.initEditReportValidation();
     },
 
-    _toggleLastUpdateLinkAndSubmit: function () {
-        var isToShowNotUpdated = this.$updatedWithinLink.is(":visible");
+    _toggleLastUpdatedFormGroupAndSubmit: function () {
+        var isToShowNotUpdated = this.$lastUpdatedFormGroup.is(":visible");
 
-        this.$lastUpdateLinks.hide();
+        this.$lastUpdatedFormGroup.hide();
+        this.$notUpdatedFormGroup.hide();
 
         if (isToShowNotUpdated) {
-            this.$notUpdatedWithinLink.show();
+            this.$notUpdatedFormGroup.show();
         } else {
-            this.$updatedWithinLink.show();
+            this.$lastUpdatedFormGroup.show();
         }
 
         this._doSubmit(null);
@@ -833,12 +837,12 @@ CBR.Controllers.StateLegislators = new Class({
     },
 
     _getInputNbDaysSinceLastReport: function () {
-        var inputNbDaysSinceLastReport = this.$updatedWithinLink.is(":visible") && this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
+        var inputNbDaysSinceLastReport = this.$lastUpdatedFormGroup.is(":visible") && this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
         return inputNbDaysSinceLastReport ? inputNbDaysSinceLastReport : null;
     },
 
     _getInputNbDaysWithoutReport: function () {
-        var inputNbDaysWithoutReport = this.$notUpdatedWithinLink.is(":visible") && this.$nbDaysSinceLastReport ? this.$nbDaysSinceLastReport.val() : null;
+        var inputNbDaysWithoutReport = this.$notUpdatedFormGroup.is(":visible") && this.$nbDaysWithoutReport ? this.$nbDaysWithoutReport.val() : null;
         return inputNbDaysWithoutReport ? inputNbDaysWithoutReport : null;
     }
 });

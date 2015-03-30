@@ -302,6 +302,7 @@ object StateLegislatorDto {
             and lr.is_deleted is false
           where us_state_id = '""" + DbUtil.safetize(usStateId) + """'""" +
             nbDaysSinceLastReportClause +
+            nbDaysWithoutReportClause +
             titleClause +
             priorityTargetClause +
             leadershipPositionIdClause +

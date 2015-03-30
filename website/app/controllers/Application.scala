@@ -51,6 +51,11 @@ object Application extends Controller {
       case None => None
     }
 
+    val inputNbDaysWithoutReport = request.session.get("inputNbDaysWithoutReport") match {
+      case Some(nbDays) => Some(nbDays.toInt)
+      case None => None
+    }
+
     val selectedLeadershipPositionId = request.session.get("selectedLeadershipPositionId") match {
       case Some(positionId) => Some(positionId.toInt)
       case None => None
@@ -59,7 +64,7 @@ object Application extends Controller {
     val committeesInState = CommitteeDto.getInState(selectedUsStateId)
     val committeeNamesInState = CommitteeApi.committeeNamesWithoutDuplicates(committeesInState)
 
-    Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, inputNbDaysSinceLastReport, request.session.get("selectedChamberOrTargetSearchCriteria"), selectedLeadershipPositionId, request.session.get("selectedCommitteeName")))
+    Ok(views.html.stateLegislators(UsStateDto.all, isAdministrator, selectedUsStateId, action, LeadershipPositionDto.getInState(selectedUsStateId), committeeNamesInState, inputNbDaysSinceLastReport, inputNbDaysWithoutReport, request.session.get("selectedChamberOrTargetSearchCriteria"), selectedLeadershipPositionId, request.session.get("selectedCommitteeName")))
       .withSession(newSession)
   }
 

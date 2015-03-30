@@ -50,7 +50,8 @@
       }
     }
 
-    #last-updated-form-group {
+    #last-updated-form-group,
+    #not-updated-form-group {
       margin-right: 4.4em;
 
       $field-width-last-updated: 10em;
@@ -71,10 +72,6 @@
         text-align: center;
         margin: 0 0.5em;
       }
-    }
-
-    #not-updated-within-link {
-      display: none;
     }
 
     // Wouldn't override if declaration was outside #content

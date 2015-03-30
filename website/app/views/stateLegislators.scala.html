@@ -1,4 +1,4 @@
-@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], inputNbDaysSinceLastReport: Option[Int], selectedChamberOrTargetSearchCriteria: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
+@(usStates: List[UsState], isAdmin: Boolean, selectedUsStateId: String, action: Option[String], leadershipPositionsInState: List[LeadershipPosition], committeeNamesInState: List[String], inputNbDaysSinceLastReport: Option[Int], inputNbDaysWithoutReport: Option[Int], selectedChamberOrTargetSearchCriteria: Option[String], selectedLeadershipPositionId: Option[Int], selectedCommitteeName: Option[String])
 @main("State legislators", "state-legislators") {
 <!--
     Header
@@ -30,9 +30,16 @@
             </select>
         </div>
 
-        <div class="form-group" id="last-updated-form-group">
-            <label for="nb-days-since-last-report"><a id="updated-within-link">Updated</a><a id="not-updated-within-link">Not updated</a> within</label><!--
-         --><span>the last</span><input type="text" class="form-control" id="nb-days-since-last-report" maxlength="1" @if(inputNbDaysSinceLastReport) { value="@inputNbDaysSinceLastReport.get"} /><span>days</span>
+        <div class="form-group" id="last-updated-form-group" @if(inputNbDaysWithoutReport.isDefined) { style="display: none" }>
+            <label for="nb-days-since-last-report"><a>Updated</a> within</label><!--
+         --><span>the last</span><input type="text" class="form-control" id="nb-days-since-last-report" maxlength="1" @if(inputNbDaysSinceLastReport.isDefined) { value="@inputNbDaysSinceLastReport.get" } /><span>days</span>
+
+            <p class="field-error" data-check="integer">Must be 1 digit</p>
+        </div>
+
+        <div class="form-group" id="not-updated-form-group" @if(inputNbDaysSinceLastReport.isDefined || !inputNbDaysWithoutReport.isDefined) { style="display: none" }>
+            <label for="nb-days-without-report"><a>Not updated</a> within</label><!--
+         --><span>the last</span><input type="text" class="form-control" id="nb-days-without-report" maxlength="1" @if(inputNbDaysWithoutReport.isDefined) { value="@inputNbDaysWithoutReport.get" } /><span>days</span>
 
             <p class="field-error" data-check="integer">Must be 1 digit</p>
         </div>

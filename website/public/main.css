@@ -6203,20 +6203,23 @@ textarea.form-control {
     #state-legislators #content #state-form-group > label,
     #state-legislators #content #state-form-group > #us-state {
       width: 16em; }
-  #state-legislators #content #last-updated-form-group {
+  #state-legislators #content #last-updated-form-group,
+  #state-legislators #content #not-updated-form-group {
     margin-right: 4.4em;
     width: 10em; }
-    #state-legislators #content #last-updated-form-group > label {
+    #state-legislators #content #last-updated-form-group > label,
+    #state-legislators #content #not-updated-form-group > label {
       width: 10em; }
     #state-legislators #content #last-updated-form-group > .form-control,
-    #state-legislators #content #last-updated-form-group > span {
+    #state-legislators #content #last-updated-form-group > span,
+    #state-legislators #content #not-updated-form-group > .form-control,
+    #state-legislators #content #not-updated-form-group > span {
       display: inline-block; }
-    #state-legislators #content #last-updated-form-group > .form-control {
+    #state-legislators #content #last-updated-form-group > .form-control,
+    #state-legislators #content #not-updated-form-group > .form-control {
       width: 2.5em;
       text-align: center;
       margin: 0 0.5em; }
-  #state-legislators #content #not-updated-within-link {
-    display: none; }
   #state-legislators #content #chamber-or-target-radio-buttons {
     margin-top: 2.15em; }
     #state-legislators #content #chamber-or-target-radio-buttons.form-group {

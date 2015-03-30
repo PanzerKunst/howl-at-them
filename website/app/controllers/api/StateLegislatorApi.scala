@@ -17,6 +17,7 @@ object StateLegislatorApi extends Controller {
       val nbDaysSinceLastReport = if (request.queryString.contains("nbDaysSinceLastReport")) {
         val nbDays = request.queryString.get("nbDaysSinceLastReport").get.head
         newSession = newSession + ("inputNbDaysSinceLastReport" -> nbDays)
+        newSession = newSession - "inputNbDaysWithoutReport"
         Some(nbDays.toInt)
       } else {
         newSession = newSession - "inputNbDaysSinceLastReport"
@@ -25,10 +26,11 @@ object StateLegislatorApi extends Controller {
 
       val nbDaysWithoutReport = if (request.queryString.contains("nbDaysWithoutReport")) {
         val nbDays = request.queryString.get("nbDaysWithoutReport").get.head
-        newSession = newSession + ("inputNbDaysSinceLastReport" -> nbDays)
+        newSession = newSession + ("inputNbDaysWithoutReport" -> nbDays)
+        newSession = newSession - "inputNbDaysSinceLastReport"
         Some(nbDays.toInt)
       } else {
-        newSession = newSession - "inputNbDaysSinceLastReport"
+        newSession = newSession - "inputNbDaysWithoutReport"
         None
       }
 
