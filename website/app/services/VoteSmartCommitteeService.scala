@@ -34,7 +34,7 @@ object VoteSmartCommitteeService {
               processJsonFromVoteSmartCommittesOfUsState(response.json, usState)
             }
             catch {
-              case e: Exception => Logger.error(e.getStackTraceString)
+              case e: Exception => Logger.error(ExceptionUtil.getExceptionString(e))
             }
         }
 
@@ -103,7 +103,7 @@ object VoteSmartCommitteeService {
           processJsonFromVoteSmartCommitteeMembers(response.json, committeeId)
         }
         catch {
-          case e: Exception => Logger.error(e.getStackTraceString)
+          case e: Exception => Logger.error(ExceptionUtil.getExceptionString(e))
         }
     }
   }
@@ -111,7 +111,7 @@ object VoteSmartCommitteeService {
   private def processJsonFromVoteSmartCommitteeMembers(json: JsValue, committeeId: Int) {
     (json \ "error").asOpt[JsObject] match {
       case None =>
-        val voteSmartCommitteeMembersJsValue = (json \ "committeeMembers" \ "member")
+        val voteSmartCommitteeMembersJsValue = json \ "committeeMembers" \ "member"
 
         val voteSmartCommitteeMemberJsonList = voteSmartCommitteeMembersJsValue.asOpt[List[JsObject]] match {
           case Some(jsonList) => jsonList

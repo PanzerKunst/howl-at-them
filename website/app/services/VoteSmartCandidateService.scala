@@ -35,7 +35,7 @@ object VoteSmartCandidateService {
               processJsonFromVoteSmartOfficialsInUsState(response.json, usState)
             }
             catch {
-              case e: Exception => Logger.error(e.getStackTraceString)
+              case e: Exception => Logger.error(ExceptionUtil.getExceptionString(e))
             }
         }
 
@@ -190,7 +190,7 @@ object VoteSmartCandidateService {
           processJsonFromVoteSmartCandidateOffices(response.json, candidateId)
         }
         catch {
-          case e: Exception => Logger.error(e.getStackTraceString)
+          case e: Exception => Logger.error(ExceptionUtil.getExceptionString(e))
         }
     }
   }
@@ -198,7 +198,7 @@ object VoteSmartCandidateService {
   private def processJsonFromVoteSmartCandidateOffices(json: JsValue, candidateId: Int) {
     (json \ "error").asOpt[JsObject] match {
       case None =>
-        val voteSmartOfficesJsValue = (json \ "address" \ "office")
+        val voteSmartOfficesJsValue = json \ "address" \ "office"
 
         val voteSmartOfficeJsonList = voteSmartOfficesJsValue.asOpt[List[JsObject]] match {
           case Some(jsonList) => jsonList
@@ -264,7 +264,7 @@ object VoteSmartCandidateService {
           processJsonFromVoteSmartCandidateWebAddresses(response.json, candidateId)
         }
         catch {
-          case e: Exception => Logger.error(e.getStackTraceString)
+          case e: Exception => Logger.error(ExceptionUtil.getExceptionString(e))
         }
     }
   }
@@ -272,7 +272,7 @@ object VoteSmartCandidateService {
   private def processJsonFromVoteSmartCandidateWebAddresses(json: JsValue, candidateId: Int) {
     (json \ "error").asOpt[JsObject] match {
       case None =>
-        val voteSmartWebAddressesJsValue = (json \ "webaddress" \ "address")
+        val voteSmartWebAddressesJsValue = json \ "webaddress" \ "address"
 
         val voteSmartWebAddressJsonList = voteSmartWebAddressesJsValue.asOpt[List[JsObject]] match {
           case Some(jsonList) => jsonList

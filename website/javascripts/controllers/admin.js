@@ -33,9 +33,12 @@ CBR.Controllers.Admin = new Class({
             onSuccess: function () {
                 this.$updateDataBtn.button("reset");
             }.bind(this),
-            onFailure: function () {
-                this.$updateDataBtn.button("reset");
-                alert("AJAX fail :(");
+            onFailure: function (xhr) {
+                // Failing silently in case of a timeout. Don't ask me why we get 403 in case of timeout...
+                if (xhr.status !== this.httpStatusCode.forbidden) {
+                    this.$updateDataBtn.button("reset");
+                    alert("AJAX fail :(");
+                }
             }.bind(this)
         }).post();
     }

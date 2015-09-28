@@ -368,7 +368,8 @@ CBR.Controllers.BaseController = new Class({
 
     httpStatusCode: {
         noContent: 204,
-        unauthorized: 401
+        unauthorized: 401,
+        forbidden: 403
     },
 
     floatingAlertFadeOutDelay: 1500
