@@ -45,6 +45,10 @@ object VoteSmartCandidateService {
         }
       }
 
+      while (isCandidatesWebServiceCallRunning || isCandidateOfficesWebServiceCallRunning || isCandidateCampaignWebAddressesWebServiceCallRunning) {
+        Thread.sleep(100)
+      }
+
       VoteSmartService.isRunning = false
     }
   }

@@ -44,6 +44,10 @@ object VoteSmartCommitteeService {
         }
       }
 
+      while (isCommitteesWebServiceCallRunning || isCommitteeMembersWebServiceCallRunning) {
+        Thread.sleep(100)
+      }
+
       VoteSmartService.isRunning = false
     }
   }

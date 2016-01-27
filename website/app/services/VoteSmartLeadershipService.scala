@@ -70,6 +70,10 @@ object VoteSmartLeadershipService {
 
     Logger.info("Processed " + voteSmartLeadershipPositionJsonList.length + " VoteSmart leadership positions")
 
+    while (isOfficialsWithLeadershipPositionWebServiceCallRunning || isOfficialsWithLeadershipPositionInStateWebServiceCallRunning) {
+      Thread.sleep(100)
+    }
+
     VoteSmartService.isRunning = false
   }
 
